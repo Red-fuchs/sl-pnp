@@ -44,7 +44,7 @@ let DIRS: [String: String] = ["fern": "etwas geschieht fern", "zeichen": "ein me
 public let DELTA_SYS = #"""
 Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen des Weltzustands als JSON aus, die in der Erzählung ausdrücklich geschehen sind. Erfinde nichts. Die Spielfigur ("du", "wer":"du") ist nie ein NPC. Ist nichts passiert, gib {} aus.
 
-Felder (alle optional): spielfigur_ort (neuer Ort der Spielfigur), ort_neu [{name,kurz}], npc_neu [{name,kurz,ort}] (nur neue benannte oder klar beschriebene Figuren), npc_ort [{wer,ort}], zustand [{wer,op,text}] (op "+" oder "-"), item [{wer,op,name}], beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung zur Spielfigur, -2 feindlich bis 2 loyal), strang [{titel,stand}].
+Felder (alle optional): spielfigur_ort (neuer Ort der Spielfigur), ort_neu [{name,kurz}], npc_neu [{name,kurz,ort}] (jede neue Figur, die in Aktion oder Erzählung mit Namen oder klarer Beschreibung auftritt; steht ihr Name nicht da, nimm ihre Rolle als Namen), npc_ort [{wer,ort}], zustand [{wer,op,text}] (op "+" oder "-"), item [{wer,op,name}], beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung zur Spielfigur, -2 feindlich bis 2 loyal), strang [{titel,stand}].
 
 Beispiel 1
 Aktion: Ich spreche den Fährmann an.
@@ -53,6 +53,12 @@ Orakel: Antwort: JA
 Ausgabe: {"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}],"npc_neu":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}]}
 
 Beispiel 2
+Aktion: Ich betrete die Hütte, wo die Köhlerin Ida am Feuer sitzt.
+Erzählung: Ida blickt auf, als du eintrittst, und schiebt dir wortlos einen Becher hin. Der Rauch beißt in den Augen.
+Orakel: -
+Ausgabe: {"npc_neu":[{"kurz":"Köhlerin am Feuer","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}
+
+Beispiel 3
 Aktion: Ich warte und sehe aufs Wasser.
 Erzählung: Der Nebel steigt langsam vom Fluss auf, und irgendwo ruft ein Vogel.
 Orakel: -
