@@ -22,7 +22,9 @@ struct TokLoader: TokenizerLoader {
   func load(from d: URL) async throws -> any MLXLMCommon.Tokenizer { TokBridge(u: try await AutoTokenizer.from(modelFolder: d)) }
 }
 
-public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0
+public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0, maskS = 0.0, compileS = 0.0
+  public var maskUs: Int { genTok > 0 ? Int(maskS * 1e6 / Double(genTok)) : 0 }
+  public var line: String { String(format: "prefill %d tok %.2fs · gen %d tok %.2fs (%.1f tok/s) · grammar mask %d µs/tok · compile %.2fs", prefillTok, prefillS, genTok, decS, tps, maskUs, compileS) }
   public var tps: Double { decS > 0 ? Double(genTok) / decS : 0 } }
 
 
@@ -81,7 +83,8 @@ public final class LM {
     if dirty { throw SLError("cache dirty, reset needed") }
     dirty = true
     var st = GenStats()
-    let (con, gkey, _) = try take(g)
+    let (con, gkey, ct) = try take(g)
+    st.compileS = ct
     var committed = 0
     defer { giveBack(con, gkey, committed: committed) }
     let t0 = Date()
@@ -98,13 +101,17 @@ public final class LM {
     let dim = logits.shape[logits.ndim - 1]
     var n = 0
     while n < maxTok {
+      let tm = Date()
       let m = try con.computeMask()
       var l = logits[0..., -1, 0...]
-      if m.needsApply { l = l + Self.maskArr(m, vocab: gtok.vocabSize, dim: dim) }
+      if m.needsApply { l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim) }
+      st.maskS += Date().timeIntervalSince(tm)
       let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))
       if st.ttft == 0 { st.ttft = Date().timeIntervalSince(t1) }
       if stop.contains(tok) { break }
+      let tc = Date()
       let r = try con.commitToken(Int32(tok))
+      st.maskS += Date().timeIntervalSince(tc)
       committed += 1 + r.tokens.count
       gen.append(tok)
       det.append(token: tok)
@@ -135,15 +142,19 @@ public final class LM {
     }
   }
 
-  static func maskArr(_ m: MaskResult, vocab: Int, dim: Int) -> MLXArray {
-    var f = [Float](repeating: -Float.infinity, count: dim)
+  var maskBuf: [Float] = []
+  func maskArr(_ m: MaskResult, vocab: Int, dim: Int) -> MLXArray {
+    if maskBuf.count != dim { maskBuf = [Float](repeating: -Float.infinity, count: dim) }
+    var touched: [Int] = []
     m.mask.withUnsafeBufferPointer { b in
       let p = UnsafeRawPointer(b.baseAddress!).assumingMemoryBound(to: UInt32.self)
-      for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 {
-        for bit in 0..<32 where (p[w] >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = 0 } }
+      for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 { touched.append(w) }
+      maskBuf.withUnsafeMutableBufferPointer { f in
+        for i in 0..<dim { f[i] = -Float.infinity }
+        for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = 0 } } }
       }
     }
-    return MLXArray(f)
+    return MLXArray(maskBuf)
   }
 
   public func unload() { cache = []; gcache = [:]; MLX.GPU.clearCache() }

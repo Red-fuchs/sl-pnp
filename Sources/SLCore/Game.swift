@@ -68,7 +68,7 @@ public final class Game {
   /// One player turn. `pre`: already-rolled oracle result (from /frage) -> skips the gate head.
   public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false) throws {
     if lm.cached > maxCtx { try compact() }
-    push(.u(player))
+    push(.u(msgs.isEmpty ? "Setting: \(setting). \(player)" : player))   // scene 1 starts with the first player turn (head_scene -> start_scene first:true)
     var gate = Gate(); gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0
@@ -88,6 +88,7 @@ public final class Game {
           else if line.count >= 11 && !line.contains(":") && !line.hasPrefix("<") { narr = true; self.out(.delta(line)) }
         }
       }
+      if debug { out(.info("· " + lm.last.line)) }
       if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }
       msgs.append(.m(txt)); onMsg(.m(txt))
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
@@ -128,7 +129,7 @@ public struct EvInfo: Equatable { public var head: String, words: String
   public init(head: String, words: String) { self.head = head; self.words = words } }
 
 /// Engine maxLength limits (tools.json) enforced by clipping instead of grammar (bounded repeats blow up xgrammar compile time).
-func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary": 400, "why": 120, "aktivitaet": 80, "beteiligte": 80, "objekt": 80, "ort": 80, "stimmung": 40]) -> J {
+func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary": 400, "why": 120, "aktivitaet": 80, "beteiligte": 80, "objekt": 80, "ort": 80, "stimmung": 40, "name": 60]) -> J {
   guard let o = a.obj else { return a }
   return .obj(o.reduce(into: [:]) { r, kv in
     if let s = kv.value.str, let m = limits[kv.key] { r[kv.key] = .str(String(s.prefix(m))) } else { r[kv.key] = clip(kv.value, limits) }

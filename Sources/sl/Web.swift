@@ -62,7 +62,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     }
   }
 
-  if resuming { try runner.resume() } else { job { try runner.startNew(setting: opt["setting"]); return true } }
+  if resuming { try runner.resume() } else { try runner.startNew(setting: opt["setting"]) }
 
   let params = NWParameters.tcp
   params.requiredLocalEndpoint = .hostPort(host: "127.0.0.1", port: NWEndpoint.Port(rawValue: port)!)

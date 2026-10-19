@@ -60,7 +60,7 @@ public final class Runner {
     game = Game(eng: e, lm: lm, setting: self.setting); wire()
     session.log("# \(session.name)\n\nSetting: \(self.setting)\n")
     try game.syncCache()
-    try run { try game.turn(setupMsg(self.setting)) }
+    try session.save(game); refresh()
   }
   public func resume() throws {
     let (e, s, m) = try session.loadEngine()
@@ -129,7 +129,11 @@ public final class Runner {
   public func story() -> [[String: String]] {
     var r: [[String: String]] = []
     for m in game.msgs {
-      if m.role == "user" { if !m.text.hasPrefix("[Orakel]") && !m.text.hasPrefix("Neues Abenteuer") { r.append(["who": "me", "text": m.text]) } }
+      if m.role == "user" {
+        guard !m.text.hasPrefix("[Orakel]") else { continue }
+        var t = m.text; if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
+        r.append(["who": "me", "text": t])
+      }
       else if let l = m.text.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }
     }
     return r

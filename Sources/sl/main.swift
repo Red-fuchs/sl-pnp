@@ -79,7 +79,7 @@ if web {
 
 let t0 = Date()
 if resuming { try runner.resume(); print("\(dim)Sitzung \(name) fortgesetzt (\(runner.game.msgs.count) Nachrichten)\(off)") }
-else { print("\(dim)Sitzung \(name)\(off)"); try runner.startNew(setting: opt["setting"]) }
+else { try runner.startNew(setting: opt["setting"]); print("\(dim)Sitzung \(name) · Setting: \(runner.setting)\nBeschreibe deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).\(off)") }
 if opt["debug"] != nil { err(String(format: "start %.1fs", Date().timeIntervalSince(t0))) }
 
 func prompt() { print("\(bold)Du> \(off)", terminator: ""); fflush(stdout) }
@@ -103,8 +103,7 @@ while let l = readLineIdle(idleSecs) {
   if t.isEmpty { prompt(); continue }
   print()
   do { if !(try runner.handle(t)) { break } } catch { print("\(dim)Fehler: \(error)\(off)") }
-  if opt["debug"] != nil { err("\(lm!.last)") }
-  prompt()
+    prompt()
 }
 print()
 lm?.unload(); lm = nil

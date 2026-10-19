@@ -105,6 +105,13 @@ final class MiscTests: XCTestCase {
     XCTAssertEqual(httpHeader(h, "host"), "127.0.0.1:8791"); XCTAssertEqual(httpHeader(h, "content-length"), "12")
     XCTAssertEqual(httpHeader(h, "origin"), "http://x"); XCTAssertNil(httpHeader(h, "x-none"))
   }
+  func testEndSceneLists() throws {
+    let e = try Session.newEngine(rng: "seed:4")
+    _ = e.call("start_scene", ["expect": "x", "first": true])
+    let (n, a) = parseCall("<end_scene>{\"summary\":\"s\",\"control\":true,\"why\":\"w\",\"akteure\":[{\"op\":\"add\",\"name\":\"Der Wirt\"}]}</end_scene>")!
+    XCTAssertNil(e.call(n, a)["error"].str); XCTAssertEqual(e.st.akteure.first?.name, "Der Wirt")
+    XCTAssertEqual(fmtKnown(e.st.akteure.map(\.name), []), "[Bekannt] Figuren: Der Wirt. Stränge: -.")
+  }
   func testSessionLock() throws {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-lock-\(UUID().uuidString)")
     let s1 = try Session(name: "x", root: root)

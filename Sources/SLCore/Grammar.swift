@@ -46,7 +46,10 @@ public enum Gr {
 
   // `first:true` is injected by the harness (parseCall) for the very first scene; the model never writes it.
   static let startScene = G.seq([.s(#"<start_scene>{"expect":"#), .js(str), .s(#","el":{"ort":"#), .js(str), .s(#","beteiligte":"#), .js(str), .s("}}</start_scene>")])
-  static let endScene = G.seq([.s(#"<end_scene>{"summary":"#), .js(str), .s(#","control":"#), .re("true|false"), .s(#","why":"#), .js(str), .s("}</end_scene>")])
+  static let endScene = G.seq([.s(#"<end_scene>{"summary":"#), .js(str), .s(#","control":"#), .re("true|false"), .s(#","why":"#), .js(str),
+    // optional list upkeep (akteure/straenge add) so [Bekannt] and targeted events come alive; prompt v3 does not teach it yet -> model rarely uses it
+    .or([.s("}"), .seq([.s(#","akteure":[{"op":"add","name":"#), .js(str), .s("}]}")]), .seq([.s(#","straenge":[{"op":"add","name":"#), .js(str), .s("}]}")])]),
+    .s("</end_scene>")])
   /// q is written by the model per the prompt but the harness overwrites it with the "Frage:" line.
   static let askCall = G.seq([.s(#"<ask_oracle>{"q":"#), .js(str), .s(#","odds":"#), .re("-[1-3]|[0-3]"), .s("}</ask_oracle>")])
   static let q = G.re(#"[^\-\n<][^\n<]{4}[^\n<]*"#)
