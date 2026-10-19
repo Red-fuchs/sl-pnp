@@ -105,7 +105,7 @@ public struct World: Codable, Equatable {
     for e in (d["figuren"].arr ?? []) + (d["npc_neu"].arr ?? []) {
       guard let n = e["name"].str.map({ cut($0.trimmingCharacters(in: .whitespaces), 40) }), !n.isEmpty, !isFigur(n) else { continue }
       let k = cut(e["kurz"].str ?? "", 80), o = e["ort"].str.map { cut($0, 60) }
-      if let i = npc(n) { if !k.isEmpty { npcs[i].kurz = k }; if let o { npcs[i].ort = o }; continue }
+      if let i = npc(n) { if !k.isEmpty && norm(k) != norm(npcs[i].name) { npcs[i].kurz = k }; if let o { npcs[i].ort = o }; continue }
       if npcs.count >= 20 { if let i = npcs.firstIndex(where: { !here($0) }) { npcs.remove(at: i) } else { continue } }
       npcs.append(Npc(id: "n\(nextId)", name: n, kurz: k, ort: o ?? ort)); nextId += 1
       log.append("neu \(n)\(o.map { " (\($0))" } ?? "")")
