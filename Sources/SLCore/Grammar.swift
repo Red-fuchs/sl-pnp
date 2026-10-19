@@ -31,6 +31,8 @@ public struct Gate {
   public var ans: String? = nil    // BIND: oracle answer JA+|JA|NEIN+|NEIN, fixed string in the grammar
   public var deut = false          // event/mutation shown by harness -> "Deutung:" line (or verwerfen)
   public var forceEnd = false      // /ende: head must call end_scene
+  public var figurLine = false     // first turn of a session: head starts with "Spielfigur: <text>|-"
+  public var mustAsk = false       // >=1 quiet turn in this scene: no narration-only head, ask the oracle (or end the scene)
   public var endNarr = false       // /ende turn: narration allowed after end_scene (else start_scene only)
   public init() {}
 }
@@ -46,7 +48,7 @@ public enum Gr {
 
   // `first:true` is injected by the harness (parseCall) for the very first scene; the model never writes it.
   static let startScene = G.seq([.s(#"<start_scene>{"expect":"#), .js(str), .s(#","el":{"ort":"#), .js(str), .s(#","beteiligte":"#), .js(str), .s("}}</start_scene>")])
-  static let endScene = G.seq([.s(#"<end_scene>{"summary":"#), .js(str), .s(#","control":"#), .re("true|false"), .s(#","why":"#), .js(str),
+  static let endScene = G.seq([.s(#"<end_scene>{"summary":"#), .js(str), .s(#","why":"#), .js(str), .s(#","control":"#), .re("true|false"),
     // optional list upkeep (akteure/straenge add) so [Bekannt] and targeted events come alive; prompt v3 does not teach it yet -> model rarely uses it
     .or([.s("}"), .seq([.s(#","akteure":[{"op":"add","name":"#), .js(str), .s("}]}")]), .seq([.s(#","straenge":[{"op":"add","name":"#), .js(str), .s("}]}")])]),
     .s("</end_scene>")])
@@ -58,11 +60,16 @@ public enum Gr {
 
   public static func grammar(_ t: Gate) -> Grammar {
     if t.head {
-      let hd: [G] = [.s("Erwartung: "), .re(#"[^\n<]{10}[^\n<]*"#), .s("\n")]
-      if !t.open { return Grammar(.seq(hd + [.s("Frage: -\nWerkzeug: ja\n"), startScene])) }                      // head_scene
-      if t.forceEnd { return Grammar(.seq(hd + [.s("Frage: -\nWerkzeug: ja\n"), endScene])) }
-      var br: [G] = [.seq([.s("Frage: -\nWerkzeug: ja\n"), endScene]), .seq([.s("Frage: -\nWerkzeug: nein\n"), narr])]
-      if canAsk(t) { br.append(.seq([.s("Frage: "), q, .s("\nWerkzeug: ja\n"), askCall])) }
+      var hd: [G] = []
+      if t.figurLine { hd += [.s("Spielfigur: "), .or([.re(#"[^\n<]{6}[^\n<]*"#), .s("-")]), .s("\n")] }
+      hd += [.s("Erwartung: "), .re(#"[^\n<]{10}[^\n<]*"#), .s("\n")]
+      let ja = G.s("Ortswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n")
+      if !t.open { return Grammar(.seq(hd + [ja, startScene])) }                                   // head_scene: a new scene is a place/time change by definition
+      if t.forceEnd { return Grammar(.seq(hd + [ja, endScene])) }
+      // end_scene ONLY after "Ortswechsel/Zeitsprung: ja"; otherwise ask the oracle or narrate
+      var br: [G] = [.seq([ja, endScene])]
+      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n"), narr])) }
+      if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q, .s("\nWerkzeug: ja\n"), askCall])) }
       return Grammar(.seq(hd + [.or(br)]))
     }
     var parts: [G] = []

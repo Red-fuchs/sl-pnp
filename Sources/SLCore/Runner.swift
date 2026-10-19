@@ -16,9 +16,10 @@ public func describe(_ name: String, _ a: J, _ r: J) -> String {
   }
 }
 
-public struct Status { public var s: Int, scene: Int, open: Bool, q: Int, rng: String, source: String, akteure: Int, straenge: Int, journal: [String]
+public struct Status { public var figur: String?
+  public var s: Int, scene: Int, open: Bool, q: Int, rng: String, source: String, akteure: Int, straenge: Int, journal: [String]
   public var text: String {
-    "Spannung \(s) · Szene \(scene)\(open ? " (offen)" : "") · Fragen \(q)/6 · Quelle \(rng) · Akteure \(akteure) · Stränge \(straenge)" } }
+    "Spielfigur: \(figur ?? "-")\nSpannung \(s) · Szene \(scene)\(open ? " (offen)" : "") · Fragen \(q)/6 · Quelle \(rng) · Akteure \(akteure) · Stränge \(straenge)" } }
 
 /// Session + game + persistence; shared by CLI and web.
 public final class Runner {
@@ -63,10 +64,10 @@ public final class Runner {
     try session.save(game); refresh()
   }
   public func resume() throws {
-    let (e, s, m) = try session.loadEngine()
+    let (e, s, m, f, q) = try session.loadEngine()
     setting = s
-    game = Game(eng: e, lm: lm, setting: s, msgs: m); wire()
-    try game.syncCache()
+    game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q); wire()
+    try game.syncCache(); refresh()
   }
   func run(_ f: () throws -> Void) throws {
     let n0 = game.msgs.count
@@ -99,7 +100,7 @@ public final class Runner {
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
-    return Status(s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
+    return Status(figur: game.figur, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
   /// Shared command handling (CLI + web). Returns false on quit.

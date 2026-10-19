@@ -37,7 +37,7 @@ func state(_ r: Runner, busy: Bool) -> [String: Any] {
   guard let (s, _, rl) = r.snapshot() else { return ["t": "state", "busy": busy, "name": r.session.name] }
   let rolls: [[String: Any]] = rl.suffix(8).map { ["answer": $0["answer"].str ?? $0["outcome"].str ?? "", "roll": $0["roll"].int ?? -1, "p": $0["p"].int ?? -1, "s": $0["s"].int ?? -1, "rng": $0["rng"].str ?? ""] }
   return ["t": "state", "s": s.s, "scene": s.scene, "open": s.open, "q": s.q, "rng": s.rng, "akteure": s.akteure, "straenge": s.straenge, "journal": s.journal,
-          "rolls": rolls, "busy": busy, "name": r.session.name]
+          "rolls": rolls, "figur": s.figur ?? "-", "busy": busy, "name": r.session.name]
 }
 
 func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws {
@@ -151,9 +151,9 @@ li{margin-bottom:4px}ul{padding-left:16px;margin:0}.busy{opacity:.6}
 </style></head><body>
 <header><b>SL</b><span id="nm" style="color:var(--mut);font-size:13px"></span><button id="th" type="button">hell/dunkel</button></header>
 <main><div id="col"><div id="story"></div>
-<form id="f"><input id="in" autocomplete="off" placeholder="Was tust du?  (/ende  /frage+1 …  /status  /neu)" autofocus><button>Senden</button></form></div>
+<form id="f"><input id="in" autocomplete="off" placeholder="Was tust du?  (/ende  /frage+1 …  /figur …  /status  /neu)" autofocus><button>Senden</button></form></div>
 <aside><h3>Spannung</h3><div class="big" id="s">–</div><div class="bar"><i id="sb" style="width:0"></i></div>
-<h3>Szene</h3><div id="sc">–</div><h3>Zufallsquelle</h3><div id="rng">–</div>
+<h3>Spielfigur</h3><div id="fg">–</div><h3>Szene</h3><div id="sc">–</div><h3>Zufallsquelle</h3><div id="rng">–</div>
 <h3>Würfe</h3><div id="rolls"></div><h3>Journal</h3><ul id="jr"></ul></aside></main>
 <script>
 const $=i=>document.getElementById(i),story=$('story');let cur=null;
@@ -164,7 +164,7 @@ function add(c,t){const p=document.createElement('p');p.className=c;p.textConten
 function cls(a){return /^JA/.test(a)||a=='erwartet'?'ja':'nein'}
 function render(s){if(s.s!==undefined){$('s').textContent=s.s;$('sb').style.width=(s.s*100/9)+'%'}
  if(s.scene!==undefined){$('sc').textContent='Szene '+s.scene+(s.open?' (offen)':'')+' · Fragen '+s.q+'/6'}
- if(s.rng)$('rng').textContent=s.rng; if(s.name)$('nm').textContent=s.name;
+ if(s.figur!==undefined)$('fg').textContent=s.figur; if(s.rng)$('rng').textContent=s.rng; if(s.name)$('nm').textContent=s.name;
  if(s.rolls){$('rolls').innerHTML='';s.rolls.slice().reverse().forEach(r=>$('rolls').appendChild(card(r)))}
  if(s.journal){$('jr').innerHTML='';s.journal.forEach(j=>{const l=document.createElement('li');l.textContent=j;$('jr').appendChild(l)})}
  if(s.busy!==undefined){document.body.classList.toggle('busy',s.busy)}}

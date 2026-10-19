@@ -3,7 +3,7 @@ import Schicksal
 
 public let sessionsRoot = URL(fileURLWithPath: NSHomeDirectory() + "/Claude-Workspace/gm-bench/sl-sessions")
 
-struct Chat: Codable { var setting: String; var msgs: [Msg] }
+struct Chat: Codable { var setting: String; var msgs: [Msg]; var figur: String? = nil; var quiet: Int? = nil }
 
 /// Persistent session dir: state.json (schicksal), chat.json (history), transcript.md.
 public final class Session {
@@ -41,15 +41,15 @@ public final class Session {
     if let err = r["error"].str { throw SLError(err) }
     return e
   }
-  public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg]) {
+  public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg], figur: String?, quiet: Int) {
     let e = try Engine.load(path: statePath); e.machine = true
     let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
-    return (e, c.setting, c.msgs)
+    return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0)
   }
-  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs) }
-  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg]) throws {
+  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet) }
+  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0) throws {
     try e.save(path: statePath)
-    try JSONEncoder().encode(Chat(setting: setting, msgs: msgs)).write(to: chatURL, options: .atomic)
+    try JSONEncoder().encode(Chat(setting: setting, msgs: msgs, figur: figur, quiet: quiet)).write(to: chatURL, options: .atomic)
   }
   public func log(_ s: String) {
     if !FileManager.default.fileExists(atPath: mdURL.path) { FileManager.default.createFile(atPath: mdURL.path, contents: nil) }

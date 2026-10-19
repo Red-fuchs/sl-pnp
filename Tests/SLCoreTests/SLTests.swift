@@ -51,7 +51,7 @@ final class DispatchTests: XCTestCase {
     XCTAssertFalse(e.st.open)
     // head_scene: no open scene -> only start_scene after "ja", never ask/nein
     let g0 = Gr.grammar({ var g = Gate(); g.head = true; return g }()).tag
-    XCTAssertTrue(g0.contains("start_scene")); XCTAssertFalse(g0.contains("ask_oracle")); XCTAssertFalse(g0.contains("Werkzeug: nein")); XCTAssertFalse(g0.contains("end_scene"))
+    XCTAssertTrue(g0.contains("start_scene")); XCTAssertFalse(g0.contains("ask_oracle")); XCTAssertFalse(g0.contains("Werkzeug: nein")); XCTAssertFalse(g0.contains("end_scene")); XCTAssertFalse(g0.contains("Spielfigur"))
     // first:true is injected by the harness, not by the model
     var (n, a) = parseCall("<start_scene>{\"expect\":\"x\",\"el\":{\"ort\":\"o\",\"beteiligte\":\"b\"}}</start_scene>", firstScene: true)!
     XCTAssertEqual(a["first"].bool, true)
@@ -65,7 +65,11 @@ final class DispatchTests: XCTestCase {
     var g = Gate(); g.open = true; g.head = true
     let g1 = Gr.grammar(g).tag
     XCTAssertTrue(g1.contains("ask_oracle")); XCTAssertTrue(g1.contains("end_scene")); XCTAssertFalse(g1.contains("<start_scene>"))
-    (n, a) = parseCall("<end_scene>{\"summary\":\"s\",\"control\":true,\"why\":\"w\"}</end_scene>")!
+    // end_scene is only reachable behind "Ortswechsel/Zeitsprung: ja"; mustAsk drops the narration-only branch
+    XCTAssertTrue(g1.contains("Ortswechsel/Zeitsprung: ja")); XCTAssertTrue(g1.contains("Werkzeug: nein"))
+    g.mustAsk = true; XCTAssertFalse(Gr.grammar(g).tag.contains("Werkzeug: nein")); g.mustAsk = false
+    g.figurLine = true; XCTAssertTrue(Gr.grammar(g).tag.contains("Spielfigur: ")); g.figurLine = false
+    (n, a) = parseCall("<end_scene>{\"summary\":\"s\",\"why\":\"w\",\"control\":true}</end_scene>")!
     r = e.call(n, a); XCTAssertNil(r["error"].str); XCTAssertFalse(e.st.open)
     XCTAssertTrue(fmtResult(n, r).hasPrefix("[Orakel] Szene beendet. Die Lage wird "))
     // after end_scene: narr or start_scene only (no ask)
@@ -100,6 +104,14 @@ final class MiscTests: XCTestCase {
     let a = clip(["q": .str(long), "el": ["ort": .str(long)], "odds": 1])
     XCTAssertEqual(a["q"].str?.count, 200); XCTAssertEqual(a["el"]["ort"].str?.count, 80); XCTAssertEqual(a["odds"].int, 1)
   }
+  func testGroundedFigur() {
+    XCTAssertEqual(groundedFigur("grauer Mann mit Brille", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne"), "grauer Mann mit Brille")
+    XCTAssertTrue(groundedFigur("Matrose", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne").hasPrefix("Ein grauer Mann"))
+  }
+  func testGatePrefix() {
+    XCTAssertTrue(isGatePrefix("Ortswechsel/Zeit")); XCTAssertTrue(isGatePrefix("Ortswechsel/Zeitsprung: nein")); XCTAssertTrue(isGatePrefix("Er"))
+    XCTAssertFalse(isGatePrefix("Der Regen peitscht")); XCTAssertFalse(isGatePrefix("Das Deck"))
+  }
   func testHttpHeader() {
     let h = "POST /say HTTP/1.1\r\nHost: 127.0.0.1:8791\r\nContent-Length: 12\r\nOrigin: http://x"
     XCTAssertEqual(httpHeader(h, "host"), "127.0.0.1:8791"); XCTAssertEqual(httpHeader(h, "content-length"), "12")
@@ -108,7 +120,7 @@ final class MiscTests: XCTestCase {
   func testEndSceneLists() throws {
     let e = try Session.newEngine(rng: "seed:4")
     _ = e.call("start_scene", ["expect": "x", "first": true])
-    let (n, a) = parseCall("<end_scene>{\"summary\":\"s\",\"control\":true,\"why\":\"w\",\"akteure\":[{\"op\":\"add\",\"name\":\"Der Wirt\"}]}</end_scene>")!
+    let (n, a) = parseCall("<end_scene>{\"summary\":\"s\",\"why\":\"w\",\"control\":true,\"akteure\":[{\"op\":\"add\",\"name\":\"Der Wirt\"}]}</end_scene>")!
     XCTAssertNil(e.call(n, a)["error"].str); XCTAssertEqual(e.st.akteure.first?.name, "Der Wirt")
     XCTAssertEqual(fmtKnown(e.st.akteure.map(\.name), []), "[Bekannt] Figuren: Der Wirt. Stränge: -.")
   }
@@ -131,7 +143,7 @@ final class SessionTests: XCTestCase {
     let msgs: [Msg] = [.u("hi"), .m("Erwartung: …")]
     try s.save(e, "Setting X", msgs)
     XCTAssertTrue(s.exists)
-    let (e2, set, m2) = try s.loadEngine()
+    let (e2, set, m2, _, _) = try s.loadEngine()
     XCTAssertEqual(set, "Setting X"); XCTAssertEqual(m2, msgs)
     XCTAssertTrue(e2.st.open); XCTAssertEqual(e2.st.scene, 1); XCTAssertEqual(e2.st.step, e.st.step)
     // seed engine continues deterministically after reload
@@ -156,7 +168,7 @@ final class GrammarTests: XCTestCase {
   /// no Fork in xgrammar 0.1.30: a used matcher must be reusable after rollback
   func testRollbackReuse() async throws {
     let (t, gt) = try await tok()
-    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar({ var g = Gate(); g.head = true; return g }()).tag)
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar({ var g = Gate(); g.head = true; g.figurLine = true; return g }()).tag)
     let ids = t.encode(text: FEW[1].text, addSpecialTokens: false)
     for round in 0..<2 {
       for id in ids { let r = try c.computeMask(); XCTAssertTrue(!r.needsApply || (r.mask[id / 32] >> Int32(id % 32)) & 1 == 1, "round \(round)"); _ = try c.commitToken(Int32(id)) }
@@ -168,14 +180,17 @@ final class GrammarTests: XCTestCase {
     let (t, gt) = try await tok()
     func G(_ f: (inout Gate) -> Void) -> Gate { var g = Gate(); f(&g); return g }
     let gates: [Gate] = [
-      G { $0.head = true },                                         // start_scene (head_scene)
-      G { $0.open = true; $0.calls = 1 },                            // narr
-      G { $0.head = true; $0.open = true },                          // ask
-      G { $0.open = true; $0.asks = 1; $0.ans = "NEIN"; $0.calls = 1 },
-      G { $0.head = true; $0.open = true; $0.asks = 1 },             // ask
-      G { $0.open = true; $0.asks = 2; $0.ans = "JA+"; $0.deut = true; $0.calls = 1 },
-      G { $0.head = true; $0.open = true; $0.asks = 2 },             // end_scene
-      G { $0.open = false; $0.calls = 1 },                           // start_scene w/o head
+      G { $0.head = true; $0.figurLine = true },                        // start_scene (head_scene, first turn)
+      G { $0.open = true; $0.calls = 1 },                               // narr
+      G { $0.head = true; $0.open = true },                             // ask
+      G { $0.open = true; $0.asks = 1; $0.ans = "JA"; $0.calls = 1 },
+      G { $0.head = true; $0.open = true; $0.asks = 1 },                // nein + narr (no scene change)
+      G { $0.head = true; $0.open = true; $0.asks = 1 },                // ask
+      G { $0.open = true; $0.asks = 2; $0.ans = "NEIN+"; $0.deut = true; $0.calls = 1 },
+      G { $0.head = true; $0.open = true; $0.asks = 2 },                // ask
+      G { $0.open = true; $0.asks = 3; $0.ans = "NEIN"; $0.deut = true; $0.calls = 1 },   // verwerfen
+      G { $0.head = true; $0.open = true; $0.asks = 3 },                // end_scene
+      G { $0.open = false; $0.calls = 1 },                              // start_scene w/o head
       G { $0.open = true; $0.deut = true; $0.calls = 1 },
     ]
     let ms = FEW.filter { $0.role == "model" }
