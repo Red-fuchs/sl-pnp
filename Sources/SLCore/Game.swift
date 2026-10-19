@@ -8,6 +8,7 @@ public enum Out {
   case event(String)                // ⚡ line
   case end                          // narration finished
   case info(String)
+  case world(String)                // 🌍 world-state change
 }
 
 public func wordsText(_ w: J) -> String {
@@ -41,6 +42,7 @@ public final class Game {
   public var msgs: [Msg]
   public var setting: String
   public var figur: String?
+  public var world = World()
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
   public var sys: String { SYS + figurBlock(figur) + recap }
@@ -51,8 +53,8 @@ public final class Game {
   public var maxCtx = 14000
   public var onMsg: (Msg) -> Void = { _ in }
 
-  public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0) {
-    self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
+  public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World()) {
+    self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
   }
 
   public func syncCache() throws { try lm.reset(lm.tmpl.render(sys: sys, FEW + msgs)) }
@@ -60,10 +62,22 @@ public final class Game {
   func compact() throws {
     let rc = eng.st.journal.filter { $0["tool"].str == "end_scene" }.suffix(12).compactMap { $0["in"]["summary"].str }.joined(separator: " ")
     var keep = Array(msgs.suffix(24)); while let f = keep.first, f.role == "model" || f.text.hasPrefix("[Orakel]") { keep.removeFirst() }
-    msgs = keep
+    msgs = keep.enumerated().map { (i, m) in i < keep.count - 6 ? Msg(m.role, stripWelt(m.text)) : m }   // old [Welt] blocks are stale -> drop (cache is rebuilt anyway)
     recap = rc.isEmpty ? "" : "\n\nBisheriger Verlauf (Journal): " + rc
     out(.info("Kontext verdichtet"))
     try syncCache()
+  }
+
+  /// One extra constrained step after the narration: JSON delta of the world state (own throwaway cache, history untouched).
+  func worldStep(block: String, player: String, narr: String, oracle: [String]) {
+    let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(player)\nErzählung: \(narr)\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
+    do {
+      let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
+      if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
+      guard let d = try? J.parse(txt) else { return }
+      let log = world.apply(d, eng: eng)
+      if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
+    } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
   }
 
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
@@ -72,10 +86,12 @@ public final class Game {
   public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false) throws {
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
-    push(.u(msgs.isEmpty ? "Setting: \(setting). \(player)" : player))   // scene 1 starts with the first player turn (head_scene -> start_scene first:true)
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.mustAsk = quiet >= 1; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    let wb = world.block()
+    // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
+    push(.u((wb.isEmpty ? "" : wb + "\n---\n") + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
+    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.mustAsk = quiet >= 1 && !isWQuestion(player); gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
-    var calls = 0, asked = false, figurChanged = false
+    var calls = 0, asked = false, figurChanged = false, finalNarr = "", oracle: [String] = []
     var done = false
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls
@@ -107,19 +123,24 @@ public final class Game {
       if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }
       if gate.figurLine, let l = txt.split(separator: "\n").first(where: { $0.hasPrefix("Spielfigur: ") }) {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
-        if f != "-" && !f.isEmpty { figur = groundedFigur(f, player); figurChanged = true }
+        if f != "-" && !f.isEmpty { figur = groundedFigur(f, player); world.setFigur(figur!); figurChanged = true }
       }
       gate.figurLine = false
       msgs.append(.m(txt)); onMsg(.m(txt))
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
-      guard let (name, args) = parseCall(txt, firstScene: eng.st.scene == 0) else { done = true; break }
+      guard var (name, args) = parseCall(txt, firstScene: eng.st.scene == 0) else { done = true; finalNarr = txt.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; break }
+      if name == "ask_oracle", args["shift"].isNull, let h = world.haltung(in: args["q"].str ?? ""), var o = args.obj { o["shift"] = .int(h); args = .obj(o) }   // NPC attitude -> social oracle shift
       let res = eng.call(name, args)
       calls += 1
       if name == "ask_oracle" { asked = true }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
+      if name == "start_scene", res["error"].isNull, let o = args["el"]["ort"].str, !o.isEmpty {
+        world.ort = cut(o, 60); if world.orte[cut(o, 60)] == nil, world.orte.count < 30 { world.orte[cut(o, 60)] = "" }
+      }
       var fb = fmtResult(name, res)
+      oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }
       gate.head = false; gate.forceEnd = false
       let ok = res["error"].isNull
@@ -129,6 +150,7 @@ public final class Game {
       push(.u(fb))
     }
     if !done { out(.info("Aufruflimit")) }
+    if done { worldStep(block: wb, player: player, narr: finalNarr, oracle: oracle) }
     if eng.st.open { quiet = asked ? 0 : quiet + 1 } else { quiet = 0 }
     if figurChanged { try syncCache() }   // pinned character changes the system prompt -> rebuild the cache once
   }
@@ -173,4 +195,10 @@ func groundedFigur(_ f: String, _ player: String) -> String {
   var t = player.trimmingCharacters(in: .whitespacesAndNewlines)
   if t.count > 140 { t = String(t.prefix(140)); if let i = t.lastIndex(of: " ") { t = String(t[..<i]) } }
   return t
+}
+
+/// Remove the "[Welt]…\n---\n" prefix from a user message.
+public func stripWelt(_ t: String) -> String {
+  guard t.hasPrefix("[Welt]"), let r = t.range(of: "\n---\n") else { return t }
+  return String(t[r.upperBound...])
 }

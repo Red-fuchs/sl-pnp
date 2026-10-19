@@ -21,6 +21,7 @@ public final class Session {
   deinit { if lockFD >= 0 { flock(lockFD, LOCK_UN); close(lockFD) } }
   var statePath: String { dir.appendingPathComponent("state.json").path }
   var chatURL: URL { dir.appendingPathComponent("chat.json") }
+  var worldURL: URL { dir.appendingPathComponent("world.json") }
   var mdURL: URL { dir.appendingPathComponent("transcript.md") }
   public var exists: Bool { FileManager.default.fileExists(atPath: statePath) && FileManager.default.fileExists(atPath: chatURL.path) }
 
@@ -41,13 +42,16 @@ public final class Session {
     if let err = r["error"].str { throw SLError(err) }
     return e
   }
-  public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg], figur: String?, quiet: Int) {
+  public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg], figur: String?, quiet: Int, world: World) {
     let e = try Engine.load(path: statePath); e.machine = true
     let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
-    return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0)
+    let w = (try? JSONDecoder().decode(World.self, from: Data(contentsOf: worldURL))) ?? World()
+    return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)
   }
-  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet) }
-  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0) throws {
+  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world) }
+  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0, _ world: World = World()) throws {
+    let enc = JSONEncoder(); enc.outputFormatting = [.sortedKeys, .prettyPrinted]
+    try enc.encode(world).write(to: worldURL, options: .atomic)
     try e.save(path: statePath)
     try JSONEncoder().encode(Chat(setting: setting, msgs: msgs, figur: figur, quiet: quiet)).write(to: chatURL, options: .atomic)
   }

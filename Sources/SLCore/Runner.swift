@@ -16,7 +16,7 @@ public func describe(_ name: String, _ a: J, _ r: J) -> String {
   }
 }
 
-public struct Status { public var figur: String?
+public struct Status { public var figur: String?, welt = ""
   public var s: Int, scene: Int, open: Bool, q: Int, rng: String, source: String, akteure: Int, straenge: Int, journal: [String]
   public var text: String {
     "Spielfigur: \(figur ?? "-")\nSpannung \(s) · Szene \(scene)\(open ? " (offen)" : "") · Fragen \(q)/6 · Quelle \(rng) · Akteure \(akteure) · Stränge \(straenge)" } }
@@ -47,6 +47,7 @@ public final class Runner {
         session.log("- `\(n)` \(a.json) → \(r.json)\n"); lastRng = r["rng"].str ?? lastRng
         if n == "ask_oracle" || n == "start_scene" || n == "random_event" { rolls.append(r); if rolls.count > 12 { rolls.removeFirst() } }
       case .event(let e): session.log("- ⚡ \(e)\n")
+      case .world(let w): session.log("- 🌍 \(w)\n")
       default: break
       }
       if case .tool = o { refresh() } else if case .end = o { refresh() }
@@ -64,9 +65,9 @@ public final class Runner {
     try session.save(game); refresh()
   }
   public func resume() throws {
-    let (e, s, m, f, q) = try session.loadEngine()
+    let (e, s, m, f, q, w) = try session.loadEngine()
     setting = s
-    game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q); wire()
+    game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w); wire()
     try game.syncCache(); refresh()
   }
   func run(_ f: () throws -> Void) throws {
@@ -104,7 +105,7 @@ public final class Runner {
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
-    return Status(figur: game.figur, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
+    return Status(figur: game.figur, welt: game.world.block(full: true), s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
   /// Shared command handling (CLI + web). Returns false on quit.
@@ -119,6 +120,8 @@ public final class Runner {
       if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }
       rest = rest.trimmingCharacters(in: .whitespaces)
       if rest.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(rest, odds: odds) }
+    } else if t == "/welt" {
+      let b = game.world.block(full: true); sink(.info(b.isEmpty ? "Welt: noch leer" : b))
     } else if t.hasPrefix("/neu") {
       let st = String(t.dropFirst(4)).trimmingCharacters(in: .whitespaces)
       let f = DateFormatter(); f.dateFormat = "yyyyMMdd-HHmmss"
@@ -136,7 +139,7 @@ public final class Runner {
     for m in game.msgs {
       if m.role == "user" {
         guard !m.text.hasPrefix("[Orakel]") else { continue }
-        var t = m.text; if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
+        var t = stripWelt(m.text); if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
         r.append(["who": "me", "text": t])
       }
       else if let l = m.text.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }

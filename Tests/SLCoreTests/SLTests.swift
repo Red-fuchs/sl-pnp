@@ -98,6 +98,56 @@ final class DispatchTests: XCTestCase {
   }
 }
 
+final class WorldTests: XCTestCase {
+  func blocks() -> [String] {
+    FEW.filter { $0.role == "user" && $0.text.hasPrefix("[Welt]") }.map { String($0.text[..<$0.text.range(of: "\n---\n")!.lowerBound]) }
+  }
+  func testBlockMatchesFewShot() {
+    var w = World(); w.setFigur("verschlossener Matrose mit vernarbter Hand"); w.ort = "Deck"
+    w.apply(["npc_neu": [["name": "Steuermann", "kurz": "breiter Mann am Ruder", "ort": "Deck"]]])
+    let b = blocks()
+    XCTAssertEqual(b.count, 5); XCTAssertEqual(w.block(), b[0])
+    w.apply(["npc_neu": [["name": "Steuermann", "kurz": "Kapitän, breiter Mann am Ruder", "ort": "Deck"]], "haltung": [["wer": "Steuermann", "wert": -1]]])
+    XCTAssertEqual(w.block(), b[1])
+    w.apply(["zustand": [["wer": "du", "op": "+", "text": "Knie aufgeschlagen"]], "haltung": [["wer": "Steuermann", "wert": -2]]])
+    XCTAssertEqual(w.block(), b[3])
+  }
+  func testApply() throws {
+    let e = try Session.newEngine(rng: "seed:9")
+    var w = World(); w.setFigur("Aether: grauer Mann"); w.ort = "Taverne"
+    XCTAssertEqual(w.name, "Aether"); XCTAssertEqual(w.kurz, "grauer Mann")
+    let log = w.apply(["npc_neu": [["name": "Aether", "kurz": "x", "ort": "Taverne"], ["name": "du", "kurz": "x", "ort": "Taverne"], ["name": "Wirtin", "kurz": "stämmig", "ort": "Taverne"], ["name": "Bote", "kurz": "Läufer", "ort": "Markt"]],
+                       "npc_ort": [["wer": "Niemand", "ort": "Keller"]], "haltung": [["wer": "Wirtin", "wert": 7], ["wer": "Geist", "wert": 1]],
+                       "item": [["wer": "du", "op": "+", "name": "Laterne"], ["wer": "Wirtin", "op": "+", "name": "Schlüssel"]],
+                       "strang": [["titel": "Der Fluch", "stand": "Hinweis gefunden"]], "beziehung": [["a": "Wirtin", "b": "du", "wert": 5], ["a": "Wirtin", "b": "Wirtin", "wert": 1]]], eng: e)
+    XCTAssertEqual(w.npcs.map(\.name), ["Wirtin", "Bote"])            // player character never an NPC, unknown refs ignored
+    XCTAssertEqual(w.npcs[0].haltung, 2); XCTAssertEqual(w.inventar, ["Laterne"]); XCTAssertEqual(w.beziehungen, [Rel(a: "Wirtin", b: "du", wert: 2)])
+    XCTAssertEqual(e.st.akteure.map(\.name), ["Wirtin", "Bote"]); XCTAssertEqual(e.st.straenge.map(\.name), ["Der Fluch"])   // Schicksal lists synced
+    XCTAssertFalse(log.isEmpty)
+    let b = w.block()
+    XCTAssertTrue(b.contains("Hier: Wirtin – stämmig (trägt Schlüssel; Haltung zu dir: loyal)")); XCTAssertTrue(b.contains("Anderswo: Bote (Markt)")); XCTAssertTrue(b.contains("Du: Aether, grauer Mann. Ort: Taverne. Inventar: Laterne."))
+    XCTAssertEqual(w.haltung(in: "Hilft die Wirtin mir?"), 2); XCTAssertNil(w.haltung(in: "Ist der Bote da?"))
+    w.apply(["strang": [["titel": "Der Fluch", "stand": "gelöst"]]], eng: e)                                  // existing thread: update + bump
+    XCTAssertEqual(w.straenge.count, 1); XCTAssertEqual(w.straenge[0].stand, "gelöst")
+    for i in 0..<30 { w.apply(["npc_neu": [["name": .str("N\(i)"), "kurz": "k", "ort": "Weit"]]]) }
+    XCTAssertLessThanOrEqual(w.npcs.count, 20)
+  }
+  func testPersistAndStrip() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-w-\(UUID().uuidString)")
+    let s = try Session(name: "w", root: root); var w = World(); w.setFigur("Aether: Mann"); w.apply(["npc_neu": [["name": "Wirt", "kurz": "k", "ort": "Hier"]]])
+    try s.save(try Session.newEngine(rng: "seed:1"), "S", [.u("a")], "Aether: Mann", 0, w)
+    XCTAssertEqual(try s.loadEngine().world, w)
+    XCTAssertEqual(stripWelt("[Welt]\nDu: x.\n---\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("Ich gehe."), "Ich gehe.")
+    // cache stability: the system prompt does not depend on the world, history only appends
+    let a = render(sys: SYS, [.u("[Welt]\nDu: x.\n---\nZug1"), .m("A")]), b = render(sys: SYS, [.u("[Welt]\nDu: x.\n---\nZug1"), .m("A"), .u("[Welt]\nDu: y.\n---\nZug2")])
+    XCTAssertTrue(b.hasPrefix(a)); XCTAssertFalse(SYS.contains("[Welt]\nDu:"))
+  }
+  func testParseFigur() {
+    XCTAssertEqual(World.parseFigur("Aether: grauer Mann, 40").0, "Aether"); XCTAssertEqual(World.parseFigur("Aether, grauer Mann").1, "grauer Mann")
+    XCTAssertNil(World.parseFigur("ein grauer Mann mit Brille").0)
+  }
+}
+
 final class MiscTests: XCTestCase {
   func testClip() {
     let long = String(repeating: "x", count: 500)
@@ -147,7 +197,7 @@ final class SessionTests: XCTestCase {
     let msgs: [Msg] = [.u("hi"), .m("Erwartung: …")]
     try s.save(e, "Setting X", msgs)
     XCTAssertTrue(s.exists)
-    let (e2, set, m2, _, _) = try s.loadEngine()
+    let (e2, set, m2, _, _, _) = try s.loadEngine()
     XCTAssertEqual(set, "Setting X"); XCTAssertEqual(m2, msgs)
     XCTAssertTrue(e2.st.open); XCTAssertEqual(e2.st.scene, 1); XCTAssertEqual(e2.st.step, e.st.step)
     // seed engine continues deterministically after reload
@@ -168,6 +218,20 @@ final class GrammarTests: XCTestCase {
     XCTAssertEqual(t.encode(text: "<|turn>model\n", addSpecialTokens: false).first, t.convertTokenToId("<|turn>"))
     XCTAssertEqual(t.convertTokenToId("<turn|>"), 106)
     XCTAssertEqual(t.encode(text: "<bos>x", addSpecialTokens: false).first, 2)
+  }
+  func testDeltaGrammar() async throws {
+    let (t, gt) = try await tok()
+    let t0 = Date()
+    for txt in ["{}", #"{"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}],"npc_neu":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}]}"#, #"{"spielfigur_ort":"Keller","zustand":[{"op":"+","text":"verletzt","wer":"du"}]}"#, DELTA_SYS.components(separatedBy: "Ausgabe: ")[1].components(separatedBy: "\n")[0]] {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.delta.tag)
+      for id in t.encode(text: txt, addSpecialTokens: false) {
+        let r = try c.computeMask()
+        XCTAssertTrue(!r.needsApply || (r.mask[id / 32] >> Int32(id % 32)) & 1 == 1, "delta rejected: \(txt)")
+        _ = try c.commitToken(Int32(id))
+      }
+      let r = try c.computeMask(); XCTAssertTrue(!r.needsApply || (r.mask[106 / 32] >> Int32(106 % 32)) & 1 == 1, "no end: \(txt)")
+    }
+    print(String(format: "delta grammar compile+check %.2fs", Date().timeIntervalSince(t0)))
   }
   /// no Fork in xgrammar 0.1.30: a used matcher must be reusable after rollback
   func testRollbackReuse() async throws {

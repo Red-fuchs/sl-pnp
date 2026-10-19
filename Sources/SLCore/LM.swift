@@ -78,23 +78,41 @@ public final class LM {
 
   public func compile(_ g: Grammar) throws -> Double { let (c, k, t) = try take(g); giveBack(c, k, committed: 0); return t }
 
-  /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = tmpl.end.
+  /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = end-of-turn.
   public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, onDelta: (String) -> Void) throws -> (String, GenStats) {
     if dirty { throw SLError("cache dirty, reset needed") }
     dirty = true
+    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, onDelta: onDelta)
+    pending = tmpl.end
+    cached += r.added
+    dirty = false
+    last = r.st
+    return (r.out, r.st)
+  }
+
+  /// Side generation with a throwaway cache (world-delta step): never touches the main cache or history.
+  public func aux(system: String, user: String, _ g: Grammar, temp: Float = 0.2, maxTok: Int = 400) throws -> (String, GenStats) {
+    let c = try ctx.model.newCache(parameters: nil)
+    let text = tmpl.bos + tmpl.open("system") + system + tmpl.end + tmpl.open("user") + user + tmpl.end + tmpl.gen
+    let r = try core(cache: c, text: text, g, temp: temp, maxTok: maxTok, onDelta: { _ in })
+    auxLast = r.st
+    return (r.out, r.st)
+  }
+  public var auxLast = GenStats()
+
+  func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
     var st = GenStats()
     let (con, gkey, ct) = try take(g)
     st.compileS = ct
     var committed = 0
     defer { giveBack(con, gkey, committed: committed) }
     let t0 = Date()
-    let ids = ctx.tokenizer.encode(text: pending + tmpl.gen, addSpecialTokens: false)
-    pending = ""
+    let ids = ctx.tokenizer.encode(text: text, addSpecialTokens: false)
     st.prefillTok = ids.count
-    var logits = try prefill(ids)
+    var logits = try prefill(ids, cache)
     eval(logits)
     st.prefillS = Date().timeIntervalSince(t0)
-    cached += ids.count
+    var added = ids.count
     var det = NaiveStreamingDetokenizer(tokenizer: ctx.tokenizer)
     var out = "", gen: [Int] = []
     let t1 = Date()
@@ -119,7 +137,7 @@ public final class LM {
       n += 1
       // every sampled token goes through the model (also the terminating one) so the cache == rendered history
       let o = ctx.model(LMInput.Text(tokens: MLXArray([Int32(tok)]))[text: .newAxis], cache: cache, state: nil)
-      cached += 1
+      added += 1
       logits = o.logits
       if r.isTerminated { eval(logits); break }
       asyncEval(logits)
@@ -128,13 +146,10 @@ public final class LM {
     if full.count > out.count, full.hasPrefix(out) { let rest = String(full.dropFirst(out.count)); onDelta(rest); out = full }
     st.genTok = n; st.decS = Date().timeIntervalSince(t1)
     if n >= maxTok { throw SLError("maxTok reached") }
-    pending = tmpl.end
-    dirty = false
-    last = st
-    return (out, st)
+    return (out, st, added)
   }
 
-  func prefill(_ ids: [Int]) throws -> MLXArray {
+  func prefill(_ ids: [Int], _ cache: [KVCache]) throws -> MLXArray {
     let inp = LMInput(tokens: MLXArray(ids.map { Int32($0) }))
     switch try ctx.model.prepare(inp, cache: cache, state: nil, prefill: .init(stepSize: 512)) {
     case .tokens(let t): return ctx.model(t[text: .newAxis], cache: cache, state: nil).logits

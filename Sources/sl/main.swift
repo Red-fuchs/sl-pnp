@@ -24,7 +24,7 @@ if opt["help"] != nil {
   print("""
   sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 600] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 600] [same options]
-  Befehle: /ende /figur <Beschreibung> /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
+  Befehle: /ende /figur [Name:] <Beschreibung> /welt /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
   """); exit(0)
 }
@@ -66,6 +66,7 @@ func show(_ o: Out) {
   case .event(let e): print("\(dim)⚡ \(e)\(off)")
   case .gate(let l): if opt["debug"] != nil { print("\(dim)· \(l)\(off)") }
   case .info(let s): print("\(dim)\(s)\(off)")
+  case .world(let w): print("\(dim)🌍 \(w)\(off)")
   }
 }
 runner.sink = show

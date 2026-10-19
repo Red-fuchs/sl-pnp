@@ -56,6 +56,9 @@ public enum Gr {
   static let askCall = G.seq([.s(#"<ask_oracle>{"q":"#), .js(str), .s(#","odds":"#), .re("-[1-3]|[0-3]"), .s("}</ask_oracle>")])
   static let q = G.re(#"[^\-\n<][^\n<]{4}[^\n<]*"#)
 
+  /// world-delta step: free-form JSON constrained to the delta schema (may be {})
+  public static var delta: Grammar { Grammar(.js(DELTA_SCHEMA)) }
+
   static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks }
 
   public static func grammar(_ t: Gate) -> Grammar {
