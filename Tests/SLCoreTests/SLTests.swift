@@ -190,6 +190,13 @@ final class WorldTests: XCTestCase {
     w.applyTail("Figuren: -"); XCTAssertEqual(w.npcs.count, 2)
     for i in 0..<10 { w.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i))))abc", kurz: "g", ort: nil) }; XCTAssertEqual(w.block().components(separatedBy: " | ").count, 6)   // <=6 cards
   }
+  func testThreadFilter() {
+    for ok in ["Der Weg ins Moor", "Fluch von Grauweiler", "Die Suche nach Ida"] { XCTAssertTrue(okThread(ok), ok) }
+    for bad in ["Hilfe wird verweigert", "findet den Schlüssel", "suche das Moor", "Kein Weg zurück", "Der Wirt hilft nicht", "Ein junger Mann kniet vor dem Torhaus und ist gefesselt", "Vorfall: Torhaus", "Der Wirt ist tot", ""] { XCTAssertFalse(okThread(bad), bad) }
+    var w = World(); w.apply(["strang": [["titel": "Hilfe wird verweigert", "stand": "x"], ["titel": "Der Weg ins Moor", "stand": "Pfad hinter dem Haus gefunden und markiert sehr lang"]]])
+    XCTAssertEqual(w.straenge.map(\.titel), ["Der Weg ins Moor"]); XCTAssertEqual(w.straenge[0].stand, "Pfad hinter dem Haus gefunden und")   // <=6 words
+    w.addNpc(name: "Ida", kurz: "alte Köhlerin vom Moor mit rußigen Händen im Wald", ort: nil); XCTAssertEqual(w.npcs[0].kurz.split(separator: " ").count, 6)
+  }
   func testMoveWithoutSceneChange() {  // live finding: player walked to the square, Marta stayed 'hier'
     var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
     w.applyTail("Figuren: Marta (Wirtin), Bork (Fährmann)")

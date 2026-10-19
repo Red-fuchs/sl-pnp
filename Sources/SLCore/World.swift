@@ -39,6 +39,18 @@ public func clean(_ s: String, _ n: Int = 60) -> String {
   return cutw(t, n)
 }
 let rejectNames: Set<String> = ["du", "dir", "dich", "dein", "mich", "ich", "mir", "mein", "wir", "ihr", "er", "sie", "es", "man", "niemand", "jemand", "spielfigur", "figur", "spieler", "-", "unbekannt", "umgebung", "alle"]
+/// at most n words, cut at a word boundary
+func cutWords(_ s: String, _ n: Int) -> String { s.split(separator: " ").prefix(n).joined(separator: " ") }
+let negations: Set<String> = ["nicht", "kein", "keine", "keiner", "keinen", "niemand", "nie", "nichts", "ohne", "verweigert", "verweigerte", "unmöglich"]
+/// Thread titles: a short noun phrase (<=5 words), no sentence, no leading verb, no negation. "Der Weg ins Moor" ok; "Hilfe wird verweigert", "findet den Schlüssel" rejected.
+func okThread(_ t: String) -> Bool {
+  let w = t.split(separator: " ").map(String.init)
+  guard !w.isEmpty, w.count <= 5, !t.contains(where: { ".!?:;,".contains($0) }) else { return false }
+  guard let f = w.first, f.first?.isUppercase == true || ["der", "die", "das", "ein", "eine"].contains(f.lowercased()) else { return false }   // German nouns are capitalised; a lowercase start is a verb/sentence
+  if w.contains(where: { negations.contains($0.lowercased()) }) { return false }
+  if w.count > 1, ["wird", "werden", "wurde", "ist", "sind", "war", "hat", "haben"].contains(where: { w.map { $0.lowercased() }.contains($0) }) { return false }   // finite verb = sentence
+  return !["finde", "suche", "hole", "töte", "rette", "gehe"].contains(f.lowercased())   // imperatives
+}
 func okName(_ n: String) -> Bool { !n.isEmpty && n.split(separator: " ").count <= 4 && !rejectNames.contains(norm(n)) }
 
 /// Bounded world state: the player character, NPCs, places, relations, threads. Persisted as world.json.
@@ -171,7 +183,7 @@ public struct World: Codable, Equatable {
   /// New NPC (present, at the current place). Existing NPC: only the role word may be refined; never moved.
   @discardableResult
   mutating func addNpc(name n0: String, kurz k0: String, ort o: String?) -> (Int, Bool)? {
-    let n = clean(n0, 40), k = clean(k0, 60)
+    let n = clean(n0, 40), k = cutWords(clean(k0, 60), 6)
     guard okName(n), !isFigur(n) else { return nil }
     if let i = npc(n) {
       if !k.isEmpty, norm(npcs[i].kurz).isEmpty || norm(npcs[i].kurz) == norm(npcs[i].name), norm(k) != norm(npcs[i].name) { npcs[i].kurz = k }
@@ -197,7 +209,7 @@ public struct World: Codable, Equatable {
   public mutating func apply(_ d: J) -> [String] {
     var log: [String] = []
     func edit(_ arr: inout [String], _ op: String, _ t0: String, _ cap: Int) {
-      let t = clean(t0, 40); guard !t.isEmpty, tokens(t).count >= 1 else { return }
+      let t = cutWords(clean(t0, 40), 6); guard !t.isEmpty, tokens(t).count >= 1 else { return }
       if op == "+" { if !arr.contains(where: { norm($0) == norm(t) }) { arr.append(t); if arr.count > cap { arr.removeFirst() } } }
       else { arr.removeAll { norm($0) == norm(t) || norm($0).contains(norm(t)) } }
     }
@@ -229,8 +241,8 @@ public struct World: Codable, Equatable {
     }
     for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { npcs[i].haltung = max(-2, min(2, v)); log.append("\(npcs[i].name) Haltung \(npcs[i].haltung)") } }
     for e in d["strang"].arr ?? [] {
-      guard let t = e["titel"].str.map({ clean($0) }), okName(t) || t.split(separator: " ").count <= 8, !t.isEmpty else { continue }
-      let s = clean(e["stand"].str ?? "", 80)
+      guard let t = e["titel"].str.map({ clean($0, 50) }), okThread(t) else { continue }
+      let s = cutWords(clean(e["stand"].str ?? "", 80), 6)
       if let i = straenge.firstIndex(where: { norm($0.titel) == norm(t) }) { straenge[i].stand = s.isEmpty ? straenge[i].stand : s; _touched.insert(t) }
       else { straenge.append(Strang(titel: t, stand: s)); if straenge.count > 8 { straenge.removeFirst() } }
       log.append("strang \(t)")

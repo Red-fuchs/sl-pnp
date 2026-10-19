@@ -46,7 +46,7 @@ let DIRS: [String: String] = ["fern": "etwas geschieht fern", "zeichen": "ein me
 public let DELTA_SYS = #"""
 Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen aus, die in der Erzählung ausdrücklich geschehen sind, als JSON. Erfinde nichts. Neue Figuren trägst du NICHT ein (das macht der Spielleiter). Die Spielfigur ("du", "wer":"du") ist nie eine Figur. Ist nichts passiert, gib {} aus.
 
-Felder (alle optional, Schlüssel alphabetisch): beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung einer bekannten Figur zur Spielfigur, -2 feindlich bis 2 loyal), item [{name,op,wer}] (op "+" oder "-"; Gegenstand wechselt den Besitzer), npc_ort [{ort,wer}] (bekannte Figur verlässt die Szene oder geht an einen Ort), ort_neu [{kurz,name}], spielfigur_ort (neuer Ort der Spielfigur), strang [{stand,titel}], zustand [{op,text,wer}] (op "+" oder "-").
+Felder (alle optional, Schlüssel alphabetisch): beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung einer bekannten Figur zur Spielfigur, -2 feindlich bis 2 loyal), item [{name,op,wer}] (op "+" oder "-"; Gegenstand wechselt den Besitzer), npc_ort [{ort,wer}] (bekannte Figur verlässt die Szene oder geht an einen Ort), ort_neu [{kurz,name}], spielfigur_ort (neuer Ort der Spielfigur), strang [{stand,titel}] (NUR wenn der Spieler ein Ziel nennt oder die Erzählung eine offene Aufgabe benennt; titel = Substantivgruppe mit höchstens 5 Wörtern, kein Satz, keine Verneinung; stand höchstens 6 Wörter), zustand [{op,text,wer}] (op "+" oder "-").
 
 Beispiel 1
 Aktion: Ich gebe Bork zwei Silberstücke.
