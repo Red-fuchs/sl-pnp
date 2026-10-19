@@ -1,7 +1,6 @@
 import Foundation
 import MLX
 import MLXLLM
-import MLXVLM
 import MLXLMCommon
 import MLXGuidedGeneration
 import Tokenizers
@@ -43,7 +42,7 @@ public final class LM {
 
   public static func load(dir: URL) async throws -> LM {
     let t = Date()
-    let c = try await loadModel(from: dir, using: TokLoader())
+    let c = try await LLMModelFactory.shared.load(from: dir, using: TokLoader())   // text-only factory: no vision/audio tower in RAM
     let lm = try LM(c, tmpl: Tmpl.detect(dir: dir))
     lm.loadS = Date().timeIntervalSince(t)
     return lm
@@ -63,23 +62,28 @@ public final class LM {
   }
   public func append(_ t: String) { pending += t }
 
-  func constraint(_ g: Grammar) throws -> (GrammarConstraint, Double) {
+  /// GrammarConstraint has no Fork in this xgrammar: reuse one matcher per grammar and roll it back after use.
+  func take(_ g: Grammar) throws -> (GrammarConstraint, String, Double) {
     let key = g.tag
+    if let c = gcache.removeValue(forKey: key) { return (c, key, 0) }
     let t = Date()
-    if let m = gcache[key] { return (try m.clone(), 0) }
-    let m = try GrammarConstraint(tokenizer: gtok, structuralTag: key)
-    gcache[key] = m
-    return (try m.clone(), Date().timeIntervalSince(t))
+    let c = try GrammarConstraint(tokenizer: gtok, structuralTag: key)
+    return (c, key, Date().timeIntervalSince(t))
+  }
+  func giveBack(_ c: GrammarConstraint, _ key: String, committed n: Int) {
+    do { if n > 0 { try c.rollback(Int32(n)) }; gcache[key] = c } catch { /* drop: recompiled next time */ }
   }
 
-  public func compile(_ g: Grammar) throws -> Double { try constraint(g).1 }
+  public func compile(_ g: Grammar) throws -> Double { let (c, k, t) = try take(g); giveBack(c, k, committed: 0); return t }
 
   /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = tmpl.end.
   public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, onDelta: (String) -> Void) throws -> (String, GenStats) {
     if dirty { throw SLError("cache dirty, reset needed") }
     dirty = true
     var st = GenStats()
-    let (con, _) = try constraint(g)
+    let (con, gkey, _) = try take(g)
+    var committed = 0
+    defer { giveBack(con, gkey, committed: committed) }
     let t0 = Date()
     let ids = ctx.tokenizer.encode(text: pending + tmpl.gen, addSpecialTokens: false)
     pending = ""
@@ -89,7 +93,7 @@ public final class LM {
     st.prefillS = Date().timeIntervalSince(t0)
     cached += ids.count
     var det = NaiveStreamingDetokenizer(tokenizer: ctx.tokenizer)
-    var out = ""
+    var out = "", gen: [Int] = []
     let t1 = Date()
     let dim = logits.shape[logits.ndim - 1]
     var n = 0
@@ -97,20 +101,24 @@ public final class LM {
       let m = try con.computeMask()
       var l = logits[0..., -1, 0...]
       if m.needsApply { l = l + Self.maskArr(m, vocab: gtok.vocabSize, dim: dim) }
-      let tok = Int(categorical(l * (1 / temp)).item(UInt32.self))
+      let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))
       if st.ttft == 0 { st.ttft = Date().timeIntervalSince(t1) }
       if stop.contains(tok) { break }
       let r = try con.commitToken(Int32(tok))
+      committed += 1 + r.tokens.count
+      gen.append(tok)
       det.append(token: tok)
       if let s = det.next() { out += s; onDelta(s) }
       n += 1
-      if r.isTerminated { break }
+      // every sampled token goes through the model (also the terminating one) so the cache == rendered history
       let o = ctx.model(LMInput.Text(tokens: MLXArray([Int32(tok)]))[text: .newAxis], cache: cache, state: nil)
       cached += 1
       logits = o.logits
+      if r.isTerminated { eval(logits); break }
       asyncEval(logits)
     }
-    // final partial char
+    let full = ctx.tokenizer.decode(tokenIds: gen)
+    if full.count > out.count, full.hasPrefix(out) { let rest = String(full.dropFirst(out.count)); onDelta(rest); out = full }
     st.genTok = n; st.decS = Date().timeIntervalSince(t1)
     if n >= maxTok { throw SLError("maxTok reached") }
     pending = tmpl.end

@@ -9,10 +9,16 @@ struct Chat: Codable { var setting: String; var msgs: [Msg] }
 public final class Session {
   public let dir: URL
   public let name: String
-  public init(name: String, root: URL = sessionsRoot) throws {
+  var lockFD: Int32 = -1
+  /// `mustExist`: resume of an unknown name must not create an empty dir. Holds an exclusive flock on state.json.lock (same convention as the schicksal CLI).
+  public init(name: String, root: URL = sessionsRoot, mustExist: Bool = false) throws {
     self.name = name; dir = root.appendingPathComponent(name)
+    if mustExist && !FileManager.default.fileExists(atPath: dir.appendingPathComponent("chat.json").path) { throw SLError("Sitzung nicht gefunden: \(name)") }
     try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+    lockFD = open(dir.appendingPathComponent("state.json.lock").path, O_CREAT | O_RDWR, 0o644)
+    if lockFD >= 0 && flock(lockFD, LOCK_EX | LOCK_NB) != 0 { close(lockFD); lockFD = -1; throw SLError("Sitzung \(name) ist von einem anderen Prozess gesperrt") }
   }
+  deinit { if lockFD >= 0 { flock(lockFD, LOCK_UN); close(lockFD) } }
   var statePath: String { dir.appendingPathComponent("state.json").path }
   var chatURL: URL { dir.appendingPathComponent("chat.json") }
   var mdURL: URL { dir.appendingPathComponent("transcript.md") }

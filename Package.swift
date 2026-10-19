@@ -13,7 +13,6 @@ let package = Package(
     .target(name: "SLCore", dependencies: [
       .product(name: "Schicksal", package: "schicksal"),
       .product(name: "MLXLLM", package: "mlx-swift-lm"),
-      .product(name: "MLXVLM", package: "mlx-swift-lm"),
       .product(name: "MLXLMCommon", package: "mlx-swift-lm"),
       .product(name: "MLXGuidedGeneration", package: "mlx-swift-lm"),
       .product(name: "Tokenizers", package: "swift-transformers"),

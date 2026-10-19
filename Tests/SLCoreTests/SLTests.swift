@@ -94,6 +94,21 @@ final class DispatchTests: XCTestCase {
   }
 }
 
+final class MiscTests: XCTestCase {
+  func testClip() {
+    let long = String(repeating: "x", count: 500)
+    let a = clip(["q": .str(long), "el": ["ort": .str(long)], "odds": 1])
+    XCTAssertEqual(a["q"].str?.count, 200); XCTAssertEqual(a["el"]["ort"].str?.count, 80); XCTAssertEqual(a["odds"].int, 1)
+  }
+  func testSessionLock() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-lock-\(UUID().uuidString)")
+    let s1 = try Session(name: "x", root: root)
+    XCTAssertThrowsError(try Session(name: "x", root: root))   // second holder refused
+    XCTAssertThrowsError(try Session(name: "nope", root: root, mustExist: true))
+    _ = s1
+  }
+}
+
 final class SessionTests: XCTestCase {
   func testSaveResume() throws {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-test-\(UUID().uuidString)")
@@ -125,6 +140,16 @@ final class GrammarTests: XCTestCase {
     XCTAssertEqual(t.encode(text: "<|turn>model\n", addSpecialTokens: false).first, t.convertTokenToId("<|turn>"))
     XCTAssertEqual(t.convertTokenToId("<turn|>"), 106)
     XCTAssertEqual(t.encode(text: "<bos>x", addSpecialTokens: false).first, 2)
+  }
+  /// no Fork in xgrammar 0.1.30: a used matcher must be reusable after rollback
+  func testRollbackReuse() async throws {
+    let (t, gt) = try await tok()
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar({ var g = Gate(); g.head = true; return g }()).tag)
+    let ids = t.encode(text: FEW[1].text, addSpecialTokens: false)
+    for round in 0..<2 {
+      for id in ids { let r = try c.computeMask(); XCTAssertTrue(!r.needsApply || (r.mask[id / 32] >> Int32(id % 32)) & 1 == 1, "round \(round)"); _ = try c.commitToken(Int32(id)) }
+      try c.rollback(Int32(ids.count))
+    }
   }
   /// every few-shot model message must be accepted by the grammar of its state and be able to terminate
   func testFewShotAcceptedByGrammar() async throws {

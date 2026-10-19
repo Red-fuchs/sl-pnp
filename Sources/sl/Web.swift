@@ -34,8 +34,8 @@ func jsonOut(_ o: Out) -> [String: Any]? {
 }
 
 func state(_ r: Runner, busy: Bool) -> [String: Any] {
-  let s = r.status()
-  let rolls: [[String: Any]] = r.rolls.suffix(8).map { ["answer": $0["answer"].str ?? $0["outcome"].str ?? "", "roll": $0["roll"].int ?? -1, "p": $0["p"].int ?? -1, "s": $0["s"].int ?? -1, "rng": $0["rng"].str ?? ""] }
+  guard let (s, _, rl) = r.snapshot() else { return ["t": "state", "busy": busy, "name": r.session.name] }
+  let rolls: [[String: Any]] = rl.suffix(8).map { ["answer": $0["answer"].str ?? $0["outcome"].str ?? "", "roll": $0["roll"].int ?? -1, "p": $0["p"].int ?? -1, "s": $0["s"].int ?? -1, "rng": $0["rng"].str ?? ""] }
   return ["t": "state", "s": s.s, "scene": s.scene, "open": s.open, "q": s.q, "rng": s.rng, "akteure": s.akteure, "straenge": s.straenge, "journal": s.journal,
           "rolls": rolls, "busy": busy, "name": r.session.name]
 }
@@ -93,14 +93,16 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     guard parts.count >= 2 else { return c.cancel() }
     let method = String(parts[0]), path = String(parts[1])
     // reject cross-origin browser posts (DNS-rebinding / CSRF guard): Host must be loopback
-    let host = head.lowercased().components(separatedBy: "\r\nhost:").dropFirst().first?.prefix { $0 != "\r" }.trimmingCharacters(in: .whitespaces) ?? ""
-    guard host.hasPrefix("127.0.0.1") || host.hasPrefix("localhost") else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
+    func hdr(_ k: String) -> String? { head.lowercased().components(separatedBy: "\r\n\(k):").dropFirst().first?.prefix { $0 != "\r" }.trimmingCharacters(in: .whitespaces) }
+    let hostName = (hdr("host") ?? "").replacingOccurrences(of: ":\(port)", with: "")
+    guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
+    if let o = hdr("origin"), !["http://127.0.0.1:\(port)", "http://localhost:\(port)"].contains(o) { return reply(c, "403 Forbidden", "text/plain", Data("origin".utf8)) }
     switch (method, path) {
     case ("GET", "/"): reply(c, "200 OK", "text/html; charset=utf-8", Data(pageHTML.utf8))
     case ("GET", "/state"):
       lock.lock(); let b = busy; lock.unlock()
-      var st = work.sync { state(runner, busy: b) }
-      st["story"] = work.sync { runner.game == nil ? [] : runner.story() }
+      var st = state(runner, busy: b)
+      st["story"] = runner.snapshot()?.1 ?? []
       reply(c, "200 OK", "application/json", (try? JSONSerialization.data(withJSONObject: st)) ?? Data())
     case ("GET", "/events"):
       let h = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n: ok\n\n"

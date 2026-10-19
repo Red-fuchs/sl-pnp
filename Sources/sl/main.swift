@@ -22,7 +22,7 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--debug] [--input FILE|/dev/tty]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 600] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 600] [same options]
   Befehle: /ende /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
@@ -49,9 +49,9 @@ if let p = opt["input"], let f = freopen(p, "r", stdin) { _ = f } else if opt["i
 let dim = "\u{1B}[2m", off = "\u{1B}[0m", bold = "\u{1B}[1m"
 let rng = opt["rng"] ?? "mic"
 let name = opt["name"] ?? (opt["resume"].flatMap { $0.isEmpty ? nil : $0 }) ?? (opt["resume"] != nil ? Session.latest() : nil) ?? { let f = DateFormatter(); f.dateFormat = "yyyyMMdd-HHmmss"; return "sl-" + f.string(from: Date()) }()
-let session = try Session(name: name)
 let resuming = opt["resume"] != nil
-if resuming && !session.exists { die("Sitzung nicht gefunden: \(name)") }
+let session: Session
+do { session = try Session(name: name, mustExist: resuming) } catch { die("\(error)") }
 
 err("Modell laden: \(findModel().lastPathComponent) …")
 var lm: LM? = try await LM.load(dir: findModel())
@@ -83,8 +83,22 @@ else { print("\(dim)Sitzung \(name)\(off)"); try runner.startNew(setting: opt["s
 if opt["debug"] != nil { err(String(format: "start %.1fs", Date().timeIntervalSince(t0))) }
 
 func prompt() { print("\(bold)Du> \(off)", terminator: ""); fflush(stdout) }
+/// stdin line reader with idle timeout (the GPU lock held by gpu-run must not be held by an idle prompt)
+var inbuf = [UInt8]()
+func readLineIdle(_ secs: Double) -> String? {
+  while true {
+    if let i = inbuf.firstIndex(of: 10) { let l = String(decoding: inbuf[..<i], as: UTF8.self); inbuf.removeSubrange(...i); return l }
+    var p = pollfd(fd: 0, events: Int16(POLLIN), revents: 0)
+    if poll(&p, 1, Int32(secs * 1000)) == 0 { print("\(dim)Leerlauf – Modell entladen. Weiter mit --resume \(name)\(off)"); return nil }
+    var b = [UInt8](repeating: 0, count: 4096)
+    let n = read(0, &b, 4096)
+    if n <= 0 { if inbuf.isEmpty { return nil }; let l = String(decoding: inbuf, as: UTF8.self); inbuf = []; return l }
+    inbuf += b[..<n]
+  }
+}
+let idleSecs = Double(opt["idle"] ?? "600") ?? 600
 prompt()
-while let l = readLine() {
+while let l = readLineIdle(idleSecs) {
   let t = l.trimmingCharacters(in: .whitespaces)
   if t.isEmpty { prompt(); continue }
   print()

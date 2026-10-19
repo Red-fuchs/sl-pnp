@@ -31,6 +31,7 @@ public struct Gate {
   public var ans: String? = nil    // BIND: oracle answer JA+|JA|NEIN+|NEIN, fixed string in the grammar
   public var deut = false          // event/mutation shown by harness -> "Deutung:" line (or verwerfen)
   public var forceEnd = false      // /ende: head must call end_scene
+  public var endNarr = false       // /ende turn: narration allowed after end_scene (else start_scene only)
   public init() {}
 }
 
@@ -65,7 +66,7 @@ public enum Gr {
     if let a = t.ans { parts += [.s("Antwort: \(a) → "), .re(line), .s("\n")] }
     if t.deut { parts += [.s("Deutung: "), .or([.re(line), .s("verwerfen")]), .s("\n")] }
     if t.ans != nil || t.deut || t.open || t.calls >= 8 { parts.append(narr) }       // after ask / event / start_scene: narration
-    else { parts.append(.or([narr, startScene])) }                                   // after end_scene: narrate or open the next scene
+    else { parts.append(t.endNarr ? .or([narr, startScene]) : startScene) }          // after end_scene: next step is start_scene
     return Grammar(.seq(parts))
   }
 }

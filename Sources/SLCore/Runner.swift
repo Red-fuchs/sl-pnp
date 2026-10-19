@@ -48,6 +48,7 @@ public final class Runner {
       case .event(let e): session.log("- ⚡ \(e)\n")
       default: break
       }
+      if case .tool = o { refresh() } else if case .end = o { refresh() }
       sink(o)
     }
     game.onMsg = { [unowned self] _ in try? session.save(game) }
@@ -65,20 +66,35 @@ public final class Runner {
     let (e, s, m) = try session.loadEngine()
     setting = s
     game = Game(eng: e, lm: lm, setting: s, msgs: m); wire()
-    if m.count > 40 { game.sys = SYS }  // recap is rebuilt on next compaction
     try game.syncCache()
   }
-  func run(_ f: () throws -> Void) throws { do { try f() } catch { lm.dirty = true; try? game.syncCache(); throw error }; try session.save(game) }
+  func run(_ f: () throws -> Void) throws {
+    let n0 = game.msgs.count
+    do { try f() } catch {
+      if game.msgs.count > n0 { game.msgs.removeLast(game.msgs.count - n0) }   // no dangling user turn
+      try? game.syncCache(); try? session.save(game); refresh(); throw error
+    }
+    try session.save(game); refresh()
+  }
+  // thread-safe snapshot for the web UI (generation runs on another thread)
+  let snapLock = NSLock()
+  var snapData: (Status, [[String: String]], [J])?
+  public func snapshot() -> (Status, [[String: String]], [J])? { snapLock.lock(); defer { snapLock.unlock() }; return snapData }
+  func refresh() { guard game != nil else { return }; let d = (status(), story(), rolls); snapLock.lock(); snapData = d; snapLock.unlock() }
 
   public func player(_ t: String) throws { session.log("\n**Spieler:** \(t)\n"); try run { try game.turn(t) } }
-  public func ende() throws { session.log("\n**Spieler:** /ende\n"); try run { try game.turn("Die Szene ist hier zu Ende.", forceEnd: true) } }
+  public func ende() throws {
+    guard game.eng.st.open else { sink(.info("keine offene Szene")); return }
+    session.log("\n**Spieler:** /ende\n"); try run { try game.turn("Die Szene ist hier zu Ende.", forceEnd: true) } }
   public func frage(_ q: String, odds: Int) throws {
     let r = game.eng.call("ask_oracle", ["q": .str(q), "odds": .int(odds)])
     if r["error"].isNull == false { sink(.info("Fehler: \(r["error"].str ?? "")")); return }
     sink(.tool("ask_oracle", ["q": .str(q), "odds": .int(odds)], r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
     if let e = evInfo("ask_oracle", r) { sink(.event(evShow(e))) }
     session.log("\n**Spieler:** /frage \(q) → \(r.json)\n")
-    try run { try game.turn("Ich frage das Schicksal: \(q)\n[Orakel] \(r.json)", pre: r) }
+    var fb = fmtResult("ask_oracle", r)   // short German text only; rng/roll/step stay in the UI
+    if evInfo("ask_oracle", r) != nil, !(game.eng.st.akteure.isEmpty && game.eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(game.eng.st.akteure.map(\.name), game.eng.st.straenge.map(\.name)) }
+    try run { try game.turn("Ich frage das Schicksal: \(q)\n" + fb, pre: r) }
   }
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st

@@ -56,7 +56,7 @@ public final class Game {
 
   func compact() throws {
     let recap = eng.st.journal.filter { $0["tool"].str == "end_scene" }.suffix(12).compactMap { $0["in"]["summary"].str }.joined(separator: " ")
-    var keep = Array(msgs.suffix(24)); while keep.first?.role == "model" { keep.removeFirst() }
+    var keep = Array(msgs.suffix(24)); while let f = keep.first, f.role == "model" || f.text.hasPrefix("[Orakel]") { keep.removeFirst() }
     msgs = keep
     sys = SYS + (recap.isEmpty ? "" : "\n\nBisheriger Verlauf (Journal): " + recap)
     out(.info("Kontext verdichtet"))
@@ -69,7 +69,7 @@ public final class Game {
   public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false) throws {
     if lm.cached > maxCtx { try compact() }
     push(.u(player))
-    var gate = Gate(); gate.head = pre == nil; gate.forceEnd = forceEnd
+    var gate = Gate(); gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0
     var done = false
@@ -121,8 +121,16 @@ public func parseCall(_ txt: String, firstScene: Bool = false) -> (String, J)? {
   if name == "ask_oracle", var o = args.obj {
     o["q"] = .str(lines.last { $0.hasPrefix("Frage: ") }.map { String($0.dropFirst(7)) } ?? "?"); args = .obj(o)
   }
-  return (name, args)
+  return (name, clip(args))
 }
 
 public struct EvInfo: Equatable { public var head: String, words: String
   public init(head: String, words: String) { self.head = head; self.words = words } }
+
+/// Engine maxLength limits (tools.json) enforced by clipping instead of grammar (bounded repeats blow up xgrammar compile time).
+func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary": 400, "why": 120, "aktivitaet": 80, "beteiligte": 80, "objekt": 80, "ort": 80, "stimmung": 40]) -> J {
+  guard let o = a.obj else { return a }
+  return .obj(o.reduce(into: [:]) { r, kv in
+    if let s = kv.value.str, let m = limits[kv.key] { r[kv.key] = .str(String(s.prefix(m))) } else { r[kv.key] = clip(kv.value, limits) }
+  })
+}
