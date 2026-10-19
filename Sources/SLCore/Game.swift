@@ -78,7 +78,7 @@ public final class Game {
     do {
       let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
-      if let d = try? J.parse(txt) { log += world.apply(d) }
+      if let d = try? J.parse(txt) { let old = world.ort; log += world.apply(d); world.figurMoved(from: old) }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }

@@ -149,6 +149,7 @@ public struct World: Codable, Equatable {
   public mutating func applyTail(_ line: String) -> [String] {
     var s = line.trimmingCharacters(in: .whitespaces)
     if s.hasPrefix("Figuren:") { s = String(s.dropFirst(8)).trimmingCharacters(in: .whitespaces) }
+    _tailIds = []
     if s.isEmpty || s == "-" { return [] }
     var log: [String] = []
     for part in s.split(separator: ",") {
@@ -159,9 +160,10 @@ public struct World: Codable, Equatable {
       if let i = npc(n) ?? npcs.firstIndex(where: { norm($0.kurz) == norm(n) }) {      // known by name, or by its role ("Wirtin")
         if !r.isEmpty, !norm(npcs[i].kurz).contains(norm(r)), npcs[i].kurz.count < 40 { npcs[i].kurz = npcs[i].kurz.isEmpty ? r : "\(r), \(npcs[i].kurz)" }   // refine the role ("Kapitän, breiter Mann …")
         if !npcs[i].anwesend { npcs[i].anwesend = true; npcs[i].ort = ort; log.append("\(npcs[i].name) anwesend") }
+        _tailIds.insert(npcs[i].id)
       } else if !r.isEmpty, let i = npcs.firstIndex(where: { $0.anwesend && norm($0.name) == norm(r) }) {   // role-named NPC gets its proper name
-        log.append("\(npcs[i].name) heißt \(n)"); npcs[i].name = n
-      } else if let (i, new) = addNpc(name: n, kurz: r, ort: ort), new { log.append("neu \(npcs[i].name)") }
+        log.append("\(npcs[i].name) heißt \(n)"); npcs[i].name = n; _tailIds.insert(npcs[i].id)
+      } else if let (i, new) = addNpc(name: n, kurz: r, ort: ort) { _tailIds.insert(npcs[i].id); if new { log.append("neu \(npcs[i].name)") } }
     }
     return log
   }
@@ -181,6 +183,12 @@ public struct World: Codable, Equatable {
     }
     npcs.append(Npc(id: "n\(nextId)", name: n, kurz: k, ort: o ?? ort)); nextId += 1
     return (npcs.count - 1, true)
+  }
+
+  /// The player moved to another place without a scene change: everybody not named in this turn's narrator tail stays behind.
+  public mutating func figurMoved(from old: String?) {
+    guard !samePlace(old, ort) else { return }
+    for i in npcs.indices where !_tailIds.contains(npcs[i].id) && npcs[i].anwesend { npcs[i].anwesend = false; npcs[i].ort = old }
   }
 
   // MARK: delta
@@ -229,7 +237,8 @@ public struct World: Codable, Equatable {
     }
     return log
   }
-  var _touched: Set<String> = []   // strands updated this turn (-> Schicksal bump); transient, not persisted
+  var _touched: Set<String> = []
+  var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
   private enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId }
 
   // MARK: one registry: Schicksal akteure/straenge are derived from the world

@@ -190,6 +190,14 @@ final class WorldTests: XCTestCase {
     w.applyTail("Figuren: -"); XCTAssertEqual(w.npcs.count, 2)
     for i in 0..<10 { w.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i))))abc", kurz: "g", ort: nil) }; XCTAssertEqual(w.block().components(separatedBy: " | ").count, 6)   // <=6 cards
   }
+  func testMoveWithoutSceneChange() {  // live finding: player walked to the square, Marta stayed 'hier'
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
+    w.applyTail("Figuren: Marta (Wirtin), Bork (Fährmann)")
+    w.applyTail("Figuren: Bork (Fährmann)")                                   // this turn's narration only mentions Bork
+    let old = w.ort; w.apply(["spielfigur_ort": "Dorfplatz"]); w.figurMoved(from: old)
+    XCTAssertFalse(w.npcs[0].anwesend); XCTAssertEqual(w.npcs[0].ort, "Taverne"); XCTAssertTrue(w.npcs[1].anwesend)
+    let o2 = w.ort; w.apply(["spielfigur_ort": "Dorfplatz"]); w.figurMoved(from: o2); XCTAssertTrue(w.npcs[1].anwesend)   // same place: nothing changes
+  }
   func testApplyItemsAndThreads() throws {
     let e = try Session.newEngine(rng: "seed:9")
     var w = World(); w.setFigur("Aether: grauer Mann"); w.ort = "Taverne"; w.addNpc(name: "Wirtin", kurz: "Wirtin", ort: "Taverne")
