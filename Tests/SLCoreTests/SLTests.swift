@@ -100,6 +100,11 @@ final class MiscTests: XCTestCase {
     let a = clip(["q": .str(long), "el": ["ort": .str(long)], "odds": 1])
     XCTAssertEqual(a["q"].str?.count, 200); XCTAssertEqual(a["el"]["ort"].str?.count, 80); XCTAssertEqual(a["odds"].int, 1)
   }
+  func testHttpHeader() {
+    let h = "POST /say HTTP/1.1\r\nHost: 127.0.0.1:8791\r\nContent-Length: 12\r\nOrigin: http://x"
+    XCTAssertEqual(httpHeader(h, "host"), "127.0.0.1:8791"); XCTAssertEqual(httpHeader(h, "content-length"), "12")
+    XCTAssertEqual(httpHeader(h, "origin"), "http://x"); XCTAssertNil(httpHeader(h, "x-none"))
+  }
   func testSessionLock() throws {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-lock-\(UUID().uuidString)")
     let s1 = try Session(name: "x", root: root)

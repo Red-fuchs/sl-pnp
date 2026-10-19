@@ -75,7 +75,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
         if let d { buf.append(d) }
         if let r = buf.range(of: Data("\r\n\r\n".utf8)) {
           let head = String(decoding: buf[..<r.lowerBound], as: UTF8.self)
-          let len = head.lowercased().components(separatedBy: "content-length:").dropFirst().first.flatMap { Int($0.prefix { $0 != "\r" }.trimmingCharacters(in: .whitespaces)) } ?? 0
+          let len = httpHeader(head, "content-length").flatMap { Int($0) } ?? 0
           if buf.count - r.upperBound < len { if !done && e == nil { recv() }; return }
           handle(c, head, Data(buf[r.upperBound..<(r.upperBound + len)]))
         } else if !done && e == nil { recv() } else { c.cancel() }
@@ -93,7 +93,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     guard parts.count >= 2 else { return c.cancel() }
     let method = String(parts[0]), path = String(parts[1])
     // reject cross-origin browser posts (DNS-rebinding / CSRF guard): Host must be loopback
-    func hdr(_ k: String) -> String? { head.lowercased().components(separatedBy: "\r\n\(k):").dropFirst().first?.prefix { $0 != "\r" }.trimmingCharacters(in: .whitespaces) }
+    func hdr(_ k: String) -> String? { httpHeader(head, k) }
     let hostName = (hdr("host") ?? "").replacingOccurrences(of: ":\(port)", with: "")
     guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
     if let o = hdr("origin"), !["http://127.0.0.1:\(port)", "http://localhost:\(port)"].contains(o) { return reply(c, "403 Forbidden", "text/plain", Data("origin".utf8)) }
