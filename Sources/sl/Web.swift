@@ -35,10 +35,10 @@ func jsonOut(_ o: Out) -> [String: Any]? {
 }
 
 func state(_ r: Runner, busy: Bool) -> [String: Any] {
-  guard let (s, _, rl) = r.snapshot() else { return ["t": "state", "busy": busy, "name": r.session.name] }
+  guard let (s, _, rl) = r.snapshot() else { return ["t": "state", "busy": busy, "name": "-"] }
   let rolls: [[String: Any]] = rl.suffix(8).map { ["answer": $0["answer"].str ?? $0["outcome"].str ?? "", "roll": $0["roll"].int ?? -1, "p": $0["p"].int ?? -1, "s": $0["s"].int ?? -1, "rng": $0["rng"].str ?? ""] }
   return ["t": "state", "s": s.s, "scene": s.scene, "open": s.open, "q": s.q, "rng": s.rng, "akteure": s.akteure, "straenge": s.straenge, "journal": s.journal,
-          "rolls": rolls, "figur": s.figur ?? "-", "welt": s.welt, "busy": busy, "name": r.session.name]
+          "rolls": rolls, "figur": s.figur ?? "-", "welt": s.welt, "busy": busy, "name": s.name]
 }
 
 func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws {
@@ -76,7 +76,8 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
         if let d { buf.append(d) }
         if let r = buf.range(of: Data("\r\n\r\n".utf8)) {
           let head = String(decoding: buf[..<r.lowerBound], as: UTF8.self)
-          let len = httpHeader(head, "content-length").flatMap { Int($0) } ?? 0
+          let len = httpContentLength(head)   // negative / garbage -> 0 (a negative range crashed the slice)
+          if len > 65536 { c.send(content: Data("HTTP/1.1 413 Payload Too Large\r\nContent-Length: 0\r\nConnection: close\r\n\r\n".utf8), completion: .contentProcessed { _ in c.cancel() }); return }
           if buf.count - r.upperBound < len { if !done && e == nil { recv() }; return }
           handle(c, head, Data(buf[r.upperBound..<(r.upperBound + len)]))
         } else if !done && e == nil { recv() } else { c.cancel() }
@@ -114,7 +115,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       let h = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n: ok\n\n"
       c.send(content: Data(h.utf8), completion: .contentProcessed { _ in }); hub.add(c)
     case ("POST", "/say"):
-      let text = ((try? JSONSerialization.jsonObject(with: body)) as? [String: Any])?["text"] as? String ?? ""
+      let text = String((((try? JSONSerialization.jsonObject(with: body)) as? [String: Any])?["text"] as? String ?? "").prefix(2000))
       reply(c, "202 Accepted", "text/plain", Data("ok".utf8))
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
         hub.send(["t": "user", "text": text])

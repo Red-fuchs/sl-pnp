@@ -41,7 +41,9 @@ public struct Gate {
 public enum Gr {
   static let sent = #"[ ]?[^<.!?\n:]{6}[^<.!?\n:]*[.!?]["“”»«]?"#
   public static let narrPattern = "(\(sent)){3}(\(sent)){0,2}"   // 3-5 sentences
-  public static let narr = G.re(narrPattern)
+  public static let narrBody = G.re(narrPattern)
+  /// narration + mandatory tail "Figuren: Name (Rolle), …" | "-" (stripped from display, feeds the world state)
+  public static let narr = G.seq([narrBody, .s("\nFiguren: "), .or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])])
   static let line = #"[^\n<]{8}[^\n<]*"#
   public static let maxAsks = 6
   static let str = #"{"type":"string"}"#   // xgrammar sorts schema keys alphabetically -> key order is built by hand

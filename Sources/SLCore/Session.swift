@@ -10,6 +10,7 @@ public final class Session {
   public let dir: URL
   public let name: String
   var lockFD: Int32 = -1
+  public var warning: String?
   /// `mustExist`: resume of an unknown name must not create an empty dir. Holds an exclusive flock on state.json.lock (same convention as the schicksal CLI).
   public init(name: String, root: URL = sessionsRoot, mustExist: Bool = false) throws {
     self.name = name; dir = root.appendingPathComponent(name)
@@ -45,7 +46,11 @@ public final class Session {
   public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg], figur: String?, quiet: Int, world: World) {
     let e = try Engine.load(path: statePath); e.machine = true
     let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
-    let w = (try? JSONDecoder().decode(World.self, from: Data(contentsOf: worldURL))) ?? World()
+    var w = World()
+    if let d = try? Data(contentsOf: worldURL) {
+      if let x = try? JSONDecoder().decode(World.self, from: d) { w = x }
+      else { let bak = worldURL.appendingPathExtension("bak"); try? FileManager.default.removeItem(at: bak); try? FileManager.default.moveItem(at: worldURL, to: bak); warning = "world.json unlesbar - Welt leer neu gestartet, Original: \(bak.lastPathComponent)" }
+    }
     return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)
   }
   public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world) }

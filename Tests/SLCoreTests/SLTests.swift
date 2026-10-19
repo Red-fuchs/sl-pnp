@@ -25,7 +25,7 @@ final class PromptTests: XCTestCase {
     let re = try NSRegularExpression(pattern: "^" + Gr.narrPattern + "$")
     var n = 0
     for m in FEW where m.role == "model" {
-      guard let last = m.text.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !last.hasPrefix("<") else { continue }
+      guard let last = splitTail(m.text).body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !last.hasPrefix("<") else { continue }
       n += 1
       XCTAssertNotNil(re.firstMatch(in: last, range: NSRange(last.startIndex..., in: last)), "narr mismatch: \(last)")
     }
@@ -104,47 +104,125 @@ final class WorldTests: XCTestCase {
   }
   func testBlockMatchesFewShot() {
     var w = World(); w.setFigur("verschlossener Matrose mit vernarbter Hand"); w.ort = "Deck"
-    w.apply(["npc_neu": [["name": "Steuermann", "kurz": "breiter Mann am Ruder", "ort": "Deck"]]])
+    w.applyTail("Figuren: Steuermann (breiter Mann am Ruder)")
     let b = blocks()
     XCTAssertEqual(b.count, 5); XCTAssertEqual(w.block(), b[0])
-    w.apply(["npc_neu": [["name": "Steuermann", "kurz": "Kapitän, breiter Mann am Ruder", "ort": "Deck"]], "haltung": [["wer": "Steuermann", "wert": -1]]])
+    w.applyTail("Figuren: Steuermann (Kapitän)"); w.apply(["haltung": [["wer": "Steuermann", "wert": -1]]])
     XCTAssertEqual(w.block(), b[1])
     w.apply(["zustand": [["wer": "du", "op": "+", "text": "Knie aufgeschlagen"]], "haltung": [["wer": "Steuermann", "wert": -2]]])
     XCTAssertEqual(w.block(), b[3])
   }
-  func testApply() throws {
+  func testLookupWholeTokens() {      // finding 1
+    var w = World(); w.ort = "Hof"
+    w.addNpc(name: "Ida", kurz: "Köhlerin", ort: "Hof"); w.addNpc(name: "Bork", kurz: "Fährmann", ort: "Hof"); w.addNpc(name: "Wache", kurz: "Torwache", ort: "Hof")
+    w.addNpc(name: "Idalia", kurz: "Magd", ort: "Hof"); w.addNpc(name: "Borka", kurz: "Bäuerin", ort: "Hof")
+    XCTAssertEqual(w.npcs.map(\.name), ["Ida", "Bork", "Wache", "Idalia", "Borka"])   // distinct people, no prefix merge
+    XCTAssertEqual(w.npc("Idalia"), 3); XCTAssertEqual(w.npc("Ida"), 0); XCTAssertNil(w.npc("Wachen")); XCTAssertNil(w.npc("")); XCTAssertNil(w.npc("   "))
+    w.apply(["haltung": [["wer": "", "wert": 2]]]); XCTAssertEqual(w.npcs[0].haltung, 0)   // empty wer must not hit NPC #0
+  }
+  func testFigurenDoNotRelocate() {   // findings 2 + 14
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
+    w.addNpc(name: "Marta", kurz: "Wirtin", ort: "Taverne")
+    w.apply(["figuren": [["name": "Marta", "kurz": "Marta", "ort": "Keller"]]])
+    XCTAssertEqual(w.npcs[0].ort, "Taverne"); XCTAssertEqual(w.npcs[0].kurz, "Wirtin"); XCTAssertTrue(w.npcs[0].anwesend)
+  }
+  func testNameHintsNotObjects() {    // finding 3
+    XCTAssertTrue(World.nameHints("Ich gebe dem Kind Brot und dem Jungen Bier.").isEmpty)
+    XCTAssertTrue(World.nameHints("Die Wirtin gibt dem Kind Brot. Das Kind lacht.").isEmpty)
+    XCTAssertEqual(World.nameHints("Die Wirtin Marta wischt. Marta nickt.").map(\.name), ["Marta"])
+    XCTAssertEqual(World.nameHints("Neben ihr steht Bork, der Fährmann.").map(\.name), ["Bork"])
+    XCTAssertEqual(World.nameHints("Eine Köhlerin namens Ida sitzt da.").map(\.name), ["Ida"])
+  }
+  func testPlayerNeverNpc() {         // finding 4
+    var w = World(); w.setFigur("Aether: grauer Mann")
+    w.addNpc(name: "Aether der Graue", kurz: "x", ort: nil); w.addNpc(name: "du", kurz: "x", ort: nil); w.addNpc(name: "Mann", kurz: "x", ort: nil)
+    XCTAssertTrue(w.npcs.isEmpty)
+    var m = World(); m.setFigur("verschlossener Matrose mit vernarbter Hand")     // role-named PC
+    m.addNpc(name: "Matrose", kurz: "x", ort: nil); XCTAssertTrue(m.npcs.isEmpty)
+    var p = World(); p.addNpc(name: "Aether", kurz: "Gast", ort: "Hof"); XCTAssertEqual(p.npcs.count, 1)
+    p.setFigur("Aether: Mann"); XCTAssertTrue(p.npcs.isEmpty)                      // /figur purges an NPC with the player's name
+  }
+  func testRegistryAndEviction() throws {   // finding 5: Schicksal lists derived from the world, no growth / duplicates
     let e = try Session.newEngine(rng: "seed:9")
-    var w = World(); w.setFigur("Aether: grauer Mann"); w.ort = "Taverne"
-    XCTAssertEqual(w.name, "Aether"); XCTAssertEqual(w.kurz, "grauer Mann")
-    let log = w.apply(["npc_neu": [["name": "Aether", "kurz": "x", "ort": "Taverne"], ["name": "du", "kurz": "x", "ort": "Taverne"], ["name": "Wirtin", "kurz": "stämmig", "ort": "Taverne"], ["name": "Bote", "kurz": "Läufer", "ort": "Markt"]],
-                       "npc_ort": [["wer": "Niemand", "ort": "Keller"]], "haltung": [["wer": "Wirtin", "wert": 7], ["wer": "Geist", "wert": 1]],
-                       "item": [["wer": "du", "op": "+", "name": "Laterne"], ["wer": "Wirtin", "op": "+", "name": "Schlüssel"]],
-                       "strang": [["titel": "Der Fluch", "stand": "Hinweis gefunden"]], "beziehung": [["a": "Wirtin", "b": "du", "wert": 5], ["a": "Wirtin", "b": "Wirtin", "wert": 1]]], eng: e)
-    XCTAssertEqual(w.npcs.map(\.name), ["Wirtin", "Bote"])            // player character never an NPC, unknown refs ignored
-    XCTAssertEqual(w.npcs[0].haltung, 2); XCTAssertEqual(w.inventar, ["Laterne"]); XCTAssertEqual(w.beziehungen, [Rel(a: "Wirtin", b: "du", wert: 2)])
-    XCTAssertEqual(e.st.akteure.map(\.name), ["Wirtin", "Bote"]); XCTAssertEqual(e.st.straenge.map(\.name), ["Der Fluch"])   // Schicksal lists synced
-    XCTAssertFalse(log.isEmpty)
-    let b = w.block()
-    XCTAssertTrue(b.contains("Hier: Wirtin – stämmig (trägt Schlüssel; Haltung zu dir: loyal)")); XCTAssertTrue(b.contains("Anderswo: Bote (Markt)")); XCTAssertTrue(b.contains("Du: Aether, grauer Mann. Ort: Taverne. Inventar: Laterne."))
-    XCTAssertEqual(w.haltung(in: "Hilft die Wirtin mir?"), 2); XCTAssertNil(w.haltung(in: "Ist der Bote da?"))
-    w.apply(["strang": [["titel": "Der Fluch", "stand": "gelöst"]]], eng: e)                                  // existing thread: update + bump
-    XCTAssertEqual(w.straenge.count, 1); XCTAssertEqual(w.straenge[0].stand, "gelöst")
-    for i in 0..<30 { w.apply(["npc_neu": [["name": .str("N\(i)"), "kurz": "k", "ort": "Weit"]]]) }
+    var w = World(); w.ort = "Hof"
+    for i in 0..<25 { w.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i % 26))))\(i)", kurz: "g", ort: "Weit"); if i % 3 == 0 { w.npcs[w.npcs.count - 1].anwesend = false }; w.syncLists(e) }
     XCTAssertLessThanOrEqual(w.npcs.count, 20)
+    XCTAssertEqual(Set(e.st.akteure.map(\.name)), Set(w.npcs.map(\.name)))           // evicted ones are gone from the engine too
+    XCTAssertEqual(e.st.akteure.count, Set(e.st.akteure.map(\.name)).count)          // no duplicates
+    w.apply(["strang": [["titel": "Der Fluch", "stand": "offen"]]]); w.syncLists(e); w.syncLists(e)
+    XCTAssertEqual(e.st.straenge.map(\.name), ["Der Fluch"])
+    w.addNpc(name: "Ida", kurz: "Magd", ort: "Hof"); w.addNpc(name: "Bork", kurz: "Wirt", ort: "Hof"); w.apply(["beziehung": [["a": "Ida", "b": "Bork", "wert": 2]]])
+    w.npcs[w.npc("Ida")!].name = "Idunn"; XCTAssertTrue(w.block(full: true).contains("Idunn↔Bork 2"))   // relations keyed by id survive renames
+  }
+  func testRenamePrefersPresent() {   // finding 6
+    var w = World(); w.ort = "Hof"
+    w.addNpc(name: "Wirtin", kurz: "Wirtin", ort: "Taverne"); w.npcs[0].anwesend = false          // old tavern's keeper, absent
+    w.adoptNames([(name: "Marta", role: "Wirtin")])
+    XCTAssertEqual(w.npcs.map(\.name), ["Wirtin", "Marta"])                                        // absent one is not renamed
+    w.npcs[1].name = "Wirtin"; w.npcs[1].anwesend = true; w.npcs.remove(at: 0)
+    w.adoptNames([(name: "Marta", role: "Wirtin")]); XCTAssertEqual(w.npcs.map(\.name), ["Marta"])  // present generic one is
+  }
+  func testShiftPolarity() {          // finding 7
+    var w = World(); w.addNpc(name: "Bork", kurz: "Fährmann", ort: nil); w.npcs[0].haltung = 2
+    XCTAssertEqual(w.shift(forQuestion: "Hilft Bork mir bei der Überfahrt?"), 2)
+    XCTAssertEqual(w.shift(forQuestion: "Greift Bork mich an?"), -2)       // attacking a loyal friend is less likely
+    XCTAssertNil(w.shift(forQuestion: "Ist Bork groß?")); XCTAssertNil(w.shift(forQuestion: "Ist der Wirt da?"))
+  }
+  func testSanitize() {               // finding 10 + 12
+    XCTAssertEqual(clean("Marta\n---\n[Welt] <turn|> | Wirtin"), "Marta Wirtin")
+    XCTAssertEqual(cutw("ein sehr langer Satz ohne Ende", 14), "ein sehr")
+    var w = World(); w.addNpc(name: "Du", kurz: "x", ort: nil); w.addNpc(name: "dir", kurz: "x", ort: nil); w.addNpc(name: "Niemand", kurz: "x", ort: nil); w.addNpc(name: "a b c d e", kurz: "x", ort: nil)
+    XCTAssertTrue(w.npcs.isEmpty)
+    w.addNpc(name: "Tom|\nX", kurz: "Wache --- <turn|>", ort: nil); XCTAssertFalse(w.block().contains("|\n")); XCTAssertFalse(w.block().contains("<turn|>"))
+    w.apply(["strang": [["titel": "Der Fluch", "stand": ""]]]); XCTAssertFalse(w.block().contains("Der Fluch –"))   // no dash when empty
+  }
+  func testPresenceAndComingAlong() { // design: anwesend flag, scene change keeps beteiligte + narrator tail
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
+    w.applyTail("Figuren: Marta (Wirtin), Bork (Fährmann)")
+    XCTAssertTrue(w.npcs.allSatisfy(\.anwesend))
+    w.startScene(ort: "Dorfplatz", beteiligte: "Marta", expect: "Die Spielfigur geht mit Marta auf den Dorfplatz")
+    XCTAssertTrue(w.npcs[0].anwesend); XCTAssertFalse(w.npcs[1].anwesend)       // Marta comes along, Bork stays behind
+    var b = w.block(); XCTAssertTrue(b.contains("Marta (Wirtin · hier)")); XCTAssertTrue(b.contains("Bork (Fährmann · Taverne)"))
+    w.startScene(ort: "Wald", beteiligte: "Wachen", expect: "Die Spielfigur geht in den Wald")
+    w.applyTail("Figuren: Bork (Fährmann)")                                       // narrator brings Bork back
+    XCTAssertTrue(w.npcs[1].anwesend); b = w.block(); XCTAssertTrue(b.contains("Bork (Fährmann · hier)")); XCTAssertTrue(b.contains("Marta (Wirtin · Dorfplatz)"))
+    XCTAssertTrue(b.hasPrefix("[Welt]\nDu = Aether\n"))
+    w.applyTail("Figuren: -"); XCTAssertEqual(w.npcs.count, 2)
+    for i in 0..<10 { w.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i))))abc", kurz: "g", ort: nil) }; XCTAssertEqual(w.block().components(separatedBy: " | ").count, 6)   // <=6 cards
+  }
+  func testApplyItemsAndThreads() throws {
+    let e = try Session.newEngine(rng: "seed:9")
+    var w = World(); w.setFigur("Aether: grauer Mann"); w.ort = "Taverne"; w.addNpc(name: "Wirtin", kurz: "Wirtin", ort: "Taverne")
+    w.apply(["item": [["wer": "du", "op": "+", "name": "Laterne"], ["wer": "Wirtin", "op": "+", "name": "Schlüssel"], ["wer": "Niemand", "op": "+", "name": "X"]], "haltung": [["wer": "Wirtin", "wert": 7], ["wer": "Geist", "wert": 1]],
+             "strang": [["titel": "Der Fluch", "stand": "Hinweis gefunden"]], "beziehung": [["a": "Wirtin", "b": "du", "wert": 5], ["a": "Wirtin", "b": "Wirtin", "wert": 1]]])
+    w.syncLists(e)
+    XCTAssertEqual(w.inventar, ["Laterne"]); XCTAssertEqual(w.npcs[0].haltung, 2); XCTAssertEqual(w.beziehungen, [Rel(a: "n1", b: "du", wert: 2)])
+    XCTAssertEqual(e.st.akteure.map(\.name), ["Wirtin"]); XCTAssertEqual(e.st.straenge.map(\.name), ["Der Fluch"])
+    w.apply(["strang": [["titel": "Der Fluch", "stand": "gelöst"]]]); w.syncLists(e)
+    XCTAssertEqual(w.straenge[0].stand, "gelöst")
+    XCTAssertTrue(w.block().contains("Wirtin (hier · loyal · trägt Schlüssel)"))
   }
   func testPersistAndStrip() throws {
     let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-w-\(UUID().uuidString)")
-    let s = try Session(name: "w", root: root); var w = World(); w.setFigur("Aether: Mann"); w.apply(["npc_neu": [["name": "Wirt", "kurz": "k", "ort": "Hier"]]])
+    let s = try Session(name: "w", root: root); var w = World(); w.setFigur("Aether: Mann"); w.addNpc(name: "Wirt", kurz: "k", ort: "Hier")
     try s.save(try Session.newEngine(rng: "seed:1"), "S", [.u("a")], "Aether: Mann", 0, w)
     XCTAssertEqual(try s.loadEngine().world, w)
-    XCTAssertEqual(stripWelt("[Welt]\nDu: x.\n---\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("Ich gehe."), "Ich gehe.")
-    // cache stability: the system prompt does not depend on the world, history only appends
-    let a = render(sys: SYS, [.u("[Welt]\nDu: x.\n---\nZug1"), .m("A")]), b = render(sys: SYS, [.u("[Welt]\nDu: x.\n---\nZug1"), .m("A"), .u("[Welt]\nDu: y.\n---\nZug2")])
-    XCTAssertTrue(b.hasPrefix(a)); XCTAssertFalse(SYS.contains("[Welt]\nDu:"))
+    // finding 13: unreadable world.json is moved aside with a warning, not silently dropped
+    try Data("{kaputt".utf8).write(to: s.dir.appendingPathComponent("world.json"))
+    let s2 = try Session(name: "w2", root: root); try s2.save(try Session.newEngine(rng: "seed:1"), "S", [.u("a")]); try Data("{kaputt".utf8).write(to: s2.dir.appendingPathComponent("world.json"))
+    XCTAssertTrue(try s2.loadEngine().world.isEmpty); XCTAssertNotNil(s2.warning)
+    XCTAssertEqual(stripWelt("[Welt]\nDu = x\n---\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("Ich gehe."), "Ich gehe.")
+    let a = render(sys: SYS, [.u("[Welt]\nDu = x\n---\nZug1"), .m("A")]), b = render(sys: SYS, [.u("[Welt]\nDu = x\n---\nZug1"), .m("A"), .u("[Welt]\nDu = y\n---\nZug2")])
+    XCTAssertTrue(b.hasPrefix(a)); XCTAssertFalse(SYS.contains("[Welt]\nDu ="))
   }
   func testParseFigur() {
     XCTAssertEqual(World.parseFigur("Aether: grauer Mann, 40").0, "Aether"); XCTAssertEqual(World.parseFigur("Aether, grauer Mann").1, "grauer Mann")
     XCTAssertNil(World.parseFigur("ein grauer Mann mit Brille").0)
+  }
+  func testTailSplit() {
+    XCTAssertEqual(splitTail("Text eins. Zwei.\nFiguren: Marta (Wirtin)").tail, "Figuren: Marta (Wirtin)")
+    XCTAssertEqual(splitTail("Text eins. Zwei.\nFiguren: Marta (Wirtin)").body, "Text eins. Zwei.")
+    XCTAssertNil(splitTail("<ask_oracle>{}</ask_oracle>").tail)
   }
 }
 
@@ -155,22 +233,6 @@ final class CmdTests: XCTestCase {
     XCTAssertEqual(Cmd.parse("/frage+2 Ist er da?"), .frage("Ist er da?", 2)); XCTAssertEqual(Cmd.parse("/frage-1 x"), .frage("x", -1))
     XCTAssertEqual(Cmd.parse("/neu Piraten"), .neu("Piraten")); XCTAssertEqual(Cmd.parse("/foo"), .unknown("/foo")); XCTAssertEqual(Cmd.parse("ich gehe"), .say("ich gehe"))
     XCTAssertNil(groundedFigur("Matrose", "ich betrete die Taverne in Grauweiler und setze mich an einen Tisch"))
-  }
-}
-
-final class NameHintTests: XCTestCase {
-  func testHints() throws {
-    let h = World.nameHints("Ich betrete die Taverne. Die Wirtin Marta wischt die Theke. Neben ihr steht Bork, der Fährmann, und die Wache Tom lacht. ")
-    XCTAssertEqual(Set(h.map(\.name)), ["Marta", "Tom", "Bork"])
-    XCTAssertTrue(h.contains { $0.name == "Marta" && $0.role == "Wirtin" }); XCTAssertTrue(h.contains { $0.name == "Bork" && $0.role == "Fährmann" })
-    XCTAssertTrue(World.nameHints("Die Wirtin wischt. Sie nickt. Der Wirt schweigt.").isEmpty)
-    let e = try Session.newEngine(rng: "seed:2")
-    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
-    w.apply(["figuren": [["name": "Wirtin", "kurz": "Wirtin", "ort": "Taverne"]]], eng: e)       // role-named NPC from the delta step
-    w.adoptNames(World.nameHints("Die Wirtin Marta wischt."), eng: e)
-    XCTAssertEqual(w.npcs.map(\.name), ["Marta"]); XCTAssertEqual(e.st.akteure.map(\.name), ["Marta"])
-    XCTAssertTrue(w.block().contains("Hier: Marta – Wirtin"))
-    w.adoptNames(World.nameHints("Aether sieht die Wirtin Aether."), eng: e); XCTAssertEqual(w.npcs.count, 1)   // the player character never becomes an NPC
   }
 }
 
@@ -191,6 +253,10 @@ final class MiscTests: XCTestCase {
   func testGatePrefix() {
     XCTAssertTrue(isGatePrefix("Ortswechsel/Zeit")); XCTAssertTrue(isGatePrefix("Ortswechsel/Zeitsprung: nein")); XCTAssertTrue(isGatePrefix("Er"))
     XCTAssertFalse(isGatePrefix("Der Regen peitscht")); XCTAssertFalse(isGatePrefix("Das Deck"))
+  }
+  func testNegativeContentLength() {   // finding 8
+    XCTAssertEqual(httpContentLength("POST /say HTTP/1.1\r\nContent-Length: -5"), 0); XCTAssertEqual(httpContentLength("POST / HTTP/1.1\r\nContent-Length: abc"), 0)
+    XCTAssertEqual(httpContentLength("POST / HTTP/1.1\r\nContent-Length: 12"), 12); XCTAssertEqual(httpContentLength("GET / HTTP/1.1"), 0)
   }
   func testHttpHeader() {
     let h = "POST /say HTTP/1.1\r\nHost: 127.0.0.1:8791\r\nContent-Length: 12\r\nOrigin: http://x"
@@ -248,7 +314,7 @@ final class GrammarTests: XCTestCase {
   func testDeltaGrammar() async throws {
     let (t, gt) = try await tok()
     let t0 = Date()
-    for txt in [#"{"figuren":[]}"#, #"{"figuren":[{"kurz":"Köhlerin","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}"#, #"{"figuren":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}],"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}]}"#, #"{"figuren":[],"spielfigur_ort":"Keller","zustand":[{"op":"+","text":"verletzt","wer":"du"}]}"#, DELTA_SYS.components(separatedBy: "Ausgabe: ")[1].components(separatedBy: "\n")[0]] {
+    for txt in [#"{}"#, #"{"npc_ort":[{"ort":"Wald","wer":"Bork"}],"spielfigur_ort":"Hütte"}"#, #"{"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}]}"#, #"{"spielfigur_ort":"Keller","zustand":[{"op":"+","text":"verletzt","wer":"du"}]}"#, DELTA_SYS.components(separatedBy: "Ausgabe: ")[1].components(separatedBy: "\n")[0]] {
       let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.delta.tag)
       for id in t.encode(text: txt, addSpecialTokens: false) {
         let r = try c.computeMask()

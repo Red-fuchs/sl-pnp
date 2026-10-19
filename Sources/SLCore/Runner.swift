@@ -16,7 +16,7 @@ public func describe(_ name: String, _ a: J, _ r: J) -> String {
   }
 }
 
-public struct Status { public var figur: String?, welt = ""
+public struct Status { public var figur: String?, welt = "", name = ""
   public var s: Int, scene: Int, open: Bool, q: Int, rng: String, source: String, akteure: Int, straenge: Int, journal: [String]
   public var text: String {
     "Spielfigur: \(figur ?? "-")\nSpannung \(s) · Szene \(scene)\(open ? " (offen)" : "") · Fragen \(q)/6 · Quelle \(rng) · Akteure \(akteure) · Stränge \(straenge)" } }
@@ -68,6 +68,7 @@ public final class Runner {
     let (e, s, m, f, q, w) = try session.loadEngine()
     setting = s
     game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w); wire()
+    if let w = session.warning { sink(.info(w)) }
     try game.syncCache(); refresh()
   }
   func run(_ f: () throws -> Void) throws {
@@ -105,7 +106,7 @@ public final class Runner {
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
-    return Status(figur: game.figur, welt: game.world.block(full: true), s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
+    return Status(figur: game.figur, welt: game.world.block(full: true), name: session.name, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
   /// Shared command handling (CLI + web): ONE dispatcher. Returns false on quit.
@@ -119,7 +120,7 @@ public final class Runner {
     case .frage(let q, let odds): if q.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(q, odds: odds) }
     case .figur(let f):
       game.figur = f.isEmpty ? nil : f
-      if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f) }
+      if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f); game.world.syncLists(game.eng) }
       try game.syncCache(); try session.save(game); refresh()
       sink(.info("Spielfigur: \(f.isEmpty ? "-" : f)"))
     case .neu(let st):
@@ -142,7 +143,7 @@ public final class Runner {
         var t = stripWelt(m.text); if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
         r.append(["who": "me", "text": t])
       }
-      else if let l = m.text.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }
+      else if let l = splitTail(m.text).body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }
     }
     return r
   }

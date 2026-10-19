@@ -25,6 +25,8 @@ Das Orakel entscheidet, du deutest:
 
 Szenen: Die erste Szene beginnt mit start_scene. Nur bei Ortswechsel/Zeitsprung ja beendest du die Szene mit end_scene und beginnst die nächste mit start_scene. Bei end_scene ist control false, wenn die Spielfigur bedrängt, getäuscht oder verletzt wurde, sonst true. Ohne offene Szene stellst du keine Frage.
 
+Nach der Erzählung steht eine letzte Zeile "Figuren: Name (Rolle), …" mit allen Figuren, die in dieser Erzählung auftreten (Eigenname, sonst die Rolle; bekannte Figuren aus [Welt] mit ihrem Namen), oder "Figuren: -".
+
 Erzählung: 3 bis 5 Sätze, konkret, zwei Sinneseindrücke, eine Störung. Manchmal ein Satz wörtliche Rede. Keine Zahlen, keine Werkzeugnamen, keine Erklärsätze. Ende offen, selten mit einer Frage.
 """#
 
@@ -42,56 +44,56 @@ public func figurBlock(_ f: String?) -> String { f.map { "\n\nDie Spielfigur (ge
 let DIRS: [String: String] = ["fern": "etwas geschieht fern", "zeichen": "ein mehrdeutiges Zeichen", "neu": "jemand Neues tritt auf", "akteur_handelt": "eine Figur handelt", "akteur_leidet": "einer Figur widerfährt Übles", "akteur_gewinnt": "eine Figur gewinnt", "strang_voran": "ein Handlungsstrang geht voran", "strang_zurueck": "ein Rückschlag im Strang", "strang_ende": "ein Strang endet", "figur_schaden": "dir widerfährt ein Nachteil", "figur_gunst": "dir wird eine Gunst zuteil", "kontext": "etwas in der laufenden Szene"]
 
 public let DELTA_SYS = #"""
-Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen des Weltzustands als JSON aus, die in der Erzählung ausdrücklich geschehen sind. Erfinde nichts. Die Spielfigur ("du", "wer":"du") ist nie ein NPC. Ist nichts passiert, gib {"figuren":[]} aus.
+Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen aus, die in der Erzählung ausdrücklich geschehen sind, als JSON. Erfinde nichts. Neue Figuren trägst du NICHT ein (das macht der Spielleiter). Die Spielfigur ("du", "wer":"du") ist nie eine Figur. Ist nichts passiert, gib {} aus.
 
-Felder (alle optional): spielfigur_ort (neuer Ort der Spielfigur), ort_neu [{name,kurz}], figuren [{name,kurz,ort}] (PFLICHT-Feld: alle Figuren, die in Aktion oder Erzählung auftreten und neu sind, mit Eigennamen, sonst mit ihrer Rolle als Namen; keine neuen Figuren: []), npc_ort [{wer,ort}], zustand [{wer,op,text}] (op "+" oder "-"), item [{wer,op,name}], beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung zur Spielfigur, -2 feindlich bis 2 loyal), strang [{titel,stand}].
+Felder (alle optional, Schlüssel alphabetisch): beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung einer bekannten Figur zur Spielfigur, -2 feindlich bis 2 loyal), item [{name,op,wer}] (op "+" oder "-"; Gegenstand wechselt den Besitzer), npc_ort [{ort,wer}] (bekannte Figur verlässt die Szene oder geht an einen Ort), ort_neu [{kurz,name}], spielfigur_ort (neuer Ort der Spielfigur), strang [{stand,titel}], zustand [{op,text,wer}] (op "+" oder "-").
 
 Beispiel 1
-Aktion: Ich spreche den Fährmann an.
-Erzählung: Am Boot lehnt ein Fährmann namens Bork und mustert dich misstrauisch. Er verlangt zwei Silberstücke für die Überfahrt, du gibst sie ihm.
+Aktion: Ich gebe Bork zwei Silberstücke.
+Erzählung: Bork nimmt die Münzen, wiegt sie in der Hand und nickt. Er wirkt jetzt weniger misstrauisch.
 Orakel: Antwort: JA
-Ausgabe: {"figuren":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}],"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}]}
+Ausgabe: {"haltung":[{"wer":"Bork","wert":0}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"},{"name":"zwei Silberstücke","op":"+","wer":"Bork"}]}
 
 Beispiel 2
-Aktion: Ich betrete die Hütte, wo die Köhlerin Ida am Feuer sitzt.
-Erzählung: Ida blickt auf, als du eintrittst, und schiebt dir wortlos einen Becher hin. Der Rauch beißt in den Augen.
+Aktion: Ich frage Ida nach dem Weg.
+Erzählung: Ida zeigt mit dem Kinn zur Tür und sagt, der Pfad zum Moor beginne hinter dem Haus.
 Orakel: -
-Ausgabe: {"figuren":[{"kurz":"Köhlerin am Feuer","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}
+Ausgabe: {"strang":[{"stand":"Pfad zum Moor gefunden","titel":"Der Weg ins Moor"}]}
 
-Beispiel 3
-Aktion: Ich warte und sehe aufs Wasser.
-Erzählung: Der Nebel steigt langsam vom Fluss auf, und irgendwo ruft ein Vogel.
+Beispiel 3 (bekannte Figur kehrt zurück: nichts eintragen)
+Aktion: Ich gehe wieder hinein und spreche Ida an.
+Erzählung: Ida blickt auf, als du zurückkommst, und wischt sich die Hände an der Schürze ab.
 Orakel: -
-Ausgabe: {"figuren":[]}
+Ausgabe: {}
 """#
 
 public let DELTA_SCHEMA = #"""
-{"type":"object","properties":{"beziehung":{"type":"array","items":{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["a","b","wert"],"additionalProperties":false}},"haltung":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["wer","wert"],"additionalProperties":false}},"item":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"name":{"type":"string"}},"required":["wer","op","name"],"additionalProperties":false}},"figuren":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"},"ort":{"type":"string"}},"required":["name","kurz","ort"],"additionalProperties":false}},"npc_ort":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"ort":{"type":"string"}},"required":["wer","ort"],"additionalProperties":false}},"ort_neu":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"}},"required":["name","kurz"],"additionalProperties":false}},"spielfigur_ort":{"type":"string"},"strang":{"type":"array","items":{"type":"object","properties":{"titel":{"type":"string"},"stand":{"type":"string"}},"required":["titel","stand"],"additionalProperties":false}},"zustand":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"text":{"type":"string"}},"required":["wer","op","text"],"additionalProperties":false}}},"required":["figuren"],"additionalProperties":false}
+{"type":"object","properties":{"beziehung":{"type":"array","items":{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["a","b","wert"],"additionalProperties":false}},"haltung":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["wer","wert"],"additionalProperties":false}},"item":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"name":{"type":"string"}},"required":["wer","op","name"],"additionalProperties":false}},"npc_ort":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"ort":{"type":"string"}},"required":["wer","ort"],"additionalProperties":false}},"ort_neu":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"}},"required":["name","kurz"],"additionalProperties":false}},"spielfigur_ort":{"type":"string"},"strang":{"type":"array","items":{"type":"object","properties":{"titel":{"type":"string"},"stand":{"type":"string"}},"required":["titel","stand"],"additionalProperties":false}},"zustand":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"text":{"type":"string"}},"required":["wer","op","text"],"additionalProperties":false}}},"additionalProperties":false}
 """#
 
 public let FEW: [Msg] = [
   .u("Ich, ein verschlossener Matrose mit vernarbter Hand, klettere im Nebel an Bord des Frachtseglers und suche den Steuermann."),
   .m("Spielfigur: verschlossener Matrose mit vernarbter Hand\nErwartung: Der Frachtsegler liegt still im Nebel, am Ruder steht jemand.\nOrtswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n<start_scene>{\"expect\":\"Die Spielfigur geht im Nebel an Bord des Frachtseglers\",\"el\":{\"ort\":\"Deck\",\"beteiligte\":\"Steuermann\"}}</start_scene>"),
   .u("[Orakel] Szene 1 beginnt wie erwartet."),
-  .m("Das Deck ist nass und glatt, und irgendwo schlägt eine Glocke im Takt der Wellen. Der Nebel riecht nach Salz und altem Teer. Am Ruder steht ein breiter Mann, der dich nicht anzusehen scheint. Ein loses Tau schleift mit leisem Quietschen über die Planken."),
-  .u("[Welt]\nDu: verschlossener Matrose mit vernarbter Hand. Ort: Deck.\nHier: Steuermann – breiter Mann am Ruder\n---\nIch trete zu ihm und frage, wer hier das Kommando hat."),
+  .m("Das Deck ist nass und glatt, und irgendwo schlägt eine Glocke im Takt der Wellen. Der Nebel riecht nach Salz und altem Teer. Am Ruder steht ein breiter Mann, der dich nicht anzusehen scheint. Ein loses Tau schleift mit leisem Quietschen über die Planken.\nFiguren: Steuermann (breiter Mann am Ruder)"),
+  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (breiter Mann am Ruder · hier)\n---\nIch trete zu ihm und frage, wer hier das Kommando hat."),
   .m("Erwartung: Der Mann am Ruder weicht zuerst aus.\nOrtswechsel/Zeitsprung: nein\nFrage: Ist der Steuermann selbst der Kapitän?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Ist der Steuermann selbst der Kapitän?\",\"odds\":-1}</ask_oracle>"),
   .u("[Orakel] Antwort: JA"),
-  .m("Antwort: JA → Der Steuermann ist der Kapitän und gibt es nur widerwillig zu.\nEr dreht den Kopf, sein Bart glänzt feucht im Laternenlicht. „Wer fragt, will meistens etwas“, brummt er und lässt das Ruder nicht los. Hinter dir knarrt eine Luke, als würde jemand unter Deck lauschen."),
-  .u("[Welt]\nDu: verschlossener Matrose mit vernarbter Hand. Ort: Deck.\nHier: Steuermann – Kapitän, breiter Mann am Ruder (Haltung zu dir: misstrauisch)\n---\nIch lehne mich an die Reling, trinke einen Schluck aus meiner Flasche und lasse die Zeit verstreichen."),
-  .m("Erwartung: Die Zeit vergeht langsam, der Nebel bleibt.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Branntwein brennt warm in deiner Kehle, während die Wellen träge gegen den Rumpf schlagen. Der Kapitän beobachtet dich aus den Augenwinkeln, ohne ein Wort zu sagen. Im Nebel zeichnet sich für einen Moment ein Schatten ab und verschwindet wieder."),
-  .u("[Welt]\nDu: verschlossener Matrose mit vernarbter Hand. Ort: Deck.\nHier: Steuermann – Kapitän, breiter Mann am Ruder (Haltung zu dir: misstrauisch)\n---\nIch versuche, dem Kapitän das Ruder abzunehmen."),
+  .m("Antwort: JA → Der Steuermann ist der Kapitän und gibt es nur widerwillig zu.\nEr dreht den Kopf, sein Bart glänzt feucht im Laternenlicht. „Wer fragt, will meistens etwas“, brummt er und lässt das Ruder nicht los. Hinter dir knarrt eine Luke, als würde jemand unter Deck lauschen.\nFiguren: Steuermann (Kapitän)"),
+  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch lehne mich an die Reling, trinke einen Schluck aus meiner Flasche und lasse die Zeit verstreichen."),
+  .m("Erwartung: Die Zeit vergeht langsam, der Nebel bleibt.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Branntwein brennt warm in deiner Kehle, während die Wellen träge gegen den Rumpf schlagen. Der Kapitän beobachtet dich aus den Augenwinkeln, ohne ein Wort zu sagen. Im Nebel zeichnet sich für einen Moment ein Schatten ab und verschwindet wieder.\nFiguren: Steuermann (Kapitän)"),
+  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch versuche, dem Kapitän das Ruder abzunehmen."),
   .m("Erwartung: Der Kapitän wehrt sich, das wird unangenehm.\nOrtswechsel/Zeitsprung: nein\nFrage: Gelingt es mir, das Ruder zu übernehmen?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Gelingt es mir, das Ruder zu übernehmen?\",\"odds\":-2}</ask_oracle>"),
   .u("[Orakel] Antwort: NEIN+\n[Orakel] Ereignis: figur_schaden – dir widerfährt ein Nachteil. Wörter: stolpern + Tau"),
-  .m("Antwort: NEIN+ → Der Kapitän stößt dich hart zurück.\nDeutung: Du stolperst über das lose Tau und stürzt auf die Planken.\nDer Stoß trifft dich an der Schulter, und du taumelst rückwärts. Das lose Tau fängt deinen Fuß, und du schlägst mit dem Knie auf das nasse Holz. „Noch ein Versuch, und du schwimmst“, sagt der Kapitän ruhig."),
-  .u("[Welt]\nDu: verschlossener Matrose mit vernarbter Hand. Ort: Deck. Zustand: Knie aufgeschlagen.\nHier: Steuermann – Kapitän, breiter Mann am Ruder (Haltung zu dir: feindlich)\n---\nIch rufe nach unten, ob dort noch jemand ist."),
+  .m("Antwort: NEIN+ → Der Kapitän stößt dich hart zurück.\nDeutung: Du stolperst über das lose Tau und stürzt auf die Planken.\nDer Stoß trifft dich an der Schulter, und du taumelst rückwärts. Das lose Tau fängt deinen Fuß, und du schlägst mit dem Knie auf das nasse Holz. „Noch ein Versuch, und du schwimmst“, sagt der Kapitän ruhig.\nFiguren: Steuermann (Kapitän)"),
+  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nIch rufe nach unten, ob dort noch jemand ist."),
   .m("Erwartung: Unter Deck lauscht jemand und antwortet vielleicht.\nOrtswechsel/Zeitsprung: nein\nFrage: Antwortet jemand von unten?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Antwortet jemand von unten?\",\"odds\":0}</ask_oracle>"),
   .u("[Orakel] Antwort: NEIN\n[Orakel] Ereignis: fern – etwas geschieht fern. Wörter: Hunger + Zahn"),
-  .m("Antwort: NEIN → Unten bleibt es still, nur das Holz knackt.\nDeutung: verwerfen\nDeine Stimme verliert sich im Nebel, und die Luke bleibt dunkel. Nur das Knacken der Spanten antwortet dir, langsam und gleichmäßig. Der Kapitän tut, als hätte er nichts gehört."),
-  .u("[Welt]\nDu: verschlossener Matrose mit vernarbter Hand. Ort: Deck. Zustand: Knie aufgeschlagen.\nHier: Steuermann – Kapitän, breiter Mann am Ruder (Haltung zu dir: feindlich)\n---\nAls der Morgen graut, gehe ich an Land und suche eine Schenke im Hafen."),
+  .m("Antwort: NEIN → Unten bleibt es still, nur das Holz knackt.\nDeutung: verwerfen\nDeine Stimme verliert sich im Nebel, und die Luke bleibt dunkel. Nur das Knacken der Spanten antwortet dir, langsam und gleichmäßig. Der Kapitän tut, als hätte er nichts gehört.\nFiguren: Steuermann (Kapitän)"),
+  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nAls der Morgen graut, gehe ich an Land und suche eine Schenke im Hafen."),
   .m("Erwartung: Der Morgen bringt Licht, im Hafen beginnt eine neue Szene.\nOrtswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n<end_scene>{\"summary\":\"Auf dem Frachtsegler wurde die Spielfigur vom Kapitän zurückgewiesen.\",\"why\":\"Die Spielfigur wurde gestoßen und verletzt\",\"control\":false}</end_scene>"),
   .u("[Orakel] Szene beendet. Die Lage wird unruhiger."),
   .m("<start_scene>{\"expect\":\"Im Morgengrauen betritt die Spielfigur eine Schenke im Hafen\",\"el\":{\"ort\":\"Hafenschenke\",\"beteiligte\":\"Wirtin\"}}</start_scene>"),
   .u("[Orakel] Szene 2 beginnt anders als erwartet.\n[Orakel] Änderung: ort ersetzen – Wörter: leer + Treppe"),
-  .m("Deutung: Die Schenke ist leer, nur eine Treppe führt in den Keller.\nDie Tür schwingt auf, und drinnen riecht es nach kaltem Fett und feuchtem Stein. Keine Gäste, keine Wirtin, nur eine schmale Treppe, die in die Dunkelheit hinabführt. Von unten tropft es gleichmäßig, als zähle jemand die Zeit."),
+  .m("Deutung: Die Schenke ist leer, nur eine Treppe führt in den Keller.\nDie Tür schwingt auf, und drinnen riecht es nach kaltem Fett und feuchtem Stein. Keine Gäste, keine Wirtin, nur eine schmale Treppe, die in die Dunkelheit hinabführt. Von unten tropft es gleichmäßig, als zähle jemand die Zeit.\nFiguren: -"),
 ]

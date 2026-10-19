@@ -68,19 +68,20 @@ public final class Game {
     try syncCache()
   }
 
-  /// One extra constrained step after the narration: JSON delta of the world state (own throwaway cache, history untouched).
-  func worldStep(block: String, player: String, narr: String, oracle: [String]) {
-    let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(player)\nErzählung: \(narr)\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
+  /// After the narration: (1) the narrator's own "Figuren:" tail sets presence / new characters, (2) one constrained delta step
+  /// (items, attitude, threads, movement) on a throwaway cache, (3) Schicksal lists are re-derived from the world.
+  func worldStep(player: String, narr: String, tail: String?, oracle: [String]) {
+    var log: [String] = []
+    if let t = tail { log += world.applyTail(t) } else { log += world.adoptNames(World.nameHints(player + " " + narr)) }
+    let block = world.block()   // current state (after start_scene and the tail), not the one shown to the narrator
+    let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(clean(player, 300))\nErzählung: \(clean(narr, 900))\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
     do {
       let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
-      if let d = try? J.parse(txt) {
-        let log = world.apply(d, eng: eng)
-        if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
-      }
+      if let d = try? J.parse(txt) { log += world.apply(d) }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
-    let hl = world.adoptNames(World.nameHints(player + " " + narr), eng: eng)   // proper names the delta step missed
-    if !hl.isEmpty { out(.world(hl.joined(separator: " · "))) }
+    world.syncLists(eng)
+    if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
   }
 
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
@@ -94,7 +95,7 @@ public final class Game {
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.mustAsk = quiet >= 1 && !isWQuestion(player); gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
-    var calls = 0, asked = false, figurChanged = false, finalNarr = "", oracle: [String] = []
+    var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, oracle: [String] = []
     var done = false
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls
@@ -126,22 +127,21 @@ public final class Game {
       if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }
       if gate.figurLine, let l = txt.split(separator: "\n").first(where: { $0.hasPrefix("Spielfigur: ") }) {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
-        if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); figurChanged = true }
+        if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); world.syncLists(eng); figurChanged = true }
       }
       gate.figurLine = false
       msgs.append(.m(txt)); onMsg(.m(txt))
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
-      guard var (name, args) = parseCall(txt, firstScene: eng.st.scene == 0) else { done = true; finalNarr = txt.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; break }
-      if name == "ask_oracle", args["shift"].isNull, let h = world.haltung(in: args["q"].str ?? ""), var o = args.obj { o["shift"] = .int(h); args = .obj(o) }   // NPC attitude -> social oracle shift
+      let (body, tail) = splitTail(txt)
+      guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; break }
+      if name == "ask_oracle", args["shift"].isNull, let h = world.shift(forQuestion: args["q"].str ?? ""), var o = args.obj { o["shift"] = .int(h); args = .obj(o) }   // NPC attitude -> social oracle shift (polarity-aware)
       let res = eng.call(name, args)
       calls += 1
       if name == "ask_oracle" { asked = true }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
-      if name == "start_scene", res["error"].isNull, let o = args["el"]["ort"].str, !o.isEmpty {
-        world.ort = cut(o, 60); if world.orte[cut(o, 60)] == nil, world.orte.count < 30 { world.orte[cut(o, 60)] = "" }
-      }
+      if name == "start_scene", res["error"].isNull { world.startScene(ort: args["el"]["ort"].str, beteiligte: args["el"]["beteiligte"].str ?? "", expect: args["expect"].str ?? "") }
       var fb = fmtResult(name, res)
       oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }
@@ -153,7 +153,7 @@ public final class Game {
       push(.u(fb))
     }
     if !done { out(.info("Aufruflimit")) }
-    if done { worldStep(block: wb, player: player, narr: finalNarr, oracle: oracle) }
+    if done { worldStep(player: player, narr: finalNarr, tail: finalTail, oracle: oracle) }
     if eng.st.open { quiet = asked ? 0 : quiet + 1 } else { quiet = 0 }
     if figurChanged { try syncCache() }   // pinned character changes the system prompt -> rebuild the cache once
   }
@@ -185,7 +185,7 @@ func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary":
   })
 }
 
-let gatePrefixes = ["Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
+let gatePrefixes = ["Figuren: ", "Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
 /// true while a partial line could still become a gate line (narration never contains ":" and never starts like a gate label)
 public func isGatePrefix(_ l: String) -> Bool { gatePrefixes.contains { $0.hasPrefix(l) || l.hasPrefix($0) } }
 
@@ -207,4 +207,12 @@ func groundedFigur(_ f: String, _ player: String) -> String? {
 public func stripWelt(_ t: String) -> String {
   guard t.hasPrefix("[Welt]"), let r = t.range(of: "\n---\n") else { return t }
   return String(t[r.upperBound...])
+}
+
+/// Split the narrator tail ("Figuren: …") off a step text.
+public func splitTail(_ txt: String) -> (body: String, tail: String?) {
+  var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+  guard let l = lines.last, l.hasPrefix("Figuren: ") else { return (txt, nil) }
+  lines.removeLast()
+  return (lines.joined(separator: "\n"), l)
 }

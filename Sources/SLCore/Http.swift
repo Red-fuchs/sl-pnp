@@ -8,3 +8,6 @@ public func httpHeader(_ head: String, _ name: String) -> String? {
   }
   return nil
 }
+
+/// Content-Length as a safe non-negative Int (negative or garbage -> 0; a negative value used to crash the body slice).
+public func httpContentLength(_ head: String) -> Int { max(0, httpHeader(head, "content-length").flatMap { Int($0) } ?? 0) }
