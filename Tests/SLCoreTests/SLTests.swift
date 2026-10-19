@@ -158,6 +158,22 @@ final class CmdTests: XCTestCase {
   }
 }
 
+final class NameHintTests: XCTestCase {
+  func testHints() throws {
+    let h = World.nameHints("Ich betrete die Taverne. Die Wirtin Marta wischt die Theke. Neben ihr steht Bork, der Fährmann, und die Wache Tom lacht. ")
+    XCTAssertEqual(Set(h.map(\.name)), ["Marta", "Tom", "Bork"])
+    XCTAssertTrue(h.contains { $0.name == "Marta" && $0.role == "Wirtin" }); XCTAssertTrue(h.contains { $0.name == "Bork" && $0.role == "Fährmann" })
+    XCTAssertTrue(World.nameHints("Die Wirtin wischt. Sie nickt. Der Wirt schweigt.").isEmpty)
+    let e = try Session.newEngine(rng: "seed:2")
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Taverne"
+    w.apply(["figuren": [["name": "Wirtin", "kurz": "Wirtin", "ort": "Taverne"]]], eng: e)       // role-named NPC from the delta step
+    w.adoptNames(World.nameHints("Die Wirtin Marta wischt."), eng: e)
+    XCTAssertEqual(w.npcs.map(\.name), ["Marta"]); XCTAssertEqual(e.st.akteure.map(\.name), ["Marta"])
+    XCTAssertTrue(w.block().contains("Hier: Marta – Wirtin"))
+    w.adoptNames(World.nameHints("Aether sieht die Wirtin Aether."), eng: e); XCTAssertEqual(w.npcs.count, 1)   // the player character never becomes an NPC
+  }
+}
+
 final class MiscTests: XCTestCase {
   func testClip() {
     let long = String(repeating: "x", count: 500)
@@ -232,7 +248,7 @@ final class GrammarTests: XCTestCase {
   func testDeltaGrammar() async throws {
     let (t, gt) = try await tok()
     let t0 = Date()
-    for txt in ["{}", #"{"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}],"npc_neu":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}]}"#, #"{"spielfigur_ort":"Keller","zustand":[{"op":"+","text":"verletzt","wer":"du"}]}"#, DELTA_SYS.components(separatedBy: "Ausgabe: ")[1].components(separatedBy: "\n")[0]] {
+    for txt in [#"{"figuren":[]}"#, #"{"figuren":[{"kurz":"Köhlerin","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}"#, #"{"figuren":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}],"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}]}"#, #"{"figuren":[],"spielfigur_ort":"Keller","zustand":[{"op":"+","text":"verletzt","wer":"du"}]}"#, DELTA_SYS.components(separatedBy: "Ausgabe: ")[1].components(separatedBy: "\n")[0]] {
       let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.delta.tag)
       for id in t.encode(text: txt, addSpecialTokens: false) {
         let r = try c.computeMask()

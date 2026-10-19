@@ -74,10 +74,13 @@ public final class Game {
     do {
       let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
-      guard let d = try? J.parse(txt) else { return }
-      let log = world.apply(d, eng: eng)
-      if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
+      if let d = try? J.parse(txt) {
+        let log = world.apply(d, eng: eng)
+        if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
+      }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
+    let hl = world.adoptNames(World.nameHints(player + " " + narr), eng: eng)   // proper names the delta step missed
+    if !hl.isEmpty { out(.world(hl.joined(separator: " · "))) }
   }
 
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }

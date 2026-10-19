@@ -42,31 +42,31 @@ public func figurBlock(_ f: String?) -> String { f.map { "\n\nDie Spielfigur (ge
 let DIRS: [String: String] = ["fern": "etwas geschieht fern", "zeichen": "ein mehrdeutiges Zeichen", "neu": "jemand Neues tritt auf", "akteur_handelt": "eine Figur handelt", "akteur_leidet": "einer Figur widerfährt Übles", "akteur_gewinnt": "eine Figur gewinnt", "strang_voran": "ein Handlungsstrang geht voran", "strang_zurueck": "ein Rückschlag im Strang", "strang_ende": "ein Strang endet", "figur_schaden": "dir widerfährt ein Nachteil", "figur_gunst": "dir wird eine Gunst zuteil", "kontext": "etwas in der laufenden Szene"]
 
 public let DELTA_SYS = #"""
-Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen des Weltzustands als JSON aus, die in der Erzählung ausdrücklich geschehen sind. Erfinde nichts. Die Spielfigur ("du", "wer":"du") ist nie ein NPC. Ist nichts passiert, gib {} aus.
+Du führst das Weltgedächtnis eines Solo-Rollenspiels. Du bekommst den bekannten Weltzustand [Welt], die Aktion des Spielers, die Erzählung des Spielleiters und das Orakelergebnis. Gib NUR die Änderungen des Weltzustands als JSON aus, die in der Erzählung ausdrücklich geschehen sind. Erfinde nichts. Die Spielfigur ("du", "wer":"du") ist nie ein NPC. Ist nichts passiert, gib {"figuren":[]} aus.
 
-Felder (alle optional): spielfigur_ort (neuer Ort der Spielfigur), ort_neu [{name,kurz}], npc_neu [{name,kurz,ort}] (jede neue Figur, die in Aktion oder Erzählung mit Namen oder klarer Beschreibung auftritt; steht ihr Name nicht da, nimm ihre Rolle als Namen), npc_ort [{wer,ort}], zustand [{wer,op,text}] (op "+" oder "-"), item [{wer,op,name}], beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung zur Spielfigur, -2 feindlich bis 2 loyal), strang [{titel,stand}].
+Felder (alle optional): spielfigur_ort (neuer Ort der Spielfigur), ort_neu [{name,kurz}], figuren [{name,kurz,ort}] (PFLICHT-Feld: alle Figuren, die in Aktion oder Erzählung auftreten und neu sind, mit Eigennamen, sonst mit ihrer Rolle als Namen; keine neuen Figuren: []), npc_ort [{wer,ort}], zustand [{wer,op,text}] (op "+" oder "-"), item [{wer,op,name}], beziehung [{a,b,wert}] (-2..2), haltung [{wer,wert}] (Haltung zur Spielfigur, -2 feindlich bis 2 loyal), strang [{titel,stand}].
 
 Beispiel 1
 Aktion: Ich spreche den Fährmann an.
 Erzählung: Am Boot lehnt ein Fährmann namens Bork und mustert dich misstrauisch. Er verlangt zwei Silberstücke für die Überfahrt, du gibst sie ihm.
 Orakel: Antwort: JA
-Ausgabe: {"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}],"npc_neu":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}]}
+Ausgabe: {"figuren":[{"kurz":"Fährmann","name":"Bork","ort":"Flussufer"}],"haltung":[{"wer":"Bork","wert":-1}],"item":[{"name":"zwei Silberstücke","op":"-","wer":"du"}]}
 
 Beispiel 2
 Aktion: Ich betrete die Hütte, wo die Köhlerin Ida am Feuer sitzt.
 Erzählung: Ida blickt auf, als du eintrittst, und schiebt dir wortlos einen Becher hin. Der Rauch beißt in den Augen.
 Orakel: -
-Ausgabe: {"npc_neu":[{"kurz":"Köhlerin am Feuer","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}
+Ausgabe: {"figuren":[{"kurz":"Köhlerin am Feuer","name":"Ida","ort":"Hütte"}],"spielfigur_ort":"Hütte"}
 
 Beispiel 3
 Aktion: Ich warte und sehe aufs Wasser.
 Erzählung: Der Nebel steigt langsam vom Fluss auf, und irgendwo ruft ein Vogel.
 Orakel: -
-Ausgabe: {}
+Ausgabe: {"figuren":[]}
 """#
 
 public let DELTA_SCHEMA = #"""
-{"type":"object","properties":{"beziehung":{"type":"array","items":{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["a","b","wert"],"additionalProperties":false}},"haltung":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["wer","wert"],"additionalProperties":false}},"item":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"name":{"type":"string"}},"required":["wer","op","name"],"additionalProperties":false}},"npc_neu":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"},"ort":{"type":"string"}},"required":["name","kurz","ort"],"additionalProperties":false}},"npc_ort":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"ort":{"type":"string"}},"required":["wer","ort"],"additionalProperties":false}},"ort_neu":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"}},"required":["name","kurz"],"additionalProperties":false}},"spielfigur_ort":{"type":"string"},"strang":{"type":"array","items":{"type":"object","properties":{"titel":{"type":"string"},"stand":{"type":"string"}},"required":["titel","stand"],"additionalProperties":false}},"zustand":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"text":{"type":"string"}},"required":["wer","op","text"],"additionalProperties":false}}},"additionalProperties":false}
+{"type":"object","properties":{"beziehung":{"type":"array","items":{"type":"object","properties":{"a":{"type":"string"},"b":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["a","b","wert"],"additionalProperties":false}},"haltung":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"wert":{"type":"integer","minimum":-2,"maximum":2}},"required":["wer","wert"],"additionalProperties":false}},"item":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"name":{"type":"string"}},"required":["wer","op","name"],"additionalProperties":false}},"figuren":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"},"ort":{"type":"string"}},"required":["name","kurz","ort"],"additionalProperties":false}},"npc_ort":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"ort":{"type":"string"}},"required":["wer","ort"],"additionalProperties":false}},"ort_neu":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"kurz":{"type":"string"}},"required":["name","kurz"],"additionalProperties":false}},"spielfigur_ort":{"type":"string"},"strang":{"type":"array","items":{"type":"object","properties":{"titel":{"type":"string"},"stand":{"type":"string"}},"required":["titel","stand"],"additionalProperties":false}},"zustand":{"type":"array","items":{"type":"object","properties":{"wer":{"type":"string"},"op":{"enum":["+","-"]},"text":{"type":"string"}},"required":["wer","op","text"],"additionalProperties":false}}},"required":["figuren"],"additionalProperties":false}
 """#
 
 public let FEW: [Msg] = [

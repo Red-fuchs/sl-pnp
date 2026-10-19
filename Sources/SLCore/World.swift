@@ -102,7 +102,7 @@ public struct World: Codable, Equatable {
     }
     if let o = d["spielfigur_ort"].str, !o.trimmingCharacters(in: .whitespaces).isEmpty { ort = cut(o, 60); log.append("du → \(cut(o, 60))") }
     for e in d["ort_neu"].arr ?? [] { if let n = e["name"].str, !n.isEmpty, orte.count < 30 { orte[cut(n, 60)] = cut(e["kurz"].str ?? "", 80); log.append("ort \(n)") } }
-    for e in d["npc_neu"].arr ?? [] {
+    for e in (d["figuren"].arr ?? []) + (d["npc_neu"].arr ?? []) {
       guard let n = e["name"].str.map({ cut($0.trimmingCharacters(in: .whitespaces), 40) }), !n.isEmpty, !isFigur(n) else { continue }
       let k = cut(e["kurz"].str ?? "", 80), o = e["ort"].str.map { cut($0, 60) }
       if let i = npc(n) { if !k.isEmpty { npcs[i].kurz = k }; if let o { npcs[i].ort = o }; continue }
@@ -141,6 +141,43 @@ public struct World: Codable, Equatable {
         _ = eng?.call("lists", ["list": "straenge", "op": "add", "name": .str(t)])
       }
       log.append("strang \(t)")
+    }
+    return log
+  }
+
+  // MARK: deterministic name hints ("die Wirtin Marta", "Marta, die Wirtin", "Köhlerin namens Ida") - the 4B delta step often skips proper names
+  static let roleWords = ["Wirtin", "Wirt", "Köhlerin", "Köhler", "Fährmann", "Händlerin", "Händler", "Wache", "Hauptmann", "Priesterin", "Priester", "Pfarrer", "Schmiedin", "Schmied", "Botin", "Bote", "Bürgermeister", "Vogt", "Mönch", "Nonne", "Knecht", "Magd", "Kapitän", "Steuermann", "Heilerin", "Heiler", "Bäuerin", "Bauer", "Jägerin", "Jäger", "Wirtsleute", "Dame", "Herr", "Frau", "Kind", "Junge", "Mädchen"]
+  static let stop: Set<String> = ["Sie", "Der", "Die", "Das", "Ein", "Eine", "Dann", "Doch", "Und", "Als", "Wie", "Wer", "Was", "Hier", "Dort", "Nur", "Noch", "Auch", "Mit", "Von", "Aber", "Seine", "Ihre", "Dein", "Deine", "Kommt", "Wischt", "Stand", "Steht", "Sitzt", "Blickt", "Hebt", "Tritt", "Sagt", "Antwortet", "Nickt", "Schüttelt", "Hat", "Ist", "War", "Wird", "Ihr", "Ihm", "Ihn", "Dir", "Dich", "Mich", "Mir", "Hinter", "Neben", "Vor", "Zu", "Bei", "Nach", "Aus", "Auf", "Fremder", "Fremde"]
+  public static func nameHints(_ text: String) -> [(name: String, role: String)] {
+    let roles = roleWords.joined(separator: "|"), cap = "[A-ZÄÖÜ][a-zäöüß]{2,}"
+    var out: [(String, String)] = []
+    func scan(_ pat: String, name: Int, role: Int) {
+      guard let re = try? NSRegularExpression(pattern: pat) else { return }
+      let ns = text as NSString
+      for m in re.matches(in: text, range: NSRange(location: 0, length: ns.length)) {
+        let n = ns.substring(with: m.range(at: name)), r = ns.substring(with: m.range(at: role))
+        if !stop.contains(n) && !roleWords.contains(n) && !out.contains(where: { $0.0 == n }) { out.append((n, r)) }
+      }
+    }
+    scan("\\b(\(roles))\\s+(?:namens\\s+|genannt\\s+)?(\(cap))\\b", name: 2, role: 1)
+    scan("(\(cap)),\\s+(?:die|der|eine|ein)\\s+(\(roles))\\b", name: 1, role: 2)
+    return out
+  }
+  /// Register or rename NPCs from name hints; returns log lines.
+  @discardableResult
+  public mutating func adoptNames(_ hints: [(name: String, role: String)], eng: Engine? = nil) -> [String] {
+    var log: [String] = []
+    for h in hints where !isFigur(h.name) && npc(h.name) == nil {
+      if let i = npcs.firstIndex(where: { norm($0.name) == norm(h.role) }) {   // generic "Wirtin" -> "Marta"
+        let old = npcs[i].name; npcs[i].name = h.name
+        if let id = eng?.st.akteure.first(where: { $0.name == old })?.id { _ = eng?.call("lists", ["list": "akteure", "op": "remove", "id": .str(id)]) }
+        _ = eng?.call("lists", ["list": "akteure", "op": "add", "name": .str(h.name)])
+        log.append("\(old) heißt \(h.name)")
+      } else if npcs.count < 20 {
+        npcs.append(Npc(id: "n\(nextId)", name: h.name, kurz: h.role, ort: ort)); nextId += 1
+        _ = eng?.call("lists", ["list": "akteure", "op": "add", "name": .str(h.name)])
+        log.append("neu \(h.name) (\(h.role))")
+      }
     }
     return log
   }
