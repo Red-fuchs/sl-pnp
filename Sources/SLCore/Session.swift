@@ -1,0 +1,52 @@
+import Foundation
+import Schicksal
+
+public let sessionsRoot = URL(fileURLWithPath: NSHomeDirectory() + "/Claude-Workspace/gm-bench/sl-sessions")
+
+struct Chat: Codable { var setting: String; var msgs: [Msg] }
+
+/// Persistent session dir: state.json (schicksal), chat.json (history), transcript.md.
+public final class Session {
+  public let dir: URL
+  public let name: String
+  public init(name: String, root: URL = sessionsRoot) throws {
+    self.name = name; dir = root.appendingPathComponent(name)
+    try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+  }
+  var statePath: String { dir.appendingPathComponent("state.json").path }
+  var chatURL: URL { dir.appendingPathComponent("chat.json") }
+  var mdURL: URL { dir.appendingPathComponent("transcript.md") }
+  public var exists: Bool { FileManager.default.fileExists(atPath: statePath) && FileManager.default.fileExists(atPath: chatURL.path) }
+
+  public static func latest(root: URL = sessionsRoot) -> String? {
+    let fm = FileManager.default
+    let ds = (try? fm.contentsOfDirectory(at: root, includingPropertiesForKeys: [.contentModificationDateKey])) ?? []
+    return ds.filter { fm.fileExists(atPath: $0.appendingPathComponent("chat.json").path) }
+      .max { (try? $0.appendingPathComponent("chat.json").resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
+           < (try? $1.appendingPathComponent("chat.json").resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast }?
+      .lastPathComponent
+  }
+
+  public static func newEngine(rng: String) throws -> Engine {
+    let e = Engine(rng: rng.hasPrefix("seed:") ? "seed" : rng, fallback: "jitter"); e.machine = true
+    var a: J = ["op": "new", "rng": .str(rng), "ev_mode": "adaptiv"]
+    if rng.hasPrefix("seed:"), let n = Int(rng.dropFirst(5)) { a = ["op": "new", "rng": "seed", "seed": .int(n), "ev_mode": "adaptiv"] }
+    let r = e.call("session", a)
+    if let err = r["error"].str { throw SLError(err) }
+    return e
+  }
+  public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg]) {
+    let e = try Engine.load(path: statePath); e.machine = true
+    let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
+    return (e, c.setting, c.msgs)
+  }
+  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs) }
+  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg]) throws {
+    try e.save(path: statePath)
+    try JSONEncoder().encode(Chat(setting: setting, msgs: msgs)).write(to: chatURL, options: .atomic)
+  }
+  public func log(_ s: String) {
+    if !FileManager.default.fileExists(atPath: mdURL.path) { FileManager.default.createFile(atPath: mdURL.path, contents: nil) }
+    if let h = try? FileHandle(forWritingTo: mdURL) { h.seekToEndOfFile(); h.write(Data(s.utf8)); try? h.close() }
+  }
+}
