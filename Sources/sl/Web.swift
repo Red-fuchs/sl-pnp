@@ -96,10 +96,10 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     func hdr(_ k: String) -> String? { httpHeader(head, k) }
     let hostName = (hdr("host") ?? "").replacingOccurrences(of: ":\(port)", with: "")
     guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
-    // Origin only matters for state-changing requests (a browser extension may rewrite Origin on GETs); GETs are covered by the Host check
-    if method == "POST", let o = hdr("origin"), !["http://127.0.0.1:\(port)", "http://localhost:\(port)"].contains(o) {
-      FileHandle.standardError.write(Data("403 origin=\(o)\n".utf8))
-      return reply(c, "403 Forbidden", "text/plain", Data("origin=\(o)".utf8))
+    // CSRF guard via custom header instead of Origin (browser extensions rewrite Origin): cross-site pages can't set x-sl without a CORS preflight, which we never answer
+    if method == "POST", hdr("x-sl") != "1" {
+      FileHandle.standardError.write(Data("403 x-sl fehlt (origin=\(hdr("origin") ?? "-"))\n".utf8))
+      return reply(c, "403 Forbidden", "text/plain", Data("x-sl".utf8))
     }
     switch (method, path) {
     case ("GET", "/"): reply(c, "200 OK", "text/html; charset=utf-8", Data(pageHTML.utf8))
@@ -186,6 +186,6 @@ es.onmessage=e=>{const m=JSON.parse(e.data);
  else if(m.t=='user')add('me',m.text);
  else if(m.t=='state'){if(m.s===undefined)render(m);else render(m)}
  else if(m.t=='bye')add('inf','Leerlauf – Modell entladen, Server beendet. Mit --resume neu starten.')};
-$('f').onsubmit=e=>{e.preventDefault();const t=$('in').value.trim();if(!t)return;$('in').value='';fetch('/say',{method:'POST',body:JSON.stringify({text:t})})};
+$('f').onsubmit=e=>{e.preventDefault();const t=$('in').value.trim();if(!t)return;$('in').value='';fetch('/say',{method:'POST',headers:{'x-sl':'1'},body:JSON.stringify({text:t})})};
 </script></body></html>
 """#
