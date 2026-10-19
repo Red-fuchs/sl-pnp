@@ -96,9 +96,14 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     func hdr(_ k: String) -> String? { httpHeader(head, k) }
     let hostName = (hdr("host") ?? "").replacingOccurrences(of: ":\(port)", with: "")
     guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
-    if let o = hdr("origin"), !["http://127.0.0.1:\(port)", "http://localhost:\(port)"].contains(o) { return reply(c, "403 Forbidden", "text/plain", Data("origin".utf8)) }
+    // Origin only matters for state-changing requests (a browser extension may rewrite Origin on GETs); GETs are covered by the Host check
+    if method == "POST", let o = hdr("origin"), !["http://127.0.0.1:\(port)", "http://localhost:\(port)"].contains(o) {
+      FileHandle.standardError.write(Data("403 origin=\(o)\n".utf8))
+      return reply(c, "403 Forbidden", "text/plain", Data("origin=\(o)".utf8))
+    }
     switch (method, path) {
     case ("GET", "/"): reply(c, "200 OK", "text/html; charset=utf-8", Data(pageHTML.utf8))
+    case ("GET", "/favicon.ico"): reply(c, "204 No Content", "image/x-icon", Data())
     case ("GET", "/state"):
       lock.lock(); let b = busy; lock.unlock()
       var st = state(runner, busy: b)

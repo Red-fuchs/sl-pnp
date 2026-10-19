@@ -87,7 +87,11 @@ public final class Runner {
   public func ende() throws {
     guard game.eng.st.open else { sink(.info("keine offene Szene")); return }
     session.log("\n**Spieler:** /ende\n"); try run { try game.turn("Die Szene ist hier zu Ende.", forceEnd: true) } }
+  /// /frage is a yes/no oracle question. W-questions ("wo bin ich?") would be answered by NEIN and overwrite established facts ->
+  /// they go in as a normal player turn instead (the gate then decides whether/how to ask a yes/no question).
   public func frage(_ q: String, odds: Int) throws {
+    guard game.eng.st.open else { sink(.info("Keine offene Szene – beschreibe zuerst deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).")); return }
+    if isWQuestion(q) { sink(.info("W-Frage: wird als normaler Zug gespielt (das Orakel beantwortet nur Ja/Nein-Fragen).")); try player(q); return }
     let r = game.eng.call("ask_oracle", ["q": .str(q), "odds": .int(odds)])
     if r["error"].isNull == false { sink(.info("Fehler: \(r["error"].str ?? "")")); return }
     sink(.tool("ask_oracle", ["q": .str(q), "odds": .int(odds)], r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
@@ -139,4 +143,9 @@ public final class Runner {
     }
     return r
   }
+}
+
+public func isWQuestion(_ q: String) -> Bool {
+  let w = q.lowercased().trimmingCharacters(in: .whitespaces)
+  return w.range(of: #"^(wo|wer|wen|wem|wessen|was|wie|warum|wieso|weshalb|weswegen|wann|woher|wohin|welche[nmrs]?|wieviel\w*|wie viel\w*|womit|wodurch|wozu|worauf|woran)\b"#, options: .regularExpression) != nil
 }

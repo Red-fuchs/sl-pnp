@@ -108,6 +108,10 @@ final class MiscTests: XCTestCase {
     XCTAssertEqual(groundedFigur("grauer Mann mit Brille", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne"), "grauer Mann mit Brille")
     XCTAssertTrue(groundedFigur("Matrose", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne").hasPrefix("Ein grauer Mann"))
   }
+  func testWQuestion() {
+    for q in ["wo bin ich?", "Wer ist das?", "welcher Weg führt hinaus", "wie viele Gäste sind da?"] { XCTAssertTrue(isWQuestion(q), q) }
+    for q in ["Ist die Tür offen?", "Bin ich noch in Grauweiler?", "Wirt kennt mich?"] { XCTAssertFalse(isWQuestion(q), q) }
+  }
   func testGatePrefix() {
     XCTAssertTrue(isGatePrefix("Ortswechsel/Zeit")); XCTAssertTrue(isGatePrefix("Ortswechsel/Zeitsprung: nein")); XCTAssertTrue(isGatePrefix("Er"))
     XCTAssertFalse(isGatePrefix("Der Regen peitscht")); XCTAssertFalse(isGatePrefix("Das Deck"))
