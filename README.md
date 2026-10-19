@@ -19,7 +19,11 @@ swift test -c release -Xswiftc -enable-testing   # 15 Tests; Grammatik-Tests bra
 
 Szene 1 beginnt mit dem ersten Spielerzug (das Setting wird dem Modell mitgegeben).
 
+## Weltzustand (prompt v5)
+Pro Sitzung `world.json`: Spielfigur (Name, Kurzbeschreibung, Ort, Zustand, Inventar), NPCs (Name, kurz, Ort, Zustand, Inventar, Haltung -2..2), Orte, Beziehungen, Stränge (je begrenzt, <=20 NPCs). Vor jedem Spielerzug steht ein kompakter `[Welt]`-Block (nur Relevantes: Figur, aktueller Ort, anwesende NPCs, wenige andere, offene Stränge) in der User-Nachricht - der System-Prefix bleibt cachebar. Nach jeder Erzählung läuft ein zusätzlicher grammatikbeschränkter Schritt "Weltänderung" (JSON-Delta, darf `{}` sein) auf einem eigenen Wegwerf-Cache; die Harness wendet ihn an (unbekannte Bezüge werden ignoriert, die Spielfigur wird nie NPC). Sync mit Schicksal: neuer NPC -> Liste `akteure`, Strang -> `straenge` (add/bump), NPC-Haltung -> `shift` bei sozialen Orakelfragen. Kosten: ca. 1-2 s pro Zug. Prompt-Quelle: `gm-loop/prompt.py` -> `tools/gen_prompts.py` erzeugt `Sources/SLCore/PromptsGen.swift`.
+
 ## Befehle
+`/figur [Name:] <Beschreibung>` setzt die Spielfigur (DU, nie NPC) · `/welt` zeigt den Weltzustand.
 `/ende` Szene beenden · `/status` · `/frage <text>` (`/frage+2 <text>` feste Quote -3..3) · `/neu [setting]` · `/quit` (Ctrl-D). Alles andere ist ein Spielerzug.
 CLI zeigt Werkzeugaufrufe gedimmt (`⚀ ask_oracle: … (wahrscheinlich) → JA+ [mic]`) und Ereignisse (`⚡ akteur_handelt: erpressen + Siegel`); rng/roll/step nur in der UI, nie im Modellkontext.
 
