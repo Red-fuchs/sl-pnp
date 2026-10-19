@@ -67,7 +67,7 @@ public struct World: Codable, Equatable {
     if !els.isEmpty { l.append("Anderswo: " + els.map { "\($0.name) (\($0.ort ?? "?"))" }.joined(separator: ", ")) }
     if !straenge.isEmpty { l.append("Stränge: " + straenge.suffix(full ? 8 : 3).map { "\($0.titel) – \($0.stand)" }.joined(separator: " | ")) }
     if full {
-      if !orte.isEmpty { l.append("Orte: " + orte.sorted { $0.key < $1.key }.map { "\($0.key) – \($0.value)" }.joined(separator: " | ")) }
+      if !orte.isEmpty { l.append("Orte: " + orte.sorted { $0.key < $1.key }.map { $0.value.isEmpty ? $0.key : "\($0.key) – \($0.value)" }.joined(separator: " | ")) }
       if !beziehungen.isEmpty { l.append("Beziehungen: " + beziehungen.map { "\($0.a)↔\($0.b) \($0.wert)" }.joined(separator: ", ")) }
     }
     return l.joined(separator: "\n")

@@ -148,6 +148,16 @@ final class WorldTests: XCTestCase {
   }
 }
 
+final class CmdTests: XCTestCase {
+  func testDispatcher() {   // one parser for CLI and web
+    XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))
+    XCTAssertEqual(Cmd.parse("/figur"), .figur("")); XCTAssertEqual(Cmd.parse("/welt"), .welt); XCTAssertEqual(Cmd.parse("/ende"), .ende)
+    XCTAssertEqual(Cmd.parse("/frage+2 Ist er da?"), .frage("Ist er da?", 2)); XCTAssertEqual(Cmd.parse("/frage-1 x"), .frage("x", -1))
+    XCTAssertEqual(Cmd.parse("/neu Piraten"), .neu("Piraten")); XCTAssertEqual(Cmd.parse("/foo"), .unknown("/foo")); XCTAssertEqual(Cmd.parse("ich gehe"), .say("ich gehe"))
+    XCTAssertNil(groundedFigur("Matrose", "ich betrete die Taverne in Grauweiler und setze mich an einen Tisch"))
+  }
+}
+
 final class MiscTests: XCTestCase {
   func testClip() {
     let long = String(repeating: "x", count: 500)
@@ -156,7 +166,7 @@ final class MiscTests: XCTestCase {
   }
   func testGroundedFigur() {
     XCTAssertEqual(groundedFigur("grauer Mann mit Brille", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne"), "grauer Mann mit Brille")
-    XCTAssertTrue(groundedFigur("Matrose", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne").hasPrefix("Ein grauer Mann"))
+    XCTAssertTrue(groundedFigur("Matrose", "Ein grauer Mann ende 40 mit lila Brille betritt die Taverne")!.hasPrefix("Ein grauer Mann"))
   }
   func testWQuestion() {
     for q in ["wo bin ich?", "Wer ist das?", "welcher Weg führt hinaus", "wie viele Gäste sind da?"] { XCTAssertTrue(isWQuestion(q), q) }

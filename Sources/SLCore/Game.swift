@@ -123,7 +123,7 @@ public final class Game {
       if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }
       if gate.figurLine, let l = txt.split(separator: "\n").first(where: { $0.hasPrefix("Spielfigur: ") }) {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
-        if f != "-" && !f.isEmpty { figur = groundedFigur(f, player); world.setFigur(figur!); figurChanged = true }
+        if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); figurChanged = true }
       }
       gate.figurLine = false
       msgs.append(.m(txt)); onMsg(.m(txt))
@@ -188,11 +188,14 @@ public func isGatePrefix(_ l: String) -> Bool { gatePrefixes.contains { $0.hasPr
 
 /// The model's "Spielfigur:" line is only trusted if it is grounded in the player's own words (few-shot bleed: it once answered "Matrose").
 /// Otherwise fall back to the player's text itself (cut at ~140 chars, word boundary).
-func groundedFigur(_ f: String, _ player: String) -> String {
+func groundedFigur(_ f: String, _ player: String) -> String? {
   let p = player.lowercased()
   let ok = f.lowercased().split(whereSeparator: { !$0.isLetter }).filter { $0.count >= 4 }.contains { p.contains($0.prefix(5)) }
   if ok { return f }
   var t = player.trimmingCharacters(in: .whitespacesAndNewlines)
+  // fallback only for something that reads like a description ("ein älterer Mann …"), not an action ("ich betrete …")
+  let w = t.lowercased().split(separator: " ")
+  if w.count < 8 || ["ich", "wir", "ich,"].contains(String(w.first ?? "")) { return nil }
   if t.count > 140 { t = String(t.prefix(140)); if let i = t.lastIndex(of: " ") { t = String(t[..<i]) } }
   return t
 }

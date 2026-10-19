@@ -108,28 +108,28 @@ public final class Runner {
     return Status(figur: game.figur, welt: game.world.block(full: true), s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
-  /// Shared command handling (CLI + web). Returns false on quit.
+  /// Shared command handling (CLI + web): ONE dispatcher. Returns false on quit.
   public func handle(_ line: String) throws -> Bool {
-    let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
-    if t.isEmpty { return true }
-    if t == "/quit" || t == "/q" { return false }
-    if t == "/ende" { try ende() }
-    else if t == "/status" { let s = status(); sink(.info(([s.text] + s.journal.map { "· " + $0 }).joined(separator: "\n"))) }
-    else if t.hasPrefix("/frage") {
-      var rest = String(t.dropFirst(6)), odds = 0
-      if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }
-      rest = rest.trimmingCharacters(in: .whitespaces)
-      if rest.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(rest, odds: odds) }
-    } else if t == "/welt" {
-      let b = game.world.block(full: true); sink(.info(b.isEmpty ? "Welt: noch leer" : b))
-    } else if t.hasPrefix("/neu") {
-      let st = String(t.dropFirst(4)).trimmingCharacters(in: .whitespaces)
+    switch Cmd.parse(line) {
+    case .empty: break
+    case .quit: return false
+    case .ende: try ende()
+    case .status: let s = status(); sink(.info(([s.text] + s.journal.map { "· " + $0 }).joined(separator: "\n")))
+    case .welt: let b = game.world.block(full: true); sink(.info(b.isEmpty ? "Welt: noch leer" : b))
+    case .frage(let q, let odds): if q.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(q, odds: odds) }
+    case .figur(let f):
+      game.figur = f.isEmpty ? nil : f
+      if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f) }
+      try game.syncCache(); try session.save(game); refresh()
+      sink(.info("Spielfigur: \(f.isEmpty ? "-" : f)"))
+    case .neu(let st):
       let f = DateFormatter(); f.dateFormat = "yyyyMMdd-HHmmss"
       session = try Session(name: "sl-" + f.string(from: Date()))
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
-    } else if t.hasPrefix("/") { sink(.info("unbekannt: \(t)")) }
-    else { try player(t) }
+    case .unknown(let t): sink(.info("unbekannt: \(t)"))
+    case .say(let t): try player(t)
+    }
     return true
   }
 
@@ -151,4 +151,25 @@ public final class Runner {
 public func isWQuestion(_ q: String) -> Bool {
   let w = q.lowercased().trimmingCharacters(in: .whitespaces)
   return w.range(of: #"^(wo|wer|wen|wem|wessen|was|wie|warum|wieso|weshalb|weswegen|wann|woher|wohin|welche[nmrs]?|wieviel\w*|wie viel\w*|womit|wodurch|wozu|worauf|woran)\b"#, options: .regularExpression) != nil
+}
+
+public enum Cmd: Equatable {
+  case empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  public static func parse(_ line: String) -> Cmd {
+    let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
+    func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
+    if t.isEmpty { return .empty }
+    if t == "/quit" || t == "/q" { return .quit }
+    if t == "/ende" { return .ende }
+    if t == "/status" { return .status }
+    if t == "/welt" { return .welt }
+    if t.hasPrefix("/frage") {
+      var rest = String(t.dropFirst(6)), odds = 0
+      if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }
+      return .frage(rest.trimmingCharacters(in: .whitespaces), odds)
+    }
+    if t == "/figur" || t.hasPrefix("/figur ") { return .figur(arg(6)) }
+    if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
+    return t.hasPrefix("/") ? .unknown(t) : .say(t)
+  }
 }
