@@ -159,6 +159,18 @@ public final class Game {
 
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
 
+  /// Gate state at the start of a turn (a pure function so a test can assert every field; a trailing `//` once swallowed all of them).
+  static func initialGate(player: String, pre: J?, forceEnd: Bool, noOracle: Bool, firstTurn: Bool, figurKnown: Bool, quiet: Int, saeulen: Bool) -> Gate {
+    var gate = Gate()
+    gate.figurLine = firstTurn && !figurKnown
+    gate.selfQ = isSelfQuestion(player)
+    gate.noAsk = noOracle || (pre == nil && quiet < 3)        // the harness decides when to ask (risky/lethal actions, /frage); the model only asks itself after a long quiet stretch
+    gate.art = saeulen
+    gate.mustAsk = quiet >= 3 && !isWQuestion(player) && !gate.selfQ
+    gate.head = pre == nil
+    gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    return gate
+  }
   /// One player turn. `pre`: already-rolled oracle result (from /frage) -> skips the gate head.
   public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false, noOracle: Bool = false) throws {
     if lm.stale { try syncCache() }        // model was unloaded while idle: rebuild the history (the weights are re-loaded lazily on generate)
@@ -183,7 +195,7 @@ public final class Game {
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle || (pre == nil && quiet < 3);   // the harness decides when to ask (risky/lethal actions, /frage); the model only asks itself after a long quiet stretch gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen")
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
     var done = false, callLeakRetries = 0

@@ -1447,3 +1447,15 @@ final class R4Tests: XCTestCase {
     XCTAssertGreaterThan(w.killOdds("Ich steche den Wirt von hinten ins Herz.", target: 0), w.killOdds("Ich steche den Hauptmann nieder.", target: 1))
   }
 }
+
+final class InitialGateTests: XCTestCase {   // v7 #1
+  func testEveryFieldSet() {
+    let g = Game.initialGate(player: "Ich sehe mich um.", pre: nil, forceEnd: true, noOracle: false, firstTurn: true, figurKnown: false, quiet: 3, saeulen: true)
+    XCTAssertTrue(g.head); XCTAssertTrue(g.forceEnd); XCTAssertTrue(g.endNarr); XCTAssertTrue(g.art); XCTAssertTrue(g.figurLine); XCTAssertTrue(g.mustAsk); XCTAssertFalse(g.noAsk)
+    XCTAssertTrue(Gr.grammar({ var x = g; x.open = true; return x }()).tag.contains("end_scene"), "/ende reaches end_scene")
+    let h = Game.initialGate(player: "Ich sehe mich um.", pre: nil, forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false)
+    XCTAssertTrue(h.head); XCTAssertTrue(h.noAsk); XCTAssertFalse(h.art); XCTAssertFalse(h.mustAsk)
+    let p = Game.initialGate(player: "x", pre: ["answer": "JA"], forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false)
+    XCTAssertFalse(p.head)
+  }
+}
