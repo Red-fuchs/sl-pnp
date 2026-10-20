@@ -22,9 +22,9 @@ struct TokLoader: TokenizerLoader {
   func load(from d: URL) async throws -> any MLXLMCommon.Tokenizer { TokBridge(u: try await AutoTokenizer.from(modelFolder: d)) }
 }
 
-public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0, maskS = 0.0, compileS = 0.0
+public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0, maskS = 0.0, compileS = 0.0, cmS = 0.0, cbS = 0.0, ccS = 0.0
   public var maskUs: Int { genTok > 0 ? Int(maskS * 1e6 / Double(genTok)) : 0 }
-  public var line: String { String(format: "prefill %d tok %.2fs · gen %d tok %.2fs (%.1f tok/s) · grammar mask %d µs/tok · compile %.2fs", prefillTok, prefillS, genTok, decS, tps, maskUs, compileS) }
+  public var line: String { String(format: "prefill %d tok %.2fs · gen %d tok %.2fs (%.1f tok/s) · grammar mask %d µs/tok (engine %d · build %d · commit %d) · compile %.2fs", prefillTok, prefillS, genTok, decS, tps, maskUs, genTok > 0 ? Int(cmS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(cbS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(ccS * 1e6 / Double(genTok)) : 0, compileS) }
   public var tps: Double { decS > 0 ? Double(genTok) / decS : 0 } }
 
 
@@ -41,7 +41,11 @@ public final class LM {
   var pending = ""
   public var dirty = false
   public var stale = false               // model was unloaded: the KV cache must be rebuilt from the history
-  var gcache: [String: GrammarConstraint] = [:]
+  var gcache: [String: Constraint] = [:]
+  /// grammar engine: llguidance (default) or xgrammar (fallback, `--grammar xg`). llg also needs tokenizer.json in the model dir.
+  public var engine: GrammarEngine = .llg { didSet { gcache = [:] } }
+  var llgTok: LlgTok?
+  public var llgMsg: String?
   public var loadS = 0.0
   public var last = GenStats()
   public var loaded: Bool { ctx != nil }
@@ -61,6 +65,11 @@ public final class LM {
     stop = Set([end] + (tmpl == .gemma ? [1, 50] : []))
     let v = TokenizerVocabExtractor.extractForGrammar(from: t)
     gtok = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: Int32(end))
+    let t0 = Date()
+    do {
+      llgTok = try LlgTok(tokenizerJSON: dir.appendingPathComponent("tokenizer.json").path, vocab: gtok.vocabSize, eos: UInt32(end), extraEos: tmpl == .gemma ? [1, 50] : [], encode: { t.encode(text: $0, addSpecialTokens: false) })
+      llgMsg = String(format: "llguidance tokenizer %.0f ms", Date().timeIntervalSince(t0) * 1000)
+    } catch { engine = .xg; llgMsg = "llguidance unavailable (\(error)) -> xgrammar" }
   }
 
   /// Loads the weights (after acquiring a GPU slot if a lease hook is set). Blocking.
@@ -93,19 +102,21 @@ public final class LM {
   }
   public func append(_ t: String) { pending += t }
 
-  /// GrammarConstraint has no Fork in this xgrammar: reuse one matcher per grammar and roll it back after use.
-  func take(_ g: Grammar) throws -> (GrammarConstraint, String, Double) {
-    let key = g.tag
-    if let c = gcache.removeValue(forKey: key) { return (c, key, 0) }
+  /// Cache key per grammar text (+ ban terms on llg). Matchers are reused and rolled back after use.
+  func take(_ g: Grammar, ban: BanSet?) throws -> (Constraint, String, Double, useTrie: Bool) {
+    var key: String, lark = ""
+    if engine == .llg, llgTok != nil { lark = g.lark(ban: ban?.terms ?? []); key = "L" + lark } else { key = "X" + g.tag }
+    let trie = key.hasPrefix("X") || lark.contains("%json")   // llg bans free text in the grammar; %json strings keep the token trie
+    if let c = gcache.removeValue(forKey: key) { return (c, key, 0, trie) }
     let t = Date()
-    let c = try GrammarConstraint(tokenizer: gtok, structuralTag: key)
-    return (c, key, Date().timeIntervalSince(t))
+    let c: Constraint = key.hasPrefix("L") ? try LlgConstraint(tok: llgTok!, lark: lark) : try XgConstraint(tokenizer: gtok, structuralTag: g.tag)
+    return (c, key, Date().timeIntervalSince(t), trie)
   }
-  func giveBack(_ c: GrammarConstraint, _ key: String, committed n: Int) {
-    do { if n > 0 { try c.rollback(Int32(n)) }; gcache[key] = c } catch { /* drop: recompiled next time */ }
+  func giveBack(_ c: Constraint, _ key: String, committed n: Int) {
+    do { try c.rollback(n); gcache[key] = c } catch { /* drop: recompiled next time */ }
   }
 
-  public func compile(_ g: Grammar) throws -> Double { let (c, k, t) = try take(g); giveBack(c, k, committed: 0); return t }
+  public func compile(_ g: Grammar, ban: BanSet? = nil) throws -> Double { let (c, k, t, _) = try take(g, ban: ban); giveBack(c, k, committed: 0); return t }
 
   /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = end-of-turn.
   public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, abort: @escaping () -> Bool = { false }, ban: BanSet? = nil, soft: BanSet? = nil, onDelta: (String) -> Void) throws -> (String, GenStats) {
@@ -134,7 +145,7 @@ public final class LM {
 
   func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, abort: () -> Bool = { false }, ban: BanSet? = nil, soft: BanSet? = nil, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
     var st = GenStats()
-    let (con, gkey, ct) = try take(g)
+    let (con, gkey, ct, trie) = try take(g, ban: ban)
     st.compileS = ct
     var committed = 0
     defer { giveBack(con, gkey, committed: committed) }
@@ -151,22 +162,23 @@ public final class LM {
     let dim = logits.shape[logits.ndim - 1]
     var n = 0
     while n < maxTok {
-      let tm = Date()
+      let tm = Date(); let cm0 = st.cmS
       let m = try con.computeMask()
+      st.cmS += Date().timeIntervalSince(tm)
       var l = logits[0..., -1, 0...]
-      let blk = ban?.blocked(after: gen) ?? [], sft = soft?.blocked(after: gen) ?? []
+      let blk = trie ? ban?.blocked(after: gen) ?? [] : [], sft = soft?.blocked(after: gen) ?? []
       if m.needsApply || !blk.isEmpty || !sft.isEmpty {
         // repetition penalty on content words, only while the grammar leaves free text (narration), also against the previous turn ("Die Treppe" x3)
         let free = !m.needsApply || m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
         l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [], block: banWhenFree(blk, free: free), soft: banWhenFree(sft, free: free))   // bans only in free text: inside enums/const tails the single legal token must stay legal
       }
-      st.maskS += Date().timeIntervalSince(tm)
+      st.maskS += Date().timeIntervalSince(tm); st.cbS += Date().timeIntervalSince(tm) - (st.cmS - cm0)
       let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))
       if st.ttft == 0 { st.ttft = Date().timeIntervalSince(t1) }
       if stop.contains(tok) { break }
       let tc = Date()
-      let r = try con.commitToken(Int32(tok))
-      st.maskS += Date().timeIntervalSince(tc)
+      let r = try con.commit(Int32(tok))
+      st.maskS += Date().timeIntervalSince(tc); st.ccS += Date().timeIntervalSince(tc)
       committed += 1 + r.tokens.count
       gen.append(tok)
       recent.append(tok); if recent.count > 160 { recent.removeFirst(recent.count - 160) }
@@ -204,18 +216,26 @@ public final class LM {
     let t = tok.convertIdToToken(id) ?? ""
     let b = t.filter(\.isLetter).count >= 5; contentIds[id] = b; return b
   }
-  func maskArr(_ m: MaskResult, vocab: Int, dim: Int, pen: Set<Int> = [], block: Set<Int> = [], soft: Set<Int> = []) -> MLXArray {
+  func maskArr(_ m: CMask, vocab: Int, dim: Int, pen: Set<Int> = [], block: Set<Int> = [], soft: Set<Int> = []) -> MLXArray {
     if maskBuf.count != dim { maskBuf = [Float](repeating: -Float.infinity, count: dim) }
     maskBuf.withUnsafeMutableBufferPointer { f in
       if m.needsApply {
-        var touched: [Int] = []
+        // one pass over the words, no per-token hashing (the old Set.contains per allowed token cost 2-4 ms on free text)
+        let nw = (min(vocab, dim) + 31) / 32
         m.mask.withUnsafeBufferPointer { b in
           let p = UnsafeRawPointer(b.baseAddress!).assumingMemoryBound(to: UInt32.self)
-          for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 { touched.append(w) }
-          for i in 0..<dim { f[i] = -Float.infinity }
-          for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = pen.contains(i) ? -1.5 : 0 } } }
+          for w in 0..<nw {
+            let x = p[w], o = w * 32
+            if o + 32 <= dim {
+              if x == 0 { for k in 0..<32 { f[o + k] = -.infinity } }
+              else if x == .max { for k in 0..<32 { f[o + k] = 0 } }
+              else { for k in 0..<32 { f[o + k] = (x >> UInt32(k)) & 1 == 1 ? 0 : -.infinity } }
+            } else { for k in 0..<(dim - o) { f[o + k] = (x >> UInt32(k)) & 1 == 1 ? 0 : -.infinity } }
+          }
+          for i in nw * 32..<dim { f[i] = -.infinity }
+          for i in pen where i < dim && (p[i >> 5] >> UInt32(i & 31)) & 1 == 1 { f[i] = -1.5 }
         }
-      } else { for i in 0..<dim { f[i] = pen.contains(i) ? -1.5 : 0 } }
+      } else { for i in 0..<dim { f[i] = 0 }; for i in pen where i < dim { f[i] = -1.5 } }
       for i in soft where i < dim && f[i] > -Float.infinity { f[i] -= 4 }       // tier 1 (Andeutung): soft penalty -4
       for i in block where i < dim { f[i] = -Float.infinity }          // decode-time ban: the token that would complete a secret term
     }

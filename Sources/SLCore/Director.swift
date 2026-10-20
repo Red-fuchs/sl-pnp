@@ -200,7 +200,9 @@ public struct BanSet {
   var single: Set<Int> = []                    // one-token terms: always banned
   var byPrev: [Int: [(prefix: [Int], last: Int)]] = [:]   // key = token before the last one
   public private(set) var count = 0
-  public init(_ seqs: [[Int]] = []) {
+  public var terms: [String] = []             // source terms: the llguidance path bans them in the grammar (Lark `& ~`)
+  public init(_ seqs: [[Int]] = [], terms: [String] = []) {
+    self.terms = terms
     for q in seqs where !q.isEmpty {
       count += 1
       if q.count == 1 { single.insert(q[0]) } else { byPrev[q[q.count - 2], default: []].append((Array(q.dropLast()), q[q.count - 1])) }
@@ -236,10 +238,12 @@ public func banVariants(_ w: String) -> [String] {
 }
 public func buildBan(terms: [String], encode: (String) -> [Int], cap: Int = 600) -> BanSet {
   var seqs: [[Int]] = [], seen = Set<[Int]>()
+  // llg path bans the same terms in the grammar, minus the short single-token ones (a substring ban on "Salz" would block every compound)
+  let lark = terms.filter { t in !(t.count < 6 && banVariants(t).contains { encode($0).count == 1 }) }
   for t in terms { for v in banVariants(t) { let ids = encode(v)
     if ids.count == 1 && t.count < 6 { continue }          // a short single-token term would block every compound ("Salz" -> Salzspuren); the sentence guard handles those
-    if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs) } } }
-  return BanSet(seqs)
+    if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs, terms: lark) } } }
+  return BanSet(seqs, terms: lark)
 }
 
 /// The decode-time ban applies only while the grammar leaves free text; where the grammar allows few tokens (enums, names, fixed tails) a banned

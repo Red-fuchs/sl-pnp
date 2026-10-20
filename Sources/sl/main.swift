@@ -22,7 +22,7 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 300] [--lease] [--neglect 8] [--debug] [--input FILE|/dev/tty]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
   Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /welt orakel|\"text\"|mix \"text\"|slot|start /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
@@ -55,6 +55,8 @@ do { session = try Session(name: name, mustExist: resuming) } catch { die("\(err
 
 let leased = opt["lease"] != nil      // play.sh: sl holds a gpu-run slot only while the model is loaded
 var lm: LM? = try await LM.make(dir: findModel())
+if let g = opt["grammar"] { guard let e = GrammarEngine(rawValue: g) else { die("--grammar xg|llg") }; lm!.engine = e }
+if let m = lm?.llgMsg { FileHandle.standardError.write(Data("[grammar] \(lm!.engine.rawValue): \(m)\n".utf8)) }
 let lease = GPULease(label: web ? "sl-web" : "sl", ram: Int(opt["ram"] ?? "10") ?? 10)
 if leased {
   lm!.onAcquire = { n in try lease.acquire(onWait: n) }

@@ -25,7 +25,7 @@ public final class XgConstraint: Constraint {
   public init(tokenizer: GrammarTokenizer, structuralTag: String) throws { c = try GrammarConstraint(tokenizer: tokenizer, structuralTag: structuralTag) }
   public func computeMask() throws -> CMask { let r = try c.computeMask(); return CMask(mask: r.mask, isTerminated: r.isTerminated, needsApply: r.needsApply) }
   public func commit(_ id: Int32) throws -> CCommit { let r = try c.commitToken(id); return CCommit(tokens: r.tokens, isTerminated: r.isTerminated) }
-  public func rollback(_ n: Int) throws { try c.rollback(Int32(n)) }
+  public func rollback(_ n: Int) throws { if n > 0 { try c.rollback(Int32(n)) } }
   public func clone() throws -> Constraint { throw SLError("xgrammar 0.1.30 has no fork") }
   public func ffTokens(max: Int) -> [Int32] { [] }
 }
