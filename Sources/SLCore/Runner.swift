@@ -171,6 +171,7 @@ public final class Runner {
     case .frage(let q, let odds): if q.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(q, odds: odds) }
     case .figur(let f0):
       var f = f0
+      if let bad = figurProblem(f0) { sink(.info(bad)); return true }
       if let r = f.range(of: #"\s*regeln=(frei|saeulen)\s*$"#, options: .regularExpression) { game.world.regeln = String(f[r]).contains("saeulen") ? "saeulen" : "frei"; f.removeSubrange(r) }   // /figur Name: Text regeln=saeulen
       game.figur = f.isEmpty ? nil : f
       if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f); game.world.syncLists(game.eng) }
@@ -186,11 +187,12 @@ public final class Runner {
       if a.isEmpty { sink(.info("Regeln: \(regelwerk(game.world.regeln).titel)  (/regeln frei | saeulen)")) }
       else if ["frei", "saeulen"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen")) }
     case .saeulen(let a):
-      for kv in a.split(separator: " ") { let p = kv.split(separator: "=").map(String.init); if p.count == 2, let v = Int(p[1]), let art = Art(rawValue: p[0].lowercased()), art != .sonst { game.world.pc.setWert(art, v) } }
+      let (pc, msgs) = applySaeulen(a, game.world.pc); game.world.pc = pc
+      msgs.forEach { sink(.info($0)) }
       try session.save(game); refresh(); sink(.info("Säulen: \(game.world.pc.line)"))
     case .talent(let a):
-      if a == "-" { game.world.pc.talente = [] } else if !a.isEmpty { game.world.pc.talente.append(clean(a, 40)); game.world.pc.talente = Array(game.world.pc.talente.suffix(3)) }
-      try session.save(game); refresh(); sink(.info("Talente: \(game.world.pc.talente.isEmpty ? "-" : game.world.pc.talente.joined(separator: ", "))"))
+      let (pc, msg) = applyTalent(a, game.world.pc); game.world.pc = pc
+      try session.save(game); refresh(); sink(.info(msg))
     case .weltgen(let a): try weltgen(a)
     case .gespraech(let rest): try gespraech(rest)
     case .geloest(let f):
@@ -275,4 +277,36 @@ public func nextSessionName(base: String, root: URL = sessionsRoot) -> String {
 public func missingClues(_ titel: String, _ clues: [Clue]) -> String? {
   let cl = clues.filter { $0.thread == titel }
   return cl.contains { !$0.found } ? "Es fehlen noch Hinweise (\(cl.filter(\.found).count)/\(cl.count)) – erst ermitteln." : nil
+}
+
+/// /saeulen kampf=2 sozial=1: reports every token it could not use
+public func applySaeulen(_ a: String, _ pc: PCSheet) -> (PCSheet, [String]) {
+  var pc = pc, msgs: [String] = []
+  let toks = a.split(separator: " ").map(String.init)
+  if toks.isEmpty { return (pc, ["/saeulen kampf=2 sozial=1 wissen=0 (Werte -1 bis 2)"]) }
+  for kv in toks {
+    let p = kv.split(separator: "=").map(String.init)
+    guard p.count == 2, let art = Art(rawValue: p[0].lowercased()), art != .sonst else { msgs.append("'\(kv)' ignoriert – erwartet kampf|sozial|wissen=Zahl"); continue }
+    guard let v = Int(p[1]) else { msgs.append("'\(kv)' ignoriert – '\(p[1])' ist keine Zahl"); continue }
+    if v < -1 || v > 2 { msgs.append("\(p[0]) auf \(max(-1, min(2, v))) begrenzt (erlaubt -1 bis 2)") }
+    pc.setWert(art, v)
+  }
+  return (pc, msgs)
+}
+/// /talent <text> adds, /talent -<text> removes one, /talent - alone clears all (said out loud)
+public func applyTalent(_ a: String, _ pc: PCSheet) -> (PCSheet, String) {
+  var pc = pc
+  if a == "-" { let n = pc.talente.count; pc.talente = []; return (pc, n == 0 ? "Keine Talente vorhanden." : "Alle \(n) Talente gelöscht. Neu: /talent <Text>") }
+  if a.hasPrefix("-") { let t = String(a.dropFirst()).trimmingCharacters(in: .whitespaces); let n = pc.talente.count; pc.talente.removeAll { norm($0).contains(norm(t)) }; return (pc, n == pc.talente.count ? "Kein Talent '\(t)'." : "Talent '\(t)' entfernt. Talente: \(pc.talente.isEmpty ? "-" : pc.talente.joined(separator: ", "))") }
+  if a.isEmpty { return (pc, "Talente: \(pc.talente.isEmpty ? "-" : pc.talente.joined(separator: ", ")) · /talent <Text> | /talent -<Text> | /talent -") }
+  pc.talente.append(clean(a, 40)); pc.talente = Array(pc.talente.suffix(3))
+  return (pc, "Talente: \(pc.talente.joined(separator: ", "))")
+}
+/// /figur needs a name before ':' - ": x" or "regeln=…" alone is stored nowhere
+public func figurProblem(_ f: String) -> String? {
+  let t = f.trimmingCharacters(in: .whitespaces)
+  if t.isEmpty { return nil }                       // empty clears the figure
+  if let c = t.firstIndex(of: ":"), t[..<c].trimmingCharacters(in: .whitespaces).isEmpty { return "/figur: Name fehlt vor dem ':' – /figur Name: Beschreibung" }
+  if t.hasPrefix("regeln=") { return "/figur: Name fehlt – /figur Name: Beschreibung regeln=saeulen" }
+  return nil
 }

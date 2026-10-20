@@ -1399,3 +1399,13 @@ final class OracleReflectTests: XCTestCase {   // M1/N8
     XCTAssertEqual(w.npcs[0].haltung, -1); XCTAssertFalse(w.card(w.npcs[0]).contains("freundlich"))
   }
 }
+
+final class CmdMessageTests: XCTestCase {   // P7
+  func testMessages() {
+    var pc = PCSheet(); pc.talente = ["Schloss knacken", "Schleichen"]
+    let (a, m1) = applyTalent("-", pc); XCTAssertTrue(a.talente.isEmpty); XCTAssertTrue(m1.contains("2"))
+    let (b, _) = applyTalent("-schloss", pc); XCTAssertEqual(b.talente, ["Schleichen"])
+    let (c, msgs) = applySaeulen("kampf=9 foo=1 sozial=x", PCSheet()); XCTAssertEqual(c.kampf, 2); XCTAssertEqual(msgs.count, 3)
+    XCTAssertNotNil(figurProblem(": Zöllner")); XCTAssertNil(figurProblem("Kara: Söldnerin")); XCTAssertNil(figurProblem(""))
+  }
+}
