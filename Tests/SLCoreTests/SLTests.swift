@@ -779,6 +779,23 @@ final class ReviewV6DirectorOnDemandTests: XCTestCase {
   }
 }
 
+final class ReviewV6ArgLeakTests: XCTestCase {
+  // MED 9
+  func testToolCallTextIsGuarded() {
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.typ = "zeit"; n.ref = "99"; h.npcs["Zubeir"] = n
+    let sec = h.guardList(), known = ""
+    let q: J = ["q": "Panscht Zubeir das Wasser mit Salzlake, um die Zunft zu retten?", "odds": 0]
+    XCTAssertNotNil(argLeak(q, secrets: sec, known: known))                                           // the oracle question would be printed as "⚀ ask_oracle: …"
+    XCTAssertNotNil(argLeak(["summary": "Die Figur entdeckte, dass Zubeir Salzlake ins Wasser mischt.", "why": "x", "control": true], secrets: sec, known: known))   // end_scene summary -> journal / recap
+    XCTAssertNotNil(argLeak(["expect": "ok", "el": ["ort": "Fass mit Salzlake", "beteiligte": "-"]], secrets: sec, known: known))
+    XCTAssertNil(argLeak(["q": "Ist Zubeir nervös?", "odds": 0], secrets: sec, known: known))
+    XCTAssertNil(argLeak(q, secrets: [], known: known))                                               // no live secret: nothing to check
+    let clean = sanitizeArgs(q, secrets: sec, known: known); XCTAssertNil(argLeak(clean, secrets: sec, known: known)); XCTAssertEqual(clean["odds"].int, 0)
+    XCTAssertEqual(clean["q"].str, "Ist hier etwas im Gange?")
+    let sm = sanitizeArgs(["summary": "Wir kamen an. Zubeir kippt Salzlake ins Fass. Dann gingen wir."], secrets: sec, known: known); XCTAssertEqual(sm["summary"].str, "Wir kamen an. Dann gingen wir.")
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

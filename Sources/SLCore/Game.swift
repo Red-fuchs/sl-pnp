@@ -157,7 +157,7 @@ public final class Game {
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle; gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
-    var done = false
+    var done = false, callLeakRetries = 0
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
@@ -208,12 +208,23 @@ public final class Game {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
         if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); world.syncLists(eng); figurChanged = true }
       }
+      let hadFigurLine = gate.figurLine
       gate.figurLine = false
       msgs.append(.m(txt)); onMsg(.m(txt))
       if truncated { try syncCache() }   // the cache still holds the cut tail tokens
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
       let (body, tail, du) = splitTail(txt)
       guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; finalDu = du; break }
+      // leak guard for tool-call text that reaches the UI / journal / recap (oracle q, scene expect, summary, why): regenerate once or twice, then sanitise
+      if let l = argLeak(args, secrets: secrets, known: known) {
+        if callLeakRetries < 2, !msgs.isEmpty {
+          callLeakRetries += 1; msgs.removeLast()
+          msgs[msgs.count - 1].text += "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
+          out(.info(leakNotice(dropped: false))); if debug { out(.info("[debug] Leck im Aufruf: \(l.topic)")) }
+          gate.figurLine = hadFigurLine; try syncCache(); continue
+        }
+        args = sanitizeArgs(args, secrets: secrets, known: known)
+      }
       // oracle shift = NPC attitude (polarity-aware) + rules module (Säulen/talent by the classified art); both combined, clamped to -2...2
       let art = Art(rawValue: txt.split(separator: "\n").first(where: { $0.hasPrefix("Art: ") }).map { String($0.dropFirst(5)) } ?? "") ?? .sonst
       if name == "ask_oracle", args["shift"].isNull, var o = args.obj {
@@ -378,3 +389,21 @@ public func isMetaNarration(_ line: String) -> Bool {
 
 /// UI/SSE text for a guarded narration: never names the bearer or the topic (the info line is replayed to late joiners and shown to the player).
 public func leakNotice(dropped: Bool) -> String { dropped ? "Ein Satz wurde entfernt." : "Erzählung verworfen – neuer Versuch" }
+
+/// Free-text fields of a tool call that the player (UI, journal, recap) can read.
+let callTextKeys = ["q", "expect", "summary", "why"]
+public func argLeak(_ args: J, secrets: [(topic: String, text: String)], known: String) -> Leak? {
+  guard !secrets.isEmpty else { return nil }
+  for k in callTextKeys { if let t = args[k].str, let l = leakCheck(t, secrets: secrets, known: known) { return l } }
+  if let el = args["el"].obj { for (_, v) in el { if let t = v.str, let l = leakCheck(t, secrets: secrets, known: known) { return l } } }
+  return nil
+}
+/// Last resort when the regeneration still leaks: drop the leaking sentences (q falls back to a neutral question).
+public func sanitizeArgs(_ args: J, secrets: [(topic: String, text: String)], known: String) -> J {
+  guard var o = args.obj else { return args }
+  for k in callTextKeys { if let t = o[k]?.str, leakCheck(t, secrets: secrets, known: known) != nil {
+    let safe = dropLeakingSentences(t, secrets: secrets, known: known)
+    o[k] = .str(safe.isEmpty ? (k == "q" ? "Ist hier etwas im Gange?" : "-") : safe) } }
+  if var el = o["el"]?.obj { for (k, v) in el { if let t = v.str, leakCheck(t, secrets: secrets, known: known) != nil { el[k] = .str("-") } }; o["el"] = .obj(el) }
+  return .obj(o)
+}
