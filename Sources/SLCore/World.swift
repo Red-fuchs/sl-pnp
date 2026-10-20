@@ -432,6 +432,25 @@ public struct World: Codable, Equatable {
       if let r = l.range(of: n.name.lowercased()), hasMinor(String(l[l.index(r.lowerBound, offsetBy: -min(28, l.distance(from: l.startIndex, to: r.lowerBound)))..<r.lowerBound])) { npcs[i].minor = true }   // "der Waisenjunge Tom": the child word right before the name
     }
   }
+  static let killVerbs = ["schieße", "schiesse", "erschieße", "töte", "ersteche", "erdolche", "erwürge", "erschlage", "ermorde", "steche", "ramme", "enthaupte", "köpfe", "erdrossle", "vergifte", "richte", "durchbohre", "schlitze", "stoße", "erstich", "stich ", "ersteh", "ins herz", "umbringen", "bringe ich um", "meuchle", "erhänge"]
+  static let failCues = ["verfehl", "daneben", "weicht aus", "ausweich", "scheitert", "misslingt", "entkommt", "pariert", "blockt", "überlebt", "entgeht", "unverletzt", "stolper", "trifft nicht", "geht fehl", "schlägt fehl", "abgewehrt", "wehrt ab", "duckt sich"]
+  static let confirmCues = ["tot", "fällt", "sinkt", "sackt", "zusammen", "blut", "röchel", "stirbt", "leblos", "regungslos", "reglos", "zu boden", "bricht", "kippt", "wunde", "brust", "herz", "kehle", "letzte"]
+  /// Direct kills: the PLAYER's kill intent against a present, named (or role-named) NPC plus a narrated outcome in the same turn. An oracle NEIN or a failure cue in the narration cancels it.
+  @discardableResult
+  public mutating func markKillIntent(player: String, narr: String, oracleNein: Bool) -> [String] {
+    let p = player.lowercased(), n = narr.lowercased()
+    guard !oracleNein, Self.killVerbs.contains(where: { p.contains($0) }), !Self.failCues.contains(where: { n.contains($0) }) else { return [] }
+    var log: [String] = []
+    for i in npcs.indices where !npcs[i].tot && !npcs[i].minor && npcs[i].anwesend {
+      let ts = tokens(npcs[i].name) + roleTokens(i) + tokens(npcs[i].kurz).filter { $0.count >= 5 }
+      guard ts.contains(where: { p.contains($0) }) else { continue }
+      // the narration must mention the target next to a lethal cue (same sentence or the next one)
+      let ss = sentences(of: n); var hit = false
+      for (k, sn) in ss.enumerated() where ts.contains(where: { sn.contains($0) }) || (k > 0 && ts.contains(where: { ss[k - 1].contains($0) })) { if Self.confirmCues.contains(where: { sn.contains($0) }) { hit = true; break } }
+      if hit { log += kill(i); break }
+    }
+    return log
+  }
   /// children carry no harm states and are never marked dead
   public mutating func shieldMinors() {
     for i in npcs.indices where npcs[i].minor { npcs[i].zustand.removeAll { hasHarm($0) || $0 == "tot" }; npcs[i].tot = false }

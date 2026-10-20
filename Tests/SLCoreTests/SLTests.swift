@@ -1355,3 +1355,14 @@ final class MinorNpcTests: XCTestCase {   // P1 (round 3 repros)
     var u = World(); u.npcs = [Npc(id: "n1", name: "Tom", kurz: "Schmied", ort: "x")]; u.updateMinors("Der neunjährige Tom lacht."); XCTAssertTrue(u.npcs[0].minor)
   }
 }
+
+final class KillIntentTests: XCTestCase {   // P5
+  func w() -> World { var w = World(); w.ort = "Hof"; w.npcs = [Npc(id: "n1", name: "Amum", kurz: "Wirt", ort: "Hof"), Npc(id: "n2", name: "Garrek", kurz: "Hauptmann der Wache", ort: "Hof")]; return w }
+  func testDirectKills() {
+    var a = w(); XCTAssertFalse(a.markKillIntent(player: "Ich schieße Amum ins Herz.", narr: "Der Bolzen trifft. Amum sackt röchelnd zusammen.", oracleNein: false).isEmpty); XCTAssertTrue(a.npcs[0].tot)
+    var b = w(); XCTAssertFalse(b.markKillIntent(player: "Ich erschlage den Hauptmann.", narr: "Dein Hieb spaltet den Helm, der Hauptmann fällt zu Boden.", oracleNein: false).isEmpty); XCTAssertTrue(b.npcs[1].tot)
+    var c = w(); XCTAssertTrue(c.markKillIntent(player: "Ich schieße Amum ins Herz.", narr: "Amum duckt sich, der Bolzen verfehlt ihn.", oracleNein: false).isEmpty)
+    var d = w(); XCTAssertTrue(d.markKillIntent(player: "Ich schieße Amum ins Herz.", narr: "Amum fällt zu Boden.", oracleNein: true).isEmpty)
+    var e = w(); XCTAssertTrue(e.markKillIntent(player: "Ich begrüße Amum.", narr: "Amum fällt vor Freude fast zu Boden.", oracleNein: false).isEmpty)
+  }
+}
