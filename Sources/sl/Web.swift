@@ -44,7 +44,7 @@ func state(_ r: Runner, busy: Bool) -> [String: Any] {
 
 func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws {
   let port = UInt16(opt["port"] ?? "8787") ?? 8787
-  let idle = Double(opt["idle"] ?? "600") ?? 600
+  let idle = Double(opt["idle"] ?? (opt["lease"] != nil ? "300" : "600")) ?? 600
   let hub = Hub()
   let work = DispatchQueue(label: "work")
   let lock = NSLock()
@@ -126,10 +126,17 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     }
   }
   l.start(queue: .global())
-  FileHandle.standardError.write(Data("sl web: http://127.0.0.1:\(port)/  (Leerlauf \(Int(idle)) s -> Modell entladen, Prozess endet)\n".utf8))
+  FileHandle.standardError.write(Data("sl web: http://127.0.0.1:\(port)/  (Leerlauf \(Int(idle)) s -> Modell entladen\(opt["lease"] != nil ? ", GPU-Slot frei, nächster Zug lädt neu" : ", Prozess endet"))\n".utf8))
   while true {
     try await Task.sleep(nanoseconds: 5_000_000_000)
     let (idleFor, b) = snap()
+    if opt["lease"] != nil {   // leased: unload the model + release the gpu-run slot when idle, keep serving; the next turn re-queues
+      if !b && idleFor > idle && runner.lm.loaded {
+        lock.lock(); let go = !busy; if go { busy = true }; lock.unlock()
+        if go { work.async { runner.idleUnload(); lock.lock(); busy = false; last = Date(); lock.unlock(); hub.send(["t": "state", "busy": false]) } }
+      }
+      continue
+    }
     if !b && idleFor > idle {
       hub.send(["t": "bye"]); FileHandle.standardError.write(Data("Leerlauf: Modell entladen, Ende\n".utf8))
       runner.lm.unload(); try? await Task.sleep(nanoseconds: 300_000_000); return

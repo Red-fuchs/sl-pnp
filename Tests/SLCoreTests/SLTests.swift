@@ -253,6 +253,22 @@ final class CmdTests: XCTestCase {
   }
 }
 
+final class LeaseTests: XCTestCase {
+  func testAcquireReleaseWithStub() throws {   // stub gpu-run: drops "-n label --ram N" and runs the holder
+    let d = FileManager.default.temporaryDirectory.appendingPathComponent("sl-stub-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: d, withIntermediateDirectories: true)
+    let stub = d.appendingPathComponent("gpu-run"); try "#!/bin/sh\necho 'gpu-run: warte auf GPU (stub)' >&2\nsleep 1\nshift 4\nexec \"$@\"\n".write(to: stub, atomically: true, encoding: .utf8)
+    try FileManager.default.setAttributes([.posixPermissions: 0o755], ofItemAtPath: stub.path)
+    let l = GPULease(label: "t", ram: 1, gpuRun: stub.path)
+    var msgs: [String] = []
+    try l.acquire { msgs.append($0) }
+    XCTAssertTrue(l.held); XCTAssertTrue(msgs.contains { $0.contains("warte auf GPU") }); XCTAssertTrue(msgs.contains("GPU-Slot erhalten"))
+    let t0 = Date(); l.release()
+    XCTAssertFalse(l.held); XCTAssertLessThan(Date().timeIntervalSince(t0), 5)
+    try l.acquire { _ in }; XCTAssertTrue(l.held); l.release()          // re-acquire after release works
+    XCTAssertThrowsError(try GPULease(label: "x", gpuRun: "/nonexistent/gpu-run").acquire { _ in })
+  }
+}
+
 final class MiscTests: XCTestCase {
   func testClip() {
     let long = String(repeating: "x", count: 500)

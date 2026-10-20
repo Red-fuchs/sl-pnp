@@ -89,6 +89,7 @@ public final class Game {
 
   /// One player turn. `pre`: already-rolled oracle result (from /frage) -> skips the gate head.
   public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false) throws {
+    if lm.stale { try syncCache() }        // model was unloaded while idle: rebuild the history (the weights are re-loaded lazily on generate)
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
     let wb = world.block()

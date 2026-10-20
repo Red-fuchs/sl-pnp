@@ -30,37 +30,66 @@ public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, 
 
 /// Model + KV cache that persists across turns. `pending` = text not yet in the cache.
 public final class LM {
-  let ctx: ModelContext
+  var ctx: ModelContext!                 // nil while unloaded (idle): weights are only in RAM while the gpu-run slot is held
+  let tok: any MLXLMCommon.Tokenizer
+  let dir: URL
   let gtok: GrammarTokenizer
   public let tmpl: Tmpl
   let stop: Set<Int>
-  var cache: [KVCache]
+  var cache: [KVCache] = []
   public private(set) var cached = 0
   var pending = ""
   public var dirty = false
+  public var stale = false               // model was unloaded: the KV cache must be rebuilt from the history
   var gcache: [String: GrammarConstraint] = [:]
   public var loadS = 0.0
   public var last = GenStats()
+  public var loaded: Bool { ctx != nil }
+  /// hooks: acquire a GPU slot before loading (blocking, reports progress), release after unloading, user-visible notices
+  public var onAcquire: ((@escaping (String) -> Void) throws -> Void)?
+  public var onRelease: (() -> Void)?
+  public var notify: (String) -> Void = { _ in }
 
-  public static func load(dir: URL) async throws -> LM {
-    let t = Date()
-    let c = try await LLMModelFactory.shared.load(from: dir, using: TokLoader())   // text-only factory: no vision/audio tower in RAM
-    let lm = try LM(c, tmpl: Tmpl.detect(dir: dir))
-    lm.loadS = Date().timeIntervalSince(t)
-    return lm
+  /// Light: tokenizer + grammar vocab only (no weights). Call ensureLoaded() before generating.
+  public static func make(dir: URL) async throws -> LM {
+    let tok = try await TokLoader().load(from: dir)
+    return try LM(tok, dir: dir, tmpl: Tmpl.detect(dir: dir))
   }
-  init(_ c: ModelContext, tmpl: Tmpl) throws {
-    ctx = c; self.tmpl = tmpl
-    let end = c.tokenizer.convertTokenToId(tmpl.endTok) ?? 106   // gemma <turn|>=106, lfm <|im_end|>=124900; never the plain <eos>
+  init(_ t: any MLXLMCommon.Tokenizer, dir: URL, tmpl: Tmpl) throws {
+    tok = t; self.dir = dir; self.tmpl = tmpl
+    let end = t.convertTokenToId(tmpl.endTok) ?? 106   // gemma <turn|>=106, lfm <|im_end|>=124900; never the plain <eos>
     stop = Set([end] + (tmpl == .gemma ? [1, 50] : []))
-    let v = TokenizerVocabExtractor.extractForGrammar(from: c.tokenizer)
+    let v = TokenizerVocabExtractor.extractForGrammar(from: t)
     gtok = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: Int32(end))
-    cache = try c.model.newCache(parameters: nil)
   }
 
-  /// Start a fresh cache; `text` = full rendered history (no trailing generation prompt).
+  /// Loads the weights (after acquiring a GPU slot if a lease hook is set). Blocking.
+  public func ensureLoaded() throws {
+    if ctx != nil { return }
+    try onAcquire?(notify)
+    notify("Lade Modell …")
+    let t = Date(), d = dir
+    nonisolated(unsafe) var res: Result<ModelContext, Error> = .failure(SLError("load"))
+    let sem = DispatchSemaphore(value: 0)
+    Task { do { res = .success(try await LLMModelFactory.shared.load(from: d, using: TokLoader())) } catch { res = .failure(error) }; sem.signal() }   // text-only factory: no vision/audio tower
+    sem.wait()
+    do { ctx = try res.get() } catch { onRelease?(); throw error }
+    loadS = Date().timeIntervalSince(t)
+    notify(String(format: "Modell geladen (%.1f s)", loadS))
+  }
+
+  /// Frees the weights and the KV cache and gives the GPU slot back.
+  public func unloadModel() {
+    let was = ctx != nil
+    cache = []; gcache = [:]; ctx = nil; cached = 0; stale = true; dirty = false; contentIds = [:]
+    MLX.GPU.clearCache()
+    if was { onRelease?() }
+  }
+  public func unload() { unloadModel() }
+
+  /// Start a fresh cache (created lazily); `text` = full rendered history (no trailing generation prompt).
   public func reset(_ text: String) throws {
-    cache = try ctx.model.newCache(parameters: nil); cached = 0; dirty = false; pending = text; recent = []
+    cache = []; cached = 0; dirty = false; pending = text; recent = []; stale = false
   }
   public func append(_ t: String) { pending += t }
 
@@ -81,7 +110,9 @@ public final class LM {
   /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = end-of-turn.
   public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, onDelta: (String) -> Void) throws -> (String, GenStats) {
     if dirty { throw SLError("cache dirty, reset needed") }
+    try ensureLoaded()
     dirty = true
+    if cache.isEmpty { cache = try ctx.model.newCache(parameters: nil) }
     let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, onDelta: onDelta)
     pending = tmpl.end
     cached += r.added
@@ -92,6 +123,7 @@ public final class LM {
 
   /// Side generation with a throwaway cache (world-delta step): never touches the main cache or history.
   public func aux(system: String, user: String, _ g: Grammar, temp: Float = 0.2, maxTok: Int = 400) throws -> (String, GenStats) {
+    try ensureLoaded()
     let c = try ctx.model.newCache(parameters: nil)
     let text = tmpl.bos + tmpl.open("system") + system + tmpl.end + tmpl.open("user") + user + tmpl.end + tmpl.gen
     let r = try core(cache: c, text: text, g, temp: temp, maxTok: maxTok, onDelta: { _ in })
@@ -107,13 +139,13 @@ public final class LM {
     var committed = 0
     defer { giveBack(con, gkey, committed: committed) }
     let t0 = Date()
-    let ids = ctx.tokenizer.encode(text: text, addSpecialTokens: false)
+    let ids = tok.encode(text: text, addSpecialTokens: false)
     st.prefillTok = ids.count
     var logits = try prefill(ids, cache)
     eval(logits)
     st.prefillS = Date().timeIntervalSince(t0)
     var added = ids.count
-    var det = NaiveStreamingDetokenizer(tokenizer: ctx.tokenizer)
+    var det = NaiveStreamingDetokenizer(tokenizer: tok)
     var out = "", gen: [Int] = []
     let t1 = Date()
     let dim = logits.shape[logits.ndim - 1]
@@ -147,7 +179,7 @@ public final class LM {
       if r.isTerminated { eval(logits); break }
       asyncEval(logits)
     }
-    let full = ctx.tokenizer.decode(tokenIds: gen)
+    let full = tok.decode(tokenIds: gen)
     if full.count > out.count, full.hasPrefix(out) { let rest = String(full.dropFirst(out.count)); onDelta(rest); out = full }
     st.genTok = n; st.decS = Date().timeIntervalSince(t1)
     if n >= maxTok { throw TruncatedError(partial: out) }
@@ -167,7 +199,7 @@ public final class LM {
   var contentIds: [Int: Bool] = [:]
   func isContent(_ id: Int) -> Bool {
     if let b = contentIds[id] { return b }
-    let t = ctx.tokenizer.convertIdToToken(id) ?? ""
+    let t = tok.convertIdToToken(id) ?? ""
     let b = t.filter(\.isLetter).count >= 5; contentIds[id] = b; return b
   }
   func maskArr(_ m: MaskResult, vocab: Int, dim: Int, pen: Set<Int> = []) -> MLXArray {
@@ -184,7 +216,6 @@ public final class LM {
     return MLXArray(maskBuf)
   }
 
-  public func unload() { cache = []; gcache = [:]; MLX.GPU.clearCache() }
 }
 
 /// Generation hit maxTok: the partial text is kept so a finished narration can be salvaged (cut the tail, not the story).

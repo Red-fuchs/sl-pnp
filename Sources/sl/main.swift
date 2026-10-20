@@ -10,7 +10,7 @@ var args = Array(CommandLine.arguments.dropFirst())
 var web = false
 if args.first == "web" { web = true; args.removeFirst() }
 var opt: [String: String] = [:]
-let flags: Set<String> = ["resume", "debug", "help", "no-gpu-check"]
+let flags: Set<String> = ["resume", "debug", "help", "no-gpu-check", "lease"]
 var i = 0
 while i < args.count {
   let a = args[i]; i += 1
@@ -22,8 +22,8 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 600] [--debug] [--input FILE|/dev/tty]
-  sl web [--port 8787] [--idle 600] [same options]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 300] [--lease] [--debug] [--input FILE|/dev/tty]
+  sl web [--port 8787] [--idle 300] [--lease] [same options]
   Befehle: /ende /figur [Name:] <Beschreibung> /welt /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
   """); exit(0)
@@ -53,9 +53,18 @@ let resuming = opt["resume"] != nil
 let session: Session
 do { session = try Session(name: name, mustExist: resuming) } catch { die("\(error)") }
 
-err("Modell laden: \(findModel().lastPathComponent) …")
-var lm: LM? = try await LM.load(dir: findModel())
-err(String(format: "geladen in %.1fs", lm!.loadS))
+let leased = opt["lease"] != nil      // play.sh: sl holds a gpu-run slot only while the model is loaded
+var lm: LM? = try await LM.make(dir: findModel())
+let lease = GPULease(label: web ? "sl-web" : "sl", ram: Int(opt["ram"] ?? "10") ?? 10)
+if leased {
+  lm!.onAcquire = { n in try lease.acquire(onWait: n) }
+  lm!.onRelease = { lease.release() }
+  lm!.notify = { s in err(s) }
+} else {
+  err("Modell laden: \(findModel().lastPathComponent) …")
+  try lm!.ensureLoaded()
+  err(String(format: "geladen in %.1fs", lm!.loadS))
+}
 let runner = Runner(lm: lm!, session: session, rng: rng)
 
 func show(_ o: Out) {
@@ -87,18 +96,23 @@ if opt["debug"] != nil { err(String(format: "start %.1fs", Date().timeIntervalSi
 func prompt() { print("\(bold)Du> \(off)", terminator: ""); fflush(stdout) }
 /// stdin line reader with idle timeout (the GPU lock held by gpu-run must not be held by an idle prompt)
 var inbuf = [UInt8]()
+var idleDone = false
 func readLineIdle(_ secs: Double) -> String? {
   while true {
     if let i = inbuf.firstIndex(of: 10) { let l = String(decoding: inbuf[..<i], as: UTF8.self); inbuf.removeSubrange(...i); return l }
     var p = pollfd(fd: 0, events: Int16(POLLIN), revents: 0)
-    if poll(&p, 1, Int32(secs * 1000)) == 0 { print("\(dim)Leerlauf – Modell entladen. Weiter mit --resume \(name)\(off)"); return nil }
+    if poll(&p, 1, idleDone ? -1 : Int32(secs * 1000)) == 0 {
+      if leased { runner.idleUnload(); idleDone = true; continue }      // keep the prompt, free the GPU slot
+      print("\(dim)Leerlauf – Modell entladen. Weiter mit --resume \(name)\(off)"); return nil
+    }
+    idleDone = false
     var b = [UInt8](repeating: 0, count: 4096)
     let n = read(0, &b, 4096)
     if n <= 0 { if inbuf.isEmpty { return nil }; let l = String(decoding: inbuf, as: UTF8.self); inbuf = []; return l }
     inbuf += b[..<n]
   }
 }
-let idleSecs = Double(opt["idle"] ?? "600") ?? 600
+let idleSecs = Double(opt["idle"] ?? (leased ? "300" : "600")) ?? 600
 prompt()
 while let l = readLineIdle(idleSecs) {
   let t = l.trimmingCharacters(in: .whitespaces)

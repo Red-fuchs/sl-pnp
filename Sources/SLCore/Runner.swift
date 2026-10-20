@@ -35,7 +35,10 @@ public final class Runner {
   public var lastRng = "?"
   public var rolls: [J] = []   // recent oracle results, newest last
 
-  public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng }
+  public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng; lm.notify = { [unowned self] s in self.sink(.info(s)) } }
+
+  /// Idle: free weights + KV cache and give the GPU slot back; the next turn re-queues and reloads.
+  public func idleUnload() { guard lm.loaded else { return }; lm.unloadModel(); sink(.info("Modell entladen (Leerlauf) – der nächste Zug wartet auf die GPU und lädt neu.")) }
 
   func wire() {
     game.debug = debug; game.temp = temp
