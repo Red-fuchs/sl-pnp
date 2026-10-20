@@ -818,6 +818,17 @@ final class ReviewV6BanGatingTests: XCTestCase {
   }
 }
 
+final class ReviewV6LowTests: XCTestCase {
+  func testHiddenGlyphRepairKeepsThreadLinks() {
+    var w = World(); w.addNpc(name: "Gl\u{0F6C}ckner", kurz: "x", ort: nil); w.straenge = [Strang(titel: "Wer l\u{0FCB}gt", stand: "")]
+    var h = HiddenWorld(); h.clues = [Clue(thread: "Wer l\u{0FCB}gt", text: "t", at: "Gl\u{0F6C}ckner")]
+    let before = h.clues[0].thread == w.straenge[0].titel
+    w.repairText(); h.repairText()
+    XCTAssertTrue(before); XCTAssertEqual(h.clues[0].thread, w.straenge[0].titel)                        // links survive the repair on both sides
+    XCTAssertTrue(isCleanText(h.clues[0].at))
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

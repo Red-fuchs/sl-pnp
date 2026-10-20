@@ -421,3 +421,12 @@ extension World {
     return r
   }
 }
+
+extension HiddenWorld {
+  /// Mirrors `World.repairText()` for hidden.json (a repaired thread title must keep matching `clue.thread`).
+  public mutating func repairText() {
+    for i in clues.indices { clues[i].thread = repairGlyphs(clues[i].thread); clues[i].at = repairGlyphs(clues[i].at); clues[i].text = repairGlyphs(clues[i].text) }
+    npcs = Dictionary(npcs.map { (repairGlyphs($0.key), $0.value) }, uniquingKeysWith: { a, _ in a })
+    for k in npcs.keys { npcs[k]!.ref = repairGlyphs(npcs[k]!.ref); npcs[k]!.geheimnis = repairGlyphs(npcs[k]!.geheimnis); npcs[k]!.ziel = repairGlyphs(npcs[k]!.ziel) }
+  }
+}

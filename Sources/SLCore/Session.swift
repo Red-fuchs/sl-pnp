@@ -49,6 +49,7 @@ public final class Session {
     let e = try Engine.load(path: statePath); e.machine = true
     let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
     hidden = (try? JSONDecoder().decode(HiddenWorld.self, from: Data(contentsOf: hiddenURL))) ?? HiddenWorld()
+    hidden.repairText()      // same glyph repair as world.json, so thread titles / clue locations stay in sync (older sessions)
     var w = World()
     if let d = try? Data(contentsOf: worldURL) {
       if var x = try? JSONDecoder().decode(World.self, from: d) { x.repairText(); w = x }

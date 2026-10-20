@@ -57,9 +57,11 @@ public final class Game {
     let b = buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) }); banCache = (key, b); return b
   }
   /// tier 1 (Andeutung): soft penalty set
+  var softCache: (key: String, ban: BanSet)?
   func softBanFor(_ known: String) -> BanSet? {
     let terms = banTerms(secrets: hidden.softList(), known: known); guard !terms.isEmpty else { return nil }
-    return buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) })
+    let key = terms.joined(separator: "|"); if let c = softCache, c.key == key { return c.ban }          // 64 tokenizer encodes per term: build once per term set
+    let b = buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) }); softCache = (key, b); return b
   }
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
@@ -194,6 +196,14 @@ public final class Game {
       }
       if debug { out(.info("· " + lm.last.line)) }
       ns.finish()
+      if ns.bad, ns.leak == nil {   // meta text / foreign glyphs on the LAST attempt: never show or store it
+        var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }), isMetaNarration(lines[k]) || !isCleanText(lines[k]) {
+          if !hold { out(.retract) }
+          out(.delta("Die Szene verharrt für einen Augenblick.")); out(.end)
+          lines[k] = "Die Szene verharrt für einen Augenblick."; txt = lines.joined(separator: "\n"); truncated = true
+        }
+      }
       if let l = ns.leak {   // still leaking after the regeneration: drop the offending sentences, show the rest
         var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }) {

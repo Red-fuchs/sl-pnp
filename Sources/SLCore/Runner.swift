@@ -131,7 +131,7 @@ public final class Runner {
       case "mix": try run { try game.genPrepare(mode: "mix", text: unq(String(a.dropFirst(3)))) }; table()
       case "regeln": let v = String(a.dropFirst(6)).trimmingCharacters(in: .whitespaces); if ["frei", "saeulen"].contains(v) { game.world.regeln = v; sink(.info("Regeln: \(regelwerk(v).titel)")) } else { sink(.info("/welt regeln frei|saeulen")) }
       case "slots": table()
-      case "debug": sink(.info(game.hidden.debugTable()))   // tiers / Spur: not part of the player view
+      case "debug": sink(.info(debug ? game.hidden.debugTable() : "/welt debug nur mit --debug (zeigt Hinweisorte)"))   // tiers / Spur: not part of the player view
       case "slot":
         let kv = String(a.dropFirst(4)).trimmingCharacters(in: .whitespaces).split(separator: "=", maxSplits: 1).map(String.init)
         guard kv.count == 2 else { sink(.info("/welt slot ton=düster")); return }
