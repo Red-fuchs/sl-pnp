@@ -741,6 +741,18 @@ final class ReviewV6TalkSpurTests: XCTestCase {
   }
 }
 
+final class ReviewV6HoldTests: XCTestCase {
+  // MED 6
+  func testHoldWheneverAnyLowTierSecretExists() {
+    var h = HiddenWorld(); XCTAssertFalse(h.holdNarration)                                           // no secrets: live streaming
+    var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.typ = "zeit"; n.ref = "99"; h.npcs["Zubeir"] = n
+    XCTAssertTrue(h.holdNarration)                                                                  // tier 0, bearer may be ANYWHERE (not only present)
+    h.npcs["Zubeir"]!.spur = 2; XCTAssertTrue(h.holdNarration)                                      // tier 1
+    h.npcs["Zubeir"]!.spur = 4; XCTAssertFalse(h.holdNarration)                                     // tier 2: free again
+    h.npcs["Zubeir"]!.spur = 0; h.npcs["Zubeir"]!.revealed = true; XCTAssertFalse(h.holdNarration)
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

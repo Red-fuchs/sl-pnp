@@ -76,6 +76,8 @@ extension HiddenWorld {
       return "\(n): Geheimnis \(secret). Ziel: \(h.ziel). Gruppe: \(h.gruppe). \(t >= 1 ? "Das Thema darf angedeutet werden (nicht der Kern)." : "Nichts andeuten.")"
     }.joined(separator: "\n")
   }
+  /// stream the narration live only when nothing could leak: with ANY tier-0/1 secret alive the line is held back and checked before it is shown
+  public var holdNarration: Bool { !guardList().isEmpty }
   /// tier 1 (Andeutung): soft penalty instead of a ban
   public func softList() -> [(topic: String, text: String)] {
     npcs.sorted(by: { $0.key < $1.key }).compactMap { (n, h) in h.tier(schwellen) == 1 && !h.geheimnis.isEmpty ? ("Geheimnis von \(n)", h.geheimnis) : nil }
