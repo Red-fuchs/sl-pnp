@@ -307,11 +307,12 @@ extension Game {
       let f = Self.fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
       let qt = Set(tokens(q)), dup = world.straenge.contains { let o = Set(tokens($0.titel)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }   // near-duplicate question
       if okThread(q) && !dup {
-        world.straenge.append(Strang(titel: q, stand: ""))
+        world.straenge.append(Strang(titel: q, stand: "")); world.festeStraenge.insert(q)
         for n in 1...3 { if let h = f["Hinweis\(n)"], let r = h.range(of: " @ ", options: .backwards) { hidden.clues.append(Clue(thread: q, text: clean(String(h[..<r.lowerBound]), 90), at: String(h[r.upperBound...]).trimmingCharacters(in: .whitespaces))) } }
       }
       tick("Fäden \(i + 1)/\(nThreads)", t0)
     }
+    for c in hidden.clues { if let i = world.npcs.firstIndex(where: { $0.name == c.at }) { world.npcs[i].fest = true } }   // clue holders are protected too
     // start scene + player hook
     prog("Startszene …", done, total); t0 = Date()
     let s = Self.fields((try? genCall("start", ctx: ctxBlock(), task: "Lege den Beginn fest: Startort, erste Szene (2. Person, ein Satz), Ziel der Figur und ein geheimes Ziel.", GenGr.start(places: places), validate: check)) ?? "")
@@ -416,7 +417,7 @@ extension World {
   @discardableResult
   mutating func addNpcGen(name: String, kurz: String, ort: String, haltung: Int) -> (Int, Bool)? {
     guard let r = addNpc(name: name, kurz: kurz, ort: ort) else { return nil }
-    npcs[r.0].haltung = max(-2, min(2, haltung)); npcs[r.0].basis = npcs[r.0].haltung; npcs[r.0].anwesend = false
+    npcs[r.0].haltung = max(-2, min(2, haltung)); npcs[r.0].basis = npcs[r.0].haltung; npcs[r.0].anwesend = false; npcs[r.0].fest = true
     return r
   }
 }

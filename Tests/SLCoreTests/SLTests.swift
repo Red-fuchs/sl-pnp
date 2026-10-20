@@ -678,6 +678,23 @@ final class ReviewV6Tests: XCTestCase {
   }
 }
 
+final class ReviewV6EvictionTests: XCTestCase {
+  // HIGH 2
+  func testClueThreadsAndHoldersSurviveEviction() {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Hof"
+    w.apply(["strang": [["titel": "Wer vergiftet den Brunnen", "hinweis": "a b c"]]]); w.festeStraenge.insert("Wer vergiftet den Brunnen")
+    for i in 0..<14 { w.apply(["strang": [["titel": .str("Wo liegt Schatz Nummer \(i) begraben"), "hinweis": "x y z"]]]) }     // delta step floods threads
+    XCTAssertTrue(w.straenge.contains { $0.titel == "Wer vergiftet den Brunnen" })                                         // the generated thread with clues is still there
+    XCTAssertLessThanOrEqual(w.straenge.count, 9)
+    var h = HiddenWorld(); h.clues = [Clue(thread: "Wer vergiftet den Brunnen", text: "Mörtel am Gitter", at: "Hof")]
+    XCTAssertEqual(h.reveal(&w, oracle: [], talked: []).count, 1)                                                          // ... and its clue is still reachable
+    var v = World(); v.ort = "Hof"; v.addNpcGen(name: "Zubeir", kurz: "Zöllner", ort: "Brunnentor", haltung: 0)
+    for i in 0..<30 { v.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i % 26))))\(i)q", kurz: "g", ort: "Weit") }   // NPC cap pressure while everybody is absent
+    XCTAssertTrue(v.npcs.contains { $0.name == "Zubeir" }); XCTAssertLessThanOrEqual(v.npcs.count, 20)
+    let back = try? JSONDecoder().decode(World.self, from: JSONEncoder().encode(w)); XCTAssertEqual(back?.festeStraenge, w.festeStraenge)   // persisted
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

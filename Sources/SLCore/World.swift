@@ -8,6 +8,7 @@ public struct Npc: Codable, Equatable {
   public var zustand: [String] = [], inventar: [String] = []
   public var haltung = 0              // -2 feindlich .. 2 loyal (towards the player character)
   public var notiz = ""
+  public var fest = false             // generated / clue-holding: never evicted (its clues must stay reachable)
   public var tot = false              // dead: never present again, shown as "tot"
   public var bekannt: [String] = []   // facts the player has learned (revealed secrets); the only hidden-derived text that reaches [Welt]
   public var basis = 0                // base attitude: neglect never decays below it
@@ -15,14 +16,14 @@ public struct Npc: Codable, Equatable {
   public var gekraenkt = false        // attitude decayed through neglect
   public var geruecht = 0.0           // fractional gossip residue (half-strength spreading)
   public init(id: String, name: String, kurz: String, ort: String?, anwesend: Bool = true) { self.id = id; self.name = name; self.kurz = kurz; self.ort = ort; self.anwesend = anwesend }
-  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, tot, basis, kontakt, gekraenkt, geruecht }
+  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, tot, fest, basis, kontakt, gekraenkt, geruecht }
   public init(from d: Decoder) throws {
     let c = try d.container(keyedBy: K.self)
     id = try c.decode(String.self, forKey: .id); name = try c.decode(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz) ?? ""
     ort = try c.decodeIfPresent(String.self, forKey: .ort); anwesend = try c.decodeIfPresent(Bool.self, forKey: .anwesend) ?? true
     zustand = try c.decodeIfPresent([String].self, forKey: .zustand) ?? []; inventar = try c.decodeIfPresent([String].self, forKey: .inventar) ?? []
     haltung = try c.decodeIfPresent(Int.self, forKey: .haltung) ?? 0; notiz = try c.decodeIfPresent(String.self, forKey: .notiz) ?? ""
-    bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []; tot = try c.decodeIfPresent(Bool.self, forKey: .tot) ?? false
+    bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []; tot = try c.decodeIfPresent(Bool.self, forKey: .tot) ?? false; fest = try c.decodeIfPresent(Bool.self, forKey: .fest) ?? false
     basis = try c.decodeIfPresent(Int.self, forKey: .basis) ?? 0; kontakt = try c.decodeIfPresent(Int.self, forKey: .kontakt) ?? 0
     gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0
   }
@@ -117,6 +118,7 @@ public struct World: Codable, Equatable {
   public var straenge: [Strang] = []
   var nextId = 1
   public var turn = 0
+  public var festeStraenge: Set<String> = []   // threads that own unfound clues: never evicted by the thread cap
   public var regeln = "frei"          // rules module: frei | saeulen (core stays universal)
   public var pc = PCSheet()
   public var gen = GenState()          // generated-world state (visible parts only; secrets live in hidden.json)
@@ -130,6 +132,7 @@ public struct World: Codable, Equatable {
     beziehungen = try c.decodeIfPresent([Rel].self, forKey: .beziehungen) ?? []; straenge = try c.decodeIfPresent([Strang].self, forKey: .straenge) ?? []
     nextId = try c.decodeIfPresent(Int.self, forKey: .nextId) ?? 1; turn = try c.decodeIfPresent(Int.self, forKey: .turn) ?? 0; neglectN = try c.decodeIfPresent(Int.self, forKey: .neglectN) ?? 8
     gen = try c.decodeIfPresent(GenState.self, forKey: .gen) ?? GenState()
+    festeStraenge = try c.decodeIfPresent(Set<String>.self, forKey: .festeStraenge) ?? []
     regeln = try c.decodeIfPresent(String.self, forKey: .regeln) ?? "frei"; pc = try c.decodeIfPresent(PCSheet.self, forKey: .pc) ?? PCSheet()
   }
   public var isEmpty: Bool { name == nil && kurz == nil && ort == nil && npcs.isEmpty && straenge.isEmpty && zustand.isEmpty && inventar.isEmpty }
@@ -280,8 +283,8 @@ public struct World: Codable, Equatable {
       if !k.isEmpty, norm(npcs[i].kurz).isEmpty || norm(npcs[i].kurz) == norm(npcs[i].name), norm(k) != norm(npcs[i].name) { npcs[i].kurz = k }
       return (i, false)
     }
-    if npcs.count >= 20 {   // evict an absent NPC (never one that is here)
-      guard let e = npcs.firstIndex(where: { !$0.anwesend }) else { return nil }
+    if npcs.count >= 20 {   // evict an absent, non-protected NPC (never one that is here, generated or holds a clue)
+      guard let e = npcs.firstIndex(where: { !$0.anwesend && !$0.fest }) else { return nil }
       let id = npcs[e].id; npcs.remove(at: e); beziehungen.removeAll { $0.a == id || $0.b == id }
     }
     npcs.append(Npc(id: "n\(nextId)", name: n, kurz: k, ort: o ?? ort)); nextId += 1
@@ -348,7 +351,8 @@ public struct World: Codable, Equatable {
       } else {
         var n = Strang(titel: t, stand: legacy)
         if !hint.isEmpty { n.hinweise = [hint]; n.stufe = "hinweise"; n.stand = cutWords(hint, 6) }
-        straenge.append(n); if straenge.count > 8 { straenge.removeFirst() }
+        straenge.append(n)
+        if straenge.count > 8, let e = straenge.firstIndex(where: { !festeStraenge.contains($0.titel) }) { straenge.remove(at: e) }   // oldest thread WITHOUT unfound clues
       }
       log.append("strang \(t)")
     }
@@ -357,7 +361,7 @@ public struct World: Codable, Equatable {
   var _touched: Set<String> = []
   public var talkedThisTurn: Set<String> = []   // transient: /gespraech counts as contact for the next tick
   public internal(set) var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
-  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen, regeln, pc }
+  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen, regeln, pc, festeStraenge }
 
   // MARK: death + presence sync (F5)
   @discardableResult
