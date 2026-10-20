@@ -117,6 +117,8 @@ public struct World: Codable, Equatable {
   public var straenge: [Strang] = []
   var nextId = 1
   public var turn = 0
+  public var regeln = "frei"          // rules module: frei | saeulen (core stays universal)
+  public var pc = PCSheet()
   public var gen = GenState()          // generated-world state (visible parts only; secrets live in hidden.json)
   public var neglectN = 8             // turns without contact before an attitude decays one step
   public init() {}
@@ -128,6 +130,7 @@ public struct World: Codable, Equatable {
     beziehungen = try c.decodeIfPresent([Rel].self, forKey: .beziehungen) ?? []; straenge = try c.decodeIfPresent([Strang].self, forKey: .straenge) ?? []
     nextId = try c.decodeIfPresent(Int.self, forKey: .nextId) ?? 1; turn = try c.decodeIfPresent(Int.self, forKey: .turn) ?? 0; neglectN = try c.decodeIfPresent(Int.self, forKey: .neglectN) ?? 8
     gen = try c.decodeIfPresent(GenState.self, forKey: .gen) ?? GenState()
+    regeln = try c.decodeIfPresent(String.self, forKey: .regeln) ?? "frei"; pc = try c.decodeIfPresent(PCSheet.self, forKey: .pc) ?? PCSheet()
   }
   public var isEmpty: Bool { name == nil && kurz == nil && ort == nil && npcs.isEmpty && straenge.isEmpty && zustand.isEmpty && inventar.isEmpty }
 
@@ -193,6 +196,7 @@ public struct World: Codable, Equatable {
     var l = block(full: true).split(separator: "\n", omittingEmptySubsequences: false).map(String.init).filter { $0 != "[Welt]" }
     let noFigur = name == nil && (kurz ?? "").isEmpty
     if noFigur { if l.first?.hasPrefix("Du = ") == true { l.removeFirst() }; l.insert("Du = –  (noch keine Figur: /figur Name: Beschreibung)", at: 0) }
+    if regeln == "saeulen" { l.insert("Regeln: Drei Säulen — " + pc.line, at: min(2, l.count)) }   // char sheet only while the module is active
     return l.joined(separator: "\n")
   }
   /// "? Wer hat den Brunnen vergiftet (2 Hinweise)" | "✓ Wer … : Antwort" | "Titel – stand"
@@ -353,7 +357,7 @@ public struct World: Codable, Equatable {
   var _touched: Set<String> = []
   public var talkedThisTurn: Set<String> = []   // transient: /gespraech counts as contact for the next tick
   public internal(set) var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
-  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen }
+  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen, regeln, pc }
 
   // MARK: death + presence sync (F5)
   @discardableResult

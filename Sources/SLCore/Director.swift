@@ -69,7 +69,7 @@ extension HiddenWorld {
   /// One player turn: raise the Spur of every secret the player is on the track of. Returns hint lines (tier 2: one keyword) / debug lines.
   /// +1 asking/naming the bearer, +1 entering the ref place, +1 matching item, +2 oracle yes about the bearer/topic, +1 per turn on the topic.
   /// Anti-stuck: `stuckN` engaged turns without a tier change lower this secret's thresholds by 1. Tier 3 = revealed (moves to bekannt).
-  public mutating func updateSpur(_ w: inout World, player: String, oracle: [(q: String, a: String)], talked: [String]) -> [String] {
+  public mutating func updateSpur(_ w: inout World, bonus: ((Int) -> Int)? = nil, player: String, oracle: [(q: String, a: String)], talked: [String]) -> [String] {
     var lines: [String] = []
     let ptoks = Set(tokens(player)), pwords = Set(contentWords(player).map(lemma))
     for name in npcs.keys.sorted() {
@@ -82,6 +82,7 @@ extension HiddenWorld {
       let topic = Set(contentWords(h.geheimnis + " " + h.ziel).map(lemma)).subtracting(Set(contentWords(w.knownText()).map(lemma)))
       for (q, a) in oracle where (a == "JA" || a == "JA+") && (!Set(tokens(name)).isDisjoint(with: Set(tokens(q))) || !topic.isDisjoint(with: Set(contentWords(q).map(lemma)))) { gain += 2; engaged = true }
       if !topic.isDisjoint(with: pwords) { gain += 1; engaged = true }
+      if engaged, let b = bonus { gain += max(0, b(before)) }          // rules module: Wissen / Sozial speed up the track
       h.spur += gain
       let after = h.tier(schwellen)
       if after > before {

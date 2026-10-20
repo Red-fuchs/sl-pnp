@@ -589,6 +589,66 @@ final class SpurTierTests: XCTestCase {   // tiers, soft ban, anti-stuck, clue p
   }
 }
 
+final class RegelwerkTests: XCTestCase {
+  func sheet() -> PCSheet { var p = PCSheet(); p.kampf = 2; p.sozial = 1; p.wissen = -1; p.talente = ["Schloss knacken", "Kräuterkunde"]; return p }
+  func testFreiChangesNothing() {
+    let f = Frei(), p = sheet()
+    for a in Art.allCases { XCTAssertEqual(f.oddsShift(art: a, pc: p, input: "Ich knacke das Schloss"), 0); XCTAssertEqual(f.spurBonus(art: a, pc: p, tier: 0), 0); XCTAssertEqual(f.haltungDelta(1, art: a, pc: p), 1) }
+    XCTAssertEqual(f.progress(onThreadSolved: p, art: .kampf), p)
+    for h in [nil, -2, 0, 1, 2] as [Int?] { XCTAssertEqual(combinedShift(haltung: h, regel: 0), h) }          // the engine sees exactly the old shift
+    var g = Gate(); g.head = true; g.open = true; XCTAssertFalse(Gr.grammar(g).tag.contains("Art: "))        // no Art line without the module
+    XCTAssertEqual(World().regeln, "frei"); XCTAssertFalse(World().panel().contains("Drei Säulen"))
+    XCTAssertEqual(regelwerk("frei").id, "frei"); XCTAssertEqual(regelwerk("unbekannt").id, "frei")
+  }
+  func testSaeulenOddsShiftAndTalentMatch() {
+    let r = DreiSaeulen(), p = sheet()
+    XCTAssertEqual(r.oddsShift(art: .kampf, pc: p, input: "Ich greife den Wächter an"), 2)                  // Säule only
+    XCTAssertEqual(r.oddsShift(art: .sonst, pc: p, input: "Ich gehe weiter"), 0)
+    XCTAssertEqual(r.oddsShift(art: .wissen, pc: p, input: "Ich lese die Inschrift"), -1)
+    XCTAssertEqual(r.oddsShift(art: .sonst, pc: p, input: "Ich knacke das Schloss der Truhe"), 1)           // talent word overlap (knacken / Schloss), no model involved
+    XCTAssertEqual(r.oddsShift(art: .kampf, pc: p, input: "Ich knacke das Schloss"), 3)                      // Säule + talent
+    XCTAssertEqual(DreiSaeulen.talentBonus(p, input: "Ich koche Suppe"), 0)
+    XCTAssertEqual(combinedShift(haltung: 1, regel: 3), 2); XCTAssertEqual(combinedShift(haltung: nil, regel: 1), 1); XCTAssertEqual(combinedShift(haltung: -2, regel: -1), -2)   // combined with the attitude shift, clamped
+    XCTAssertNil(combinedShift(haltung: nil, regel: 0))
+  }
+  func testEffectsOnSpurAndHaltung() {
+    let r = DreiSaeulen(), p = sheet()
+    XCTAssertEqual(r.spurBonus(art: .wissen, pc: p, tier: 0), 1); var w2 = p; w2.wissen = 2; XCTAssertEqual(r.spurBonus(art: .wissen, pc: w2, tier: 1), 3)
+    XCTAssertEqual(r.spurBonus(art: .sozial, pc: p, tier: 0), 1); XCTAssertEqual(r.spurBonus(art: .sozial, pc: p, tier: 1), 0); XCTAssertEqual(r.spurBonus(art: .kampf, pc: p, tier: 0), 0)   // Sozial only speeds tier 1
+    XCTAssertEqual(r.haltungDelta(1, art: .sozial, pc: p), 2); XCTAssertEqual(r.haltungDelta(-1, art: .sozial, pc: p), -2); XCTAssertEqual(r.haltungDelta(1, art: .kampf, pc: p), 1)
+    var nosoc = p; nosoc.sozial = 0; XCTAssertEqual(r.haltungDelta(1, art: .sozial, pc: nosoc), 1)
+    // integration: the same turn gives more Spur with Wissen
+    var w = World(); w.setFigur("A: Mann"); w.ort = "Hof"; w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Hof")
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.typ = "zeit"; n.ref = "99"; h.npcs["Zubeir"] = n
+    var h2 = h; _ = h.updateSpur(&w, player: "Ich frage Zubeir.", oracle: [], talked: [])
+    _ = h2.updateSpur(&w, bonus: { r.spurBonus(art: .wissen, pc: w2, tier: $0) }, player: "Ich frage Zubeir.", oracle: [], talked: [])
+    XCTAssertEqual(h.npcs["Zubeir"]!.spur, 1); XCTAssertEqual(h2.npcs["Zubeir"]!.spur, 4)
+  }
+  func testProgressionOnSolvedThread() {
+    let r = DreiSaeulen(); var p = sheet()
+    p = r.progress(onThreadSolved: p, art: nil); XCTAssertEqual(p.wissen, 0)                                  // weakest pillar (-1 -> 0)
+    p = r.progress(onThreadSolved: p, art: .kampf); XCTAssertEqual(p.kampf, 2)                                // capped at +2
+    p = r.progress(onThreadSolved: p, art: .sozial); XCTAssertEqual(p.sozial, 2)
+    p = r.progress(onThreadSolved: p, art: .sonst); XCTAssertTrue(p.wissen >= 0)
+    var w = World(); w.regeln = "saeulen"; w.pc = sheet(); w.apply(["strang": [["titel": "Wer vergiftet den Brunnen", "hinweis": "a b c"]]]); w.straenge[0].hinweise = ["x", "y"]
+    XCTAssertEqual(w.oracleSolved(question: "Hat Ida den Brunnen vergiftet?", answer: "JA").count, 1)
+  }
+  func testActionTypeInGrammarOnlyWhenActive() {
+    var g = Gate(); g.head = true; g.open = true; g.art = true
+    let t = Gr.grammar(g).tag
+    XCTAssertTrue(t.contains("Art: ")); for a in ["kampf", "sozial", "wissen", "sonst"] { XCTAssertTrue(t.contains(a)) }
+    var h = Gate(); h.head = true; h.open = false; h.art = true; XCTAssertTrue(Gr.grammar(h).tag.contains("Art: "))       // also on the head_scene path
+    XCTAssertEqual(classifyArt("Ich greife den Wächter an"), .kampf); XCTAssertEqual(classifyArt("Ich versuche ihn zu überreden"), .sozial); XCTAssertEqual(classifyArt("Ich untersuche die Inschrift"), .wissen); XCTAssertEqual(classifyArt("Ich gehe"), .sonst)
+  }
+  func testSheetOnlyWhenActiveAndPersisted() throws {
+    var w = World(); w.setFigur("Aether: Mann"); w.pc = sheet(); XCTAssertFalse(w.panel().contains("Kampf 2"))
+    w.regeln = "saeulen"; XCTAssertTrue(w.panel().contains("Regeln: Drei Säulen — Kampf 2 · Sozial 1 · Wissen -1 · Talente: Schloss knacken, Kräuterkunde"))
+    let back = try JSONDecoder().decode(World.self, from: JSONEncoder().encode(w)); XCTAssertEqual(back.regeln, "saeulen"); XCTAssertEqual(back.pc, w.pc)
+    var q = PCSheet(); q.setWert(.kampf, 9); q.setWert(.sozial, -5); XCTAssertEqual(q.kampf, 2); XCTAssertEqual(q.sozial, -1)
+    XCTAssertEqual(Cmd.parse("/regeln saeulen"), .regeln("saeulen")); XCTAssertEqual(Cmd.parse("/saeulen kampf=1 wissen=2"), .saeulen("kampf=1 wissen=2")); XCTAssertEqual(Cmd.parse("/talent Schlösser knacken"), .talent("Schlösser knacken"))
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

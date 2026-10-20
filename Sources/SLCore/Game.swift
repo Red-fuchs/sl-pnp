@@ -46,6 +46,8 @@ public final class Game {
   public var figur: String?
   public var world = World()
   public var hidden = HiddenWorld()     // secrets of a generated world: never rendered into [Welt]
+  var lastArt: Art?
+  var regel: Regelwerk { regelwerk(world.regeln) }
   var figurCandidates: [String] = []
   var banCache: (key: String, ban: BanSet)?
   /// decode-time ban for the unrevealed secret terms (cached per term set)
@@ -103,7 +105,7 @@ public final class Game {
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
     genLazy()
-    let sp = hidden.updateSpur(&world, player: player, oracle: turnQA, talked: namedBy(player) + world.npcs.filter { world.talkedThisTurn.contains($0.id) }.map(\.name))
+    let sp = hidden.updateSpur(&world, bonus: { [regel, pc = world.pc, art = lastArt ?? classifyArt(player)] tier in regel.spurBonus(art: art, pc: pc, tier: tier) }, player: player, oracle: turnQA, talked: namedBy(player) + world.npcs.filter { world.talkedThisTurn.contains($0.id) }.map(\.name))
     if debug { sp.filter { $0.hasPrefix("[debug]") }.forEach { out(.info($0)) } }
     let rv = genReveals(oracle: turnQA, talked: namedBy(player)) + sp.filter { !$0.hasPrefix("[debug]") }
     if !rv.isEmpty { pendingHint = rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
@@ -129,7 +131,7 @@ public final class Game {
     out(.delta("\(n.name): \(said)")); out(.end)
     world.talkedThisTurn.insert(n.id)
     var log: [String] = []
-    if d != 0 { log += world.setHaltung(i, world.npcs[i].haltung + max(-1, min(1, d))) }
+    if d != 0 { log += world.setHaltung(i, world.npcs[i].haltung + regel.haltungDelta(max(-1, min(1, d)), art: .sozial, pc: world.pc)) }
     world.npcs[i].kontakt = world.turn
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
     pendingNote = "\(n.name) sagte: \(said)"
@@ -151,7 +153,7 @@ public final class Game {
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle; gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
     var done = false
@@ -211,7 +213,13 @@ public final class Game {
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
       let (body, tail, du) = splitTail(txt)
       guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; finalDu = du; break }
-      if name == "ask_oracle", args["shift"].isNull, let h = world.shift(forQuestion: args["q"].str ?? ""), var o = args.obj { o["shift"] = .int(h); args = .obj(o) }   // NPC attitude -> social oracle shift (polarity-aware)
+      // oracle shift = NPC attitude (polarity-aware) + rules module (Säulen/talent by the classified art); both combined, clamped to -2...2
+      let art = Art(rawValue: txt.split(separator: "\n").first(where: { $0.hasPrefix("Art: ") }).map { String($0.dropFirst(5)) } ?? "") ?? .sonst
+      if name == "ask_oracle", args["shift"].isNull, var o = args.obj {
+        let rs = regel.oddsShift(art: art, pc: world.pc, input: player)
+        if let sh = combinedShift(haltung: world.shift(forQuestion: args["q"].str ?? ""), regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
+        if world.regeln == "saeulen" { lastArt = art }
+      }
       let res = eng.call(name, args)
       calls += 1
       if name == "ask_oracle" { asked = true }
@@ -219,7 +227,7 @@ public final class Game {
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
       if name == "start_scene", res["error"].isNull { world.startScene(ort: args["el"]["ort"].str, beteiligte: args["el"]["beteiligte"].str ?? "", expect: args["expect"].str ?? "") }
-      if name == "ask_oracle", let a = res["answer"].str { turnQA.append((args["q"].str ?? "", a)); let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { out(.world(l.joined(separator: " · "))) } }
+      if name == "ask_oracle", let a = res["answer"].str { turnQA.append((args["q"].str ?? "", a)); let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { world.pc = regel.progress(onThreadSolved: world.pc, art: lastArt); out(.world(l.joined(separator: " · "))) } }
       var fb = fmtResult(name, res)
       oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }

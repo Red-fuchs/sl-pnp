@@ -129,6 +129,7 @@ public final class Runner {
       switch a.split(separator: " ", maxSplits: 1).first.map(String.init) ?? "" {
       case "orakel": try game.genPrepare(mode: "orakel", text: ""); table()
       case "mix": try run { try game.genPrepare(mode: "mix", text: unq(String(a.dropFirst(3)))) }; table()
+      case "regeln": let v = String(a.dropFirst(6)).trimmingCharacters(in: .whitespaces); if ["frei", "saeulen"].contains(v) { game.world.regeln = v; sink(.info("Regeln: \(regelwerk(v).titel)")) } else { sink(.info("/welt regeln frei|saeulen")) }
       case "slots": table()
       case "debug": sink(.info(game.hidden.debugTable()))   // tiers / Spur: not part of the player view
       case "slot":
@@ -160,7 +161,9 @@ public final class Runner {
     case .status: let s = status(); sink(.info(([s.text] + s.journal.map { "· " + $0 }).joined(separator: "\n")))
     case .welt: sink(.info(game.world.panel()))
     case .frage(let q, let odds): if q.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(q, odds: odds) }
-    case .figur(let f):
+    case .figur(let f0):
+      var f = f0
+      if let r = f.range(of: #"\s*regeln=(frei|saeulen)\s*$"#, options: .regularExpression) { game.world.regeln = String(f[r]).contains("saeulen") ? "saeulen" : "frei"; f.removeSubrange(r) }   // /figur Name: Text regeln=saeulen
       game.figur = f.isEmpty ? nil : f
       if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f); game.world.syncLists(game.eng) }
       try game.syncCache(); try session.save(game); refresh()
@@ -169,9 +172,18 @@ public final class Runner {
       session = try Session(name: nextSessionName(base: session.name), root: session.dir.deletingLastPathComponent())   // keeps the --name the user chose
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
+    case .regeln(let a):
+      if a.isEmpty { sink(.info("Regeln: \(regelwerk(game.world.regeln).titel)  (/regeln frei | saeulen)")) }
+      else if ["frei", "saeulen"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen")) }
+    case .saeulen(let a):
+      for kv in a.split(separator: " ") { let p = kv.split(separator: "=").map(String.init); if p.count == 2, let v = Int(p[1]), let art = Art(rawValue: p[0].lowercased()), art != .sonst { game.world.pc.setWert(art, v) } }
+      try session.save(game); refresh(); sink(.info("Säulen: \(game.world.pc.line)"))
+    case .talent(let a):
+      if a == "-" { game.world.pc.talente = [] } else if !a.isEmpty { game.world.pc.talente.append(clean(a, 40)); game.world.pc.talente = Array(game.world.pc.talente.suffix(3)) }
+      try session.save(game); refresh(); sink(.info("Talente: \(game.world.pc.talente.isEmpty ? "-" : game.world.pc.talente.joined(separator: ", "))"))
     case .weltgen(let a): try weltgen(a)
     case .gespraech(let rest): try gespraech(rest)
-    case .geloest(let f): if let t = game.world.solve(f) { sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info("kein offener Faden mit '\(f)'")) }
+    case .geloest(let f): if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info("kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
@@ -188,7 +200,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -205,6 +217,9 @@ public enum Cmd: Equatable {
     }
     if t == "/gespraech" || t.hasPrefix("/gespraech ") { return .gespraech(arg(10)) }
     if t == "/geloest" || t.hasPrefix("/geloest ") { return .geloest(arg(8)) }
+    if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
+    if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
+    if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
     if t == "/figur" || t.hasPrefix("/figur ") { return .figur(arg(6)) }
     if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
     return t.hasPrefix("/") ? .unknown(t) : .say(t)
