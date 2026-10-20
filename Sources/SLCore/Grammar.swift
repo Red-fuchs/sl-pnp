@@ -69,6 +69,12 @@ public enum Gr {
   static let q = G.re(#"[^\-\n<][^\n<]{4}[^\n<]*"#)
 
   /// world-delta step: free-form JSON constrained to the delta schema (may be {})
+  /// /gespraech: 1-2 lines of NPC speech + attitude delta (-1|0|+1)
+  public static var talk: Grammar {
+    let line = G.re(#"[^\n<]{8}[^\n<]*"#)
+    let h = G.seq([.s("\nHaltung: "), .re(#"-1|0|\+1"#)])
+    return Grammar(.seq([.s("Rede: "), line, .or([h, .seq([.s("\nRede: "), line, h])])]))
+  }
   public static var delta: Grammar { Grammar(.js(DELTA_SCHEMA)) }
 
   static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks }

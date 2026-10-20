@@ -8,18 +8,41 @@ public struct Npc: Codable, Equatable {
   public var zustand: [String] = [], inventar: [String] = []
   public var haltung = 0              // -2 feindlich .. 2 loyal (towards the player character)
   public var notiz = ""
+  public var basis = 0                // base attitude: neglect never decays below it
+  public var kontakt = 0              // world turn of the last contact
+  public var gekraenkt = false        // attitude decayed through neglect
+  public var geruecht = 0.0           // fractional gossip residue (half-strength spreading)
   public init(id: String, name: String, kurz: String, ort: String?, anwesend: Bool = true) { self.id = id; self.name = name; self.kurz = kurz; self.ort = ort; self.anwesend = anwesend }
-  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz }
+  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, basis, kontakt, gekraenkt, geruecht }
   public init(from d: Decoder) throws {
     let c = try d.container(keyedBy: K.self)
     id = try c.decode(String.self, forKey: .id); name = try c.decode(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz) ?? ""
     ort = try c.decodeIfPresent(String.self, forKey: .ort); anwesend = try c.decodeIfPresent(Bool.self, forKey: .anwesend) ?? true
     zustand = try c.decodeIfPresent([String].self, forKey: .zustand) ?? []; inventar = try c.decodeIfPresent([String].self, forKey: .inventar) ?? []
     haltung = try c.decodeIfPresent(Int.self, forKey: .haltung) ?? 0; notiz = try c.decodeIfPresent(String.self, forKey: .notiz) ?? ""
+    basis = try c.decodeIfPresent(Int.self, forKey: .basis) ?? 0; kontakt = try c.decodeIfPresent(Int.self, forKey: .kontakt) ?? 0
+    gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0
   }
 }
 public struct Rel: Codable, Equatable { public var a: String, b: String, wert: Int }   // a/b = NPC id or "du"
-public struct Strang: Codable, Equatable { public var titel: String, stand: String }
+/// A thread. Question/answer arc: stufe frage -> hinweise (>=1 hint) -> antwort (only via oracle JA/JA+ with >=2 hints, or the player solves it).
+/// `extra` is free for later features (world generation, deadlines, secrets).
+public struct Strang: Codable, Equatable {
+  public var titel: String, stand: String
+  public var stufe = "frage"
+  public var hinweise: [String] = []
+  public var antwort: String?
+  public var extra: [String: String] = [:]
+  public init(titel: String, stand: String) { self.titel = titel; self.stand = stand }
+  enum K: String, CodingKey { case titel, stand, stufe, hinweise, antwort, extra }
+  public init(from d: Decoder) throws {
+    let c = try d.container(keyedBy: K.self)
+    titel = try c.decode(String.self, forKey: .titel); stand = try c.decodeIfPresent(String.self, forKey: .stand) ?? ""
+    stufe = try c.decodeIfPresent(String.self, forKey: .stufe) ?? "frage"; hinweise = try c.decodeIfPresent([String].self, forKey: .hinweise) ?? []
+    antwort = try c.decodeIfPresent(String.self, forKey: .antwort); extra = try c.decodeIfPresent([String: String].self, forKey: .extra) ?? [:]
+  }
+  public var isQuestion: Bool { let w = titel.split(separator: " ").first.map { String($0).lowercased() } ?? ""; return ["wer", "wo", "was", "wie", "warum", "wieso", "weshalb", "wohin", "woher", "wann", "welche", "welcher", "welches", "wem", "wen"].contains(w) }
+}
 
 let haltungWort = [-2: "feindlich", -1: "misstrauisch", 0: "", 1: "freundlich", 2: "loyal"]
 func norm(_ s: String) -> String { s.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -54,6 +77,9 @@ let negations: Set<String> = ["nicht", "kein", "keine", "keiner", "keinen", "nie
 /// Thread titles: a short noun phrase (<=5 words), no sentence, no leading verb, no negation. "Der Weg ins Moor" ok; "Hilfe wird verweigert", "findet den Schlüssel" rejected.
 func okThread(_ t: String) -> Bool {
   let w = t.split(separator: " ").map(String.init)
+  if let f = w.first?.lowercased(), ["wer", "wo", "was", "wie", "warum", "wieso", "weshalb", "wohin", "woher", "wann", "welche", "welcher", "welches", "wem", "wen"].contains(f) {   // open question as thread title
+    return w.count >= 3 && w.count <= 8 && !t.contains(where: { ".!?:;,".contains($0) }) && !w.contains(where: { negations.contains($0.lowercased()) })
+  }
   guard !w.isEmpty, w.count <= 5, !t.contains(where: { ".!?:;,".contains($0) }) else { return false }
   guard let f = w.first, f.first?.isUppercase == true || ["der", "die", "das", "ein", "eine"].contains(f.lowercased()) else { return false }   // German nouns are capitalised; a lowercase start is a verb/sentence
   if w.contains(where: { negations.contains($0.lowercased()) }) { return false }
@@ -71,7 +97,17 @@ public struct World: Codable, Equatable {
   public var beziehungen: [Rel] = []
   public var straenge: [Strang] = []
   var nextId = 1
+  public var turn = 0
+  public var neglectN = 8             // turns without contact before an attitude decays one step
   public init() {}
+  public init(from d: Decoder) throws {
+    let c = try d.container(keyedBy: CodingKeys.self)
+    name = try c.decodeIfPresent(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz); ort = try c.decodeIfPresent(String.self, forKey: .ort)
+    zustand = try c.decodeIfPresent([String].self, forKey: .zustand) ?? []; inventar = try c.decodeIfPresent([String].self, forKey: .inventar) ?? []
+    npcs = try c.decodeIfPresent([Npc].self, forKey: .npcs) ?? []; orte = try c.decodeIfPresent([String: String].self, forKey: .orte) ?? [:]
+    beziehungen = try c.decodeIfPresent([Rel].self, forKey: .beziehungen) ?? []; straenge = try c.decodeIfPresent([Strang].self, forKey: .straenge) ?? []
+    nextId = try c.decodeIfPresent(Int.self, forKey: .nextId) ?? 1; turn = try c.decodeIfPresent(Int.self, forKey: .turn) ?? 0; neglectN = try c.decodeIfPresent(Int.self, forKey: .neglectN) ?? 8
+  }
   public var isEmpty: Bool { name == nil && kurz == nil && ort == nil && npcs.isEmpty && straenge.isEmpty && zustand.isEmpty && inventar.isEmpty }
 
   // MARK: player character
@@ -121,7 +157,7 @@ public struct World: Codable, Equatable {
     let ordered = npcs.filter(\.anwesend) + npcs.filter { !$0.anwesend }
     let cards = ordered.prefix(full ? 20 : 6).map(card)
     if !cards.isEmpty { l.append("Figuren: " + cards.joined(separator: " | ")) }
-    if !straenge.isEmpty { l.append("Stränge: " + straenge.suffix(full ? 8 : 3).map { $0.stand.isEmpty ? $0.titel : "\($0.titel) – \($0.stand)" }.joined(separator: " | ")) }
+    if !straenge.isEmpty { l.append("Stränge: " + straenge.suffix(full ? 8 : 3).map(threadText).joined(separator: " | ")) }
     if full {
       if !orte.isEmpty { l.append("Orte: " + orte.sorted { $0.key < $1.key }.map { $0.value.isEmpty ? $0.key : "\($0.key) – \($0.value)" }.joined(separator: " | ")) }
       if !beziehungen.isEmpty { l.append("Beziehungen: " + beziehungen.map { "\(label($0.a))↔\(label($0.b)) \($0.wert)" }.joined(separator: ", ")) }
@@ -135,12 +171,21 @@ public struct World: Codable, Equatable {
     if noFigur { if l.first?.hasPrefix("Du = ") == true { l.removeFirst() }; l.insert("Du = –  (noch keine Figur: /figur Name: Beschreibung)", at: 0) }
     return l.joined(separator: "\n")
   }
+  /// "? Wer hat den Brunnen vergiftet (2 Hinweise)" | "✓ Wer … : Antwort" | "Titel – stand"
+  func threadText(_ t: Strang) -> String {
+    if t.stufe == "antwort" { return "✓ \(t.titel)" + (t.antwort.map { " – \($0)" } ?? "") }
+    if t.isQuestion || !t.hinweise.isEmpty {
+      let n = t.hinweise.count
+      return "? \(t.titel)" + (n > 0 ? " (\(n) Hinweis\(n == 1 ? "" : "e"))" : "")
+    }
+    return t.stand.isEmpty ? t.titel : "\(t.titel) – \(t.stand)"
+  }
   func label(_ id: String) -> String { id == "du" ? "du" : (npcs.first { $0.id == id }?.name ?? id) }
   func card(_ n: Npc) -> String {
     var x: [String] = []
     if !n.kurz.isEmpty && norm(n.kurz) != norm(n.name) { x.append(cutw(n.kurz, 50)) }
     x.append(n.anwesend ? "hier" : (n.ort.map { clean($0, 30) } ?? "anderswo"))
-    if let h = haltungWort[n.haltung], !h.isEmpty { x.append(h) }
+    if n.gekraenkt { x.append("gekränkt") } else if let h = haltungWort[n.haltung], !h.isEmpty { x.append(h) }
     x += n.zustand.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }
     return "\(n.name) (\(x.joined(separator: " · ")))"
   }
@@ -256,19 +301,91 @@ public struct World: Codable, Equatable {
       else { beziehungen.append(Rel(a: a2, b: b2, wert: w)); if beziehungen.count > 20 { beziehungen.removeFirst() } }
       log.append("\(label(a2))↔\(label(b2)) \(w)")
     }
-    for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { npcs[i].haltung = max(-2, min(2, v)); log.append("\(npcs[i].name) Haltung \(npcs[i].haltung)") } }
-    for e in d["strang"].arr ?? [] {
-      guard let t = e["titel"].str.map({ clean($0, 50) }), okThread(t) else { continue }
-      let s = cutWords(clean(e["stand"].str ?? "", 80), 6)
-      if let i = straenge.firstIndex(where: { norm($0.titel) == norm(t) }) { straenge[i].stand = s.isEmpty ? straenge[i].stand : s; _touched.insert(t) }
-      else { straenge.append(Strang(titel: t, stand: s)); if straenge.count > 8 { straenge.removeFirst() } }
+    for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { log += setHaltung(i, v) } }
+    for e in d["strang"].arr ?? [] {   // the delta step may only ADD HINTS (or open a thread); it can never mark one answered
+      guard var t = e["titel"].str.map({ clean($0, 70) }) else { continue }
+      while t.hasSuffix("?") { t.removeLast() }
+      guard okThread(t) else { continue }
+      let hint = cutWords(clean(e["hinweis"].str ?? "", 70), 8), legacy = cutWords(clean(e["stand"].str ?? "", 80), 6)
+      if let i = straenge.firstIndex(where: { norm($0.titel) == norm(t) }) {
+        if !hint.isEmpty, straenge[i].stufe != "antwort", !straenge[i].hinweise.contains(where: { norm($0) == norm(hint) }) {
+          straenge[i].hinweise.append(hint); if straenge[i].hinweise.count > 3 { straenge[i].hinweise.removeFirst() }
+          straenge[i].stufe = "hinweise"; straenge[i].stand = cutWords(hint, 6)
+        } else if !legacy.isEmpty { straenge[i].stand = legacy }
+        _touched.insert(t)
+      } else {
+        var n = Strang(titel: t, stand: legacy)
+        if !hint.isEmpty { n.hinweise = [hint]; n.stufe = "hinweise"; n.stand = cutWords(hint, 6) }
+        straenge.append(n); if straenge.count > 8 { straenge.removeFirst() }
+      }
       log.append("strang \(t)")
     }
     return log
   }
   var _touched: Set<String> = []
-  var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
-  private enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId }
+  public var talkedThisTurn: Set<String> = []   // transient: /gespraech counts as contact for the next tick
+  public internal(set) var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
+  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN }
+
+  // MARK: neglect + gossip
+  /// Sets an attitude; a notable change (>=1 step) spreads at half strength along relations, one hop only.
+  @discardableResult
+  public mutating func setHaltung(_ i: Int, _ v: Int, gossip: Bool = true) -> [String] {
+    let old = npcs[i].haltung, nv = max(-2, min(2, v)), d = nv - old
+    guard d != 0 else { return [] }
+    npcs[i].haltung = nv; npcs[i].gekraenkt = false
+    var log = ["\(npcs[i].name) Haltung \(nv)"]
+    guard gossip else { return log }
+    let id = npcs[i].id
+    for r in beziehungen where r.wert != 0 && (r.a == id || r.b == id) {
+      let other = r.a == id ? r.b : r.a
+      guard other != "du", let j = npcs.firstIndex(where: { $0.id == other }) else { continue }
+      // friends share the opinion, enemies take the opposite; half strength via a fractional residue
+      npcs[j].geruecht += Double(d) * 0.5 * (r.wert > 0 ? 1 : -1)
+      let step = Int(npcs[j].geruecht.rounded(.towardZero))
+      if step != 0 {
+        npcs[j].geruecht -= Double(step)
+        let before = npcs[j].haltung; npcs[j].haltung = max(-2, min(2, before + step))
+        if npcs[j].haltung != before { log.append("Gerücht: \(npcs[j].name) Haltung \(npcs[j].haltung)") }
+      }
+    }
+    return log
+  }
+  /// One player turn passed. `contacts` = NPC ids met this turn. Attitudes decay one step towards their base after `neglectN` quiet turns.
+  @discardableResult
+  public mutating func tick(contacts: Set<String>) -> [String] {
+    turn += 1
+    var log: [String] = []
+    defer { talkedThisTurn = [] }
+    for i in npcs.indices {
+      if contacts.contains(npcs[i].id) { npcs[i].kontakt = turn; continue }
+      guard turn - npcs[i].kontakt >= neglectN else { continue }
+      npcs[i].kontakt = turn                                  // the timer restarts: one step per N quiet turns
+      if npcs[i].haltung > npcs[i].basis { npcs[i].haltung -= 1; npcs[i].gekraenkt = true; log.append("\(npcs[i].name) vernachlässigt → Haltung \(npcs[i].haltung)") }
+    }
+    return log
+  }
+  /// ids of NPCs named in a text (player line) - counts as contact
+  public func mentioned(in text: String) -> Set<String> {
+    let t = Set(tokens(text)); return Set(npcs.filter { !Set(tokens($0.name)).isDisjoint(with: t) }.map(\.id))
+  }
+
+  // MARK: question/answer threads
+  /// "antwort" is reachable only with >=2 hints AND an oracle JA/JA+ about the thread (or the player solves it explicitly).
+  @discardableResult
+  public mutating func oracleSolved(question q: String, answer: String) -> [String] {
+    guard answer == "JA" || answer == "JA+" else { return [] }
+    let qt = Set(tokens(q).filter { $0.count >= 4 }); var log: [String] = []
+    for i in straenge.indices where straenge[i].stufe != "antwort" && straenge[i].hinweise.count >= 2 {
+      if Set(tokens(straenge[i].titel).filter { $0.count >= 4 }).intersection(qt).count >= 2 { straenge[i].stufe = "antwort"; straenge[i].antwort = cutWords(straenge[i].hinweise.last ?? "", 8); log.append("Antwort: \(straenge[i].titel)") }
+    }
+    return log
+  }
+  /// The player solves a thread by hand (`/geloest <Teil des Titels>`).
+  public mutating func solve(_ fragment: String) -> String? {
+    let f = norm(fragment); guard !f.isEmpty, let i = straenge.firstIndex(where: { norm($0.titel).contains(f) && $0.stufe != "antwort" }) else { return nil }
+    straenge[i].stufe = "antwort"; straenge[i].antwort = straenge[i].hinweise.last.map { cutWords($0, 8) }; return straenge[i].titel
+  }
 
   // MARK: one registry: Schicksal akteure/straenge are derived from the world
   public mutating func syncLists(_ eng: Engine?) {

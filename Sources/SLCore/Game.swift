@@ -52,6 +52,7 @@ public final class Game {
   public var temp: Float = 0.7
   public var lastRolls: [(String, J)] = []
   public var maxCtx = 14000
+  public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
 
   public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World()) {
@@ -81,8 +82,35 @@ public final class Game {
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
       if let d = try? J.parse(txt) { let old = world.ort; log += world.apply(d); world.figurMoved(from: old) }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
+    var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
+    log += world.tick(contacts: met)
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
+  }
+
+  /// /gespraech: 1-2 lines of dialogue from a present NPC (side generation: no scene change, no oracle, history untouched), attitude -1..+1.
+  public func talk(_ who: String, topic: String) throws {
+    guard let i = world.npc(who) else { out(.info("Unbekannte Figur: \(who)")); return }
+    guard world.npcs[i].anwesend else { out(.info("\(world.npcs[i].name) ist nicht hier.")); return }
+    try lm.ensureLoaded()
+    let n = world.npcs[i]
+    let h = haltungWort[n.haltung].flatMap { $0.isEmpty ? nil : $0 } ?? "neutral"
+    let sys = "Du bist \(n.name) (\(n.kurz)) in einem düsteren Fantasy-Rollenspiel und sprichst mit der Spielfigur. Sprich Deutsch, in der Ich-Form, 1 bis 2 kurze Sätze wörtliche Rede, in deinem Ton. Deine Haltung zur Spielfigur: \(h). Nutze nur, was in [Welt] steht; erfinde keine neuen Namen. Zeilenformat: \"Rede: <Satz>\" (optional eine zweite Rede-Zeile), dann \"Haltung: -1|0|+1\" (ändert sich deine Haltung durch das Gespräch? -1 kühler, +1 wärmer)."
+    let user = world.block() + "\n---\nDie Spielfigur spricht dich an" + (topic.isEmpty ? "." : " und fragt nach: \(clean(topic, 80)).") + "\nAusgabe:"
+    let (txt, st) = try lm.aux(system: sys, user: user, Gr.talk, temp: 0.7, maxTok: 200)
+    if debug { out(.info("· Gespräch: \(st.line)")) }
+    let lines = txt.split(separator: "\n").map(String.init)
+    let speech = lines.filter { $0.hasPrefix("Rede: ") }.map { String($0.dropFirst(6)).trimmingCharacters(in: .whitespaces) }
+    let d = Int((lines.first { $0.hasPrefix("Haltung: ") }.map { String($0.dropFirst(9)) } ?? "0").replacingOccurrences(of: "+", with: "")) ?? 0
+    let said = speech.map { "„\(clean($0, 220))“" }.joined(separator: " ")
+    out(.delta("\(n.name): \(said)")); out(.end)
+    world.talkedThisTurn.insert(n.id)
+    var log: [String] = []
+    if d != 0 { log += world.setHaltung(i, world.npcs[i].haltung + max(-1, min(1, d))) }
+    world.npcs[i].kontakt = world.turn
+    if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
+    pendingNote = "\(n.name) sagte: \(said)"
+    world.syncLists(eng)
   }
 
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
@@ -94,7 +122,8 @@ public final class Game {
     let firstTurn = msgs.isEmpty
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
-    push(.u((wb.isEmpty ? "" : wb + "\n---\n") + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
+    let note = pendingNote.map { "[Gespräch] \($0)\n" } ?? ""; pendingNote = nil
+    push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
@@ -139,6 +168,7 @@ public final class Game {
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
       if name == "start_scene", res["error"].isNull { world.startScene(ort: args["el"]["ort"].str, beteiligte: args["el"]["beteiligte"].str ?? "", expect: args["expect"].str ?? "") }
+      if name == "ask_oracle", let a = res["answer"].str { let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { out(.world(l.joined(separator: " · "))) } }
       var fb = fmtResult(name, res)
       oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }

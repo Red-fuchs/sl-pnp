@@ -260,6 +260,65 @@ final class CmdTests: XCTestCase {
   }
 }
 
+final class DynamicsTests: XCTestCase {
+  func world() -> World {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Hof"
+    w.addNpc(name: "Ida", kurz: "Köhlerin", ort: "Hof"); w.addNpc(name: "Bork", kurz: "Fährmann", ort: "Hof"); w.addNpc(name: "Tom", kurz: "Wache", ort: "Hof")
+    w.apply(["beziehung": [["a": "Ida", "b": "Bork", "wert": 2], ["a": "Bork", "b": "Tom", "wert": 1]]])
+    return w
+  }
+  func testNeglectDecay() {      // idea 1a
+    var w = world(); w.neglectN = 3
+    w.setHaltung(0, 2, gossip: false); w.npcs[0].basis = 1
+    for _ in 0..<2 { w.tick(contacts: []) }; XCTAssertEqual(w.npcs[0].haltung, 2)               // not yet
+    w.tick(contacts: []); XCTAssertEqual(w.npcs[0].haltung, 1); XCTAssertTrue(w.npcs[0].gekraenkt)   // after N quiet turns: one step
+    XCTAssertTrue(w.block().contains("Ida (Köhlerin · hier · gekränkt)"))
+    for _ in 0..<9 { w.tick(contacts: []) }; XCTAssertEqual(w.npcs[0].haltung, 1)               // never below the base
+    w.setHaltung(0, 2, gossip: false); w.tick(contacts: [w.npcs[0].id]); XCTAssertFalse(w.npcs[0].gekraenkt)   // contact resets the timer / mood
+    for _ in 0..<2 { w.tick(contacts: [w.npcs[0].id]) }; XCTAssertEqual(w.npcs[0].haltung, 2)   // contact keeps it
+    XCTAssertEqual(w.mentioned(in: "Ich spreche mit Ida."), [w.npcs[0].id])
+  }
+  func testGossipHalfStrengthOneHop() {   // idea 1b
+    var w = world()
+    w.setHaltung(0, -2)                                           // Ida -2 (delta -2) -> friend Bork gets half: -1
+    XCTAssertEqual(w.npcs[1].haltung, -1); XCTAssertEqual(w.npcs[2].haltung, 0)    // Tom is two hops away: untouched
+    w.setHaltung(0, -1)                                           // delta +1 -> half = 0.5 -> residue only
+    XCTAssertEqual(w.npcs[1].haltung, -1)
+    w.setHaltung(0, 0)                                            // another +1 -> residue reaches +1
+    XCTAssertEqual(w.npcs[1].haltung, 0)
+    var e = world(); e.apply(["beziehung": [["a": "Ida", "b": "Bork", "wert": -1]]])   // enemies take the opposite opinion
+    e.setHaltung(0, 2); XCTAssertEqual(e.npcs[1].haltung, -1)
+    e.setHaltung(1, -2, gossip: false); XCTAssertEqual(e.npcs[1].haltung, -2)
+  }
+  func testQuestionThreads() {    // idea 2
+    var w = world()
+    w.apply(["strang": [["titel": "Wer hat den Brunnen vergiftet?", "hinweis": "Bitterer Geruch am Rand"]]])
+    XCTAssertEqual(w.straenge[0].titel, "Wer hat den Brunnen vergiftet"); XCTAssertEqual(w.straenge[0].stufe, "hinweise")
+    XCTAssertTrue(w.block().contains("? Wer hat den Brunnen vergiftet (1 Hinweis)"))
+    w.apply(["strang": [["titel": "Wer hat den Brunnen vergiftet", "hinweis": "Schwarze Phiole im Schilf", "stufe": "antwort", "antwort": "Ida"]]])   // the delta can never answer
+    XCTAssertEqual(w.straenge[0].stufe, "hinweise"); XCTAssertNil(w.straenge[0].antwort)
+    var one = World(); one.apply(["strang": [["titel": "Wer hat den Brunnen vergiftet", "hinweis": "Ein Hinweis"]]])
+    XCTAssertTrue(one.oracleSolved(question: "Wer hat den Brunnen vergiftet?", answer: "JA").isEmpty)          // <2 hints: no answer
+    XCTAssertTrue(w.oracleSolved(question: "Ist das Wetter schön?", answer: "JA").isEmpty)                      // unrelated question
+    XCTAssertTrue(w.oracleSolved(question: "Hat Ida den Brunnen vergiftet?", answer: "NEIN").isEmpty)           // NEIN: stays open
+    var x = world(); x.apply(["strang": [["titel": "Wer hat den Brunnen vergiftet", "hinweis": "Erster Hinweis"]]]); x.apply(["strang": [["titel": "Wer hat den Brunnen vergiftet", "hinweis": "Zweiter Hinweis hier"]]])
+    XCTAssertEqual(x.oracleSolved(question: "Hat Ida den Brunnen vergiftet?", answer: "JA+").count, 1); XCTAssertEqual(x.straenge[0].stufe, "antwort")
+    XCTAssertTrue(x.block().contains("✓ Wer hat den Brunnen vergiftet"))
+    for i in 0..<5 { x.apply(["strang": [["titel": "Wo liegt der Schatz begraben", "hinweis": .str("Hinweis Nummer \(i)")]]]) }
+    XCTAssertEqual(x.straenge.last!.hinweise.count, 3)                                                         // max 3 hints
+    var y = world(); y.apply(["strang": [["titel": "Wo liegt die Quelle", "hinweis": "a bb"]]]); XCTAssertEqual(y.solve("quelle"), "Wo liegt die Quelle"); XCTAssertEqual(y.straenge[0].stufe, "antwort")   // the player solves it
+  }
+  func testOldWorldJsonStillLoads() throws {
+    let old = #"{"name":"A","kurz":"x","npcs":[{"id":"n1","name":"Ida","kurz":"k","anwesend":true,"zustand":[],"inventar":[],"haltung":1,"notiz":""}],"straenge":[{"titel":"Der Fluch","stand":"offen"}],"orte":{},"beziehungen":[],"zustand":[],"inventar":[],"nextId":2}"#
+    let w = try JSONDecoder().decode(World.self, from: Data(old.utf8))
+    XCTAssertEqual(w.npcs[0].haltung, 1); XCTAssertEqual(w.neglectN, 8); XCTAssertEqual(w.straenge[0].stufe, "frage"); XCTAssertEqual(w.turn, 0)
+  }
+  func testGespraechCommands() {
+    XCTAssertEqual(Cmd.parse("/gespraech Marta Fluch"), .gespraech("Marta Fluch")); XCTAssertEqual(Cmd.parse("/gespraech"), .gespraech(""))
+    XCTAssertEqual(Cmd.parse("/geloest Brunnen"), .geloest("Brunnen"))
+  }
+}
+
 final class LeaseTests: XCTestCase {
   func testAcquireReleaseWithStub() throws {   // stub gpu-run: drops "-n label --ram N" and runs the holder
     let d = FileManager.default.temporaryDirectory.appendingPathComponent("sl-stub-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: d, withIntermediateDirectories: true)
@@ -421,6 +480,18 @@ final class GrammarTests: XCTestCase {
       for id in t.encode(text: "Du bist ein Matrose namens Jaro.", addSpecialTokens: false) { let m = try c.computeMask(); XCTAssertTrue((m.mask[id / 32] >> Int32(id % 32)) & 1 == 1); _ = try c.commitToken(Int32(id)) }
       let r2 = try c.computeMask(); XCTAssertEqual((r2.mask[106 / 32] >> Int32(106 % 32)) & 1, 0)   // tail still mandatory
     }
+  }
+  func testTalkGrammar() async throws {   // idea 4
+    let (t, gt) = try await tok()
+    for txt in ["Rede: Ich habe nichts gesehen, Fremder.\nHaltung: 0", "Rede: Komm näher, ich verrate dir etwas.\nRede: Aber sprich leise.\nHaltung: +1", "Rede: Verschwinde aus meinem Haus.\nHaltung: -1"] {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.talk.tag)
+      for id in t.encode(text: txt, addSpecialTokens: false) { let r = try c.computeMask(); XCTAssertTrue(!r.needsApply || (r.mask[id / 32] >> Int32(id % 32)) & 1 == 1, "talk rejected: \(txt)"); _ = try c.commitToken(Int32(id)) }
+      let r = try c.computeMask(); XCTAssertTrue(!r.needsApply || (r.mask[106 / 32] >> Int32(106 % 32)) & 1 == 1)
+    }
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.talk.tag)
+    for id in t.encode(text: "Rede: Ich habe nichts gesehen.\nHaltung: ", addSpecialTokens: false) { _ = try c.computeMask(); _ = try c.commitToken(Int32(id)) }
+    let m = try c.computeMask(); let two = t.encode(text: "2", addSpecialTokens: false)[0]
+    XCTAssertEqual((m.mask[two / 32] >> Int32(two % 32)) & 1, 0)       // delta limited to -1..+1
   }
   /// no Fork in xgrammar 0.1.30: a used matcher must be reusable after rollback
   func testRollbackReuse() async throws {

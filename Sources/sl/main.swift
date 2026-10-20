@@ -22,9 +22,9 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 300] [--lease] [--debug] [--input FILE|/dev/tty]
-  sl web [--port 8787] [--idle 300] [--lease] [same options]
-  Befehle: /ende /figur [Name:] <Beschreibung> /welt /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 300] [--lease] [--neglect 8] [--debug] [--input FILE|/dev/tty]
+  sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
+  Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
   """); exit(0)
 }
@@ -81,6 +81,7 @@ func show(_ o: Out) {
 }
 runner.sink = show
 runner.debug = opt["debug"] != nil
+runner.neglect = opt["neglect"].flatMap { Int($0) }
 if let t = opt["temp"], let v = Float(t) { runner.temp = v }
 
 if web {

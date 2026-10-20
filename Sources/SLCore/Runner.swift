@@ -17,6 +17,7 @@ public func describe(_ name: String, _ a: J, _ r: J) -> String {
 }
 
 public struct Status { public var figur: String?, welt = "", name = ""
+  public var hier: [String] = []
   public var s: Int, scene: Int, open: Bool, q: Int, rng: String, source: String, akteure: Int, straenge: Int, journal: [String]
   public var text: String {
     "Spielfigur: \(figur ?? "-")\nSpannung \(s) · Szene \(scene)\(open ? " (offen)" : "") · Fragen \(q)/6 · Quelle \(rng) · Akteure \(akteure) · Stränge \(straenge)" } }
@@ -31,6 +32,7 @@ public final class Runner {
   public var setting = defaultSetting
   var narr = ""
   public var debug = false
+  public var neglect: Int?             // --neglect N: quiet turns before an attitude decays
   public var temp: Float = 0.7
   public var lastRng = "?"
   public var rolls: [J] = []   // recent oracle results, newest last
@@ -64,6 +66,7 @@ public final class Runner {
     self.setting = setting ?? defaultSetting
     let e = try Session.newEngine(rng: rng)
     game = Game(eng: e, lm: lm, setting: self.setting); wire()
+    if let n = neglect { game.world.neglectN = n }
     session.log("# \(session.name)\n\nSetting: \(self.setting)\n")
     try game.syncCache()
     try session.save(game); refresh()
@@ -72,6 +75,7 @@ public final class Runner {
     let (e, s, m, f, q, w) = try session.loadEngine()
     setting = s
     game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w); wire()
+    if let n = neglect { game.world.neglectN = n }
     if let w = session.warning { sink(.info(w)) }
     try game.syncCache(); refresh()
   }
@@ -107,10 +111,19 @@ public final class Runner {
     if evInfo("ask_oracle", r) != nil, !(game.eng.st.akteure.isEmpty && game.eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(game.eng.st.akteure.map(\.name), game.eng.st.straenge.map(\.name)) }
     try run { try game.turn("Ich frage das Schicksal: \(q)\n" + fb, pre: r) }
   }
+  /// `rest` = "<Name> [Thema]"; the NPC name is matched longest-first against the known figures.
+  public func gespraech(_ rest: String) throws {
+    let r = rest.trimmingCharacters(in: .whitespaces)
+    guard !r.isEmpty else { sink(.info("/gespraech <Figur> [Thema]")); return }
+    var who = String(r.split(separator: " ").first ?? ""), topic = String(r.dropFirst(who.count)).trimmingCharacters(in: .whitespaces)
+    for n in game.world.npcs.sorted(by: { $0.name.count > $1.name.count }) where norm(r).hasPrefix(norm(n.name)) { who = n.name; topic = String(r.dropFirst(n.name.count)).trimmingCharacters(in: .whitespaces); break }
+    session.log("\n**Spieler:** /gespraech \(r)\n")
+    try run { try game.talk(who, topic: topic) }
+  }
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
-    return Status(figur: game.figur, welt: game.world.panel(), name: session.name, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
+    return Status(figur: game.figur, welt: game.world.panel(), name: session.name, hier: game.world.npcs.filter(\.anwesend).map(\.name), s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
   /// Shared command handling (CLI + web): ONE dispatcher. Returns false on quit.
@@ -132,6 +145,8 @@ public final class Runner {
       session = try Session(name: "sl-" + f.string(from: Date()))
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
+    case .gespraech(let rest): try gespraech(rest)
+    case .geloest(let f): if let t = game.world.solve(f) { sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info("kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
@@ -144,7 +159,7 @@ public final class Runner {
     for m in game.msgs {
       if m.role == "user" {
         guard !m.text.hasPrefix("[Orakel]") else { continue }
-        var t = stripWelt(m.text); if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
+        var t = stripWelt(m.text).split(separator: "\n", omittingEmptySubsequences: false).filter { !$0.hasPrefix("[Gespräch]") }.joined(separator: "\n"); if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
         r.append(["who": "me", "text": t])
       }
       else if let l = splitTail(m.text).body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }
@@ -159,7 +174,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -173,6 +188,8 @@ public enum Cmd: Equatable {
       if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }
       return .frage(rest.trimmingCharacters(in: .whitespaces), odds)
     }
+    if t == "/gespraech" || t.hasPrefix("/gespraech ") { return .gespraech(arg(10)) }
+    if t == "/geloest" || t.hasPrefix("/geloest ") { return .geloest(arg(8)) }
     if t == "/figur" || t.hasPrefix("/figur ") { return .figur(arg(6)) }
     if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
     return t.hasPrefix("/") ? .unknown(t) : .say(t)
