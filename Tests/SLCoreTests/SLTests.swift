@@ -1324,3 +1324,16 @@ final class InjectionTests: XCTestCase {   // N6
     w.straenge[0].hinweise = ["Ein Zöllner kannte den Schlüssel"]; XCTAssertNotNil(w.solve("Brunnen"))
   }
 }
+
+final class TensionTests: XCTestCase {   // N9
+  func testControl() {
+    XCTAssertFalse(tensionControl(model: true, nein: 2, ja: 1, events: 0))
+    XCTAssertFalse(tensionControl(model: true, nein: 0, ja: 3, events: 1))
+    XCTAssertTrue(tensionControl(model: true, nein: 1, ja: 2, events: 0))
+    XCTAssertFalse(tensionControl(model: false, nein: 0, ja: 1, events: 0))
+  }
+}
+
+final class StripRegieTests: XCTestCase {
+  func testCompactDropsRegie() { XCTAssertEqual(stripWelt("[Regie verdeckt] Marta zögert.\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("[Welt]\nx\n---\nIch gehe."), "Ich gehe.") }
+}

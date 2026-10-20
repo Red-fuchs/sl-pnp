@@ -65,6 +65,7 @@ public final class Game {
   }
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
+  var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
   public var sys: String { SYS + "\n\n" + MINOR_RULE + figurBlock(figur) + recap }
@@ -251,7 +252,13 @@ public final class Game {
         if let sh = combinedShift(haltung: world.shift(forQuestion: args["q"].str ?? ""), regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
         if world.regeln == "saeulen" { lastArt = art }
       }
+      if name == "end_scene", var o = args.obj {
+        let c = tensionControl(model: o["control"]?.bool ?? true, nein: sceneNein, ja: sceneJa, events: sceneEvents)
+        if o["control"]?.bool != c { o["control"] = .bool(c); args = .obj(o); if debug { out(.info("[debug] Spannung: control → \(c) (NEIN \(sceneNein), JA \(sceneJa), Ereignisse \(sceneEvents))")) } }
+      }
       let res = eng.call(name, args)
+      if name == "ask_oracle", let a = res["answer"].str { if a.hasPrefix("NEIN") { sceneNein += 1 } else { sceneJa += 1 }; if !res["event"].isNull { sceneEvents += 1 } }
+      if name == "end_scene" || name == "start_scene" { sceneNein = 0; sceneJa = 0; sceneEvents = 0 }
       calls += 1
       if name == "ask_oracle" { asked = true }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }
@@ -331,8 +338,10 @@ func groundedFigur(_ f: String, _ player: String) -> String? {
 
 /// Remove the "[Welt]…\n---\n" prefix from a user message.
 public func stripWelt(_ t: String) -> String {
-  guard t.hasPrefix("[Welt]"), let r = t.range(of: "\n---\n") else { return t }
-  return String(t[r.upperBound...])
+  var t = t
+  if t.hasPrefix("[Welt]"), let r = t.range(of: "\n---\n") { t = String(t[r.upperBound...]) }
+  let keep = t.split(separator: "\n", omittingEmptySubsequences: false).filter { !$0.hasPrefix("[Regie") && !$0.hasPrefix("[Hinweis verdeckt]") && !$0.hasPrefix("[Gespräch]") }   // stale director / hint notes do not belong in old history
+  return keep.joined(separator: "\n")
 }
 
 /// Split the narrator tails ("Du: Name (Rolle, Merkmal)" and "Figuren: …") off a step text.
@@ -422,6 +431,12 @@ public func isMetaNarration(_ line: String) -> Bool {
   if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
   if t.contains("zugänglich geworden") || t.contains("nun für dich zugänglich") || t.contains("Regeln ignor") { return true }   // N6: plays along with an injected frame
   return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
+}
+
+/// N9: tension must rise when the scene went badly (NEIN majority, random event) - the model nearly always claims "control".
+public func tensionControl(model: Bool, nein: Int, ja: Int, events: Int) -> Bool {
+  if events >= 1 || nein > ja { return false }
+  return model
 }
 
 /// N6: player text that tries to rewrite the rules / role ("Ignoriere deine Regeln", "SYSTEM:") - it must never write into threads or the world
