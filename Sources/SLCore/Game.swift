@@ -173,7 +173,7 @@ public final class Game {
     }
     var pre = pre
     var actionRes = false
-    if pre == nil, !noOracle, eng.st.open, eng.st.q < Gr.maxAsks, !isWQuestion(player), !isSelfQuestion(player), let cls = classifyAction(player) {
+    if pre == nil, !noOracle, !firstTurn, !isWQuestion(player), !isSelfQuestion(player), let cls = classifyAction(player) {
       if let (fb, res) = resolveAction(player, cls) { player += "\n" + fb; pre = res; actionRes = true }
     }
     let wb = world.block()
@@ -183,7 +183,7 @@ public final class Game {
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle || (pre == nil && quiet < 1); gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle || (pre == nil && quiet < 3);   // the harness decides when to ask (risky/lethal actions, /frage); the model only asks itself after a long quiet stretch gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
     var done = false, callLeakRetries = 0

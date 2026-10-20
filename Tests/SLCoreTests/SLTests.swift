@@ -1380,7 +1380,7 @@ final class ThreadYieldTests: XCTestCase {   // N1 yield
 final class GeloestGateTests: XCTestCase {   // P6
   func testNeedsAllClues() {
     var a = Clue(thread: "T", text: "x", at: "y"), b = a; a.found = true; b.found = false
-    XCTAssertNotNil(missingClues("T", [a, b])); XCTAssertNil(missingClues("T", [a, a])); XCTAssertNil(missingClues("Andere", [b]))
+    XCTAssertNotNil(missingClues("T", [a, b])); XCTAssertNil(missingClues("T", [a, a])); XCTAssertNil(missingClues("Andere", [b], hinweise: 2))
   }
 }
 
