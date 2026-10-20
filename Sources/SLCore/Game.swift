@@ -106,7 +106,11 @@ public final class Game {
     do {
       let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
-      if let d = try? J.parse(txt) { let old = world.ort; log += world.apply(d); world.figurMoved(from: old) }
+      if let d = try? J.parse(txt) {
+        let old = world.ort, threads = world.straenge, injected = isInjection(player)
+        log += world.apply(d); world.figurMoved(from: old)
+        if injected { world.straenge = threads }      // N6: an injected frame never writes threads / hints
+      }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
     let talkedNames = world.talkedNames()      // read BEFORE tick(): tick clears talkedThisTurn (the Spur event "asking the bearer" was lost for /gespraech)
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
@@ -416,7 +420,13 @@ public func isMetaNarration(_ line: String) -> Bool {
   let t = line.trimmingCharacters(in: .whitespaces)
   let w = String(t.prefix { $0.isLetter })
   if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
+  if t.contains("zugänglich geworden") || t.contains("nun für dich zugänglich") || t.contains("Regeln ignor") { return true }   // N6: plays along with an injected frame
   return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
+}
+
+/// N6: player text that tries to rewrite the rules / role ("Ignoriere deine Regeln", "SYSTEM:") - it must never write into threads or the world
+public func isInjection(_ t: String) -> Bool {
+  t.range(of: #"(ignorier\w*|vergiss|missachte)\s+(alle[ns]?|deine[ns]?|die|vorherige\w*)?\s*(regeln|anweisung\w*|instruktion\w*|prompt)|ignore\s+(all|your|previous)|(^|\n|\s)system\s*:|\[system|neue anweisung|du bist (jetzt|ab sofort)|spielleiter-modus|hidden\.json|systemprompt|system prompt|developer mode"#, options: [.regularExpression, .caseInsensitive]) != nil
 }
 
 /// Narration line minus planner/meta sentences and foreign glyphs; nil when nothing readable is left.

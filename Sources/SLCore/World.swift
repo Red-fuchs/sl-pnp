@@ -492,7 +492,7 @@ public struct World: Codable, Equatable {
   }
   /// The player solves a thread by hand (`/geloest <Teil des Titels>`).
   public mutating func solve(_ fragment: String) -> String? {
-    let f = norm(fragment); guard !f.isEmpty, let i = straenge.firstIndex(where: { norm($0.titel).contains(f) && $0.stufe != "antwort" }) else { return nil }
+    let f = norm(fragment); guard !f.isEmpty, let i = straenge.firstIndex(where: { norm($0.titel).contains(f) && $0.stufe != "antwort" && !$0.hinweise.isEmpty }) else { return nil }   // a thread with zero clues cannot be solved by hand
     straenge[i].stufe = "antwort"; straenge[i].antwort = straenge[i].hinweise.last.map { cutWords($0, 8) }; return straenge[i].titel
   }
 

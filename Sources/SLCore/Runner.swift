@@ -192,7 +192,7 @@ public final class Runner {
       try session.save(game); refresh(); sink(.info("Talente: \(game.world.pc.talente.isEmpty ? "-" : game.world.pc.talente.joined(separator: ", "))"))
     case .weltgen(let a): try weltgen(a)
     case .gespraech(let rest): try gespraech(rest)
-    case .geloest(let f): if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info("kein offener Faden mit '\(f)'")) }
+    case .geloest(let f): if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
