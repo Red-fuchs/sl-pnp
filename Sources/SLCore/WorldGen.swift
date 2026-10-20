@@ -116,18 +116,18 @@ public enum GenError: Error, CustomStringConvertible { case msg(String); public 
 
 public enum GenGr {
   static func en(_ v: [String]) -> G { v.count == 1 ? .s(v[0]) : .or(v.map { .s($0) }) }
-  static let line = G.re(#"[^\n<]{6}[^\n<]*"#)
-  static let hintLine = G.re(#"[^\n<@]{6}[^\n<@]*"#)
+  static let line = G.re(Cls.rep(Cls.line, 6))
+  static let hintLine = G.re(Cls.rep(Cls.line, 6))   // the class has no "@" (separator before the clue location)
   /// proper place name: optional article, capitalised words (+ small connectors) - no glued "Die"+junk
   static let placeName = G.re(#"((Der|Die|Das|Zum|Zur|Am|Im) )?[A-ZÄÖÜ][a-zäöüß]{3,}(( (von|der|des|am|zum|zur|im|zu|an))? [A-ZÄÖÜ][a-zäöüß]{3,}){0,2}"#)
   static let word = G.re(#"[A-ZÄÖÜ][a-zäöüß]{3,}( [a-zäöüß]{3,})?"#)
-  static let optLine = G.or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])
+  static let optLine = G.or([.s("-"), .re(Cls.rep(Cls.line, 2))])
   static let roles = ["Händler", "Schmied", "Heiler", "Jäger", "Fährmann", "Priester", "Bürgermeister", "Wache", "Bauer", "Köhler", "Schreiber", "Bote", "Gerber", "Fischer", "Müller", "Bäcker", "Wirt", "Magd", "Knecht", "Söldner", "Wanderprediger", "Kräuterfrau", "Totengräber", "Zöllner", "Spielmann", "Bettler", "Schäfer", "Glöckner", "Steinmetz", "Schiffer", "Webermeister", "Waffenmeister", "Hebamme", "Archivar", "Pilger", "Schmuggler", "Hauptmann", "Mönch", "Nonne", "Alchemist"]
   public static let reveals = ["ort_betreten", "npc_befragt", "gegenstand", "zeit", "orakel"]
 
   public static var slots: Grammar {
     var p: [G] = []
-    for k in GenSlots.keys { p += [.s("\(k.capitalized): "), k == "ort" ? .or([en(GenSlots.enums[k]! + ["offen"]), .re(#"[A-ZÄÖÜ][^\n<]{2}[^\n<]*"#)]) : en(GenSlots.enums[k]! + ["offen"]), .s("\n")] }
+    for k in GenSlots.keys { p += [.s("\(k.capitalized): "), k == "ort" ? .or([en(GenSlots.enums[k]! + ["offen"]), .re("[A-ZÄÖÜ]" + Cls.rep(Cls.line, 2))]) : en(GenSlots.enums[k]! + ["offen"]), .s("\n")] }
     p += [.s("Muss: "), optLine, .s("\nNicht: "), optLine]
     return Grammar(.seq(p))
   }
@@ -150,7 +150,7 @@ public enum GenGr {
   }
   public static func thread(refs: [String]) -> Grammar {
     let hint = { (n: Int) -> [G] in [.s("\nHinweis\(n): "), hintLine, .s(" @ "), en(refs)] }
-    return Grammar(.seq([.s("Frage: "), .or(["Wer ", "Wo ", "Was ", "Warum ", "Wie "].map { .s($0) }), .re(#"[^\n<?]{8}[^\n<?]*"#), .s("?")] + hint(1) + hint(2) + hint(3)))
+    return Grammar(.seq([.s("Frage: "), .or(["Wer ", "Wo ", "Was ", "Warum ", "Wie "].map { .s($0) }), .re(Cls.rep(Cls.lineNoQ, 8)), .s("?")] + hint(1) + hint(2) + hint(3)))
   }
   public static func start(places: [String]) -> Grammar {
     Grammar(.seq([.s("Start: "), en(places), .s("\nSzene: "), line, .s("\nZiel der Figur: "), line, .s("\nGeheimes Ziel: "), line]))

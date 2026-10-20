@@ -290,6 +290,20 @@ final class MetaAndGlyphTests: XCTestCase {   // F2 + F4
     var g = GenState(); g.slots.licht = "hell"; XCTAssertNotNil(genCheck("Ein tr\u{0FCB}ber Tag", g))
   }
   /// root cause of F4: xgrammar const_string mis-compiles 2-byte UTF-8; umlauts in literals go through the regex path now
+  /// positive free-text classes: Tibetan / Devanagari / CJK tokens are not even allowed in narration, lines or names
+  func testForeignScriptsMaskedInFreeText() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    var g = Gate(); g.open = true; g.calls = 1
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar(g).tag)
+    for id in t.encode(text: "Der Raum ist tr", addSpecialTokens: false) { _ = try c.computeMask(); _ = try c.commitToken(Int32(id)) }
+    let m = try c.computeMask(); func allowed(_ id: Int) -> Bool { (m.mask[id / 32] >> Int32(id % 32)) & 1 == 1 }
+    var foreign = 0, total = 0
+    for id in 0..<gt.vocabSize where allowed(id) { total += 1; if !isCleanText(v.vocab[id].replacingOccurrences(of: "▁", with: " ")) && !v.vocab[id].hasPrefix("<0x") { foreign += 1 } }
+    XCTAssertGreaterThan(total, 1000); XCTAssertEqual(foreign, 0, "foreign-script tokens still allowed in narration")
+    XCTAssertTrue(allowed(t.convertTokenToId("üb")!))
+  }
   func testUmlautLiteralsAcceptedByGrammar() async throws {
     guard let d = modelDir else { throw XCTSkip("no model dir") }
     let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)

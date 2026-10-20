@@ -156,7 +156,7 @@ extension Game {
 extension Gr {
   /// Regie: 1-2 behaviour lines
   public static var regie: Grammar {
-    let line = G.re(#"[A-ZÄÖÜ][^\n<]{12}[^\n<]*"#)
+    let line = G.re("[A-ZÄÖÜ]" + Cls.rep(Cls.line, 12))
     return Grammar(.or([.seq([.s("Regie: "), line]), .seq([.s("Regie: "), line, .s("\nRegie: "), line])]))
   }
 }
