@@ -246,7 +246,7 @@ public struct World: Codable, Equatable {
   // MARK: scene / presence
   /// New scene: nobody is present unless named in beteiligte/expect.
   public mutating func startScene(ort o: String?, beteiligte: String, expect: String) {
-    if let o, okPlace(clean(o)) { ort = clean(o); if orte[clean(o)] == nil, orte.count < 30 { orte[clean(o)] = "" } }
+    if let o, okPlace(clean(o)) { let c = canonPlace(clean(o)); ort = c; if orte[c] == nil, orte.count < 30 { orte[c] = "" } }
     let txt = Set(tokens(beteiligte + " " + expect))
     for i in npcs.indices where !npcs[i].tot {
       let present = !Set(tokens(npcs[i].name)).isDisjoint(with: txt)
@@ -254,6 +254,8 @@ public struct World: Codable, Equatable {
       if present { npcs[i].ort = ort } else if npcs[i].ort == nil || samePlace(npcs[i].ort, ort) { npcs[i].ort = npcs[i].ort ?? ort }
     }
   }
+  /// P8: the existing spelling of a place that has the same key ("Die Krypta" = "Krypta"), else the name itself
+  func canonPlace(_ n: String) -> String { orte.keys.sorted().first(where: { key($0) == key(n) }) ?? gen.orte.keys.sorted().first(where: { key($0) == key(n) }) ?? n }
   func samePlace(_ a: String?, _ b: String?) -> Bool { guard let a = a.map(key), let b = b.map(key), !a.isEmpty, !b.isEmpty else { return false }; return a == b }
 
   /// Narrator tail `Figuren: Marta (Wirtin), Bork` -> presence + new characters. "-" changes nothing.
@@ -318,7 +320,7 @@ public struct World: Codable, Equatable {
       let n = arr.count; arr.removeAll { norm($0) == norm(t) || norm($0).contains(norm(t)) }; return arr.count != n
     }
     if let o = d["spielfigur_ort"].str.map({ clean($0) }), okPlace(o) { ort = o; log.append("du → \(o)") }
-    for e in d["ort_neu"].arr ?? [] { if let n = e["name"].str.map({ clean($0) }), okPlace(n), orte.count < 30 { orte[n] = clean(e["kurz"].str ?? "", 80); log.append("ort \(n)") } }
+    for e in d["ort_neu"].arr ?? [] { if let n = e["name"].str.map({ clean($0) }), okPlace(n) { let c = canonPlace(n); if orte[c] == nil && orte.count >= 30 { continue }; if orte[c] == nil || orte[c]!.isEmpty { orte[c] = clean(e["kurz"].str ?? "", 80) }; if c == n { log.append("ort \(n)") } } }
     for e in (d["figuren"].arr ?? []) + (d["npc_neu"].arr ?? []) {   // legacy / manual
       if let (i, new) = addNpc(name: e["name"].str ?? "", kurz: e["kurz"].str ?? "", ort: e["ort"].str.map { clean($0) }) { if new { log.append("neu \(npcs[i].name)") } }
     }
@@ -600,6 +602,15 @@ public func repairGlyphs(_ s: String, vocab: [String] = []) -> String {
 }
 extension World {
   /// Repair all stored strings of a loaded world (F4: sessions written before the const_string fix).
+  /// older sessions: merge places that differ only by article/case/umlaut spelling (keeps the first, longer text wins)
+  public mutating func dedupePlaces() {
+    var seen: [String: String] = [:]
+    for n in orte.keys.sorted() {
+      let k = key(n)
+      if let first = seen[k] { if (orte[n] ?? "").count > (orte[first] ?? "").count { orte[first] = orte[n] }; orte[n] = nil; for i in npcs.indices where npcs[i].ort == n { npcs[i].ort = first }; if ort == n { ort = first } }
+      else { seen[k] = n }
+    }
+  }
   public mutating func repairText() {
     func fix(_ s: String) -> String { repairGlyphs(s) }
     name = name.map(fix); kurz = kurz.map(fix); ort = ort.map(fix)

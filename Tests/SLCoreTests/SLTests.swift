@@ -1409,3 +1409,12 @@ final class CmdMessageTests: XCTestCase {   // P7
     XCTAssertNotNil(figurProblem(": Zöllner")); XCTAssertNil(figurProblem("Kara: Söldnerin")); XCTAssertNil(figurProblem(""))
   }
 }
+
+final class PlaceDedupeTests: XCTestCase {   // P8
+  func testDedupe() {
+    var w = World(); w.orte = ["Krypta der Grenzsteine": "kalt", "Die Krypta der Grenzsteine": "kalt und feucht, Wasser tropft"]; w.npcs = [Npc(id: "n1", name: "A", kurz: "", ort: "Die Krypta der Grenzsteine")]
+    w.dedupePlaces(); XCTAssertEqual(w.orte.count, 1); XCTAssertEqual(w.npcs[0].ort, w.orte.keys.first)
+    w.startScene(ort: "die krypta der grenzsteine", beteiligte: "", expect: ""); XCTAssertEqual(w.orte.count, 1); XCTAssertEqual(w.ort, w.orte.keys.first)
+    _ = w.apply(try! J.parse(#"{"ort_neu":[{"name":"Krypta der Grenzsteine","kurz":"x"}]}"#)); XCTAssertEqual(w.orte.count, 1)
+  }
+}

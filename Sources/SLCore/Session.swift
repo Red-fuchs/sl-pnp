@@ -52,7 +52,7 @@ public final class Session {
     hidden.repairText()      // same glyph repair as world.json, so thread titles / clue locations stay in sync (older sessions)
     var w = World()
     if let d = try? Data(contentsOf: worldURL) {
-      if var x = try? JSONDecoder().decode(World.self, from: d) { x.repairText(); w = x }
+      if var x = try? JSONDecoder().decode(World.self, from: d) { x.repairText(); x.dedupePlaces(); w = x }
       else { let bak = worldURL.appendingPathExtension("bak"); try? FileManager.default.removeItem(at: bak); try? FileManager.default.moveItem(at: worldURL, to: bak); warning = "world.json unlesbar - Welt leer neu gestartet, Original: \(bak.lastPathComponent)" }
     }
     hidden.canonPlaces(Array(w.orte.keys) + Array(w.gen.orte.keys))
