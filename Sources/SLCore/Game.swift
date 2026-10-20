@@ -133,7 +133,9 @@ public final class Game {
     let firstTurn = msgs.isEmpty
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
-    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
+    let regie = directorPass(player: player)   // behaviour cue from the secrets (side cache); [Regie verdeckt] never reaches the UI
+    if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
+    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
@@ -142,18 +144,24 @@ public final class Game {
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
-      var ns = NarrStream(out: out)
+      let secrets = secretList(), known = knownText(), hold = !secretBearersHere().isEmpty   // narration is held back for the leak check while a secret-bearing NPC is present
+      let mkStream = { NarrStream(hold: hold, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
+      var ns = mkStream()
       let gm = Gr.grammar(gate)
       var txt = "", truncated = false, metaRetry = false
       for attempt in 0..<3 {
-        ns = NarrStream(out: out)
+        ns = mkStream()
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && ns.bad }) { d in ns.feed(d) }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }) { d in ns.feed(d) }
           break
         } catch is AbortedError {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
+          if let l = ns.leak, !msgs.isEmpty {   // leak guard: regenerate once with a "do not reveal" note (kept in the prompt text, stripped from the UI)
+            msgs[msgs.count - 1].text += "\n[Regie verdeckt] Verrate nicht: \(l.topic)."
+            out(.info("Erzählung verworfen (Geheimnis angedeutet: \(l.topic)) – neuer Versuch"))
+          } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
           ns.discard(); metaRetry = true
-          out(.retract); out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch"))
+          out(.retract)
           try syncCache()
         } catch let e as TruncatedError {
           if let sv = salvageNarration(e.partial) {   // narration finished, only the tail overran: keep the story, drop the tail
@@ -167,6 +175,16 @@ public final class Game {
       }
       if debug { out(.info("· " + lm.last.line)) }
       ns.finish()
+      if let l = ns.leak {   // still leaking after the regeneration: drop the offending sentences, show the rest
+        var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }) {
+          let safe = dropLeakingSentences(lines[k], secrets: secrets, known: known)
+          out(.info("Satz entfernt (Geheimnis: \(l.topic))"))
+          if !hold { out(.retract) }
+          if !safe.isEmpty { out(.delta(safe)); out(.end) }
+          lines[k] = safe.isEmpty ? "Die Szene verharrt für einen Augenblick." : safe; txt = lines.joined(separator: "\n"); truncated = true
+        }
+      }
       if gate.figurLine, let l = txt.split(separator: "\n").first(where: { $0.hasPrefix("Spielfigur: ") }) {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
         if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); world.syncLists(eng); figurChanged = true }
@@ -273,22 +291,31 @@ public func splitTail(_ txt: String) -> (body: String, tail: String?, du: String
 /// Line-wise splitter of the generated text: narration lines stream as deltas and ALWAYS close with `.end` at their line break
 /// (a missing .end once glued paragraphs together and dropped the SL lines from transcript.md); gate/tail lines go to .gate.
 public final class NarrStream {
-  var line = "", narr = false
+  var line = "", narr = false, held = ""
   public private(set) var bad = false          // narration must be regenerated (foreign glyph / planner scaffold, see F2)
+  public private(set) var leak: Leak?          // narration gives away a secret (leak guard)
   let out: (Out) -> Void
-  public init(out: @escaping (Out) -> Void) { self.out = out }
+  let hold: Bool, check: ((String) -> Leak?)?
+  /// hold: narration deltas are buffered until the line is complete and checked (only on turns with secret-bearing NPCs present)
+  public init(hold: Bool = false, check: ((String) -> Leak?)? = nil, out: @escaping (Out) -> Void) { self.hold = hold; self.check = check; self.out = out }
   public func feed(_ d: String) {
     for ch in d {
       if ch == "\n" { endLine(); continue }
       line.append(ch)
-      if narr { out(.delta(String(ch))) }
-      else if !isGatePrefix(line) && !line.hasPrefix("<") { narr = true; out(.delta(line)) }
+      if narr { if hold { held.append(ch) } else { out(.delta(String(ch))) } }
+      else if !isGatePrefix(line) && !line.hasPrefix("<") { narr = true; if hold { held = line } else { out(.delta(line)) } }
       if narr, !bad, isMetaNarration(line) || !isCleanText(String(ch)) { bad = true }
     }
   }
-  func endLine() { if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }; line = ""; narr = false }
+  func endLine() {
+    if narr {
+      if let c = check?(line) { leak = c; held = "" }                  // never shown (hold) / retracted by the caller
+      else { if hold { out(.delta(held)); held = "" }; out(.end) }
+    } else if !line.isEmpty { out(.gate(line)) }
+    line = ""; narr = false
+  }
   public func finish() { endLine() }
-  public func discard() { line = ""; narr = false; bad = false }
+  public func discard() { line = ""; narr = false; bad = false; leak = nil; held = "" }
 }
 
 /// Self-questions are answered from [Welt] in 1-3 sentences: no oracle, no scene change.

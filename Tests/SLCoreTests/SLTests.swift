@@ -375,6 +375,64 @@ final class WorldDriftTests: XCTestCase {   // F5
   }
 }
 
+final class DirectorTests: XCTestCase {   // secret-aware director + leak guard (Zubeir fixture)
+  func fixture() -> (World, HiddenWorld) {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Brunnentor"; w.gen.praemisse = "Seit drei Monaten fällt kein Regen, die Karawanenstadt verkauft ihr letztes Wasser."
+    w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Brunnentor"); w.npcs[0].anwesend = true
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.ziel = "Die Zunft vor dem Bankrott bewahren"; n.gruppe = "Zunft der Wasserwäger"; n.typ = "zeit"; n.ref = "9"; h.npcs["Zubeir"] = n
+    h.clues = [Clue(thread: "Wer hat die Zisterne versiegelt", text: "Frischer Mörtel am Gitter", at: "Brunnentor")]
+    return (w, h)
+  }
+  func testBearersAndSecretList() {
+    var (w, h) = fixture()
+    XCTAssertEqual(h.bearers(in: w), ["Zubeir"]); XCTAssertEqual(h.secretList().count, 3)                 // geheimnis + ziel + clue
+    w.npcs[0].anwesend = false; XCTAssertTrue(h.bearers(in: w).isEmpty)                                    // absent: no director pass
+    w.npcs[0].anwesend = true; w.kill(0); XCTAssertTrue(h.bearers(in: w).isEmpty)                          // dead: none
+    var (w2, h2) = fixture(); h2.npcs["Zubeir"]!.revealed = true; h2.npcs["Zubeir"]!.ziel = ""; XCTAssertTrue(h2.bearers(in: w2).isEmpty); XCTAssertFalse(h2.secretList().contains { $0.topic.hasPrefix("Geheimnis") })   // revealed secret is no secret any more
+  }
+  func testLeakGuardCatchesLeaksNotCues() {
+    let (w, h) = fixture(), sec = h.secretList(), known = w.knownText()
+    for cue in ["Zubeir weicht deinem Blick aus, seine Finger trommeln auf den Rand des Brunnens.", "Regie: Zubeir senkt die Stimme und blickt zum Tor.", "Zubeir lächelt dünn und tritt einen Schritt zurück. Draußen schreit ein Händler."] { XCTAssertNil(leakCheck(cue, secrets: sec, known: known), cue) }
+    XCTAssertEqual(leakCheck("Zubeir panscht das Wasser heimlich mit Salzlake aus dem Fass.", secrets: sec, known: known)?.topic, "Geheimnis von Zubeir")   // two rare words
+    XCTAssertNotNil(leakCheck("Er kippt Salzlake in den Eimer.", secrets: sec, known: known))                                                  // one name-like rare noun
+    XCTAssertEqual(leakCheck("Die Zunft droht am Bankrott zu zerbrechen.", secrets: sec, known: known)?.topic, "Ziel von Zubeir")
+    XCTAssertEqual(leakCheck("Am Gitter klebt frischer Mörtel.", secrets: sec, known: known)?.topic, "Hinweis zu 'Wer hat die Zisterne versiegelt'")
+    var h2 = h; h2.npcs["Zubeir"]!.revealed = true; XCTAssertNil(leakCheck("Zubeir panscht das Wasser mit Salzlake.", secrets: h2.secretList(), known: known))   // after the reveal it may be said
+  }
+  func testDropLeakingSentences() {
+    let (w, h) = fixture()
+    let narr = "Zubeir weicht aus. Er kippt heimlich Salzlake ins Fass. Der Händler flucht leise."
+    XCTAssertEqual(dropLeakingSentences(narr, secrets: h.secretList(), known: w.knownText()), "Zubeir weicht aus. Der Händler flucht leise.")
+  }
+  func testNarrStreamHoldAndLeak() {
+    let (w, h) = fixture(); let check: (String) -> Leak? = { leakCheck($0, secrets: h.secretList(), known: w.knownText()) }
+    func run(_ hold: Bool, _ narr: String) -> (events: [String], leak: Leak?) {
+      var ev: [String] = []; let ns = NarrStream(hold: hold, check: check) { o in switch o { case .delta(let d): ev.append(d); case .end: ev.append("END"); default: break } }
+      ns.feed("Frage: -\nWerkzeug: nein\n" + narr + "\nFiguren: Zubeir (Zöllner)"); ns.finish(); return (ev, ns.leak)
+    }
+    let bad = "Zubeir kippt Salzlake in das Fass und panscht das Wasser. Zwei. Drei.", good = "Zubeir weicht aus und blickt zum Brunnen. Zwei. Drei."
+    let a = run(true, bad); XCTAssertNotNil(a.leak); XCTAssertTrue(a.events.isEmpty)                         // held: the leaking narration is never shown
+    let b = run(true, good); XCTAssertNil(b.leak); XCTAssertEqual(b.events.joined().replacingOccurrences(of: "END", with: ""), good); XCTAssertEqual(b.events.last, "END")   // released at the end of the line
+    let c = run(false, bad); XCTAssertNotNil(c.leak); XCTAssertFalse(c.events.contains("END"))               // streamed mode: no .end, the caller retracts
+  }
+  func testRegieHiddenFromUi() {
+    let s = displayStory([.u("[Welt]\nDu = x\n---\n[Regie verdeckt] Zubeir weicht aus.\nIch frage Zubeir."), .m("Erwartung: x\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nZubeir weicht aus. Zwei. Drei.\nFiguren: Zubeir (Zöllner)")])
+    XCTAssertEqual(s.map { $0["text"]! }, ["Ich frage Zubeir.", "Zubeir weicht aus. Zwei. Drei."])
+  }
+  func testRegieGrammar() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    func ok(_ txt: String) throws -> Bool {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.regie.tag)
+      for id in t.encode(text: txt, addSpecialTokens: false) { let r = try c.computeMask(); if r.needsApply && (r.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return false }; _ = try c.commitToken(Int32(id)) }
+      let r = try c.computeMask(); return !r.needsApply || (r.mask[106 / 32] >> Int32(106 % 32)) & 1 == 1
+    }
+    XCTAssertTrue(try ok("Regie: Zubeir weicht aus und blickt zum Brunnen")); XCTAssertTrue(try ok("Regie: Zubeir weicht aus und blickt zum Brunnen\nRegie: Der Händler schweigt auffällig"))
+    XCTAssertFalse(try ok("zubeir weicht aus")); XCTAssertFalse(try ok("Regie: zu kurz"))
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

@@ -212,7 +212,7 @@ public enum Cmd: Equatable {
 }
 
 /// Harness tags that exist for the model only; they must never reach the UI (hidden clue text!) or /state.
-let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Orakel|Welt|Auftakt|Bekannt|System)\]"#)
+let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Regie verdeckt|Orakel|Welt|Auftakt|Bekannt|System)\]"#)
 func isHarnessLine(_ l: String) -> Bool { harnessTag.firstMatch(in: l, range: NSRange(l.startIndex..., in: l)) != nil }
 
 /// Display story from the chat history: user lines minus harness tags, narration = last prose line of each model message
