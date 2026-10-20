@@ -236,6 +236,14 @@ extension Game {
   }
 
   func check(_ t: String) -> String? { genCheck(t, world.gen) }
+  /// thread-stage validation (retry reason or nil): valid open question, not a near-duplicate, must-have term present
+  public static func threadProblem(_ t: String, existing: [String], must: String?) -> String? {
+    let f = fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
+    if !okThread(q) { return "Die Frage muss mit Wer/Wo/Was/Warum/Wie beginnen, höchstens 8 Wörter, ohne Komma oder Punkt" }
+    let qt = Set(tokens(q)); if existing.contains(where: { let o = Set(tokens($0)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }) { return "Die Frage ähnelt einem bestehenden Faden – erfinde eine andere" }
+    if let m = must, !t.lowercased().contains(String(m.lowercased().prefix(5))) { return "Pflichtbegriff '\(m)' muss im Faden vorkommen" }
+    return nil
+  }
 
   static func fields(_ t: String) -> [String: String] { genFields(t) }
 
@@ -304,9 +312,12 @@ extension Game {
     for i in 0..<nThreads {
       prog("Fäden \(i)/\(nThreads) …", done, total); t0 = Date()
       let refs = places + world.npcs.map(\.name)
-      guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: { t in self.check(t) ?? (i == 0 ? self.world.gen.slots.muss.first.flatMap { m in t.lowercased().contains(String(m.lowercased().prefix(5))) ? nil : "Pflichtbegriff '\(m)' muss im ersten Faden vorkommen" } : nil) }, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
+      let muss = world.gen.slots.muss, must: String? = i < muss.count ? muss[i] : (i == 0 ? muss.first : nil)   // every must-have term lands in one thread
+      let validateThread: (String) -> String? = { t in self.check(t) ?? Self.threadProblem(t, existing: self.world.straenge.map(\.titel), must: must) }
+      guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Die Frage hat höchstens 8 Wörter und keine Satzzeichen außer dem Fragezeichen. Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln." + (must.map { " Der Begriff '\($0)' kommt vor." } ?? ""), GenGr.thread(refs: refs), validate: validateThread, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
       let f = Self.fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
       let qt = Set(tokens(q)), dup = world.straenge.contains { let o = Set(tokens($0.titel)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }   // near-duplicate question
+      if !(okThread(q) && !dup) { out(.info("Faden \(i + 1) verworfen (\(dup ? "Duplikat" : "Frage ungültig"): \(q))")) }
       if okThread(q) && !dup {
         world.straenge.append(Strang(titel: q, stand: "")); world.festeStraenge.insert(q)
         for n in 1...3 { if let h = f["Hinweis\(n)"], let r = h.range(of: "@ ", options: .backwards) { hidden.clues.append(Clue(thread: q, text: clean(String(h[..<r.lowerBound]), 90), at: String(h[r.upperBound...]).trimmingCharacters(in: .whitespaces))) } }

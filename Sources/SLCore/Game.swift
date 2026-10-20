@@ -73,7 +73,7 @@ public final class Game {
   public var debug = false
   public var temp: Float = 0.7
   public var lastRolls: [(String, J)] = []
-  public var maxCtx = 14000
+  public var maxCtx = Int(ProcessInfo.processInfo.environment["SL_MAXCTX"] ?? "") ?? 14000   // SL_MAXCTX: test aid to force compaction
   public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
 

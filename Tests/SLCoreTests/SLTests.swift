@@ -1366,3 +1366,13 @@ final class KillIntentTests: XCTestCase {   // P5
     var e = w(); XCTAssertTrue(e.markKillIntent(player: "Ich begrüße Amum.", narr: "Amum fällt vor Freude fast zu Boden.", oracleNein: false).isEmpty)
   }
 }
+
+final class ThreadYieldTests: XCTestCase {   // N1 yield
+  func testProblems() {
+    let ok = "Frage: Wer hat den Detektiv bestochen?\nHinweis1: a b c d e f @ X\nHinweis2: a b c d e f @ X\nHinweis3: a b c d e f @ X"
+    XCTAssertNil(Game.threadProblem(ok, existing: [], must: "Detektiv"))
+    XCTAssertNotNil(Game.threadProblem(ok, existing: [], must: "Pest"))
+    XCTAssertNotNil(Game.threadProblem(ok, existing: ["Wer hat den Detektiv bestochen"], must: nil))
+    XCTAssertNotNil(Game.threadProblem(ok.replacingOccurrences(of: "Wer hat den Detektiv bestochen", with: "Wer ist der Detektiv, und warum"), existing: [], must: nil))
+  }
+}
