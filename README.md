@@ -8,7 +8,10 @@ Lokales MLX-LLM (Gemma-4 E4B Heretic) spielleitet dunkle Fantasy auf Deutsch und
 swift test -c release -Xswiftc -enable-testing   # 15 Tests; Grammatik-Tests brauchen den Modellordner (tokenizer), sonst skip
 ```
 
-## Starten (immer ueber die GPU-Queue)
+## GPU-Slot nur bei geladenem Modell
+`./play.sh [web]` startet sl ausserhalb von gpu-run mit `--lease`: sl haelt einen gpu-run-Slot (kleiner Holder-Job unter `gpu-run -n sl|sl-web --ram 10`, Datei `Sources/SLCore/Lease.swift`) nur solange das Modell geladen ist. Nach `--idle` Sekunden (Default 300, `SL_IDLE=…`) werden Gewichte + KV-Cache entladen und der Slot freigegeben; der naechste Zug zeigt "warte auf GPU …", laedt neu und baut den Kontext aus dem gespeicherten Verlauf wieder auf. gpu-run selbst ist unveraendert. Skripte/Tests, die schon in `gpu-run` laufen, rufen `.build/release/sl` ohne `--lease` auf.
+
+## Starten (frueher: ganzer Prozess in der GPU-Queue)
 ```sh
 ./play.sh                      # neue Sitzung (gpu-run -n sl --ram 10); Ctrl-D/ /quit beendet und entlaedt
 ./play.sh --resume [name]      # letzte oder benannte Sitzung
