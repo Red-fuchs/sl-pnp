@@ -39,6 +39,15 @@ public func clean(_ s: String, _ n: Int = 60) -> String {
   return cutw(t, n)
 }
 let rejectNames: Set<String> = ["du", "dir", "dich", "dein", "mich", "ich", "mir", "mein", "wir", "ihr", "er", "sie", "es", "man", "niemand", "jemand", "spielfigur", "figur", "spieler", "-", "unbekannt", "umgebung", "alle"]
+/// Status/item entries must be short noun phrases: no sentence punctuation, no finite verb, no "Name" statement, not the player's own name.
+func okEntry(_ t: String, pc: Set<String>) -> Bool {
+  let w = t.split(separator: " ").map { $0.lowercased() }
+  guard !w.isEmpty, w.count <= 6, !t.contains(where: { ".!?:;,".contains($0) }) else { return false }
+  if w.contains("name") || w.contains("namen") { return false }
+  if w.contains(where: { ["ist", "sind", "war", "waren", "wird", "wurde", "hat", "haben", "hast", "bist", "bin", "dein", "deine", "deinen", "dir", "dich", "du", "ich", "mein", "meine"].contains($0) }) { return false }
+  if !pc.isDisjoint(with: Set(w)) { return false }
+  return true
+}
 /// at most n words, cut at a word boundary
 func cutWords(_ s: String, _ n: Int) -> String { s.split(separator: " ").prefix(n).joined(separator: " ") }
 let negations: Set<String> = ["nicht", "kein", "keine", "keiner", "keinen", "niemand", "nie", "nichts", "ohne", "verweigert", "verweigerte", "unmöglich"]
@@ -215,8 +224,9 @@ public struct World: Codable, Equatable {
   @discardableResult
   public mutating func apply(_ d: J) -> [String] {
     var log: [String] = []
+    let pcSnap = pcTokens
     func edit(_ arr: inout [String], _ op: String, _ t0: String, _ cap: Int) {
-      let t = cutWords(clean(t0, 40), 6); guard !t.isEmpty, tokens(t).count >= 1 else { return }
+      let t = cutWords(clean(t0, 40), 6); guard !t.isEmpty, tokens(t).count >= 1, op == "-" || okEntry(t, pc: pcSnap) else { return }
       if op == "+" { if !arr.contains(where: { norm($0) == norm(t) }) { arr.append(t); if arr.count > cap { arr.removeFirst() } } }
       else { arr.removeAll { norm($0) == norm(t) || norm($0).contains(norm(t)) } }
     }

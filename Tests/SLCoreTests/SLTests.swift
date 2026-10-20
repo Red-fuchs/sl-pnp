@@ -190,6 +190,13 @@ final class WorldTests: XCTestCase {
     w.applyTail("Figuren: -"); XCTAssertEqual(w.npcs.count, 2)
     for i in 0..<10 { w.addNpc(name: "Gast\(String(UnicodeScalar(UInt8(65 + i))))abc", kurz: "g", ort: nil) }; XCTAssertEqual(w.block().components(separatedBy: " | ").count, 6)   // <=6 cards
   }
+  func testEntryFilter() {   // junk like "Dein Name ist Jaro." in status/inventory
+    var w = World(); w.setFigur("Jaro: Matrose"); w.addNpc(name: "Marta", kurz: "Wirtin", ort: "Hof")
+    w.apply(["zustand": [["wer": "du", "op": "+", "text": "Dein Name ist Jaro."], ["wer": "du", "op": "+", "text": "Jaro"], ["wer": "du", "op": "+", "text": "ist verletzt und müde"], ["wer": "du", "op": "+", "text": "verletzte Schulter"], ["wer": "Marta", "op": "+", "text": "Name ist Marta"]],
+             "item": [["wer": "du", "op": "+", "name": "Du hast ein Schwert."], ["wer": "du", "op": "+", "name": "rostiges Schwert"], ["wer": "Marta", "op": "+", "name": "Schlüssel, der alt ist"]]])
+    XCTAssertEqual(w.zustand, ["verletzte Schulter"]); XCTAssertEqual(w.inventar, ["rostiges Schwert"]); XCTAssertTrue(w.npcs[0].zustand.isEmpty && w.npcs[0].inventar.isEmpty)
+    w.apply(["zustand": [["wer": "du", "op": "-", "text": "verletzte Schulter"]]]); XCTAssertTrue(w.zustand.isEmpty)   // removals are never blocked
+  }
   func testThreadFilter() {
     for ok in ["Der Weg ins Moor", "Fluch von Grauweiler", "Die Suche nach Ida"] { XCTAssertTrue(okThread(ok), ok) }
     for bad in ["Hilfe wird verweigert", "findet den Schlüssel", "suche das Moor", "Kein Weg zurück", "Der Wirt hilft nicht", "Ein junger Mann kniet vor dem Torhaus und ist gefesselt", "Vorfall: Torhaus", "Der Wirt ist tot", ""] { XCTAssertFalse(okThread(bad), bad) }
