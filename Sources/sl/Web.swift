@@ -156,7 +156,8 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       st["party"] = runner.game?.partyJSON ?? []
       rep("200 OK", "application/json", (try? JSONSerialization.data(withJSONObject: st)) ?? Data())
     case ("GET", "/events"):
-      let h = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n: ok\n\n"
+      let cors = org.map { "Access-Control-Allow-Origin: \($0)\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: content-type, x-sl\r\n" } ?? ""
+      let h = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\(cors)\r\n: ok\n\n"
       c.send(content: Data(h.utf8), completion: .contentProcessed { _ in }); hub.add(c)
     case ("POST", "/say"):
       let sayJ = (try? JSONSerialization.jsonObject(with: body)) as? [String: Any]
