@@ -8,6 +8,14 @@ public final class PartyStore: @unchecked Sendable {
   public init() {}
   public func with<T>(_ f: (inout [Pc]) -> T) -> T { lock.lock(); defer { lock.unlock() }; return f(&pcs) }
   public var all: [Pc] { with { $0 } }
+  /// Wunden edited from outside (Foundry): `set` wins over `delta`; clamped to -5...wundenMax. nil = unknown speaker.
+  public func wunden(speaker: String, delta: Int?, set: Int?) -> [String: Any]? {
+    with { p in
+      guard let i = p.firstIndex(where: { norm($0.speaker) == norm(speaker) || norm($0.name) == norm(speaker) }) else { return nil }
+      let v = set ?? (p[i].wunden + (delta ?? 0)); p[i].wunden = max(-5, min(p[i].wundenMax, v))
+      return ["name": p[i].name, "wunden": p[i].wunden, "wundenMax": p[i].wundenMax]
+    }
+  }
 }
 
 public extension Game {
@@ -55,6 +63,7 @@ public extension Game {
   func applySP(speaker: String?, delta: Int, target: String? = nil, mode: String? = nil) -> [String: Any]? {
     guard let i = pcIndex(speaker, create: false) else { return nil }
     let m = mode ?? "adjust"
+    if m == "wunden" { let r = partyStore.wunden(speaker: speaker ?? "", delta: delta, set: nil); announceSheet(); return r }
     var err: String?
     let res: [String: Any] = partyStore.with { p in
       var pc = p[i]

@@ -1572,3 +1572,14 @@ final class SchicksalRulesTests: XCTestCase {
     let d = try! JSONDecoder().decode(World.self, from: JSONEncoder().encode(w)); XCTAssertEqual(d.party, [pc]); XCTAssertEqual(Cmd.parse("/regie Der Wirt lügt"), .regie("Der Wirt lügt")); XCTAssertEqual(Cmd.parse("/sp ziel Bork -1"), .sp("ziel Bork -1"))
   }
 }
+
+final class WundenApiTests: XCTestCase {
+  func testWunden() {
+    let st = PartyStore(); st.with { $0 = [Pc(speaker: "Anna", name: "Kara")] }
+    XCTAssertEqual(st.wunden(speaker: "Anna", delta: -3, set: nil)?["wunden"] as? Int, 7)
+    XCTAssertEqual(st.wunden(speaker: "kara", delta: nil, set: 2)?["wunden"] as? Int, 2)
+    XCTAssertEqual(st.wunden(speaker: "Anna", delta: 99, set: nil)?["wunden"] as? Int, 10, "clamped to max")
+    XCTAssertEqual(st.wunden(speaker: "Anna", delta: -99, set: nil)?["wunden"] as? Int, -5)
+    XCTAssertNil(st.wunden(speaker: "Nobody", delta: 1, set: nil)); XCTAssertEqual(st.all[0].wunden, -5)
+  }
+}

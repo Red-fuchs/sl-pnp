@@ -29,6 +29,9 @@ Busy: SSE `info` "SL denkt noch" and the text is dropped (same as today).
 - `target` = another party member or NPC name: the speaker spends SP so that target's next check gets `delta*10` (positive helps, negative hurts, 1 SP per +-10).
 - Emits SSE `sheet`.
 
+## POST /wunden   (Wunden edited in Foundry)
+`{ "speaker": String, "delta"?: Int, "set"?: Int }` (`set` wins) -> `200 { "name", "wunden", "wundenMax" }`; value clamped to -5...wundenMax; `404` unknown speaker. Equivalent: `POST /sp {speaker, delta, mode:"wunden"}`. Emits SSE `sheet`.
+
 ## GET /state
 Existing fields unchanged, plus `"party": [ { "name", "pillars": {"kampf","sozial","wissen"}, "traits": [ {"text","kind":"minor|major","pos":Bool} ], "sp", "spMax", "wunden", "inventar": [String], "taler": Int } ]` (empty array when no party).
 

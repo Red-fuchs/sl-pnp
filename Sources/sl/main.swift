@@ -22,7 +22,7 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--debug] [--input FILE|/dev/tty]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--rules frei|saeulen|schicksal] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
   Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /welt orakel|\"text\"|mix \"text\"|slot|start /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
