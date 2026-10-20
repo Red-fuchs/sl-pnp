@@ -1,0 +1,111 @@
+{
+  "positiv_klein": [
+    {"wort": "trinkfest", "saeule": "Kampf", "hinweis": "hält viel Met aus, ohne zu lallen"},
+    {"wort": "schleicht leise", "saeule": "Kampf", "hinweis": "bewegt sich lautlos durchs Unterholz"},
+    {"wort": "Schildkämpfer", "saeule": "Kampf", "hinweis": "führt Schild und Kurzschwert sicher"},
+    {"wort": "Ringer", "saeule": "Kampf", "hinweis": "bricht Griffe und wirft Gegner zu Boden"},
+    {"wort": "scharfes Auge", "saeule": "Kampf", "hinweis": "erkennt Spuren und Ziele auf Distanz"},
+    {"wort": "narbenfest", "saeule": "Kampf", "hinweis": "Schmerz bringt ihn kaum aus dem Takt"},
+    {"wort": "Fluchtinstinkt", "saeule": "Kampf", "hinweis": "erkennt Fluchtwege früh"},
+    {"wort": "Faustkämpfer", "saeule": "Kampf", "hinweis": "aus vielen Wirtshausschlägereien erfahren"},
+    {"wort": "überzeugend", "saeule": "Sozial", "hinweis": "findet die richtigen Worte im Streit"},
+    {"wort": "Gassenkenner", "saeule": "Sozial", "hinweis": "kennt Schleichwege und Schmugglerpfade"},
+    {"wort": "beliebt beim Volk", "saeule": "Sozial", "hinweis": "Bauern und Tagelöhner vertrauen ihm"},
+    {"wort": "Schmeichler", "saeule": "Sozial", "hinweis": "wickelt Wachen mit Komplimenten um den Finger"},
+    {"wort": "Menschenkenner", "saeule": "Sozial", "hinweis": "liest Mienen und Zögern im Gespräch"},
+    {"wort": "verschwiegen", "saeule": "Sozial", "hinweis": "hütet Geheimnisse ohne Mühe"},
+    {"wort": "gastfreundlich", "saeule": "Sozial", "hinweis": "Herbergen öffnen ihm bereitwillig die Tür"},
+    {"wort": "Feilscher", "saeule": "Sozial", "hinweis": "handelt Preise ungewöhnlich gut aus"},
+    {"wort": "kennt Kräuter", "saeule": "Wissen", "hinweis": "erkennt Heilpflanzen und Gifte"},
+    {"wort": "schriftkundig", "saeule": "Wissen", "hinweis": "liest alte Urkunden und Karten"},
+    {"wort": "sternenkundig", "saeule": "Wissen", "hinweis": "liest Himmel und Wetterzeichen"},
+    {"wort": "Schlossknacker", "saeule": "Wissen", "hinweis": "öffnet einfache Schlösser mit Dietrichen"},
+    {"wort": "heilkundig", "saeule": "Wissen", "hinweis": "versorgt Wunden mit Verband und Salbe"},
+    {"wort": "sprachkundig", "saeule": "Wissen", "hinweis": "spricht Hochsprache und Gaunerjargon"},
+    {"wort": "Rechenmeister", "saeule": "Wissen", "hinweis": "erkennt Betrug in Zahlen und Büchern"},
+    {"wort": "Chronist", "saeule": "Wissen", "hinweis": "kennt Ortssagen und Stadtgeschichte"}
+  ],
+  "positiv_gross": [
+    {"wort": "geübter Bogenschütze", "saeule": "Kampf", "hinweis": "trifft auch bei Wind auf 50 Schritt"},
+    {"wort": "Söldner-Veteran", "saeule": "Kampf", "hinweis": "hat drei Feldzüge überlebt"},
+    {"wort": "Duellant", "saeule": "Kampf", "hinweis": "gewinnt Zweikämpfe mit Klinge und Nerv"},
+    {"wort": "Waldläufer", "saeule": "Kampf", "hinweis": "jagt, verfolgt und tarnt sich in Wäldern"},
+    {"wort": "Dolchkämpfer", "saeule": "Kampf", "hinweis": "kämpft auf engem Raum mit Dolch"},
+    {"wort": "Gildenmitglied", "saeule": "Sozial", "hinweis": "kennt Zunftmeister und Händlernetz"},
+    {"wort": "Diplomat der Höfe", "saeule": "Sozial", "hinweis": "bewegt sich sicher in Adelskreisen"},
+    {"wort": "geborener Anführer", "saeule": "Sozial", "hinweis": "Männer folgen ihm ohne Zögern"},
+    {"wort": "Gaukler mit Bühnenerfahrung", "saeule": "Sozial", "hinweis": "bringt Menschen zum Lachen und Staunen"},
+    {"wort": "Hehler mit Netzwerk", "saeule": "Sozial", "hinweis": "vermittelt Waren ohne unbequeme Fragen"},
+    {"wort": "Ex-Priester mit Kirchenwissen", "saeule": "Wissen", "hinweis": "kennt Liturgie, Chroniken und Gebete"},
+    {"wort": "Alchemist-Geselle", "saeule": "Wissen", "hinweis": "mischt Tränke und erkennt Gifte"},
+    {"wort": "Kartograph", "saeule": "Wissen", "hinweis": "zeichnet Wege und kennt entlegene Länder"},
+    {"wort": "Feldchirurg", "saeule": "Wissen", "hinweis": "versorgt Schusswunden und Brüche"},
+    {"wort": "Gelehrter Schreiber", "saeule": "Wissen", "hinweis": "beherrscht Latein und Urkundenrecht"}
+  ],
+  "negativ_klein": [
+    {"wort": "Angst vor Feuer", "saeule": "Kampf", "hinweis": "gerät bei offenen Flammen in Panik"},
+    {"wort": "Altes Knieleiden", "saeule": "Kampf", "hinweis": "humpelt nach langen Märschen"},
+    {"wort": "Kurzsichtig", "saeule": "Kampf", "hinweis": "erkennt Ziele auf Distanz schlecht"},
+    {"wort": "Zittrige Hand", "saeule": "Kampf", "hinweis": "verfehlt unter Stress die Klinge"},
+    {"wort": "Schulden bei Händler", "saeule": "Sozial", "hinweis": "Gläubiger drängt auf Rückzahlung"},
+    {"wort": "Neugierig", "saeule": "Sozial", "hinweis": "stolpert oft in fremde Fallen"},
+    {"wort": "Trinker", "saeule": "Sozial", "hinweis": "greift in Stresssituationen zum Krug"},
+    {"wort": "Schlechter Ruf", "saeule": "Sozial", "hinweis": "Gerüchte eilen ihm voraus"},
+    {"wort": "Aberglaube", "saeule": "Wissen", "hinweis": "glaubt an Omen und böse Zeichen"},
+    {"wort": "Halbwissen", "saeule": "Wissen", "hinweis": "hält Gehörtes für gesichert"},
+    {"wort": "Vergesslich", "saeule": "Wissen", "hinweis": "vergisst Namen und Verabredungen"},
+    {"wort": "Geschichtslücke", "saeule": "Wissen", "hinweis": "kennt die Vergangenheit des Ortes nicht"}
+  ],
+  "negativ_gross": [
+    {"wort": "Todfeind: Vogt", "saeule": "Kampf", "hinweis": "schwört ihm Rache vor Gericht"},
+    {"wort": "Kriegswunde", "saeule": "Kampf", "hinweis": "Bein steif, Kampfkraft dauerhaft gemindert"},
+    {"wort": "Feige im Gefecht", "saeule": "Kampf", "hinweis": "friert in der ersten Schlacht ein"},
+    {"wort": "Gesucht vom Büttel", "saeule": "Sozial", "hinweis": "Steckbrief hängt an jedem Tor"},
+    {"wort": "Verstoßen von der Sippe", "saeule": "Sozial", "hinweis": "keine Familie nimmt ihn auf"},
+    {"wort": "Spielsucht", "saeule": "Sozial", "hinweis": "Würfel und Karten ziehen ihn an den Tisch"},
+    {"wort": "Vom Fluch gezeichnet", "saeule": "Wissen", "hinweis": "Mal auf der Haut, Heiler scheuen ihn"},
+    {"wort": "Besessen von verbotenem Folianten", "saeule": "Wissen", "hinweis": "sucht nachts die verbotenen Formeln"},
+    {"wort": "Fremde Stimme im Kopf", "saeule": "Wissen", "hinweis": "flüstert Ratschläge, die er nicht will"}
+  ],
+  "hintergrund_beispiele": [
+    {
+      "geschichte": "Corvin wuchs am Rand des Moores auf, wo sein Vater Pfeile fertigte und Wild jagte. Später zog er als Söldner in drei Feldzüge und lernte dort, auf fünfzig Schritt sicher zu treffen. Ein Hauptmann verriet ihn jedoch an den Vogt, als er dessen Vorratswagen plünderte, und seither schwört ihm der Vogt den Tod. Corvin flüchtete nachts durch das Unterholz, schleichend und ohne ein Geräusch, und fand Zuflucht bei einer alten Kräuterfrau. Bei ihr lernte er, Wunden zu verbinden, während er bei jedem Feuer nervös zur Seite blickt. Noch immer hat er Schulden bei einem Händler in Brackwasser, der sein Schwert als Pfand behält.",
+      "woerter": [
+        "-4 geübter Bogenschütze",
+        "-4 Söldner-Veteran",
+        "-2 schleicht leise",
+        "-2 heilkundig",
+        "+4 Todfeind: Vogt",
+        "+2 Angst vor Feuer",
+        "+2 Schulden bei Händler"
+      ],
+      "netto": 4
+    },
+    {
+      "geschichte": "Elias diente zwanzig Jahre als Priester in einer Kapelle am Fluss, bis er bei einer Totenwache zu offen über die Schuld der Kirche sprach. Man entzog ihm das Amt, doch sein Kirchenwissen blieb ihm, und er liest alte Chroniken und Gebete wie kaum ein anderer. Am Hof des Grafen schlichtete er mit wenigen Worten einen Streit und kennt seither die Gesten der Adligen. Nun sucht ihn der Büttel wegen eines angeblichen Diebstahls an Kirchengold, und ein alter Fluch scheint an seinen Händen zu haften. Elias hütet seine Geheimnisse, denn jeder, dem er vertraut hat, hat ihn verraten.",
+      "woerter": [
+        "-4 Ex-Priester mit Kirchenwissen",
+        "-4 Diplomat der Höfe",
+        "-2 überzeugend",
+        "-2 Menschenkenner",
+        "-2 verschwiegen",
+        "+4 Gesucht vom Büttel",
+        "+4 Vom Fluch gezeichnet"
+      ],
+      "netto": 6
+    },
+    {
+      "geschichte": "Lorenz mischte als Alchemist-Geselle in Brackwasser Tränke und kannte jede Heilpflanze der Sümpfe, bis ein Ratsherr an seinem Gebräu starb. Seither hängt ein Steckbrief an jedem Stadttor, und Lorenz schleicht nur noch nachts durch die Gassen. Mit einem Dietrich öffnete er damals das Hinterzimmer des Ratsherrn, und mit gewandter Rede überredete er den Wächter, ihn hinauszulassen. Seine Erinnerung an jene Nacht ist lückenhaft, und er vergisst inzwischen Namen und Verabredungen. Dennoch kennt er die Kräuter des Hafens so gut, dass er jedem Krankenbett helfen könnte, wenn man ihn ließe.",
+      "woerter": [
+        "-4 Alchemist-Geselle",
+        "-2 kennt Kräuter",
+        "-2 Schlossknacker",
+        "-2 schleicht leise",
+        "-2 überzeugend",
+        "+4 Gesucht vom Büttel",
+        "+2 Vergesslich"
+      ],
+      "netto": 6
+    }
+  ]
+}
