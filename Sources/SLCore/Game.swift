@@ -214,9 +214,10 @@ public final class Game {
       let secrets = hidden.guardList(), known = knownText(), hold = hidden.holdNarration   // held back whenever any tier-0/1 secret exists (also when its bearer is absent): a leak must never be shown and then retracted   // narration is held back for the leak check while a secret-bearing NPC is present
       let minors = world.minorNames
       let ansQ = actionRes ? nil : gate.ans.map { a in (a, turnQA.last?.q ?? lastOracleQ) }
+      let oracleFlag = Box<String?>(nil)
       let mkStream = { (attempt: Int) in NarrStream(hold: hold, minors: minors, check: secrets.isEmpty && ansQ == nil ? nil : { line in
         if !secrets.isEmpty, let l = leakCheck(line, secrets: secrets, known: known) { return l }
-        if attempt == 0, let (a, q) = ansQ, !q.isEmpty, oracleContradicted(answer: a, question: q, narration: line) { return Leak(topic: "orakel", words: [], sentence: line) }   // M1: the oracle answer must show in the narration
+        if attempt == 0, let (a, q) = ansQ, !q.isEmpty, oracleContradicted(answer: a, question: q, narration: line) { oracleFlag.value = line }   // M1: flagged now, confirmed by a second opinion after the generation
         return nil }, out: self.out) }
       let ban = banFor(hidden.secretList(), known)          // hard ban: tier 0 only; the check above also covers tier 1
       var ns = mkStream(0)
@@ -226,6 +227,7 @@ public final class Game {
         ns = mkStream(attempt)
         do {
           (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil || (attempt == 0 && Game.forceAbort && ns.n > 8)) }, ban: ban, soft: softBanFor(known)) { d in ns.feed(d) }
+          if attempt == 0, let sent = oracleFlag.value, let (a, q) = ansQ, secondOpinionContradicts(answer: a, question: q, narration: sent) { ns.markOracle(sent); throw AbortedError() }
           break
         } catch is AbortedError {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
@@ -451,6 +453,7 @@ public final class NarrStream {
   }
   public func finish() { endLine() }
   func discardLeakFlag() { leak = nil }
+  func markOracle(_ s: String) { leak = Leak(topic: "orakel", words: [], sentence: s) }
   public func discard() { line = ""; narr = false; bad = false; leak = nil; held = ""; sent = ""; prevMinor = false }
 }
 
@@ -487,14 +490,14 @@ public func isMetaNarration(_ line: String) -> Bool {
 }
 
 /// M1: does the narration contradict (or ignore) the oracle answer to the question? Sentences sharing a content word with the question
-/// must not deny a JA, and must deny a NEIN (negation cue); a narration that never touches the question counts as ignoring it.
+/// must not deny a JA, and must deny a NEIN. Cue lists by class (not bare negation words): a first, cheap flag - the caller confirms with a second opinion.
+let denyCues = ["nicht ", "kein", "nie ", "niemand", "nichts", "vergeblich", "leer", "misslingt", "scheitert", "fehl", "unmöglich", "verschlossen", "verwehr", "ohne ", "verweiger", "lehnt ab", "abgelehnt", "weigert", "bleibt aus", "misstraut"]
 public func oracleContradicted(answer: String, question: String, narration: String) -> Bool {
   let qw = Set(contentWords(question).map(lemma)); guard !qw.isEmpty else { return false }
   let rel = sentences(of: narration).filter { !Set(contentWords($0).map(lemma)).isDisjoint(with: qw) }
   guard !rel.isEmpty else { return false }       // unrelated narration is not provably contradictory (the BIND line already carries the answer)
-  let neg = ["nicht", "kein", "nie ", "niemand", "nichts", "vergeblich", "leer", "misslingt", "scheitert", "fehl", "unmöglich", "verschlossen", "verwehr", "ohne "]
-  let denies = rel.contains { s in neg.contains { s.lowercased().contains($0) } }
-  let affirms = rel.contains { s in !neg.contains { s.lowercased().contains($0) } }
+  let denies = rel.contains { s in denyCues.contains { s.lowercased().contains($0) } }
+  let affirms = rel.contains { s in !denyCues.contains { s.lowercased().contains($0) } }
   return answer.hasPrefix("JA") ? (denies && !affirms) : (!denies && affirms)
 }
 
@@ -553,3 +556,14 @@ public func askRelevant(q: String, player: String, world: World, earlier: [Strin
   return true
 }
 extension Game { func askAllowed(q: String, player: String) -> Bool { askRelevant(q: q, player: player, world: world, earlier: sceneQs + turnQA.map(\.q)) } }
+
+final class Box<T> { var value: T; init(_ v: T) { value = v } }
+extension Game {
+  /// aux yes/no: only called for flagged narrations (+1.5 s), saves the 5-10 s regeneration on false alarms
+  func secondOpinionContradicts(answer: String, question: String, narration: String) -> Bool {
+    let user = "Frage ans Orakel: \(question)\nOrakel-Antwort: \(answer)\nErzählung: \(clean(narration, 600))\nWiderspricht die Erzählung der Orakel-Antwort? Antworte ja oder nein.\nAusgabe:"
+    guard let (txt, _) = try? lm.aux(system: "Du prüfst, ob eine Erzählung einem Orakelergebnis widerspricht. JA/JA+ = die Sache trifft zu oder gelingt, NEIN/NEIN+ = sie trifft nicht zu oder misslingt. Antworte nur mit ja oder nein.", user: user, Grammar(.or([.s("ja"), .s("nein")])), temp: 0.0, maxTok: 4) else { return true }
+    if debug { out(.info("[debug] Zweitmeinung Orakel: \(txt)")) }
+    return txt.hasPrefix("ja")
+  }
+}

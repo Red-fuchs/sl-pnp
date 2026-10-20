@@ -1495,3 +1495,20 @@ final class ActionV7Tests: XCTestCase {   // v7 #2-#5
     XCTAssertEqual(w.resolveTarget("Ich ersteche Tom."), .npc(2)); XCTAssertTrue(w.npcs[2].minor)
   }
 }
+
+final class ContradictionCuesTests: XCTestCase {   // v7 plan a
+  func testLabelled() {
+    // (answer, question, narration, contradicted)
+    let cases: [(String, String, String, Bool)] = [
+      ("JA", "Ist die Tür offen?", "Die Tür ist offen, kalte Luft strömt herein.", false),
+      ("JA", "Ist die Tür offen?", "Die Tür ist nicht offen, sie bleibt verschlossen.", true),
+      ("NEIN", "Ist die Tür offen?", "Die Tür ist offen und knarrt im Wind.", true),
+      ("NEIN", "Ist die Tür offen?", "Die Tür bleibt verschlossen, kein Durchkommen.", false),
+      ("JA+", "Hilft dir die Wirtin?", "Die Wirtin hilft dir sofort und reicht dir Brot.", false),
+      ("NEIN+", "Hilft dir die Wirtin?", "Die Wirtin hilft dir bereitwillig und gibt dir Brot.", true),
+      ("NEIN", "Hilft dir die Wirtin?", "Die Wirtin weigert sich, dir zu helfen, und wendet sich ab.", false),
+      ("JA", "Ist der Wächter bestechlich?", "Der Wind heult durch die Gasse.", false),
+    ]
+    for (a, q, n, exp) in cases { XCTAssertEqual(oracleContradicted(answer: a, question: q, narration: n), exp, "\(a) \(q) \(n)") }
+  }
+}
