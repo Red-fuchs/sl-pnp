@@ -20,6 +20,40 @@ public struct GenSlots: Codable, Equatable {
     set { switch k { case "ton": ton = newValue; case "epoche": epoche = newValue; case "ort": ort = newValue; case "bedrohung": bedrohung = newValue; default: licht = newValue } }
   }
   public var offen: [String] { Self.keys.filter { self[$0] == "offen" } }
+  /// Hints that justify a player-set epoche / licht (the 4B parser kept answering "antik" / "hell" for everything).
+  static let hints: [String: [String]] = [
+    "antik": ["antik", "römer", "grie", "ägypt", "bronzezeit", "pharao"], "barock": ["barock", "rokoko", "absolut"],
+    "frühneuzeitlich": ["frühneuzeit", "renaissance", "inquisition", "pirat", "hexenjagd", "reformation"],
+    "mittelalterlich": ["mittelalter", "ritter", "burg", "kloster", "kreuzzug", "pest", "feudal", "fürst"], "zeitlos": ["zeitlos", "märchen"],
+    "trüb": ["trüb", "grau", "regen", "düster", "dunst"], "hell": ["hell", "sonne", "licht", "sommer", "strahl"], "blutrot": ["blut", "rot", "glut"],
+    "neblig": ["nebel", "dunst", "moor"], "nächtlich": ["nacht", "mond", "finster", "dunkel"],
+  ]
+  /// F3: epoche/licht only count when the player's text supports them, otherwise they stay open (and the oracle picks).
+  public static func supported(_ v: String, text: String) -> Bool { let t = text.lowercased(); return (hints[v] ?? []).contains { t.contains($0) } }
+  /// `ort` is free text (enum values are only hints): returns the place NAME the player asked for, if it is more than a bare type.
+  public var ortName: String? { Self.enums["ort"]!.contains(ort) || ort == "offen" ? nil : ort }
+  public mutating func set(_ k: String, _ v0: String) throws {
+    let key = k.lowercased(), v = clean(v0, 60)
+    if Self.keys.contains(key) {
+      if key == "ort" { self.ort = v.isEmpty ? "offen" : v; return }
+      guard Self.enums[key]!.contains(v) || v == "offen" else { throw GenError.msg("\(key): \(Self.enums[key]!.joined(separator: " | "))") }
+      self[key] = v
+    } else if key == "muss" { muss = v == "-" ? [] : v.split(separator: ",").map { clean(String($0), 40) } }
+    else if key == "nicht" { nicht = v == "-" ? [] : v.split(separator: ",").map { clean(String($0), 40) } }
+    else { throw GenError.msg("Slot unbekannt: \(k)") }
+  }
+  /// Slot parser output -> slots (with the epoche/licht sanity check).
+  public static func parse(_ f: [String: String], text: String) -> GenSlots {
+    var g = GenSlots()
+    for k in keys { var v = f[k.capitalized] ?? "offen"; if k == "ort" { v = clean(v, 60); if v.isEmpty { v = "offen" } }
+      if (k == "epoche" || k == "licht"), v != "offen", !supported(v, text: text) { v = "offen" }
+      g[k] = v }
+    let split = { (s: String?) -> [String] in (s ?? "-") == "-" ? [] : s!.split(separator: ",").map { clean(String($0), 40) }.filter { !$0.isEmpty } }
+    g.muss = split(f["Muss"]); g.nicht = split(f["Nicht"])
+    return g
+  }
+  /// every must-have (by 5-letter stem) has to appear in `text`; returns the first missing one
+  public func missing(in text: String) -> String? { let t = text.lowercased(); return muss.first { !t.contains(String($0.lowercased().prefix(5))) } }
   public var table: String {
     (Self.keys.map { "\($0.capitalized): \(self[$0])" } + ["Muss vorkommen: \(muss.isEmpty ? "-" : muss.joined(separator: ", "))", "Darf nicht vorkommen: \(nicht.isEmpty ? "-" : nicht.joined(separator: ", "))"]).joined(separator: "\n")
   }
@@ -67,11 +101,13 @@ public enum GenGr {
 
   public static var slots: Grammar {
     var p: [G] = []
-    for k in GenSlots.keys { p += [.s("\(k.capitalized): "), en(GenSlots.enums[k]! + ["offen"]), .s("\n")] }
+    for k in GenSlots.keys { p += [.s("\(k.capitalized): "), k == "ort" ? .or([en(GenSlots.enums[k]! + ["offen"]), .re(#"[A-ZÄÖÜ][^\n<]{2}[^\n<]*"#)]) : en(GenSlots.enums[k]! + ["offen"]), .s("\n")] }
     p += [.s("Muss: "), optLine, .s("\nNicht: "), optLine]
     return Grammar(.seq(p))
   }
-  public static let premise = Grammar(.seq([.s("Prämisse: "), line, .s("\nAlltag: "), placeName]))
+  /// `alltag`: the player's own place name when given (it becomes the real start place), otherwise a generated one
+  public static func premise(alltag: String? = nil) -> Grammar { Grammar(.seq([.s("Prämisse: "), line, .s("\nAlltag: "), alltag.map { G.s($0) } ?? placeName])) }
+  public static let premise = premise()
   public static func place(name: String? = nil) -> Grammar {
     Grammar(.seq([.s("Ort: "), name.map { G.s($0) } ?? placeName, .s("\nKurz: "), line, .s("\nHerrscht: "), line]))
   }
@@ -103,7 +139,7 @@ public enum GenPromptEx { public static var slots: String { GenPrompt.ex["slots"
 enum GenPrompt {
   static let sys = "Du erschaffst die Welt eines düsteren Solo-Rollenspiels auf Deutsch. Konkret, ungewöhnlich, keine Klischees. Du hältst dich an die Vorgaben und erfindest keine Zusatzfelder. Antworte genau im vorgegebenen Zeilenformat."
   static let ex: [String: String] = [
-    "slots": "Text: Eine Karawane stirbt langsam in der Wüste.\nTon: bitter\nEpoche: antik\nOrt: Wüste\nBedrohung: Hungersnot\nLicht: hell\nMuss: Brunnen\nNicht: -",
+    "slots": "Text: Eine Karawanenstadt stirbt langsam, der Brunnen versiegt.\nTon: bitter\nEpoche: offen\nOrt: Karawanenstadt\nBedrohung: Hungersnot\nLicht: offen\nMuss: Brunnen\nNicht: -",
     "premise": "Prämisse: Seit drei Monaten fällt kein Regen, und die Karawanenstadt verkauft ihr letztes Wasser an den Meistbietenden.\nAlltag: Der Basar am Brunnentor",
     "place": "Ort: Brunnentor\nKurz: Ein Torbogen aus rotem Stein, an dem Wasser nach Gewicht verkauft wird.\nHerrscht: Die Zunft der Wasserwäger",
     "npc": "Name: Zubeir\nRolle: Zöllner\nHaltung: -1\nOrt: Brunnentor\nGruppe: Zunft der Wasserwäger\nZiel: Die Zunft vor dem Bankrott bewahren\nGeheimnis: Er panscht das Wasser mit Salzlake\nEnthüllung: ort_betreten Brunnentor",
@@ -175,12 +211,9 @@ extension Game {
     var g = GenState(); g.mode = mode
     if mode != "orakel" {
       guard !text.trimmingCharacters(in: .whitespaces).isEmpty else { throw GenError.msg("Text fehlt: /welt \(mode == "mix" ? "mix " : "")\"deine Idee\"") }
-      let user = "Text des Spielers: \(clean(text, 400))\nLege die Vorgaben fest. Was der Text nicht festlegt, setzt du auf 'offen'. Muss = Dinge, die vorkommen müssen (kommagetrennt), Nicht = Dinge, die nicht vorkommen dürfen, sonst '-'.\n\nBeispiel:\n\(GenPrompt.ex["slots"]!)\nAusgabe:"
+      let user = "Text des Spielers: \(clean(text, 400))\nLege die Vorgaben fest. Was der Text nicht ausdrücklich festlegt (besonders Epoche und Licht), setzt du auf 'offen'. Ort = der genannte Ort in den Worten des Spielers (frei, z.B. 'Bergdorf im Alpental'). Muss = Dinge, die vorkommen müssen (kommagetrennt), Nicht = Dinge, die nicht vorkommen dürfen, sonst '-'.\n\nBeispiel:\n\(GenPrompt.ex["slots"]!)\nAusgabe:"
       let (txt, _) = try lm.aux(system: GenPrompt.sys, user: user, GenGr.slots, temp: 0.3, maxTok: 160)
-      let f = Self.fields(txt)
-      for k in GenSlots.keys { g.slots[k] = f[k.capitalized] ?? "offen" }
-      let split = { (s: String?) -> [String] in (s ?? "-") == "-" ? [] : s!.split(separator: ",").map { clean(String($0), 40) }.filter { !$0.isEmpty } }
-      g.slots.muss = split(f["Muss"]); g.slots.nicht = split(f["Nicht"])
+      g.slots = GenSlots.parse(Self.fields(txt), text: text)
     }
     world.gen = g
     genFillOpen()
@@ -193,15 +226,7 @@ extension Game {
   }
   /// Unfilled slots come from the oracle (true RNG); filled ones are hard constraints and never overridden.
   func genFillOpen() { world.gen.slots.fillOpen(rnd) }
-  public func genSetSlot(_ k: String, _ v: String) throws {
-    let key = k.lowercased()
-    if GenSlots.keys.contains(key) {
-      guard GenSlots.enums[key]!.contains(v) || v == "offen" else { throw GenError.msg("\(key): \(GenSlots.enums[key]!.joined(separator: " | "))") }
-      world.gen.slots[key] = v; if v == "offen" { genFillOpen() }
-    } else if key == "muss" { world.gen.slots.muss = v == "-" ? [] : v.split(separator: ",").map { clean(String($0), 40) } }
-    else if key == "nicht" { world.gen.slots.nicht = v == "-" ? [] : v.split(separator: ",").map { clean(String($0), 40) } }
-    else { throw GenError.msg("Slot unbekannt: \(k)") }
-  }
+  public func genSetSlot(_ k: String, _ v: String) throws { try world.gen.slots.set(k, v); if v == "offen" { genFillOpen() } }
 
   // (d) up-front phase ----------------------------------------------------------------------------------------------------------
   public func genRun(nPlaces: Int = 3, nNpcs: Int = 2, nThreads: Int = 2) throws {
@@ -214,7 +239,10 @@ extension Game {
     func tick(_ what: String, _ t0: Date) { done += 1; world.gen.secs[what] = Date().timeIntervalSince(t0); prog(what, done, total) }
     prog("Prämisse …", 0, total)
     var t0 = Date()
-    let pr = Self.fields((try? genCall("premise", ctx: ctxBlock(), task: "Schreibe die Prämisse (eine Zeile, Spannung + Alltag) und nenne den Alltagsort.", GenGr.premise, validate: check)) ?? "")
+    let slots = world.gen.slots
+    let musst = slots.muss.isEmpty ? "" : " Die Prämisse MUSS diese Begriffe enthalten: \(slots.muss.joined(separator: ", "))."
+    let ortFix = slots.ortName.map { clean($0, 50) }       // the player's own place becomes the actual start place (F3)
+    let pr = Self.fields((try? genCall("premise", ctx: ctxBlock(), task: "Schreibe die Prämisse (eine Zeile, Spannung + Alltag)\(ortFix.map { " am Ort '\($0)'" } ?? "") und nenne den Alltagsort.\(musst)", GenGr.premise(alltag: ortFix), validate: { t in self.check(t) ?? slots.missing(in: t).map { "Pflichtbegriff '\($0)' fehlt" } })) ?? "")
     world.gen.praemisse = clean(pr["Prämisse"] ?? "", 260); world.gen.alltag = clean(pr["Alltag"] ?? "Der Marktplatz", 50)
     tick("Prämisse", t0)
     // places
@@ -243,7 +271,7 @@ extension Game {
     for i in 0..<nThreads {
       prog("Fäden \(i)/\(nThreads) …", done, total); t0 = Date()
       let refs = places + world.npcs.map(\.name)
-      guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: check, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
+      guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: { t in self.check(t) ?? (i == 0 ? self.world.gen.slots.muss.first.flatMap { m in t.lowercased().contains(String(m.lowercased().prefix(5))) ? nil : "Pflichtbegriff '\(m)' muss im ersten Faden vorkommen" } : nil) }, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
       let f = Self.fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
       let qt = Set(tokens(q)), dup = world.straenge.contains { let o = Set(tokens($0.titel)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }   // near-duplicate question
       if okThread(q) && !dup {

@@ -310,6 +310,35 @@ final class MetaAndGlyphTests: XCTestCase {   // F2 + F4
   }
 }
 
+final class SlotCoercionTests: XCTestCase {   // F3
+  func testPlayerPlaceAndEpochSanity() throws {
+    let text = "Bergdorf im Alpental, die Pest geht um, ein Wanderarzt"
+    let g = GenSlots.parse(["Ton": "düster", "Epoche": "antik", "Ort": "Bergdorf im Alpental", "Bedrohung": "Seuche", "Licht": "hell", "Muss": "Bergdorf, Pest, Wanderarzt", "Nicht": "-"], text: text)
+    XCTAssertEqual(g.ort, "Bergdorf im Alpental"); XCTAssertEqual(g.ortName, "Bergdorf im Alpental")      // free text survives (was coerced to "Kloster")
+    XCTAssertEqual(g.epoche, "offen"); XCTAssertEqual(g.licht, "offen")                                    // "antik"/"hell" without textual support -> open (oracle decides)
+    XCTAssertEqual(g.muss, ["Bergdorf", "Pest", "Wanderarzt"])
+    let m = GenSlots.parse(["Ton": "düster", "Epoche": "mittelalterlich", "Ort": "Kloster im Gebirge", "Bedrohung": "Fluch", "Licht": "neblig", "Muss": "-", "Nicht": "Krieg"], text: "Kloster im Gebirge, Winter, Nebel, Inquisition, kein Krieg im Mittelalter")
+    XCTAssertEqual(m.ort, "Kloster im Gebirge"); XCTAssertEqual(m.epoche, "mittelalterlich"); XCTAssertEqual(m.licht, "neblig"); XCTAssertEqual(m.nicht, ["Krieg"])   // supported values are kept
+    XCTAssertNil(GenSlots.parse(["Ort": "Dorf"], text: "x").ortName); XCTAssertNil(GenSlots().ortName)                                   // bare enum type = hint only
+    var s = GenSlots(); try s.set("ort", "Leuchtturm am Kap"); XCTAssertEqual(s.ort, "Leuchtturm am Kap"); XCTAssertThrowsError(try s.set("ton", "lustig"))
+    XCTAssertEqual(s.missing(in: "Die Pest wütet"), nil); s.muss = ["Pest", "Wanderarzt"]; XCTAssertEqual(s.missing(in: "Die Pest wütet"), "Wanderarzt")
+  }
+  func testSlotGrammarAllowsFreePlace() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    func ok(_ g: Grammar, _ txt: String) throws -> Bool {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: g.tag)
+      for id in t.encode(text: txt, addSpecialTokens: false) { let r = try c.computeMask(); if r.needsApply && (r.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return false }; _ = try c.commitToken(Int32(id)) }
+      let r = try c.computeMask(); return !r.needsApply || (r.mask[106 / 32] >> Int32(106 % 32)) & 1 == 1
+    }
+    let base = "Ton: düster\nEpoche: offen\nOrt: %@\nBedrohung: Seuche\nLicht: offen\nMuss: Pest\nNicht: -"
+    XCTAssertTrue(try ok(GenGr.slots, String(format: base, "Bergdorf im Alpental"))); XCTAssertTrue(try ok(GenGr.slots, String(format: base, "Dorf")))   // free text AND enum hint
+    XCTAssertTrue(try ok(GenGr.premise(alltag: "Bergdorf im Alpental"), "Prämisse: Die Pest geht um.\nAlltag: Bergdorf im Alpental"))
+    XCTAssertFalse(try ok(GenGr.premise(alltag: "Bergdorf im Alpental"), "Prämisse: Die Pest geht um.\nAlltag: Kloster"))                      // the player's place is the Alltag place
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))
