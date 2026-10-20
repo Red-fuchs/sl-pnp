@@ -247,7 +247,7 @@ public struct World: Codable, Equatable {
   public mutating func startScene(ort o: String?, beteiligte: String, expect: String) {
     if let o, okPlace(clean(o)) { ort = clean(o); if orte[clean(o)] == nil, orte.count < 30 { orte[clean(o)] = "" } }
     let txt = Set(tokens(beteiligte + " " + expect))
-    for i in npcs.indices {
+    for i in npcs.indices where !npcs[i].tot {
       let present = !Set(tokens(npcs[i].name)).isDisjoint(with: txt)
       npcs[i].anwesend = present
       if present { npcs[i].ort = ort } else if npcs[i].ort == nil || samePlace(npcs[i].ort, ort) { npcs[i].ort = npcs[i].ort ?? ort }
@@ -378,8 +378,12 @@ public struct World: Codable, Equatable {
     if !npcs[i].zustand.contains("tot") { npcs[i].zustand.insert("tot", at: 0) }
     return ["\(npcs[i].name) ist tot"]
   }
-  static let intransitive = ["stirbt", "starb", "gestorben", "ist tot", "war tot", "fällt tot", "stürzt tot", "tot zu boden", "verendet", "verblutet", "röchelt sein letztes", "haucht sein leben", "haucht ihr leben"]
-  static let transitive = ["erschlägt", "ersticht", "tötet", "erdolcht", "erwürgt", "erschießt", "richtet hin", "ermordet", "erschlagen", "erstochen", "getötet", "hingerichtet", "erschossen"]
+  static let intransitive = ["stirbt", "starb", "gestorben", "ist tot", "war tot", "fällt tot", "stürzt tot", "tot zu boden", "verendet", "verblutet", "röchelt sein letztes", "haucht sein leben", "haucht ihr leben",
+                             "sinkt sterbend", "sank sterbend", "sinkt röchelnd", "sinkt leblos", "sinkt tot", "bricht tot", "bricht leblos", "letzten atemzug", "letzten atem", "erliegt", "erlag", "ist verblutet", "leblos zu boden", "regt sich nicht mehr", "rührt sich nicht mehr", "atmet nicht mehr", "bewegt sich nicht mehr"]
+  static let transitive = ["erschlägt", "ersticht", "tötet", "erdolcht", "erwürgt", "erschießt", "richtet hin", "ermordet", "erschlagen", "erstochen", "getötet", "hingerichtet", "erschossen",
+                           "erschlug", "erstach", "erschoss", "tötete", "erdolchte", "erwürgte", "ermordete", "erdolch", "erstech", "stößt", "sticht", "stach", "niedergestochen", "niedergestreckt", "streckt", "durchbohrt", "enthauptet", "köpft", "schlitzt", "die kehle durch", "meuchelt", "erhängt"]
+  /// phrases that look like a hedge ("nicht") but are death cues themselves
+  static let strongCues = ["regt sich nicht mehr", "rührt sich nicht mehr", "atmet nicht mehr", "bewegt sich nicht mehr"]
   static let hedges = ["nicht", "kaum", "beinahe", "fast ", "wäre", "könnte", "würde", "angeblich", "gerüchte", "wenn ", "falls", "kein ", "niemand", "sagt", "sagte", "erzählt", "berichtet", "dass", "meint", "glaubt", "behauptet", "erinnert", "vor jahren", "damals"]   // reported speech / past events (observers are handled by "name right before the verb")
   /// Narration says a named NPC dies -> mark dead (the delta step often misses it: "Ithror stirbt" left him alive in [Welt]).
   /// "X stirbt" / "X wurde erschlagen": X is before the verb; "Kara erschlägt X": X is after the verb.
@@ -390,14 +394,17 @@ public struct World: Codable, Equatable {
     var last: Int?                               // the single NPC named in the previous sentence ("Ithror sinkt zusammen. Er stirbt …")
     for sn in sentences {
       defer { let named = npcs.indices.filter { !tokens(npcs[$0].name).allSatisfy { !sn.contains($0) } }; if named.count == 1 { last = named[0] } }
-      guard !Self.hedges.contains(where: { sn.contains($0) }) else { continue }
+      var hs = sn; for c in Self.strongCues { hs = hs.replacingOccurrences(of: c, with: "") }
+      guard !Self.hedges.contains(where: { hs.contains($0) }) else { continue }
       let passive = ["wurde", "wird", "wurden", "worden", "ist ", "war "].contains { sn.contains($0) }
       let iv = Self.intransitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
-      let tv = Self.transitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
+      let weak = ["stößt", "sticht", "stach", "streckt", "schlitzt"]       // only a kill together with a lethal complement
+      let lethal = ["nieder", "tödlich", "ins herz", "in die brust", "in den hals", "kehle"].contains { sn.contains($0) }
+      let tv = Self.transitive.filter { !weak.contains($0) || lethal }.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
       var hit = false
       // candidates in order of appearance
       let named = npcs.indices.compactMap { i -> (Int, String.Index)? in
-        guard !npcs[i].tot, let p = tokens(npcs[i].name).compactMap({ sn.range(of: $0)?.lowerBound }).min() else { return nil }
+        guard !npcs[i].tot, let p = (tokens(npcs[i].name) + roleTokens(i)).compactMap({ sn.range(of: $0)?.lowerBound }).min() else { return nil }
         return (i, p) }.sorted { $0.1 < $1.1 }
       if !named.isEmpty { hit = true }
       if let d = iv, let victim = named.last(where: { $0.1 < d.lowerBound }) { log += kill(victim.0) }       // "X stirbt": the name right before the verb (an observer named earlier is not the victim)
@@ -409,6 +416,12 @@ public struct World: Codable, Equatable {
     }
     return log
   }
+  /// role words (from `kurz`) that identify exactly one living NPC ("die Kräuterfrau" = Yorric)
+  func roleTokens(_ i: Int) -> [String] {
+    tokens(npcs[i].kurz).filter { t in t.count >= 5 && npcs.indices.filter { $0 != i && !npcs[$0].tot && tokens(npcs[$0].kurz).contains(t) }.isEmpty }
+  }
+  /// dead stays dead: no presence sync may bring a corpse back
+  public mutating func enforceDead() { for i in npcs.indices where npcs[i].tot { npcs[i].anwesend = false; if !npcs[i].zustand.contains("tot") { npcs[i].zustand.insert("tot", at: 0) } } }
   /// Undo a wrongly detected death (`/lebt <Figur>`).
   @discardableResult
   public mutating func revive(_ i: Int) -> Bool {

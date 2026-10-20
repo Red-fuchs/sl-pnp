@@ -100,6 +100,7 @@ public final class Game {
     var log: [String] = []
     if let t = tail { log += world.applyTail(t) } else { log += world.adoptNames(World.nameHints(player + " " + narr)) }
     world.syncPresence(narr: narr); log += world.markDeaths(narr: narr)
+    defer { world.enforceDead() }
     let block = world.block()   // current state (after start_scene and the tail), not the one shown to the narrator
     let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(clean(player, 300))\nErzählung: \(clean(narr, 900))\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
     do {

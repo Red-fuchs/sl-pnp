@@ -1270,3 +1270,28 @@ final class MetaStripTests: XCTestCase {   // N3
     XCTAssertNil(stripMeta("Erwartung: nichts."))
   }
 }
+
+final class DeathTests: XCTestCase {   // N5
+  func world() -> World {
+    var w = World(); w.ort = "Taverne"
+    w.npcs = [Npc(id: "n1", name: "Brannoc", kurz: "Wirt", ort: "Taverne"), Npc(id: "n2", name: "Thoaule", kurz: "Kräuterfrau", ort: "Taverne"), Npc(id: "n3", name: "Yorric", kurz: "Söldner", ort: "Taverne")]
+    return w
+  }
+  func testStabVerbsAndRoles() {
+    var w = world()
+    XCTAssertEqual(w.markDeaths(narr: "Du erdolchst Brannoc mit einem schnellen Stoß."), ["Brannoc ist tot"])   // "erdolch" stem
+    w = world(); XCTAssertFalse(w.markDeaths(narr: "Dein Dolch durchbohrt Thoaule, die Kräuterfrau sinkt sterbend zu Boden.").isEmpty)
+    XCTAssertTrue(w.npcs[1].tot)
+    w = world(); _ = w.markDeaths(narr: "Die Kräuterfrau sinkt sterbend zu Boden."); XCTAssertTrue(w.npcs[1].tot, "role name")
+    w = world(); _ = w.markDeaths(narr: "Du stößt den Dolch tief in die Brust. Yorric atmet nicht mehr."); XCTAssertTrue(w.npcs[2].tot)
+    w = world(); XCTAssertTrue(w.markDeaths(narr: "Brannoc würde fast sterben, wenn du nicht hilfst.").isEmpty)
+  }
+  func testDeadStayDead() {
+    var w = world(); w.kill(0)
+    w.startScene(ort: "Taverne", beteiligte: "Brannoc, Thoaule", expect: "Brannoc grüßt")
+    XCTAssertTrue(w.npcs[0].tot); XCTAssertFalse(w.npcs[0].anwesend)
+    _ = w.applyTail("Brannoc (Wirt), Thoaule"); XCTAssertFalse(w.npcs[0].anwesend)
+    w.npcs[0].anwesend = true; w.enforceDead(); XCTAssertFalse(w.npcs[0].anwesend)
+    XCTAssertTrue(w.revive(0)); XCTAssertFalse(w.npcs[0].tot)
+  }
+}
