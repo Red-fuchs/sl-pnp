@@ -57,6 +57,25 @@ extension HiddenWorld {
   public func secretList() -> [(topic: String, text: String)] {
     npcs.sorted(by: { $0.key < $1.key }).compactMap { (n, h) in h.tier(schwellen) == 0 && !h.geheimnis.isEmpty ? ("Geheimnis von \(n)", h.geheimnis) : nil }
   }
+  /// What the leak guard CHECKS: tier 0 (hard-banned) and tier 1 (soft-penalised; never hard-banned, but a verbatim leak is regenerated/dropped).
+  public func guardList() -> [(topic: String, text: String)] { secretList() + softList() }
+  /// Director input. Tier 0: the full secret (the director must know what to hide; its output is guarded). Tier >= 1: TOPIC WORDS ONLY
+  /// (the non-rare words of the secret), so an Andeutung can never hand the verbatim secret to the narrator.
+  public func directorFacts(for names: [String], known: String) -> String {
+    let seen = Set(contentWords(known).map(lemma))
+    return names.compactMap { n -> String? in
+      guard let h = npcs[n] else { return nil }
+      let t = h.tier(schwellen)
+      let secret: String
+      if h.revealed { secret = "(bekannt)" }
+      else if t == 0 { secret = h.geheimnis }
+      else {
+        let topic = contentWords(h.geheimnis).filter { seen.contains(lemma($0)) || commonNouns.contains($0.lowercased()) }
+        secret = "betrifft: " + (topic.isEmpty ? "ein Geheimnis" : topic.joined(separator: ", ")) + " (Einzelheiten nicht bekannt)"
+      }
+      return "\(n): Geheimnis \(secret). Ziel: \(h.ziel). Gruppe: \(h.gruppe). \(t >= 1 ? "Das Thema darf angedeutet werden (nicht der Kern)." : "Nichts andeuten.")"
+    }.joined(separator: "\n")
+  }
   /// tier 1 (Andeutung): soft penalty instead of a ban
   public func softList() -> [(topic: String, text: String)] {
     npcs.sorted(by: { $0.key < $1.key }).compactMap { (n, h) in h.tier(schwellen) == 1 && !h.geheimnis.isEmpty ? ("Geheimnis von \(n)", h.geheimnis) : nil }
@@ -135,7 +154,7 @@ extension Game {
   /// "Regie": the model may use the secrets fully, the output is behaviour only (<= 2 short lines). Side cache, like the world-delta step.
   func directorPass(player: String) -> String? {
     let who = secretBearersHere(); guard !who.isEmpty else { return nil }
-    let facts = who.map { n -> String in let h = hidden.npcs[n]!; return "\(n): Geheimnis: \(h.revealed ? "(bekannt)" : h.geheimnis). Ziel: \(h.ziel). Gruppe: \(h.gruppe). \(h.tier(hidden.schwellen) >= 1 ? "Das Thema darf angedeutet werden (nicht der Kern)." : "Nichts andeuten.")" }.joined(separator: "\n")
+    let facts = hidden.directorFacts(for: who, known: knownText())
     let sys = "Du bist Regisseur eines düsteren Rollenspiels. Du kennst die Geheimnisse der anwesenden Figuren. Beschreibe in höchstens zwei kurzen Zeilen, wie sich die betroffenen Figuren jetzt VERHALTEN (Körpersprache, Ausweichen, Blicke, Tonfall, Handgriffe). Nenne niemals das Geheimnis, das Ziel oder Fakten daraus – nur sichtbares Verhalten. Zeilenformat: \"Regie: <Name> <Verhalten>\"."
     var note = ""
     for attempt in 0..<2 {
@@ -144,9 +163,9 @@ extension Game {
       if debug { out(.info("[debug] Regie-Pass: \(st.line)")) }
       let lines = txt.split(separator: "\n").map { String($0).replacingOccurrences(of: "Regie: ", with: "") }
       let joined = lines.joined(separator: " ")
-      if let l = leakCheck(joined, secrets: secretList(), known: knownText()) {
+      if let l = leakCheck(joined, secrets: hidden.guardList(), known: knownText()) {
         if attempt == 0 { note = "\nBeschreibe nur sichtbares Verhalten, keine Fakten."; _ = l; continue }
-        let kept = lines.filter { leakCheck($0, secrets: secretList(), known: knownText()) == nil }   // drop the leaking line(s)
+        let kept = lines.filter { leakCheck($0, secrets: hidden.guardList(), known: knownText()) == nil }   // drop the leaking line(s)
         return kept.isEmpty ? nil : kept.joined(separator: " ")
       }
       return joined

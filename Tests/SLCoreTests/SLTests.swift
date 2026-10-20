@@ -658,6 +658,26 @@ final class ArtLineTests: XCTestCase {
   }
 }
 
+final class ReviewV6Tests: XCTestCase {
+  func fixture() -> (World, HiddenWorld) {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Brunnentor"; w.gen.praemisse = "Die Karawanenstadt verkauft ihr letztes Wasser."
+    w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Brunnentor"); w.npcs[0].anwesend = true
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.ziel = "Die Zunft retten"; n.typ = "zeit"; n.ref = "99"; h.npcs["Zubeir"] = n
+    return (w, h)
+  }
+  // HIGH 1
+  func testTier1DirectorGetsTopicWordsOnly() {
+    var (w, h) = fixture(); let known = w.knownText()
+    XCTAssertTrue(h.directorFacts(for: ["Zubeir"], known: known).contains("Salzlake"))                  // tier 0: the director must know what to hide
+    h.npcs["Zubeir"]!.spur = 2                                                                         // tier 1 (Andeutung)
+    let f = h.directorFacts(for: ["Zubeir"], known: known)
+    XCTAssertFalse(f.contains("Salzlake")); XCTAssertFalse(f.contains("panscht")); XCTAssertTrue(f.contains("betrifft:")); XCTAssertTrue(f.contains("Wasser"))   // topic words only
+    XCTAssertTrue(h.secretList().isEmpty); XCTAssertEqual(h.guardList().count, 1)                      // not hard-banned, but still guarded
+    XCTAssertNotNil(leakCheck("[Regie] Zubeir panscht das Wasser mit Salzlake.", secrets: h.guardList(), known: known))   // director output and narrator stream are checked against tier 0 + 1
+    h.npcs["Zubeir"]!.spur = 4; XCTAssertTrue(h.guardList().isEmpty)                                    // tier 2: free
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

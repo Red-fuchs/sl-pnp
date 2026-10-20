@@ -160,9 +160,9 @@ public final class Game {
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
-      let secrets = secretList(), known = knownText(), hold = !secretBearersHere().isEmpty   // narration is held back for the leak check while a secret-bearing NPC is present
+      let secrets = hidden.guardList(), known = knownText(), hold = !secretBearersHere().isEmpty   // narration is held back for the leak check while a secret-bearing NPC is present
       let mkStream = { NarrStream(hold: hold, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
-      let ban = banFor(secrets, known)
+      let ban = banFor(hidden.secretList(), known)          // hard ban: tier 0 only; the check above also covers tier 1
       var ns = mkStream()
       let gm = Gr.grammar(gate)
       var txt = "", truncated = false, metaRetry = false
