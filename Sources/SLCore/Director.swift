@@ -76,6 +76,14 @@ extension HiddenWorld {
       return "\(n): Geheimnis \(secret). Ziel: \(h.ziel). Gruppe: \(h.gruppe). \(t >= 1 ? "Das Thema darf angedeutet werden (nicht der Kern)." : "Nichts andeuten.")"
     }.joined(separator: "\n")
   }
+  /// Director pass on demand: present, living bearers of an unrevealed geheimnis in tier 0/1 (NOT every NPC with a ziel), and only when the player
+  /// named one of them or one is already on the track (tier 1). Saves the ~1.5 s aux pass on the other turns.
+  public func directorBearers(in world: World, named: [String]) -> [String] {
+    world.npcs.filter { $0.anwesend && !$0.tot }.map(\.name).filter { n in
+      guard let h = npcs[n], !h.revealed, !h.geheimnis.isEmpty else { return false }
+      let t = h.tier(schwellen); return t <= 1 && (t >= 1 || named.contains { norm($0) == norm(n) })
+    }
+  }
   /// stream the narration live only when nothing could leak: with ANY tier-0/1 secret alive the line is held back and checked before it is shown
   public var holdNarration: Bool { !guardList().isEmpty }
   /// tier 1 (Andeutung): soft penalty instead of a ban
@@ -155,7 +163,7 @@ extension Game {
 
   /// "Regie": the model may use the secrets fully, the output is behaviour only (<= 2 short lines). Side cache, like the world-delta step.
   func directorPass(player: String) -> String? {
-    let who = secretBearersHere(); guard !who.isEmpty else { return nil }
+    let who = hidden.directorBearers(in: world, named: namedBy(player)); guard !who.isEmpty else { return nil }
     let facts = hidden.directorFacts(for: who, known: knownText())
     let sys = "Du bist Regisseur eines düsteren Rollenspiels. Du kennst die Geheimnisse der anwesenden Figuren. Beschreibe in höchstens zwei kurzen Zeilen, wie sich die betroffenen Figuren jetzt VERHALTEN (Körpersprache, Ausweichen, Blicke, Tonfall, Handgriffe). Nenne niemals das Geheimnis, das Ziel oder Fakten daraus – nur sichtbares Verhalten. Zeilenformat: \"Regie: <Name> <Verhalten>\"."
     var note = ""

@@ -762,6 +762,23 @@ final class ReviewV6NoticeTests: XCTestCase {
   }
 }
 
+final class ReviewV6DirectorOnDemandTests: XCTestCase {
+  // MED 8
+  func testDirectorOnlyForGeheimnisBearersOnDemand() {
+    var w = World(); w.setFigur("A: Mann"); w.ort = "Hof"
+    for n in ["Zubeir", "Ida", "Bork"] { w.addNpc(name: n, kurz: "x", ort: "Hof") }; for i in w.npcs.indices { w.npcs[i].anwesend = true }
+    var h = HiddenWorld()
+    var a = HiddenNpc(); a.geheimnis = "Er panscht das Wasser"; a.ziel = "Retten"; h.npcs["Zubeir"] = a
+    var b = HiddenNpc(); b.ziel = "Nur ein Ziel"; h.npcs["Ida"] = b                                    // goal only: no director
+    var c = HiddenNpc(); c.geheimnis = "Sie lügt über den Schlüssel"; c.revealed = true; h.npcs["Bork"] = c   // revealed: no director
+    XCTAssertTrue(h.directorBearers(in: w, named: []).isEmpty)                                          // tier 0 and nobody named: skipped
+    XCTAssertEqual(h.directorBearers(in: w, named: ["Zubeir"]), ["Zubeir"])                             // player talks to the bearer
+    h.npcs["Zubeir"]!.spur = 2; XCTAssertEqual(h.directorBearers(in: w, named: []), ["Zubeir"])          // tier 1: on the track
+    h.npcs["Zubeir"]!.spur = 4; XCTAssertTrue(h.directorBearers(in: w, named: ["Zubeir"]).isEmpty)       // tier 2: free
+    h.npcs["Zubeir"]!.spur = 0; w.npcs[0].anwesend = false; XCTAssertTrue(h.directorBearers(in: w, named: ["Zubeir"]).isEmpty)   // absent
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))
