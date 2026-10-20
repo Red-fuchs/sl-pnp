@@ -75,13 +75,39 @@ public struct GenState: Codable, Equatable {
 }
 
 /// Never rendered into [Welt] or the narrator prompt except through `reveal`.
-public struct HiddenNpc: Codable, Equatable { public var geheimnis = "", ziel = "", gruppe = "", typ = "", ref = ""; public var revealed = false; public init() {} }
+public struct HiddenNpc: Codable, Equatable {
+  public var geheimnis = "", ziel = "", gruppe = "", typ = "", ref = ""
+  public var revealed = false
+  public var spur = 0               // "Spur" score: how far the player is on the track of this secret
+  public var senkung = 0            // anti-stuck: thresholds lowered by this much
+  public var stuck = 0              // engaged turns without a tier change
+  public var besucht = false, gegenstand = false   // one-time spur events
+  public init() {}
+  enum K: String, CodingKey { case geheimnis, ziel, gruppe, typ, ref, revealed, spur, senkung, stuck, besucht, gegenstand }
+  public init(from d: Decoder) throws {
+    let c = try d.container(keyedBy: K.self)
+    geheimnis = try c.decodeIfPresent(String.self, forKey: .geheimnis) ?? ""; ziel = try c.decodeIfPresent(String.self, forKey: .ziel) ?? ""; gruppe = try c.decodeIfPresent(String.self, forKey: .gruppe) ?? ""
+    typ = try c.decodeIfPresent(String.self, forKey: .typ) ?? ""; ref = try c.decodeIfPresent(String.self, forKey: .ref) ?? ""; revealed = try c.decodeIfPresent(Bool.self, forKey: .revealed) ?? false
+    spur = try c.decodeIfPresent(Int.self, forKey: .spur) ?? 0; senkung = try c.decodeIfPresent(Int.self, forKey: .senkung) ?? 0; stuck = try c.decodeIfPresent(Int.self, forKey: .stuck) ?? 0
+    besucht = try c.decodeIfPresent(Bool.self, forKey: .besucht) ?? false; gegenstand = try c.decodeIfPresent(Bool.self, forKey: .gegenstand) ?? false
+  }
+  /// 0 verdeckt (hard ban) · 1 Andeutung (soft penalty) · 2 Hinweis (free, one keyword offered) · 3 enthüllt
+  public func tier(_ thresholds: [Int]) -> Int { revealed ? 3 : thresholds.filter { spur >= max(1, $0 - senkung) }.count }
+}
 public struct Clue: Codable, Equatable { public var thread: String, text: String, at: String; public var found = false }
 public struct HiddenWorld: Codable, Equatable {
   public var npcs: [String: HiddenNpc] = [:]   // by NPC name
   public var clues: [Clue] = []
   public var pcGeheim = ""
+  public var schwellen = [2, 4, 6]             // spur thresholds for tier 1/2/3 (config)
+  public var stuckN = 8                        // engaged turns without progress before the thresholds drop by 1
   public init() {}
+  enum K: String, CodingKey { case npcs, clues, pcGeheim, schwellen, stuckN }
+  public init(from d: Decoder) throws {
+    let c = try d.container(keyedBy: K.self)
+    npcs = try c.decodeIfPresent([String: HiddenNpc].self, forKey: .npcs) ?? [:]; clues = try c.decodeIfPresent([Clue].self, forKey: .clues) ?? []
+    pcGeheim = try c.decodeIfPresent(String.self, forKey: .pcGeheim) ?? ""; schwellen = try c.decodeIfPresent([Int].self, forKey: .schwellen) ?? [2, 4, 6]; stuckN = try c.decodeIfPresent(Int.self, forKey: .stuckN) ?? 8
+  }
 }
 
 public enum GenError: Error, CustomStringConvertible { case msg(String); public var description: String { if case .msg(let s) = self { return s }; return "" } }
@@ -164,7 +190,13 @@ public func genFields(_ t: String) -> [String: String] {
 }
 extension GenSlots {
   /// Unfilled slots come from the oracle (true RNG); filled ones are hard constraints and never overridden.
-  public mutating func fillOpen(_ rand: (Int) -> Int) { for k in offen { let a = Self.enums[k]!; self[k] = a[rand(a.count)] } }
+  public mutating func fillOpen(_ rand: (Int) -> Int) {
+    for k in offen {
+      var a = Self.enums[k]!
+      if k == "epoche" { a = a.filter { $0 != "antik" && $0 != "barock" } }   // dark-fantasy default: the oracle only picks antik/barock when the player asks for them
+      self[k] = a[rand(a.count)]
+    }
+  }
 }
 
 // MARK: pipeline (Game extension)
@@ -283,10 +315,11 @@ extension Game {
     // start scene + player hook
     prog("Startszene …", done, total); t0 = Date()
     let s = Self.fields((try? genCall("start", ctx: ctxBlock(), task: "Lege den Beginn fest: Startort, erste Szene (2. Person, ein Satz), Ziel der Figur und ein geheimes Ziel.", GenGr.start(places: places), validate: check)) ?? "")
-    world.gen.start = places.contains(s["Start"] ?? "") ? s["Start"]! : startPlace
+    world.gen.start = world.gen.slots.ortName != nil ? startPlace : (places.contains(s["Start"] ?? "") ? s["Start"]! : startPlace)   // the player's own place is where the story starts
     world.gen.szene = clean(s["Szene"] ?? "", 200); world.gen.pcZiel = clean(s["Ziel der Figur"] ?? "", 100); hidden.pcGeheim = clean(s["Geheimes Ziel"] ?? "", 100)
     world.ort = world.gen.start
     for i in world.npcs.indices { world.npcs[i].anwesend = world.samePlace(world.npcs[i].ort, world.gen.start) }
+    for w in hidden.threadWarnings(world, places: Set(world.gen.orte.keys)) { out(.info("Warnung: \(w)")) }
     world.gen.used = names.used.sorted()
     world.gen.ready = true
     world.syncLists(eng)

@@ -210,7 +210,7 @@ public struct World: Codable, Equatable {
     if !n.kurz.isEmpty && norm(n.kurz) != norm(n.name) { x.append(cutw(n.kurz, 50)) }
     x.append(n.tot ? "tot" : (n.anwesend ? "hier" : (n.ort.map { clean($0, 30) } ?? "anderswo")))
     if n.gekraenkt { x.append("gekränkt") } else if let h = haltungWort[n.haltung], !h.isEmpty { x.append(h) }
-    x += n.zustand.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }; x += n.bekannt.suffix(2).map { "bekannt: \($0)" }
+    x += n.zustand.filter { !(n.tot && $0 == "tot") }.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }; x += n.bekannt.suffix(2).map { "bekannt: \($0)" }
     return "\(n.name) (\(x.joined(separator: " · ")))"
   }
 

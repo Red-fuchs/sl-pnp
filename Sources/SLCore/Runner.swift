@@ -130,6 +130,7 @@ public final class Runner {
       case "orakel": try game.genPrepare(mode: "orakel", text: ""); table()
       case "mix": try run { try game.genPrepare(mode: "mix", text: unq(String(a.dropFirst(3)))) }; table()
       case "slots": table()
+      case "debug": sink(.info(game.hidden.debugTable()))   // tiers / Spur: not part of the player view
       case "slot":
         let kv = String(a.dropFirst(4)).trimmingCharacters(in: .whitespaces).split(separator: "=", maxSplits: 1).map(String.init)
         guard kv.count == 2 else { sink(.info("/welt slot ton=düster")); return }

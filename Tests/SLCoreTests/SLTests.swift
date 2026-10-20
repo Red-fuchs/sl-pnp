@@ -385,19 +385,28 @@ final class DirectorTests: XCTestCase {   // secret-aware director + leak guard 
   }
   func testBearersAndSecretList() {
     var (w, h) = fixture()
-    XCTAssertEqual(h.bearers(in: w), ["Zubeir"]); XCTAssertEqual(h.secretList().count, 3)                 // geheimnis + ziel + clue
+    XCTAssertEqual(h.bearers(in: w), ["Zubeir"]); XCTAssertEqual(h.secretList().count, 1)                 // only the tier-0 geheimnis is guarded (clues and goals are not)
     w.npcs[0].anwesend = false; XCTAssertTrue(h.bearers(in: w).isEmpty)                                    // absent: no director pass
     w.npcs[0].anwesend = true; w.kill(0); XCTAssertTrue(h.bearers(in: w).isEmpty)                          // dead: none
-    var (w2, h2) = fixture(); h2.npcs["Zubeir"]!.revealed = true; h2.npcs["Zubeir"]!.ziel = ""; XCTAssertTrue(h2.bearers(in: w2).isEmpty); XCTAssertFalse(h2.secretList().contains { $0.topic.hasPrefix("Geheimnis") })   // revealed secret is no secret any more
+    var (w2, h2) = fixture(); h2.npcs["Zubeir"]!.revealed = true; h2.npcs["Zubeir"]!.ziel = ""; XCTAssertTrue(h2.bearers(in: w2).isEmpty); XCTAssertTrue(h2.secretList().isEmpty)   // revealed secret is no secret any more
   }
   func testLeakGuardCatchesLeaksNotCues() {
     let (w, h) = fixture(), sec = h.secretList(), known = w.knownText()
     for cue in ["Zubeir weicht deinem Blick aus, seine Finger trommeln auf den Rand des Brunnens.", "Regie: Zubeir senkt die Stimme und blickt zum Tor.", "Zubeir lächelt dünn und tritt einen Schritt zurück. Draußen schreit ein Händler."] { XCTAssertNil(leakCheck(cue, secrets: sec, known: known), cue) }
     XCTAssertEqual(leakCheck("Zubeir panscht das Wasser heimlich mit Salzlake aus dem Fass.", secrets: sec, known: known)?.topic, "Geheimnis von Zubeir")   // two rare words
     XCTAssertNotNil(leakCheck("Er kippt Salzlake in den Eimer.", secrets: sec, known: known))                                                  // one name-like rare noun
-    XCTAssertEqual(leakCheck("Die Zunft droht am Bankrott zu zerbrechen.", secrets: sec, known: known)?.topic, "Ziel von Zubeir")
-    XCTAssertEqual(leakCheck("Am Gitter klebt frischer Mörtel.", secrets: sec, known: known)?.topic, "Hinweis zu 'Wer hat die Zisterne versiegelt'")
+    XCTAssertNil(leakCheck("Die Zunft droht am Bankrott zu zerbrechen.", secrets: sec, known: known))        // hidden goals are steered by the director, not guarded
+    XCTAssertNil(leakCheck("Am Gitter klebt frischer Mörtel.", secrets: sec, known: known))                 // clue texts must never be blocked: clues have to stay reachable
     var h2 = h; h2.npcs["Zubeir"]!.revealed = true; XCTAssertNil(leakCheck("Zubeir panscht das Wasser mit Salzlake.", secrets: h2.secretList(), known: known))   // after the reveal it may be said
+  }
+  func testFullWordMatchingPerSentence() {
+    let sec = [(topic: "Geheimnis von X", text: "Das Siegel")], known = ""
+    XCTAssertNil(leakCheck("Der Siegelring glänzt am Finger des Händlers.", secrets: sec, known: known))     // compound != the secret word (5-letter stems collided before)
+    XCTAssertNotNil(leakCheck("Er verbirgt das Siegel unter dem Mantel.", secrets: sec, known: known))
+    let two = [(topic: "Geheimnis von Y", text: "Er verbirgt Gift im Brunnenschacht unter dem Mühlstein")]
+    XCTAssertNil(leakCheck("Gift ist selten. Der Mühlstein dreht sich langsam.", secrets: two, known: known))   // hits spread over sentences do not add up
+    XCTAssertNotNil(leakCheck("Er schüttet Gift in den Brunnenschacht.", secrets: two, known: known))           // two rare words in ONE sentence
+    XCTAssertEqual(leakCheck("Das Siegel liegt dort. Zwei.", secrets: sec, known: known)?.sentence, "Das Siegel liegt dort.")
   }
   func testDropLeakingSentences() {
     let (w, h) = fixture()
@@ -473,7 +482,7 @@ final class DecodeBanTests: XCTestCase {
     var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.ziel = "Die Zunft vor dem Bankrott bewahren"; h.npcs["Zubeir"] = n
     var w = World(); w.setFigur("Aether: Mann"); w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Hof"); w.gen.praemisse = "Die Zunft der Wasserwäger regiert."
     let t = banTerms(secrets: h.secretList(), known: w.knownText())
-    XCTAssertTrue(t.contains("Salzlake")); XCTAssertTrue(t.contains("panscht")); XCTAssertTrue(t.contains("Bankrott"))
+    XCTAssertTrue(t.contains("Salzlake")); XCTAssertTrue(t.contains("panscht")); XCTAssertFalse(t.contains("Bankrott"))   // goals are not banned
     XCTAssertFalse(t.contains("Zunft")); XCTAssertFalse(t.contains("Wasser"))                    // visible / generic words are not banned
   }
   func testRealTokenizerBan() async throws {
@@ -487,6 +496,82 @@ final class DecodeBanTests: XCTestCase {
       if ids.count > 1 { XCTAssertFalse(ban.blocked(after: []).contains(ids[0])) }               // the first token alone stays free
     }
     let ok = t.encode(text: " Salzfass", addSpecialTokens: false); XCTAssertFalse(ban.blocked(after: Array(ok.dropLast())).contains(ok.last!))   // unrelated words stay usable
+  }
+}
+
+final class LimitTranscriptTests: XCTestCase {   // offline false-positive rate of the leak guard on the 8 recorded limit sessions
+  func testFalsePositiveRate() throws {
+    let root = URL(fileURLWithPath: NSHomeDirectory() + "/Claude-Workspace/gm-bench/sl-sessions")
+    guard let dirs = try? FileManager.default.contentsOfDirectory(at: root, includingPropertiesForKeys: nil).filter({ $0.lastPathComponent.hasPrefix("limit-") }), !dirs.isEmpty else { throw XCTSkip("no limit sessions") }
+    var total = 0, flagged = 0, withSecrets = 0
+    for d in dirs.sorted(by: { $0.path < $1.path }) {
+      guard let cd = try? Data(contentsOf: d.appendingPathComponent("chat.json")), let chat = try? JSONDecoder().decode(Chat.self, from: cd) else { continue }
+      let h = (try? JSONDecoder().decode(HiddenWorld.self, from: Data(contentsOf: d.appendingPathComponent("hidden.json")))) ?? HiddenWorld()
+      let w = (try? JSONDecoder().decode(World.self, from: Data(contentsOf: d.appendingPathComponent("world.json")))) ?? World()
+      let sec = h.secretList(), known = w.knownText()
+      let narr = displayStory(chat.msgs).filter { $0["who"] == "sl" }.map { $0["text"]! }
+      var f = 0
+      if !sec.isEmpty { withSecrets += narr.count }
+      for n in narr { total += 1; if !sec.isEmpty, let l = leakCheck(n, secrets: sec, known: known) { f += 1; flagged += 1; print("LIMITFP \(d.lastPathComponent) [\(l.topic)] words=\(l.words) :: \(l.sentence.prefix(110))") } }
+      print("LIMITFP \(d.lastPathComponent): \(narr.count) narrations, secrets \(sec.count), flagged \(f)")
+    }
+    print("LIMITFP TOTAL narrations \(total) (with secrets \(withSecrets)) flagged \(flagged) rate \(withSecrets > 0 ? Double(flagged) / Double(withSecrets) : 0)")
+    XCTAssertLessThan(withSecrets > 0 ? Double(flagged) / Double(withSecrets) : 0, 0.15)
+  }
+}
+
+final class SpurTierTests: XCTestCase {   // tiers, soft ban, anti-stuck, clue paths
+  func fixture() -> (World, HiddenWorld) {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Hof"; w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Brunnentor"); w.npcs[0].anwesend = false
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.ziel = "Die Zunft retten"; n.typ = "ort_betreten"; n.ref = "Brunnentor"; h.npcs["Zubeir"] = n
+    h.clues = [Clue(thread: "Wer vergiftet den Brunnen", text: "Mörtel am Gitter", at: "Brunnentor"), Clue(thread: "Wer vergiftet den Brunnen", text: "Zubeir kennt den Schlüssel", at: "Zubeir"), Clue(thread: "Wer vergiftet den Brunnen", text: "Salzspuren am Rand", at: "Hof")]
+    return (w, h)
+  }
+  func testTiersFromSpur() {
+    var h = HiddenNpc(); let t = [2, 4, 6]
+    XCTAssertEqual(h.tier(t), 0); h.spur = 2; XCTAssertEqual(h.tier(t), 1); h.spur = 4; XCTAssertEqual(h.tier(t), 2); h.spur = 6; XCTAssertEqual(h.tier(t), 3)
+    h.spur = 3; h.senkung = 1; XCTAssertEqual(h.tier(t), 2); h.revealed = true; h.spur = 0; XCTAssertEqual(h.tier(t), 3)
+  }
+  func testBannedAtTier0AllowedWithEnoughSpur() {
+    var (w, h) = fixture(); let known = w.knownText()
+    XCTAssertEqual(banTerms(secrets: h.secretList(), known: known).contains("Salzlake"), true)           // tier 0: hard ban + guard
+    XCTAssertNotNil(leakCheck("Er kippt Salzlake ins Fass und panscht.", secrets: h.secretList(), known: known))
+    h.npcs["Zubeir"]!.spur = 2                                                                            // tier 1 (Andeutung): soft penalty, guard off
+    XCTAssertTrue(h.secretList().isEmpty); XCTAssertTrue(banTerms(secrets: h.secretList(), known: known).isEmpty)
+    XCTAssertTrue(banTerms(secrets: h.softList(), known: known).contains("Salzlake"))                    // ... but the soft list carries the term
+    h.npcs["Zubeir"]!.spur = 4; XCTAssertTrue(h.softList().isEmpty && h.secretList().isEmpty)             // tier 2: free
+    _ = w
+  }
+  func testSpurEventsAndReveal() {
+    var (w, h) = fixture()
+    var l = h.updateSpur(&w, player: "Ich frage Zubeir nach dem Wasser.", oracle: [], talked: []); XCTAssertEqual(h.npcs["Zubeir"]!.spur, 2); XCTAssertTrue(l.isEmpty || l.allSatisfy { $0.hasPrefix("[debug]") || $0.contains("Stichwort") })   // naming the bearer +1, topic word +1 -> tier 1
+    w.ort = "Brunnentor"; l = h.updateSpur(&w, player: "Ich schaue mich um.", oracle: [], talked: []); XCTAssertEqual(h.npcs["Zubeir"]!.spur, 3); XCTAssertTrue(h.npcs["Zubeir"]!.besucht)   // entering the ref place +1 (once)
+    _ = h.updateSpur(&w, player: "Ich warte.", oracle: [], talked: []); XCTAssertEqual(h.npcs["Zubeir"]!.spur, 3)
+    l = h.updateSpur(&w, player: "Ich warte.", oracle: [("Panscht Zubeir das Wasser?", "JA")], talked: [])   // oracle yes: +2 -> 5: tier 2, a keyword is offered
+    XCTAssertEqual(h.npcs["Zubeir"]!.spur, 5); XCTAssertTrue(l.contains { $0.contains("Stichwort") })
+    l = h.updateSpur(&w, player: "Ich frage Zubeir.", oracle: [("Panscht Zubeir das Wasser?", "JA+")], talked: ["Zubeir"])
+    XCTAssertTrue(h.npcs["Zubeir"]!.revealed); XCTAssertEqual(h.npcs["Zubeir"]!.tier(h.schwellen), 3); XCTAssertTrue(w.npcs[0].bekannt.first?.contains("Salzlake") == true); XCTAssertTrue(l.contains { $0.contains("Salzlake") })
+    var (w2, h2) = fixture(); _ = h2.updateSpur(&w2, player: "Ich frage Zubeir.", oracle: [("Ist das Wetter schön?", "JA")], talked: []); XCTAssertEqual(h2.npcs["Zubeir"]!.spur, 1)   // unrelated oracle yes gives nothing
+  }
+  func testAntiStuckLowersThresholds() {
+    var (w, h) = fixture(); h.stuckN = 3
+    h.npcs["Zubeir"]!.spur = 0
+    // player keeps engaging the bearer without ever reaching a new tier: engagement adds spur, so pin it at 1 for the test
+    for i in 0..<3 { h.npcs["Zubeir"]!.spur = 0; _ = h.updateSpur(&w, player: "Ich frage Zubeir \(i)", oracle: [], talked: []) }
+    XCTAssertEqual(h.npcs["Zubeir"]!.senkung, 1)                                                             // thresholds [2,4,6] -> [1,3,5] for this secret
+    h.npcs["Zubeir"]!.spur = 1; XCTAssertEqual(h.npcs["Zubeir"]!.tier(h.schwellen), 1)
+  }
+  func testThreeCluePaths() {
+    var (w, h) = fixture()
+    w.apply(["strang": [["titel": "Wer vergiftet den Brunnen", "hinweis": "x y z"]]])
+    XCTAssertTrue(h.threadWarnings(w, places: ["Brunnentor", "Hof"]).isEmpty)                                // 3 reachable paths: place, NPC, place
+    XCTAssertEqual(h.threadWarnings(w, places: ["Hof"]).count, 1)                                            // Brunnentor missing -> 2 paths -> warning
+    h.clues[2].at = "Nirgendwo"; XCTAssertEqual(h.threadWarnings(w, places: ["Brunnentor", "Hof"]).count, 1)
+    h.clues = []; XCTAssertTrue(h.threadWarnings(w, places: []).isEmpty)
+  }
+  func testOldHiddenJsonLoads() throws {
+    let old = #"{"npcs":{"A":{"geheimnis":"g","ziel":"z","gruppe":"x","typ":"zeit","ref":"3","revealed":false}},"clues":[],"pcGeheim":""}"#
+    let h = try JSONDecoder().decode(HiddenWorld.self, from: Data(old.utf8)); XCTAssertEqual(h.schwellen, [2, 4, 6]); XCTAssertEqual(h.npcs["A"]!.spur, 0); XCTAssertTrue(h.debugTable().contains("Stufe 0"))
   }
 }
 

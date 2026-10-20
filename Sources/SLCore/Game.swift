@@ -54,6 +54,11 @@ public final class Game {
     let key = terms.joined(separator: "|"); if let c = banCache, c.key == key { return c.ban }
     let b = buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) }); banCache = (key, b); return b
   }
+  /// tier 1 (Andeutung): soft penalty set
+  func softBanFor(_ known: String) -> BanSet? {
+    let terms = banTerms(secrets: hidden.softList(), known: known); guard !terms.isEmpty else { return nil }
+    return buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) })
+  }
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
@@ -98,7 +103,9 @@ public final class Game {
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
     genLazy()
-    let rv = genReveals(oracle: turnQA, talked: namedBy(player))
+    let sp = hidden.updateSpur(&world, player: player, oracle: turnQA, talked: namedBy(player) + world.npcs.filter { world.talkedThisTurn.contains($0.id) }.map(\.name))
+    if debug { sp.filter { $0.hasPrefix("[debug]") }.forEach { out(.info($0)) } }
+    let rv = genReveals(oracle: turnQA, talked: namedBy(player)) + sp.filter { !$0.hasPrefix("[debug]") }
     if !rv.isEmpty { pendingHint = rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
@@ -160,7 +167,7 @@ public final class Game {
       for attempt in 0..<3 {
         ns = mkStream()
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }, ban: ban) { d in ns.feed(d) }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }, ban: ban, soft: softBanFor(known)) { d in ns.feed(d) }
           break
         } catch is AbortedError {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
