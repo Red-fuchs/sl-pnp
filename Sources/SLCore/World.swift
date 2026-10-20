@@ -15,8 +15,9 @@ public struct Npc: Codable, Equatable {
   public var kontakt = 0              // world turn of the last contact
   public var gekraenkt = false        // attitude decayed through neglect
   public var geruecht = 0.0           // fractional gossip residue (half-strength spreading)
+  public var minor = false            // N14/P1: a child (stated age < 18 or child role): never harmed, no harm states
   public init(id: String, name: String, kurz: String, ort: String?, anwesend: Bool = true) { self.id = id; self.name = name; self.kurz = kurz; self.ort = ort; self.anwesend = anwesend }
-  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, tot, fest, basis, kontakt, gekraenkt, geruecht }
+  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, tot, fest, basis, kontakt, gekraenkt, geruecht, minor }
   public init(from d: Decoder) throws {
     let c = try d.container(keyedBy: K.self)
     id = try c.decode(String.self, forKey: .id); name = try c.decode(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz) ?? ""
@@ -25,7 +26,7 @@ public struct Npc: Codable, Equatable {
     haltung = try c.decodeIfPresent(Int.self, forKey: .haltung) ?? 0; notiz = try c.decodeIfPresent(String.self, forKey: .notiz) ?? ""
     bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []; tot = try c.decodeIfPresent(Bool.self, forKey: .tot) ?? false; fest = try c.decodeIfPresent(Bool.self, forKey: .fest) ?? false
     basis = try c.decodeIfPresent(Int.self, forKey: .basis) ?? 0; kontakt = try c.decodeIfPresent(Int.self, forKey: .kontakt) ?? 0
-    gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0
+    gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0; minor = try c.decodeIfPresent(Bool.self, forKey: .minor) ?? false
   }
 }
 public struct Rel: Codable, Equatable { public var a: String, b: String, wert: Int }   // a/b = NPC id or "du"
@@ -404,7 +405,7 @@ public struct World: Codable, Equatable {
       var hit = false
       // candidates in order of appearance
       let named = npcs.indices.compactMap { i -> (Int, String.Index)? in
-        guard !npcs[i].tot, let p = (tokens(npcs[i].name) + roleTokens(i)).compactMap({ sn.range(of: $0)?.lowerBound }).min() else { return nil }
+        guard !npcs[i].tot, !npcs[i].minor, let p = (tokens(npcs[i].name) + roleTokens(i)).compactMap({ sn.range(of: $0)?.lowerBound }).min() else { return nil }
         return (i, p) }.sorted { $0.1 < $1.1 }
       if !named.isEmpty { hit = true }
       if let d = iv, let victim = named.last(where: { $0.1 < d.lowerBound }) { log += kill(victim.0) }       // "X stirbt": the name right before the verb (an observer named earlier is not the victim)
@@ -419,6 +420,21 @@ public struct World: Codable, Equatable {
   /// role words (from `kurz`) that identify exactly one living NPC ("die Kräuterfrau" = Yorric)
   func roleTokens(_ i: Int) -> [String] {
     tokens(npcs[i].kurz).filter { t in t.count >= 5 && npcs.indices.filter { $0 != i && !npcs[$0].tot && tokens(npcs[$0].kurz).contains(t) }.isEmpty }
+  }
+  /// names of children (for the content rule); updated from child roles and age statements in any text
+  public var minorNames: [String] { npcs.filter(\.minor).map(\.name) }
+  public mutating func updateMinors(_ text: String) {
+    for i in npcs.indices where !npcs[i].minor {
+      let n = npcs[i]
+      if hasMinor(n.kurz) { npcs[i].minor = true; continue }
+      if let a = statedAge(text, name: n.name), a < 18 { npcs[i].minor = true; continue }
+      let l = text.lowercased()
+      if let r = l.range(of: n.name.lowercased()), hasMinor(String(l[l.index(r.lowerBound, offsetBy: -min(28, l.distance(from: l.startIndex, to: r.lowerBound)))..<r.lowerBound])) { npcs[i].minor = true }   // "der Waisenjunge Tom": the child word right before the name
+    }
+  }
+  /// children carry no harm states and are never marked dead
+  public mutating func shieldMinors() {
+    for i in npcs.indices where npcs[i].minor { npcs[i].zustand.removeAll { hasHarm($0) || $0 == "tot" }; npcs[i].tot = false }
   }
   /// dead stays dead: no presence sync may bring a corpse back
   public mutating func enforceDead() { for i in npcs.indices where npcs[i].tot { npcs[i].anwesend = false; if !npcs[i].zustand.contains("tot") { npcs[i].zustand.insert("tot", at: 0) } } }

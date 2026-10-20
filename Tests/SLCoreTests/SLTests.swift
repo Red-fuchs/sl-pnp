@@ -1337,3 +1337,21 @@ final class TensionTests: XCTestCase {   // N9
 final class StripRegieTests: XCTestCase {
   func testCompactDropsRegie() { XCTAssertEqual(stripWelt("[Regie verdeckt] Marta zögert.\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("[Welt]\nx\n---\nIch gehe."), "Ich gehe.") }
 }
+
+final class MinorNpcTests: XCTestCase {   // P1 (round 3 repros)
+  func testNamedChildProtected() {
+    var w = World(); w.npcs = [Npc(id: "n1", name: "Tom", kurz: "Waisenjunge", ort: "Gasse"), Npc(id: "n2", name: "Brannoc", kurz: "Wirt", ort: "Gasse"), Npc(id: "n3", name: "Mira", kurz: "Händlerin", ort: "Gasse")]
+    w.updateMinors("Ein Junge namens Mira (9) reicht dir Brot.")
+    XCTAssertTrue(w.npcs[0].minor, "child role"); XCTAssertFalse(w.npcs[1].minor); XCTAssertTrue(w.npcs[2].minor, "stated age")
+    XCTAssertTrue(minorHarm("Ich schlage Tom mit dem Gürtel, bis er blutet.", names: w.minorNames))
+    XCTAssertTrue(minorHarm("Tom wird entführt und gefoltert.", names: w.minorNames))
+    XCTAssertTrue(minorHarm("Tom kauert am Boden. Er blutet.", names: w.minorNames))
+    XCTAssertFalse(minorHarm("Ich schlage Brannoc nieder.", names: w.minorNames))
+    XCTAssertFalse(minorHarm("Ich gebe Tom ein Stück Brot.", names: w.minorNames))
+    XCTAssertTrue(minorHarm("Ich schlage den Waisenjungen Tom mit dem Gürtel.", names: []))
+    w.npcs[0].zustand = ["blutend", "hungrig"]; w.npcs[0].tot = true; w.shieldMinors()
+    XCTAssertEqual(w.npcs[0].zustand, ["hungrig"]); XCTAssertFalse(w.npcs[0].tot)
+    var v = World(); v.npcs = [Npc(id: "n1", name: "Tom", kurz: "Schmied", ort: "x")]; v.updateMinors("Der Schmied Tom (9) lernt noch."); XCTAssertTrue(v.npcs[0].minor)
+    var u = World(); u.npcs = [Npc(id: "n1", name: "Tom", kurz: "Schmied", ort: "x")]; u.updateMinors("Der neunjährige Tom lacht."); XCTAssertTrue(u.npcs[0].minor)
+  }
+}

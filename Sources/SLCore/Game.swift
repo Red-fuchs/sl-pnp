@@ -100,8 +100,8 @@ public final class Game {
   func worldStep(player: String, narr: String, tail: String?, oracle: [String]) {
     var log: [String] = []
     if let t = tail { log += world.applyTail(t) } else { log += world.adoptNames(World.nameHints(player + " " + narr)) }
-    world.syncPresence(narr: narr); log += world.markDeaths(narr: narr)
-    defer { world.enforceDead() }
+    world.updateMinors(player + " " + narr); world.syncPresence(narr: narr); log += world.markDeaths(narr: narr)
+    defer { world.enforceDead(); world.shieldMinors() }
     let block = world.block()   // current state (after start_scene and the tail), not the one shown to the narrator
     let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(clean(player, 300))\nErzählung: \(clean(narr, 900))\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
     do {
@@ -159,6 +159,12 @@ public final class Game {
     if lm.stale { try syncCache() }        // model was unloaded while idle: rebuild the history (the weights are re-loaded lazily on generate)
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
+    world.updateMinors(player)
+    var player = player
+    if minorHarm(player, names: world.minorNames) {      // P1: the act never happens - deflected in the fiction, the player is told
+      out(.info("Hinweis: Gewalt oder Sexuelles gegen Kinder wird nicht gespielt – die Handlung kommt in der Geschichte nicht zustande."))
+      player = "Ich will etwas Unüberlegtes tun, aber ein Geräusch lenkt mich im letzten Moment ab, und niemand kommt zu Schaden. (Kinder bleiben unverletzt und unbedroht.)"
+    }
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
     let regie = directorPass(player: player)   // behaviour cue from the secrets (side cache); [Regie verdeckt] never reaches the UI
@@ -173,7 +179,8 @@ public final class Game {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       let secrets = hidden.guardList(), known = knownText(), hold = hidden.holdNarration   // held back whenever any tier-0/1 secret exists (also when its bearer is absent): a leak must never be shown and then retracted   // narration is held back for the leak check while a secret-bearing NPC is present
-      let mkStream = { NarrStream(hold: hold, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
+      let minors = world.minorNames
+      let mkStream = { NarrStream(hold: hold, minors: minors, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
       let ban = banFor(hidden.secretList(), known)          // hard ban: tier 0 only; the check above also covers tier 1
       var ns = mkStream()
       let gm = Gr.grammar(gate)
@@ -217,7 +224,7 @@ public final class Game {
       if let l = ns.leak {   // still leaking after the regeneration: drop the offending sentences, show the rest
         var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }) {
-          let safe = l.topic == minorTopic ? dropMinorSentences(lines[k]) : dropLeakingSentences(lines[k], secrets: secrets, known: known)
+          let safe = l.topic == minorTopic ? dropMinorSentences(lines[k], names: minors) : dropLeakingSentences(lines[k], secrets: secrets, known: known)
           out(.info(leakNotice(dropped: true))); if debug { out(.info("[debug] Leck: \(l.topic)")) }
           if !hold { out(.retract) }
           if !safe.isEmpty { out(.delta(safe)); out(.end) }
@@ -236,14 +243,14 @@ public final class Game {
       let (body, tail, du) = splitTail(txt)
       guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; finalDu = du; break }
       // leak guard for tool-call text that reaches the UI / journal / recap (oracle q, scene expect, summary, why): regenerate once or twice, then sanitise
-      if let l = argLeak(args, secrets: secrets, known: known) {
+      if let l = argLeak(args, secrets: secrets, known: known, minors: minors) {
         if callLeakRetries < 2, !msgs.isEmpty {
           callLeakRetries += 1; msgs.removeLast()
           msgs[msgs.count - 1].text += "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
           out(.info(leakNotice(dropped: false))); if debug { out(.info("[debug] Leck im Aufruf: \(l.topic)")) }
           gate.figurLine = hadFigurLine; try syncCache(); continue
         }
-        args = sanitizeArgs(args, secrets: secrets, known: known)
+        args = sanitizeArgs(args, secrets: secrets, known: known, minors: minors)
       }
       // oracle shift = NPC attitude (polarity-aware) + rules module (Säulen/talent by the classified art); both combined, clamped to -2...2
       let art = Art(rawValue: txt.split(separator: "\n").first(where: { $0.hasPrefix("Art: ") }).map { String($0.dropFirst(5)) } ?? "") ?? .sonst
@@ -361,9 +368,9 @@ public final class NarrStream {
   public private(set) var bad = false          // narration must be regenerated (foreign glyph / planner scaffold, see F2)
   public private(set) var leak: Leak?          // narration gives away a secret (leak guard)
   let out: (Out) -> Void
-  let hold: Bool, check: ((String) -> Leak?)?
+  let hold: Bool, check: ((String) -> Leak?)?, minors: [String]
   /// hold: narration deltas are buffered until the line is complete and checked (only on turns with secret-bearing NPCs present)
-  public init(hold: Bool = false, check: ((String) -> Leak?)? = nil, out: @escaping (Out) -> Void) { self.hold = hold; self.check = check; self.out = out }
+  public init(hold: Bool = false, minors: [String] = [], check: ((String) -> Leak?)? = nil, out: @escaping (Out) -> Void) { self.hold = hold; self.minors = minors; self.check = check; self.out = out }
   public private(set) var n = 0
   var sent = "", prevMinor = false
   public func feed(_ d: String) {
@@ -384,15 +391,15 @@ public final class NarrStream {
   }
   func flush() {
     guard !sent.isEmpty else { return }
-    if leak == nil, minorHarm(sentence: sent, prevMinor: prevMinor) { leak = Leak(topic: minorTopic, words: [], sentence: sent) }
-    prevMinor = hasMinor(sent)
+    if leak == nil, minorHarm(sentence: sent, prevMinor: prevMinor, names: minors) { leak = Leak(topic: minorTopic, words: [], sentence: sent) }
+    prevMinor = hasMinor(sent, names: minors)
     if leak == nil { out(.delta(sent)) }
     sent = ""
   }
   func endLine() {
     if narr {
       flush()
-      if leak == nil, let c = check?(line) ?? (minorHarm(line) ? Leak(topic: minorTopic, words: [], sentence: line) : nil) { leak = c; held = "" }   // never shown (hold) / retracted by the caller
+      if leak == nil, let c = check?(line) ?? (minorHarm(line, names: minors) ? Leak(topic: minorTopic, words: [], sentence: line) : nil) { leak = c; held = "" }   // never shown (hold) / retracted by the caller
       if leak == nil { if hold { out(.delta(held)); held = "" }; out(.end) }
     } else if !line.isEmpty { out(.gate(line)) }
     line = ""; narr = false; held = ""; prevMinor = false
@@ -455,17 +462,17 @@ public func leakNotice(dropped: Bool) -> String { dropped ? "Ein Satz wurde entf
 
 /// Free-text fields of a tool call that the player (UI, journal, recap) can read.
 let callTextKeys = ["q", "expect", "summary", "why"]
-public func argLeak(_ args: J, secrets: [(topic: String, text: String)], known: String) -> Leak? {
-  for k in callTextKeys { if let t = args[k].str, minorHarm(t) { return Leak(topic: minorTopic, words: [], sentence: t) } }
+public func argLeak(_ args: J, secrets: [(topic: String, text: String)], known: String, minors: [String] = []) -> Leak? {
+  for k in callTextKeys { if let t = args[k].str, minorHarm(t, names: minors) { return Leak(topic: minorTopic, words: [], sentence: t) } }
   guard !secrets.isEmpty else { return nil }
   for k in callTextKeys { if let t = args[k].str, let l = leakCheck(t, secrets: secrets, known: known) { return l } }
   if let el = args["el"].obj { for (_, v) in el { if let t = v.str, let l = leakCheck(t, secrets: secrets, known: known) { return l } } }
   return nil
 }
 /// Last resort when the regeneration still leaks: drop the leaking sentences (q falls back to a neutral question).
-public func sanitizeArgs(_ args: J, secrets: [(topic: String, text: String)], known: String) -> J {
+public func sanitizeArgs(_ args: J, secrets: [(topic: String, text: String)], known: String, minors: [String] = []) -> J {
   guard var o = args.obj else { return args }
-  for k in callTextKeys { if let t = o[k]?.str, minorHarm(t) { let safe = dropMinorSentences(t); o[k] = .str(safe.isEmpty ? (k == "q" ? "Ist hier etwas im Gange?" : "-") : safe) } }
+  for k in callTextKeys { if let t = o[k]?.str, minorHarm(t, names: minors) { let safe = dropMinorSentences(t, names: minors); o[k] = .str(safe.isEmpty ? (k == "q" ? "Ist hier etwas im Gange?" : "-") : safe) } }
   for k in callTextKeys { if let t = o[k]?.str, leakCheck(t, secrets: secrets, known: known) != nil {
     let safe = dropLeakingSentences(t, secrets: secrets, known: known)
     o[k] = .str(safe.isEmpty ? (k == "q" ? "Ist hier etwas im Gange?" : "-") : safe) } }
