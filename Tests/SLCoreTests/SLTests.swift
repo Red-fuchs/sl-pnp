@@ -753,6 +753,15 @@ final class ReviewV6HoldTests: XCTestCase {
   }
 }
 
+final class ReviewV6NoticeTests: XCTestCase {
+  // MED 7
+  func testNoticeNamesNobody() {
+    for d in [false, true] { let t = leakNotice(dropped: d); XCTAssertFalse(t.contains("Geheimnis")); XCTAssertFalse(t.contains("Zubeir")); XCTAssertFalse(t.contains("Hinweis")) }
+    let src = try? String(contentsOfFile: #filePath.replacingOccurrences(of: "Tests/SLCoreTests/SLTests.swift", with: "Sources/SLCore/Game.swift"), encoding: .utf8)
+    XCTAssertFalse(src?.contains("angedeutet: \\(l.topic)") ?? true)                                  // the topic string is no longer interpolated into a player-visible .info
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

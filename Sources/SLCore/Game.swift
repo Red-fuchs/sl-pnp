@@ -177,7 +177,7 @@ public final class Game {
           if let l = ns.leak, !msgs.isEmpty {   // leak guard: regenerate once with a "do not reveal" note (kept in the prompt text, stripped from the UI)
             // neutral note only (naming the forbidden term primes the model to use it); the decode-time ban is active for the retry
             msgs[msgs.count - 1].text += "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
-            out(.info("Erzählung verworfen (Geheimnis angedeutet: \(l.topic)) – neuer Versuch"))
+            out(.info(leakNotice(dropped: false))); if debug { out(.info("[debug] Leck: \(l.topic)")) }
           } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
           ns.discard(); metaRetry = true
           out(.retract)
@@ -198,7 +198,7 @@ public final class Game {
         var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }) {
           let safe = dropLeakingSentences(lines[k], secrets: secrets, known: known)
-          out(.info("Satz entfernt (Geheimnis: \(l.topic))"))
+          out(.info(leakNotice(dropped: true))); if debug { out(.info("[debug] Leck: \(l.topic)")) }
           if !hold { out(.retract) }
           if !safe.isEmpty { out(.delta(safe)); out(.end) }
           lines[k] = safe.isEmpty ? "Die Szene verharrt für einen Augenblick." : safe; txt = lines.joined(separator: "\n"); truncated = true
@@ -375,3 +375,6 @@ public func isMetaNarration(_ line: String) -> Bool {
   if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
   return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
 }
+
+/// UI/SSE text for a guarded narration: never names the bearer or the topic (the info line is replayed to late joiners and shown to the player).
+public func leakNotice(dropped: Bool) -> String { dropped ? "Ein Satz wurde entfernt." : "Erzählung verworfen – neuer Versuch" }
