@@ -40,6 +40,7 @@ public struct Gate {
   public var figurLine = false     // first turn of a session: head starts with "Spielfigur: <text>|-"
   public var mustAsk = false       // >=1 quiet turn in this scene: no narration-only head, ask the oracle (or end the scene)
   public var figurNames: [String] = []   // name candidates for the player character (from the name generator); the model picks one
+  public var noAsk = false         // W-question via /frage: the oracle only answers yes/no -> no ask_oracle this turn
   public var needFigur = false     // no player character yet: the narration must end with a "Du: Name (Rolle, Merkmal)" slot
   public var selfQ = false         // self-question (wer bin ich ...): short narration, no oracle, no scene change
   public var endNarr = false       // /ende turn: narration allowed after end_scene (else start_scene only)
@@ -86,7 +87,7 @@ public enum Gr {
   }
   public static var delta: Grammar { Grammar(.js(DELTA_SCHEMA)) }
 
-  static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks }
+  static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks && !t.noAsk }
 
   public static func grammar(_ t: Gate) -> Grammar {
     if t.head {

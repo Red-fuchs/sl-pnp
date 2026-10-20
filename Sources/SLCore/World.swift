@@ -135,7 +135,10 @@ public struct World: Codable, Equatable {
   /// "Aether: grauer Mann, 40" | "Aether, grauer Mann" | free text -> name?, kurz
   public static func parseFigur(_ t: String) -> (String?, String) {
     let s = t.trimmingCharacters(in: .whitespacesAndNewlines)
-    if let i = s.firstIndex(of: ":"), s[..<i].split(separator: " ").count <= 3 { return (clean(String(s[..<i]), 40), clean(String(s[s.index(after: i)...]), 140)) }
+    if let i = s.firstIndex(of: ":"), s[..<i].split(separator: " ").count <= 3 {
+      let n = clean(String(s[..<i]), 40), k = clean(String(s[s.index(after: i)...]), 140)
+      return (n.isEmpty ? nil : n, k)          // "/figur : nur Beschreibung" has no name; "Hans: " has a name and no description
+    }
     if let i = s.firstIndex(of: ","), s[..<i].split(separator: " ").count == 1, s.first?.isUppercase == true { return (clean(String(s[..<i]), 40), clean(String(s[s.index(after: i)...]), 140)) }
     return (nil, clean(s, 140))
   }

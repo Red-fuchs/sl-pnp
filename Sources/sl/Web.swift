@@ -6,11 +6,13 @@ import Schicksal
 final class Hub {
   var conns: [NWConnection] = []
   let q = DispatchQueue(label: "hub")
-  func add(_ c: NWConnection) { q.async { self.conns.append(c) } }
+  var recent: [Data] = []        // info/progress/world/tool events replayed to late joiners (a page reload used to lose them)
+  func add(_ c: NWConnection) { q.async { self.recent.forEach { c.send(content: $0, completion: .contentProcessed { _ in }) }; self.conns.append(c) } }
   func send(_ o: [String: Any]) {
     guard let d = try? JSONSerialization.data(withJSONObject: o), let s = String(data: d, encoding: .utf8) else { return }
     let b = Data("data: \(s)\n\n".utf8)
     q.async {
+      if let t = o["t"] as? String, ["info", "world", "progress", "tool", "event"].contains(t) { self.recent.append(b); if self.recent.count > 30 { self.recent.removeFirst() } }
       for c in self.conns { c.send(content: b, completion: .contentProcessed { e in if e != nil { self.q.async { self.conns.removeAll { $0 === c } } } }) }
     }
   }
@@ -121,7 +123,8 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       reply(c, "202 Accepted", "text/plain", Data("ok".utf8))
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
         hub.send(["t": "user", "text": text])
-        job { try runner.handle(text) }
+        if Cmd.parse(text) == .quit { hub.send(["t": "info", "text": "/quit beendet nur die CLI – den Web-Server beendest du im Terminal (Ctrl-C)."]) }   // never kill the server over HTTP
+        else { job { try runner.handle(text) } }
       }
     default: reply(c, "404 Not Found", "text/plain", Data("nope".utf8))
     }

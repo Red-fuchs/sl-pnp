@@ -127,7 +127,7 @@ public final class Game {
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
 
   /// One player turn. `pre`: already-rolled oracle result (from /frage) -> skips the gate head.
-  public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false) throws {
+  public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false, noOracle: Bool = false) throws {
     if lm.stale { try syncCache() }        // model was unloaded while idle: rebuild the history (the weights are re-loaded lazily on generate)
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
@@ -137,7 +137,7 @@ public final class Game {
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
     var done = false
@@ -238,7 +238,9 @@ public func parseCall(_ txt: String, firstScene: Bool = false) -> (String, J)? {
   var args = (try? J.parse(js)) ?? .obj([:])
   if name == "start_scene", firstScene, var o = args.obj { o["first"] = true; args = .obj(o) }
   if name == "ask_oracle", var o = args.obj {
-    o["q"] = .str(lines.last { $0.hasPrefix("Frage: ") }.map { String($0.dropFirst(7)) } ?? "?"); args = .obj(o)
+    // the call's own q wins (the model sometimes pre-writes the ANSWER into its "Frage:" line: "Nein (Der Tod ist unmittelbar)"); the Frage line is the fallback
+    let own = o["q"]?.str?.trimmingCharacters(in: .whitespaces) ?? ""
+    o["q"] = .str(own.count >= 5 ? own : (lines.last { $0.hasPrefix("Frage: ") }.map { String($0.dropFirst(7)) } ?? "?")); args = .obj(o)
   }
   return (name, clip(args))
 }

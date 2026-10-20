@@ -58,7 +58,7 @@ final class DispatchTests: XCTestCase {
     var r = e.call(n, a); XCTAssertEqual(r["outcome"].str, "erwartet", "\(r)"); XCTAssertTrue(e.st.open)
     XCTAssertEqual(parseCall("<start_scene>{\"expect\":\"x\"}</start_scene>")!.1["first"], .null)
     (n, a) = parseCall("Frage: Ist jemand da?\n<ask_oracle>{\"q\":\"andere\",\"odds\":1}</ask_oracle>")!
-    XCTAssertEqual(a["q"].str, "Ist jemand da?")  // q := Frage line
+    XCTAssertEqual(a["q"].str, "andere")   // the call's own q wins; the Frage line is only the fallback (F7)
     r = e.call(n, a); XCTAssertNotNil(r["answer"].str, "\(r)"); XCTAssertEqual(e.st.q, 1)
     XCTAssertTrue(fmtResult(n, r).hasPrefix("[Orakel] Antwort: "))
     XCTAssertFalse(fmtResult(n, r).contains("roll")); XCTAssertFalse(fmtResult(n, r).contains("step"))
@@ -430,6 +430,32 @@ final class DirectorTests: XCTestCase {   // secret-aware director + leak guard 
     }
     XCTAssertTrue(try ok("Regie: Zubeir weicht aus und blickt zum Brunnen")); XCTAssertTrue(try ok("Regie: Zubeir weicht aus und blickt zum Brunnen\nRegie: Der Händler schweigt auffällig"))
     XCTAssertFalse(try ok("zubeir weicht aus")); XCTAssertFalse(try ok("Regie: zu kurz"))
+  }
+}
+
+final class MinorFixTests: XCTestCase {
+  func testCommandBoundaries() {
+    XCTAssertEqual(Cmd.parse("/fragen was"), .unknown("/fragen was")); XCTAssertEqual(Cmd.parse("/frage was"), .frage("was", 0)); XCTAssertEqual(Cmd.parse("/frage+2 ist er da"), .frage("ist er da", 2)); XCTAssertEqual(Cmd.parse("/frage"), .frage("", 0))
+    XCTAssertEqual(Cmd.parse("/figuren x"), .unknown("/figuren x")); XCTAssertEqual(Cmd.parse("/neuer weg"), .unknown("/neuer weg"))
+  }
+  func testFigurWithoutNameOrDescription() {
+    let a = World.parseFigur(": nur Beschreibung"); XCTAssertNil(a.0); XCTAssertEqual(a.1, "nur Beschreibung")
+    let b = World.parseFigur("Hans: "); XCTAssertEqual(b.0, "Hans"); XCTAssertEqual(b.1, "")
+    var w = World(); w.setFigur(": nur Beschreibung"); XCTAssertFalse(w.block().contains("Du = \n")); XCTAssertTrue(w.block().contains("Du = nur Beschreibung"))
+  }
+  func testOracleLogsTheRealCall() {
+    let (_, a) = parseCall("Frage: Nein (Der Tod ist unmittelbar)\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Ist Ithror tot?\",\"odds\":0}</ask_oracle>")!
+    XCTAssertEqual(a["q"].str, "Ist Ithror tot?")                                           // not the pre-written answer from the Frage line
+    let (_, b) = parseCall("Frage: Lebt der Wirt noch?\n<ask_oracle>{\"q\":\"\",\"odds\":0}</ask_oracle>")!; XCTAssertEqual(b["q"].str, "Lebt der Wirt noch?")   // fallback
+  }
+  func testNoAskForWQuestionTurns() {
+    var g = Gate(); g.head = true; g.open = true; g.noAsk = true
+    XCTAssertFalse(Gr.grammar(g).tag.contains("ask_oracle")); XCTAssertTrue(Gr.grammar(g).tag.contains("Werkzeug: nein"))   // /frage Wer…: said "normaler Zug", the gate must not fire the oracle
+    g.noAsk = false; XCTAssertTrue(Gr.grammar(g).tag.contains("ask_oracle"))
+  }
+  func testNewSessionKeepsName() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-n-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: root.appendingPathComponent("mein-spiel-2"), withIntermediateDirectories: true)
+    XCTAssertEqual(nextSessionName(base: "mein-spiel", root: root), "mein-spiel-3"); XCTAssertEqual(nextSessionName(base: "mein-spiel-2", root: root), "mein-spiel-3"); XCTAssertEqual(nextSessionName(base: "anders", root: root), "anders-2")
   }
 }
 

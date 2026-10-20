@@ -101,7 +101,7 @@ public final class Runner {
   /// they go in as a normal player turn instead (the gate then decides whether/how to ask a yes/no question).
   public func frage(_ q: String, odds: Int) throws {
     guard game.eng.st.open else { sink(.info("Keine offene Szene – beschreibe zuerst deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).")); return }
-    if isWQuestion(q) { sink(.info("W-Frage: wird als normaler Zug gespielt (das Orakel beantwortet nur Ja/Nein-Fragen).")); try player(q); return }
+    if isWQuestion(q) { sink(.info("W-Frage: wird als normaler Zug gespielt (das Orakel beantwortet nur Ja/Nein-Fragen).")); session.log("\n**Spieler:** \(q)\n"); try run { try game.turn(q, noOracle: true) }; return }
     let r = game.eng.call("ask_oracle", ["q": .str(q), "odds": .int(odds)])
     if r["error"].isNull == false { sink(.info("Fehler: \(r["error"].str ?? "")")); return }
     sink(.tool("ask_oracle", ["q": .str(q), "odds": .int(odds)], r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
@@ -165,8 +165,7 @@ public final class Runner {
       try game.syncCache(); try session.save(game); refresh()
       sink(.info("Spielfigur: \(f.isEmpty ? "-" : f)"))
     case .neu(let st):
-      let f = DateFormatter(); f.dateFormat = "yyyyMMdd-HHmmss"
-      session = try Session(name: "sl-" + f.string(from: Date()))
+      session = try Session(name: nextSessionName(base: session.name), root: session.dir.deletingLastPathComponent())   // keeps the --name the user chose
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
     case .weltgen(let a): try weltgen(a)
@@ -198,7 +197,7 @@ public enum Cmd: Equatable {
     if t == "/status" { return .status }
     if t == "/welt" { return .welt }
     if t.hasPrefix("/welt ") { return .weltgen(arg(6)) }
-    if t.hasPrefix("/frage") {
+    if t == "/frage" || t.hasPrefix("/frage ") || t.range(of: #"^/frage[+-]\d(\s|$)"#, options: .regularExpression) != nil {
       var rest = String(t.dropFirst(6)), odds = 0
       if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }
       return .frage(rest.trimmingCharacters(in: .whitespaces), odds)
@@ -230,4 +229,13 @@ public func displayStory(_ msgs: [Msg]) -> [[String: String]] {
     }
   }
   return r
+}
+
+/// /neu: "<name>-2", "<name>-3", ... (next free) instead of a timestamp outside the chosen --name.
+public func nextSessionName(base: String, root: URL = sessionsRoot) -> String {
+  var b = base
+  if let r = b.range(of: #"-\d+$"#, options: .regularExpression) { b = String(b[..<r.lowerBound]) }
+  var n = 2
+  while FileManager.default.fileExists(atPath: root.appendingPathComponent("\(b)-\(n)").path) { n += 1 }
+  return "\(b)-\(n)"
 }
