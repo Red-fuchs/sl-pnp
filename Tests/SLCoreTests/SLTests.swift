@@ -390,10 +390,24 @@ final class WorldGenTests: XCTestCase {
     XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty)                                    // player elsewhere: nothing
     w.ort = "Brunnentor"; w.npcs[0].anwesend = true
     let r = h.reveal(&w, oracle: [], talked: [])
-    XCTAssertEqual(r.count, 2); XCTAssertTrue(r.contains { $0.contains("panscht") }); XCTAssertTrue(r.contains { $0.contains("Mörtel") })
+    XCTAssertEqual(r.count, 1); XCTAssertTrue(r[0].contains("panscht"))                          // pacing: one reveal per turn
+    let r2 = h.reveal(&w, oracle: [], talked: [])
+    XCTAssertEqual(r2.count, 1); XCTAssertTrue(r2[0].contains("Mörtel"))
     XCTAssertTrue(w.block().contains("bekannt: Er panscht das Wasser mit Salzlake")); XCTAssertTrue(w.block().contains("? Wer hat die Zisterne versiegelt (1 Hinweis)"))
     XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty)                                    // each fact only once
     XCTAssertFalse(w.block(full: true).contains("Beweise")); XCTAssertFalse(w.block(full: true).contains("Salzlake") && !w.block().contains("bekannt"))
+  }
+  func testClueHeldByNpcNeedsContact() {
+    var w = World(); w.ort = "Hof"; w.addNpc(name: "Ida", kurz: "Magd", ort: "Hof"); w.npcs[0].anwesend = true
+    w.apply(["strang": [["titel": "Wer stahl den Schlüssel", "hinweis": "a b c"]]]); w.straenge[0].hinweise = []
+    var h = HiddenWorld(); h.clues = [Clue(thread: "Wer stahl den Schlüssel", text: "Ida sah den Dieb", at: "Ida")]
+    XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty)                                   // present is not enough
+    XCTAssertEqual(h.reveal(&w, oracle: [], talked: ["Ida"]).count, 1)                             // spoken to / named
+  }
+  func testFigurNameFilter() {
+    XCTAssertTrue(okFigurName("Jaro", "Matrose, vernarbte Hand")); XCTAssertTrue(okFigurName("Kira Voss", "Söldnerin, Narbe"))
+    for bad in ["Dein Name", "Die Spielfigur", "Der Fremde", "Name unbekannt", "Spielfigur"] { XCTAssertFalse(okFigurName(bad, "Schreiber, jung"), bad) }
+    XCTAssertFalse(okFigurName("Jaro", "Name ist unbekannt")); XCTAssertFalse(okFigurName("Jaro", "[Merkmal]"))
   }
   func testRevealTypes() {
     var w = World(); w.ort = "Hof"; w.addNpc(name: "Ida", kurz: "Magd", ort: "Hof"); w.addNpc(name: "Bork", kurz: "Wirt", ort: "Hof")

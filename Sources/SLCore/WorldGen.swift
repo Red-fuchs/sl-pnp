@@ -309,6 +309,8 @@ extension Game {
   /// The harness decides: when a hidden fact's condition is met it moves into `bekannt` / a thread's hints and is injected ONCE as
   /// "[Hinweis verdeckt] …" into the next narrator turn. Returns the lines.
   public func genReveals(oracle: [(q: String, a: String)], talked: [String]) -> [String] { hidden.reveal(&world, oracle: oracle, talked: talked) }
+  /// names of NPCs the player named in this turn's line (counts as "spoken to" for clue reveals)
+  func namedBy(_ text: String) -> [String] { let ids = world.mentioned(in: text); return world.npcs.filter { ids.contains($0.id) }.map(\.name) }
 }
 
 extension HiddenWorld {
@@ -331,14 +333,17 @@ extension HiddenWorld {
       world.npcs[i].bekannt.append(cutWords(h.geheimnis, 10)); if world.npcs[i].bekannt.count > 3 { world.npcs[i].bekannt.removeFirst() }
       lines.append("\(name): \(h.geheimnis)")
     }
+    if lines.count >= 1 { return lines }                       // pacing: at most one reveal per turn
     for k in clues.indices where !clues[k].found {
       let c = clues[k]
-      let here = world.samePlace(world.ort, c.at) || world.npcs.contains { $0.anwesend && norm($0.name) == norm(c.at) }
+      // a clue at a place needs the player there; a clue held by an NPC needs that NPC to be spoken to / named (not mere presence)
+      let here = world.samePlace(world.ort, c.at) || talked.contains { norm($0) == norm(c.at) }
       guard here, let ti = world.straenge.firstIndex(where: { $0.titel == c.thread }), world.straenge[ti].stufe != "antwort" else { continue }
       clues[k].found = true
       world.straenge[ti].hinweise.append(c.text); if world.straenge[ti].hinweise.count > 3 { world.straenge[ti].hinweise.removeFirst() }
       world.straenge[ti].stufe = "hinweise"; world.straenge[ti].stand = cutWords(c.text, 6)
       lines.append("Hinweis zu '\(c.thread)': \(c.text)")
+      break                                                    // one per turn
     }
     return lines
   }

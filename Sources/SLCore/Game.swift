@@ -89,7 +89,7 @@ public final class Game {
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
     genLazy()
-    let rv = genReveals(oracle: turnQA, talked: [])
+    let rv = genReveals(oracle: turnQA, talked: namedBy(player))
     if !rv.isEmpty { pendingHint = rv.joined(separator: " "); out(.world("enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
@@ -193,7 +193,7 @@ public final class Game {
       let t = String(d.dropFirst(4)).trimmingCharacters(in: .whitespaces)
       if let o = t.firstIndex(of: "("), let c = t.lastIndex(of: ")"), o < c {
         let n = clean(String(t[..<o]), 40), k = clean(String(t[t.index(after: o)..<c]), 80)
-        if okName(n) { figur = "\(n): \(k)"; world.setFigur(figur!); figurChanged = true; out(.world("Spielfigur: \(figur!)")) }
+        if okFigurName(n, k) { figur = "\(n): \(k)"; world.setFigur(figur!); figurChanged = true; out(.world("Spielfigur: \(figur!)")) }
       }
     }
     if done { worldStep(player: player, narr: finalNarr, tail: finalTail, oracle: oracle) }
@@ -294,4 +294,12 @@ public func salvageNarration(_ partial: String) -> String? {
   while let l = lines.last, l.hasPrefix("Du: ") || l.hasPrefix("Figuren:") { lines.removeLast() }
   guard let narr = lines.last, narr.range(of: "^" + Gr.narrPattern + "$", options: .regularExpression) != nil else { return nil }
   return lines.joined(separator: "\n")
+}
+
+/// The narrator must give the player character a real name: reject articles, "Spielfigur", "Dein Name", "unbekannt" evasions.
+public func okFigurName(_ n: String, _ role: String) -> Bool {
+  guard okName(n), let f = n.split(separator: " ").first?.lowercased() else { return false }
+  if ["die", "der", "das", "dein", "deine", "mein", "meine", "ein", "eine", "name", "ihr", "sie", "er", "spielfigur", "figur"].contains(f) { return false }
+  if norm(n).contains("spielfigur") || norm(n).contains("name") { return false }
+  return !norm(role).contains("unbekannt") && !norm(role).contains("name") && !role.contains("[")
 }
