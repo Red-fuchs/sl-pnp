@@ -158,7 +158,7 @@ public final class LM {
       if m.needsApply || !blk.isEmpty || !sft.isEmpty {
         // repetition penalty on content words, only while the grammar leaves free text (narration), also against the previous turn ("Die Treppe" x3)
         let free = !m.needsApply || m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
-        l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [], block: blk, soft: sft)
+        l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [], block: banWhenFree(blk, free: free), soft: banWhenFree(sft, free: free))   // bans only in free text: inside enums/const tails the single legal token must stay legal
       }
       st.maskS += Date().timeIntervalSince(tm)
       let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))

@@ -796,6 +796,28 @@ final class ReviewV6ArgLeakTests: XCTestCase {
   }
 }
 
+final class ReviewV6BanGatingTests: XCTestCase {
+  // MED 10
+  func testBanOnlyInFreeText() {
+    let b = BanSet([[5, 6], [7]]); let blk = b.blocked(after: [5])
+    XCTAssertEqual(banWhenFree(blk, free: true), [6, 7]); XCTAssertTrue(banWhenFree(blk, free: false).isEmpty)
+  }
+  /// real grammar: a name enum whose only legal continuation is a banned token must still be sampleable (state is not free)
+  func testNeverAllMaskedInEnum() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: Grammar(.seq([.s("Ort: "), GenGr.en(["Salzlake"])])).tag)
+    for id in t.encode(text: "Ort: Salz", addSpecialTokens: false) { _ = try c.computeMask(); _ = try c.commitToken(Int32(id)) }
+    let m = try c.computeMask(); let allowed = (0..<gt.vocabSize).filter { (m.mask[$0 / 32] >> Int32($0 % 32)) & 1 == 1 }
+    let ban = buildBan(terms: ["Salzlake"], encode: { t.encode(text: $0, addSpecialTokens: false) })
+    let free = m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
+    XCTAssertFalse(free); XCTAssertFalse(allowed.isEmpty)
+    let blk = banWhenFree(ban.blocked(after: t.encode(text: " Salz", addSpecialTokens: false)), free: free)
+    XCTAssertTrue(Set(allowed).subtracting(blk).count == allowed.count)                              // the legal continuation survives
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

@@ -241,3 +241,7 @@ public func buildBan(terms: [String], encode: (String) -> [Int], cap: Int = 600)
     if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs) } } }
   return BanSet(seqs)
 }
+
+/// The decode-time ban applies only while the grammar leaves free text; where the grammar allows few tokens (enums, names, fixed tails) a banned
+/// token may be the ONLY legal one - masking it would give all -inf logits (NaN sampling -> "Fehler" for the whole turn).
+public func banWhenFree(_ blocked: Set<Int>, free: Bool) -> Set<Int> { free ? blocked : [] }
