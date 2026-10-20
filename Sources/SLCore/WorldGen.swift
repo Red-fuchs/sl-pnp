@@ -378,6 +378,12 @@ extension Game {
 }
 
 extension HiddenWorld {
+  /// Older sessions: clue locations / place refs spelled differently from the world's place name ("Die Krypta" vs "Krypta") are rewritten to the world's spelling.
+  public mutating func canonPlaces(_ names: [String]) {
+    func canon(_ s: String) -> String { names.first(where: { key($0) == key(s) }) ?? s }
+    for i in clues.indices { clues[i].at = canon(clues[i].at) }
+    for k in npcs.keys where npcs[k]!.typ == "ort_betreten" { npcs[k]!.ref = canon(npcs[k]!.ref) }
+  }
   /// The harness decides: when a hidden fact's condition is met it moves into `bekannt` / a thread's hints and is injected ONCE as
   /// "[Hinweis verdeckt] …" into the next narrator turn. Returns the lines.
   public mutating func reveal(_ world: inout World, oracle: [(q: String, a: String)], talked: [String]) -> [String] {

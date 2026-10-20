@@ -1247,3 +1247,16 @@ final class GrammarTests: XCTestCase {
 }
 
 
+
+final class PlaceKeyTests: XCTestCase {   // N2
+  func testKeyAndMigration() {
+    var w = World(); w.ort = "Krypta unter der Kirche"
+    XCTAssertTrue(w.samePlace("Die Krypta unter der Kirche", "krypta  unter der Kirche"))
+    XCTAssertTrue(w.samePlace("Zum Grünen Hirsch", "Gruenen hirsch".replacingOccurrences(of: "ue", with: "ü")))
+    XCTAssertFalse(w.samePlace("Die Krypta", "Die Kirche"))
+    var h = HiddenWorld(); h.clues = [Clue(thread: "t", text: "x", at: "Die Krypta")]; var n = HiddenNpc(); n.typ = "ort_betreten"; n.ref = "die krypta"; h.npcs["Bruno"] = n
+    h.canonPlaces(["Krypta", "Marktplatz"])
+    XCTAssertEqual(h.clues[0].at, "Krypta"); XCTAssertEqual(h.npcs["Bruno"]!.ref, "Krypta")
+    w.ort = "Krypta"; XCTAssertTrue(w.samePlace(w.ort, "Die Krypta"))
+  }
+}

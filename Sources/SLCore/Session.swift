@@ -55,6 +55,7 @@ public final class Session {
       if var x = try? JSONDecoder().decode(World.self, from: d) { x.repairText(); w = x }
       else { let bak = worldURL.appendingPathExtension("bak"); try? FileManager.default.removeItem(at: bak); try? FileManager.default.moveItem(at: worldURL, to: bak); warning = "world.json unlesbar - Welt leer neu gestartet, Original: \(bak.lastPathComponent)" }
     }
+    hidden.canonPlaces(Array(w.orte.keys) + Array(w.gen.orte.keys))
     return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)
   }
   public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world, g.hidden) }

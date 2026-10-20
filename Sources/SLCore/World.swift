@@ -49,6 +49,13 @@ public struct Strang: Codable, Equatable {
 }
 
 let haltungWort = [-2: "feindlich", -1: "misstrauisch", 0: "", 1: "freundlich", 2: "loyal"]
+/// One identity key for place names (hidden refs, clue locations, world, visits): case, umlauts/ß, whitespace and a leading article do not matter.
+func key(_ s: String) -> String {
+  var t = s.lowercased().folding(options: [.diacriticInsensitive], locale: nil).replacingOccurrences(of: "ß", with: "ss")
+  t = t.split(whereSeparator: { $0.isWhitespace }).joined(separator: " ")
+  for a in ["der ", "die ", "das ", "dem ", "den ", "des ", "zum ", "zur ", "am ", "im ", "ins ", "in der ", "in die ", "im "] where t.hasPrefix(a) && t.count > a.count + 2 { t.removeFirst(a.count); break }
+  return t
+}
 func norm(_ s: String) -> String { s.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) }
 func tokens(_ s: String) -> [String] { s.lowercased().split(whereSeparator: { !$0.isLetter }).map(String.init).filter { $0.count >= 3 } }
 /// cut at a word boundary
@@ -246,7 +253,7 @@ public struct World: Codable, Equatable {
       if present { npcs[i].ort = ort } else if npcs[i].ort == nil || samePlace(npcs[i].ort, ort) { npcs[i].ort = npcs[i].ort ?? ort }
     }
   }
-  func samePlace(_ a: String?, _ b: String?) -> Bool { guard let a = a.map(norm), let b = b.map(norm), !a.isEmpty, !b.isEmpty else { return false }; return a == b }
+  func samePlace(_ a: String?, _ b: String?) -> Bool { guard let a = a.map(key), let b = b.map(key), !a.isEmpty, !b.isEmpty else { return false }; return a == b }
 
   /// Narrator tail `Figuren: Marta (Wirtin), Bork` -> presence + new characters. "-" changes nothing.
   @discardableResult
