@@ -65,7 +65,16 @@ public struct DreiSaeulen: Regelwerk {
   }
 }
 
-public func regelwerk(_ id: String) -> Regelwerk { id == "saeulen" ? DreiSaeulen() : Frei() }
+/// the user's own rules (notes/RULES-schicksalsschlag.md): the maths lives in SchicksalRules.swift / Party.swift, this module only plugs into the shared hooks
+public struct SchicksalRegeln: Regelwerk {
+  public init() {}
+  public let id = "schicksal", titel = "Schicksalsschlag (d100)"
+  public func oddsShift(art: Art, pc: PCSheet, input: String) -> Int { 0 }
+  public func spurBonus(art: Art, pc: PCSheet, tier: Int) -> Int { art == .wissen ? 1 : 0 }
+  public func haltungDelta(_ d: Int, art: Art, pc: PCSheet) -> Int { d }
+  public func progress(onThreadSolved pc: PCSheet, art: Art?) -> PCSheet { pc }
+}
+public func regelwerk(_ id: String) -> Regelwerk { if id == "saeulen" { return DreiSaeulen() }; if id == "schicksal" { return SchicksalRegeln() }; return Frei() }
 /// oracle shift = NPC-attitude shift + rules shift, clamped to the engine's range
 public func combinedShift(haltung: Int?, regel: Int) -> Int? {
   let t = (haltung ?? 0) + regel; return haltung == nil && regel == 0 ? nil : max(-2, min(2, t))

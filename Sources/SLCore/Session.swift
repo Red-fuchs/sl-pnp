@@ -69,7 +69,7 @@ public final class Session {
     hidden.canonPlaces(Array(w.orte.keys) + Array(w.gen.orte.keys))
     return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)
   }
-  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world, g.hidden) }
+  public func save(_ g: Game) throws { g.world.party = g.partyStore.all; try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world, g.hidden) }
   public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0, _ world: World = World(), _ hidden: HiddenWorld = HiddenWorld()) throws {
     if hidden != HiddenWorld() { let he = JSONEncoder(); he.outputFormatting = [.sortedKeys, .prettyPrinted]; try he.encode(hidden).write(to: hiddenURL, options: .atomic) }
     let enc = JSONEncoder(); enc.outputFormatting = [.sortedKeys, .prettyPrinted]

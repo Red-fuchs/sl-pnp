@@ -18,23 +18,36 @@ final class Hub {
   }
 }
 
-func jsonOut(_ o: Out) -> [String: Any]? {
+/// CORS: Foundry on localhost:30000 and its LAN host (private ranges, port 30000)
+func allowedOrigin(_ o: String?) -> String? {
+  guard let o, let u = URL(string: o), let host = u.host, u.port == 30000 || u.port == nil && false else { return nil }
+  if host == "localhost" || host == "127.0.0.1" { return o }
+  let p = host.split(separator: ".").compactMap { Int($0) }
+  if p.count == 4, p[0] == 192 && p[1] == 168 || p[0] == 10 || (p[0] == 172 && (16...31).contains(p[1])) { return o }
+  return nil
+}
+func jsonOuts(_ o: Out) -> [[String: Any]] {
   switch o {
-  case .delta(let d): return ["t": "delta", "d": d]
-  case .end: return ["t": "end"]
-  case .retract: return ["t": "retract"]
+  case .delta(let d): return [["t": "delta", "d": d], ["t": "narr", "d": d]]
+  case .end: return [["t": "end"], ["t": "narr_end"]]
+  case .retract: return [["t": "retract"]]
   case .tool(let n, let a, let r):
     var m: [String: Any] = ["t": "tool", "name": n, "text": describe(n, a, r)]
+    var extra: [[String: Any]] = []
     if n == "ask_oracle" || n == "start_scene" {
-      m["card"] = ["tool": n, "q": a["q"].str ?? a["expect"].str ?? "", "answer": r["answer"].str ?? r["outcome"].str ?? "", "roll": r["roll"].int ?? -1,
-                   "p": r["p"].int ?? -1, "s": r["s"].int ?? -1, "rng": r["rng"].str ?? "", "odds": a["odds"].int == nil ? "" : oddsLabel(a)] as [String: Any]
+      let card: [String: Any] = ["tool": n, "q": a["q"].str ?? a["expect"].str ?? "", "answer": r["answer"].str ?? r["outcome"].str ?? "", "roll": r["roll"].int ?? -1,
+                   "p": r["p"].int ?? -1, "s": r["s"].int ?? -1, "rng": r["rng"].str ?? "", "odds": a["odds"].int == nil ? "" : oddsLabel(a)]
+      m["card"] = card
+      if n == "ask_oracle" { extra.append(["t": "oracle", "q": card["q"]!, "answer": card["answer"]!, "odds": card["odds"]!, "p": card["p"]!, "roll": card["roll"]!]) }
     }
-    return m
-  case .event(let e): return ["t": "event", "text": e]
-  case .info(let s): return ["t": "info", "text": s]
-  case .world(let w): return ["t": "world", "text": w]
-  case .progress(let t, let d, let n): return ["t": "progress", "text": t, "done": d ?? 0, "total": n ?? 0]
-  case .gate: return nil
+    return [m] + extra
+  case .event(let e): return [["t": "event", "text": e]]
+  case .info(let s): return [["t": "info", "text": s]]
+  case .world(let w): return [["t": "world", "text": w]]
+  case .progress(let t, let d, let n): return [["t": "progress", "text": t, "done": d ?? 0, "total": n ?? 0]]
+  case .roll(let c): var j = c.json; j["t"] = "roll"; return [j]
+  case .sheet: return [["t": "sheet"]]
+  case .gate: return []
   }
 }
 
@@ -52,7 +65,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
   let work = DispatchQueue(label: "work")
   let lock = NSLock()
   var busy = false, last = Date()
-  runner.sink = { o in if let j = jsonOut(o) { hub.send(j) } }
+  runner.sink = { o in for var j in jsonOuts(o) { if j["t"] as? String == "sheet" { j["party"] = runner.game?.partyJSON ?? [] }; hub.send(j) } }
   func snap() -> (Double, Bool) { lock.lock(); defer { lock.unlock() }; return (Date().timeIntervalSince(last), busy) }
   func touch() { lock.lock(); last = Date(); lock.unlock() }
   func job(_ f: @escaping () throws -> Bool) {
@@ -89,8 +102,10 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     }
     recv()
   }
-  func reply(_ c: NWConnection, _ code: String, _ type: String, _ body: Data) {
-    let h = "HTTP/1.1 \(code)\r\nContent-Type: \(type)\r\nContent-Length: \(body.count)\r\nCache-Control: no-store\r\nConnection: close\r\n\r\n"
+  func reply(_ c: NWConnection, _ code: String, _ type: String, _ body: Data, origin: String? = nil) {
+    var h = "HTTP/1.1 \(code)\r\nContent-Type: \(type)\r\nContent-Length: \(body.count)\r\nCache-Control: no-store\r\nConnection: close\r\n"
+    if let o = origin { h += "Access-Control-Allow-Origin: \(o)\r\nVary: Origin\r\nAccess-Control-Allow-Methods: GET, POST, OPTIONS\r\nAccess-Control-Allow-Headers: content-type, x-sl\r\n" }
+    h += "\r\n"
     c.send(content: Data(h.utf8) + body, completion: .contentProcessed { _ in c.cancel() })
   }
   func handle(_ c: NWConnection, _ head: String, _ body: Data) {
@@ -98,35 +113,61 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
     let parts = head.split(separator: "\r\n").first?.split(separator: " ") ?? []
     guard parts.count >= 2 else { return c.cancel() }
     let method = String(parts[0]), path = String(parts[1])
+    let org = allowedOrigin(httpHeader(head, "origin"))
+    func rep(_ code: String, _ type: String, _ body: Data) { reply(c, code, type, body, origin: org) }
+    func json(_ code: String, _ o: Any) { rep(code, "application/json", (try? JSONSerialization.data(withJSONObject: o)) ?? Data("{}".utf8)) }
+    func bodyJSON() -> [String: Any]? { (try? JSONSerialization.jsonObject(with: body)) as? [String: Any] }
     // reject cross-origin browser posts (DNS-rebinding / CSRF guard): Host must be loopback
     func hdr(_ k: String) -> String? { httpHeader(head, k) }
     let hostName = (hdr("host") ?? "").replacingOccurrences(of: ":\(port)", with: "")
-    guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return reply(c, "403 Forbidden", "text/plain", Data("host".utf8)) }
+    guard ["127.0.0.1", "localhost", "[::1]"].contains(hostName) else { return rep("403 Forbidden", "text/plain", Data("host".utf8)) }
     // CSRF guard via custom header instead of Origin (browser extensions rewrite Origin): cross-site pages can't set x-sl without a CORS preflight, which we never answer
     if method == "POST", hdr("x-sl") != "1" {
       FileHandle.standardError.write(Data("403 x-sl fehlt (origin=\(hdr("origin") ?? "-"))\n".utf8))
-      return reply(c, "403 Forbidden", "text/plain", Data("x-sl".utf8))
+      return rep("403 Forbidden", "text/plain", Data("x-sl".utf8))
     }
+    if method == "OPTIONS" { return rep("204 No Content", "text/plain", Data()) }
     switch (method, path) {
-    case ("GET", "/"): reply(c, "200 OK", "text/html; charset=utf-8", Data(pageHTML.utf8))
-    case ("GET", "/favicon.ico"): reply(c, "204 No Content", "image/x-icon", Data())
+    case ("POST", "/roll"):
+      guard let j = bodyJSON(), let sp = j["speaker"] as? String, !sp.isEmpty else { return json("400 Bad Request", ["error": "speaker fehlt"]) }
+      let pillar = (j["pillar"] as? String ?? "kampf").lowercased()
+      guard ["kampf", "sozial", "wissen"].contains(pillar) else { return json("400 Bad Request", ["error": "pillar: kampf|sozial|wissen"]) }
+      guard let g = runner.game else { return json("503 Service Unavailable", ["error": "kein Spiel"]) }
+      let ch = g.doCheck(speaker: sp, pillar: pillar, traits: j["traits"] as? [String] ?? [], difficulty: j["difficulty"] as? Int ?? 0, sp: j["sp"] as? Int ?? 0, reason: j["reason"] as? String ?? "")
+      json("200 OK", ch.json)
+    case ("POST", "/rollresult"):
+      guard let j = bodyJSON(), let sp = j["speaker"] as? String, let t = j["target"] as? Int, let r = j["roll"] as? Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker, label, target, roll"]) }
+      let ch = g.foundryRoll(speaker: sp, label: j["label"] as? String ?? "Probe", target: t, roll: r)
+      json("200 OK", ["success": ch.success, "dos": ch.dos, "dof": ch.dof, "crit": ch.crit as Any? ?? NSNull(), "label": ch.reason])
+    case ("POST", "/regie"):
+      guard let j = bodyJSON(), let t = j["text"] as? String, !t.isEmpty, let g = runner.game else { return json("400 Bad Request", ["error": "text fehlt"]) }
+      g.partyStore.lock.lock(); g.pendingRegie.append(clean(t, 300)); g.partyStore.lock.unlock()
+      json("202 Accepted", ["ok": true])
+    case ("POST", "/sp"):
+      guard let j = bodyJSON(), let sp = j["speaker"] as? String, let d = j["delta"] as? Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker, delta"]) }
+      guard let res = g.applySP(speaker: sp, delta: d, target: j["target"] as? String, mode: j["mode"] as? String) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }
+      json((res["error"] != nil) ? "409 Conflict" : "200 OK", res)
+    case ("GET", "/"): rep("200 OK", "text/html; charset=utf-8", Data(pageHTML.utf8))
+    case ("GET", "/favicon.ico"): rep("204 No Content", "image/x-icon", Data())
     case ("GET", "/state"):
       lock.lock(); let b = busy; lock.unlock()
       var st = state(runner, busy: b)
       st["story"] = runner.snapshot()?.1 ?? []
-      reply(c, "200 OK", "application/json", (try? JSONSerialization.data(withJSONObject: st)) ?? Data())
+      st["party"] = runner.game?.partyJSON ?? []
+      rep("200 OK", "application/json", (try? JSONSerialization.data(withJSONObject: st)) ?? Data())
     case ("GET", "/events"):
       let h = "HTTP/1.1 200 OK\r\nContent-Type: text/event-stream\r\nCache-Control: no-cache\r\nConnection: keep-alive\r\n\r\n: ok\n\n"
       c.send(content: Data(h.utf8), completion: .contentProcessed { _ in }); hub.add(c)
     case ("POST", "/say"):
-      let text = String((((try? JSONSerialization.jsonObject(with: body)) as? [String: Any])?["text"] as? String ?? "").prefix(2000))
-      reply(c, "202 Accepted", "text/plain", Data("ok".utf8))
+      let sayJ = (try? JSONSerialization.jsonObject(with: body)) as? [String: Any]
+      let text = String((sayJ?["text"] as? String ?? "").prefix(2000)), spk = (sayJ?["speaker"] as? String).flatMap { $0.isEmpty ? nil : $0 }
+      rep("202 Accepted", "text/plain", Data("ok".utf8))
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
-        hub.send(["t": "user", "text": text])
+        if !text.hasPrefix("/regie") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
         if Cmd.parse(text) == .quit { hub.send(["t": "info", "text": "/quit beendet nur die CLI – den Web-Server beendest du im Terminal (Ctrl-C)."]) }   // never kill the server over HTTP
-        else { job { try runner.handle(text) } }
+        else { job { try runner.handle(text, speaker: spk) } }
       }
-    default: reply(c, "404 Not Found", "text/plain", Data("nope".utf8))
+    default: rep("404 Not Found", "text/plain", Data("nope".utf8))
     }
   }
   l.start(queue: .global())

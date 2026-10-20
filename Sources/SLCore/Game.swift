@@ -11,6 +11,8 @@ public enum Out {
   case retract                      // drop the narration streamed so far (a retry restarts it)
   case progress(String, Int?, Int?) // world generation progress (text, done, total)
   case world(String)                // 🌍 world-state change
+  case roll(Check)                  // d100 check result
+  case sheet                        // party sheets changed
 }
 
 public func wordsText(_ w: J) -> String {
@@ -81,12 +83,18 @@ public final class Game {
   public var maxCtx = Int(ProcessInfo.processInfo.environment["SL_MAXCTX"] ?? "") ?? 14000   // SL_MAXCTX: test aid to force compaction
   public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
+  public let partyStore = PartyStore()
+  var pendingFacts: [String] = []
+  public var pendingRegie: [String] = []
+  var npcMods: [String: Int] = [:]
+  public var speaker: String?
   public var storyLog: [[String: String]] = []
   public var onStory: ([String: String]) -> Void = { _ in }
   func logStory(_ e: [String: String]) { storyLog.append(e); onStory(e) }
 
   public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World(), hidden: HiddenWorld = HiddenWorld()) {
     self.hidden = hidden; self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
+    partyStore.with { $0 = world.party }
   }
 
   /// after a failed attempt: the LM already rolled its cache back (dirty == false) unless it could not
@@ -177,12 +185,15 @@ public final class Game {
     return gate
   }
   /// One player turn. `pre`: already-rolled oracle result (from /frage) -> skips the gate head.
-  public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false, noOracle: Bool = false) throws {
+  public func turn(_ player: String, pre: J? = nil, forceEnd: Bool = false, noOracle: Bool = false, speaker spk: String? = nil) throws {
+    if spk != nil { speaker = spk }
+    let speaker = self.speaker
     if lm.stale { try syncCache() }        // model was unloaded while idle: rebuild the history (the weights are re-loaded lazily on generate)
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
     world.updateMinors(player)
     let playerOrig = player
+    if isSchicksal { pcIndex(speaker) }
     var player = player
     turnQA = []; lastArt = nil; turnNo += 1
     var cls: ActionClass? = (pre == nil && !noOracle && !firstTurn && !isWQuestion(player) && !isSelfQuestion(player)) ? classifyAction(player) : nil
@@ -204,12 +215,14 @@ public final class Game {
       player += "\n" + fb
       if let r = res { pre = r; actionRes = true; actionNein = r["answer"].str?.hasPrefix("NEIN") ?? false }
     }
-    let wb = world.block()
+    if !pendingFacts.isEmpty { player += "\n" + pendingFacts.joined(separator: "\n"); pendingFacts = [] }
+    let wb = world.block() + (partyBlock.isEmpty ? "" : (world.block().isEmpty ? "[Welt]\n" : "\n") + partyBlock)
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
     let regie = directorPass(player: player)   // behaviour cue from the secrets (side cache); [Regie verdeckt] never reaches the UI
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
-    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + ((regie ?? motifNote()).map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
-    push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
+    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + ((regie ?? motifNote()).map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; let regieHidden = pendingRegie.map { "[Regie verdeckt] \($0)\n" }.joined(); pendingRegie = []
+    let who: String = { guard isSchicksal || speaker != nil, let i = pcIndex(speaker, create: false) else { return "" }; return "[Spieler] \(partyStore.all[i].name)\n" }()
+    push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + regieHidden + who + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
     var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen", open: eng.st.open, isDialogue: isDialogueTurn(playerOrig, world))
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
@@ -309,7 +322,7 @@ public final class Game {
       // oracle shift = NPC attitude (polarity-aware) + rules module (Säulen/talent by the classified art); both combined, clamped to -2...2
       let art = Art(rawValue: txt.split(separator: "\n").first(where: { $0.hasPrefix("Art: ") }).map { String($0.dropFirst(5)) } ?? "") ?? .sonst
       if name == "ask_oracle", args["shift"].isNull, var o = args.obj {
-        let rs = regel.oddsShift(art: art, pc: world.pc, input: player)
+        let rs = regel.oddsShift(art: art, pc: world.pc, input: player) + spOracleShift(speaker)
         if let sh = combinedShift(haltung: world.shift(forQuestion: args["q"].str ?? ""), regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
         if world.regeln == "saeulen" { lastArt = art }
       }
@@ -326,7 +339,7 @@ public final class Game {
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
       if name == "start_scene", res["error"].isNull { world.startScene(ort: args["el"]["ort"].str, beteiligte: args["el"]["beteiligte"].str ?? "", expect: args["expect"].str ?? "") }
-      if name == "ask_oracle", let a = res["answer"].str { turnQA.append((args["q"].str ?? "", a)); let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { world.pc = regel.progress(onThreadSolved: world.pc, art: lastArt); out(.world(l.joined(separator: " · "))) } }
+      if name == "ask_oracle", let a = res["answer"].str { turnQA.append((args["q"].str ?? "", a)); let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { world.pc = regel.progress(onThreadSolved: world.pc, art: lastArt); if isSchicksal { partyGain(sp: 2) }; out(.world(l.joined(separator: " · "))) } }
       var fb = fmtResult(name, res)
       oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }

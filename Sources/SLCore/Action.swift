@@ -89,6 +89,7 @@ extension Game {
     }
     if let t = target, world.npcs[t].minor { return nil }                  // belt and braces: the content rule deflects before this point
     if let t = target { lastTargetId = world.npcs[t].id }
+    if isSchicksal, cls != .selfHarm { return resolveSchicksal(player, cls, target: target, speaker: speaker) }
     let name = target.map { world.npcs[$0].name }
     var art = Art.kampf, q: String, odds = 0
     switch cls {
@@ -101,7 +102,7 @@ extension Game {
     }
     var rel = 0
     if let t = target, art == .sozial { rel = world.npcs[t].haltung }                // a beaten / hostile NPC is hard to talk round
-    let rs = regel.oddsShift(art: art, pc: world.pc, input: player)
+    let rs = regel.oddsShift(art: art, pc: world.pc, input: player) + spOracleShift(speaker)
     var args: J = ["q": .str(q), "odds": .int(odds)]
     if var o = args.obj, let sh = combinedShift(haltung: rel == 0 ? nil : rel, regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
     lastOracleQ = q

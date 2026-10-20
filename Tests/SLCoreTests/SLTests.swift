@@ -1533,3 +1533,42 @@ final class MotifTests: XCTestCase {   // v7 plan c
     let d = try! JSONDecoder().decode(GenState.self, from: JSONEncoder().encode(old)); XCTAssertNil(d.motive)
   }
 }
+
+final class SchicksalRulesTests: XCTestCase {
+  func testDegrees() {
+    var d = SR.degrees(target: 55, roll: 32); XCTAssertTrue(d.success); XCTAssertEqual(d.dos, 3); XCTAssertNil(d.crit)           // 1 + 23/10
+    d = SR.degrees(target: 55, roll: 55); XCTAssertEqual(d.dos, 1)
+    d = SR.degrees(target: 55, roll: 80); XCTAssertFalse(d.success); XCTAssertEqual(d.dof, 3)                                    // 1 + 25/10
+    d = SR.degrees(target: 10, roll: 4); XCTAssertTrue(d.success)                                                                // 01-05 auto
+    d = SR.degrees(target: 10, roll: 5); XCTAssertTrue(d.success); XCTAssertEqual(d.dos, 1)
+    d = SR.degrees(target: 99, roll: 96); XCTAssertFalse(d.success); XCTAssertEqual(d.dof, 1)                                    // 96-100 auto-fail
+    d = SR.degrees(target: 60, roll: 33); XCTAssertEqual(d.crit, "success"); d = SR.degrees(target: 20, roll: 44); XCTAssertEqual(d.crit, "failure")
+    d = SR.degrees(target: 60, roll: 100); XCTAssertEqual(d.crit, "failure"); XCTAssertNil(SR.degrees(target: 60, roll: 34).crit)
+  }
+  func testTargetAndSP() {
+    var pc = Pc(speaker: "a"); pc.pillars = ["kampf": 50, "sozial": 30, "wissen": 40]; pc.traits = [Trait(text: "geübter Bogenschütze", major: true, pos: true), Trait(text: "Hochmut", major: false, pos: false)]
+    let fit = SR.fitting("Ich schieße mit dem Bogen", pc.traits)
+    XCTAssertEqual(fit.count, 0, "lemma match is on words, 'Bogen' vs 'Bogenschütze' differs")
+    XCTAssertEqual(SR.target(pc, pillar: "kampf", fit: pc.traits, difficulty: -20), 50 + 20 - 10 - 20)
+    pc.sp = 1; XCTAssertEqual(SR.penalty(pc), -10); pc.sp = 0; XCTAssertEqual(SR.penalty(pc), -20); pc.sp = 5; pc.wunden = 3; XCTAssertEqual(SR.penalty(pc), -10)
+    pc.wunden = 10; pc.sp = 5
+    let c = SR.check(&pc, pillar: "kampf", traits: [], difficulty: 0, spUse: 5, reason: "x", d100: 50)
+    XCTAssertEqual(c.target, 80, "max 3 SP = +30"); XCTAssertEqual(pc.sp, 2); XCTAssertEqual(c.spLeft, 2); XCTAssertTrue(c.fact.contains("Ziel 80"))
+  }
+  func testCreation() {
+    let t = [Trait(text: "a", major: true, pos: true), Trait(text: "b", major: true, pos: true), Trait(text: "c", major: true, pos: true), Trait(text: "d", major: true, pos: true), Trait(text: "e", major: true, pos: true), Trait(text: "f", major: true, pos: true), Trait(text: "Schuld", major: false, pos: false)]
+    XCTAssertEqual(SR.budgetLeft(t), 20 - 24 + 2)
+    let f = SR.fit(t); XCTAssertGreaterThanOrEqual(SR.budgetLeft(f), 0); XCTAssertEqual(f.filter(\.pos).count, 5)
+    XCTAssertEqual(SR.budgetLeft([Trait(text: "x", major: false, pos: true)]), 18)
+    let p = SR.defaultPillars("Ich war Söldner und Jäger, ein starker Kämpfer, aber ungebildet.", []); XCTAssertEqual(p["kampf"], 50); XCTAssertTrue(SR.validPillars(p))
+    XCTAssertFalse(SR.validPillars(["kampf": 50, "sozial": 50, "wissen": 30]))
+  }
+  func testCombatTables() {
+    XCTAssertEqual(SR.weaponDamage("ich ziehe mein Schwert"), 3); XCTAssertEqual(SR.weaponDamage("mit der Pistole"), 4); XCTAssertEqual(SR.weaponDamage("mit der Faust"), 1)
+    XCTAssertEqual(SR.armour(role: "Hauptmann der Wache"), 2); XCTAssertEqual(SR.armour(role: "Wirt"), 0)
+  }
+  func testWorldRoundTrip() {
+    var w = World(); w.regeln = "schicksal"; var pc = Pc(speaker: "Anna", name: "Kara"); pc.traits = [Trait(text: "trinkfest", major: false, pos: true)]; w.party = [pc]
+    let d = try! JSONDecoder().decode(World.self, from: JSONEncoder().encode(w)); XCTAssertEqual(d.party, [pc]); XCTAssertEqual(Cmd.parse("/regie Der Wirt lügt"), .regie("Der Wirt lügt")); XCTAssertEqual(Cmd.parse("/sp ziel Bork -1"), .sp("ziel Bork -1"))
+  }
+}

@@ -40,6 +40,7 @@ public final class Runner {
   public var neglect: Int?             // --neglect N: quiet turns before an attitude decays
   public var temp: Float = 0.7
   public var lastRng = "?"
+  public var defaultRules: String?     // --rules schicksal
   public var rolls: [J] = []   // recent oracle results, newest last
 
   public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng; lm.notify = { [unowned self] s in self.sink(.info(s)) } }
@@ -73,6 +74,7 @@ public final class Runner {
     self.setting = setting ?? defaultSetting
     let e = try Session.newEngine(rng: rng)
     game = Game(eng: e, lm: lm, setting: self.setting); wire()
+    if let r = defaultRules { game.world.regeln = r }
     if let n = neglect { game.world.neglectN = n }
     session.log("# \(session.name)\n\nSetting: \(self.setting)\n")
     try game.syncCache()
@@ -82,6 +84,7 @@ public final class Runner {
     let (e, s, m, f, q, w) = try session.loadEngine()
     setting = s
     game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w, hidden: session.hidden); wire()
+    if let r = defaultRules { game.world.regeln = r }
     if let n = neglect { game.world.neglectN = n }
     if let w = session.warning { sink(.info(w)) }
     try game.syncCache(); refresh()
@@ -100,7 +103,7 @@ public final class Runner {
   public func snapshot() -> (Status, [[String: String]], [J])? { snapLock.lock(); defer { snapLock.unlock() }; return snapData }
   func refresh() { guard game != nil else { return }; let d = (status(), story(), rolls); snapLock.lock(); snapData = d; snapLock.unlock() }
 
-  public func player(_ t: String) throws { session.log("\n**Spieler:** \(t)\n"); try run { try game.turn(t) } }
+  public func player(_ t: String) throws { session.log("\n**Spieler\(game.speaker.map { " (\($0))" } ?? ""):** \(t)\n"); try run { try game.turn(t, speaker: game.speaker) } }
   public func ende() throws {
     guard game.eng.st.open else { sink(.info("keine offene Szene")); return }
     session.log("\n**Spieler:** /ende\n"); try run { try game.turn("Die Szene ist hier zu Ende.", forceEnd: true) } }
@@ -110,7 +113,7 @@ public final class Runner {
     guard game.eng.st.open else { sink(.info("Keine offene Szene – beschreibe zuerst deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).")); return }
     if isWQuestion(q) { sink(.info("W-Frage: wird als normaler Zug gespielt (das Orakel beantwortet nur Ja/Nein-Fragen).")); session.log("\n**Spieler:** \(q)\n"); try run { try game.turn(q, noOracle: true) }; return }
     var args: J = ["q": .str(q), "odds": .int(odds)]
-    if var o = args.obj, let sh = combinedShift(haltung: game.world.shift(forQuestion: q), regel: game.regel.oddsShift(art: classifyArt(q), pc: game.world.pc, input: q)) { o["shift"] = .int(sh); args = .obj(o) }   // N4: NPC attitude + Säulen, same as the auto-oracle
+    if var o = args.obj, let sh = combinedShift(haltung: game.world.shift(forQuestion: q), regel: game.regel.oddsShift(art: classifyArt(q), pc: game.world.pc, input: q) + game.spOracleShift(game.speaker)) { o["shift"] = .int(sh); args = .obj(o) }   // N4: NPC attitude + Säulen, same as the auto-oracle
     let r = game.eng.call("ask_oracle", args)
     if r["error"].isNull == false { sink(.info("Fehler: \(r["error"].str ?? "")")); return }
     sink(.tool("ask_oracle", args, r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
@@ -119,7 +122,7 @@ public final class Runner {
     var fb = fmtResult("ask_oracle", r)   // short German text only; rng/roll/step stay in the UI
     if evInfo("ask_oracle", r) != nil, !(game.eng.st.akteure.isEmpty && game.eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(game.eng.st.akteure.map(\.name), game.eng.st.straenge.map(\.name)) }
     game.lastOracleQ = q
-    try run { try game.turn("Ich frage das Schicksal: \(q)\n" + fb, pre: r) }
+    try run { try game.turn("Ich frage das Schicksal: \(q)\n" + fb, pre: r, speaker: game.speaker) }
   }
   /// `rest` = "<Name> [Thema]"; the NPC name is matched longest-first against the known figures.
   public func gespraech(_ rest: String) throws {
@@ -163,7 +166,8 @@ public final class Runner {
   }
 
   /// Shared command handling (CLI + web): ONE dispatcher. Returns false on quit.
-  public func handle(_ line: String) throws -> Bool {
+  public func handle(_ line: String, speaker: String? = nil) throws -> Bool {
+    game.speaker = speaker
     switch Cmd.parse(line) {
     case .empty: break
     case .quit: return false
@@ -174,6 +178,17 @@ public final class Runner {
     case .figur(let f0):
       var f = f0
       if let bad = figurProblem(f0) { sink(.info(bad)); return true }
+      if game.isSchicksal, !f.isEmpty {       // per speaker: background story -> traits -> budget -> pillars
+        let (nm, story) = World.parseFigur(f)
+        sink(.info("Hintergrund wird ausgewertet …"))
+        game.createCharacter(speaker: speaker, name: nm ?? speaker ?? "Spieler", story: story.isEmpty ? f : story)
+        if let i = game.pcIndex(speaker, create: false) {
+          let pc = game.partyStore.all[i]
+          if game.figur == nil { game.figur = f; game.world.setFigur(f); game.world.syncLists(game.eng); try game.syncCache() }
+          sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.budgetLeft(pc.traits))"))
+        }
+        try session.save(game); refresh(); return true
+      }
       if let r = f.range(of: #"\s*regeln=(frei|saeulen)\s*$"#, options: .regularExpression) { game.world.regeln = String(f[r]).contains("saeulen") ? "saeulen" : "frei"; f.removeSubrange(r) }   // /figur Name: Text regeln=saeulen
       game.figur = f.isEmpty ? nil : f
       if f.isEmpty { game.world.name = nil; game.world.kurz = nil } else { game.world.setFigur(f); game.world.syncLists(game.eng) }
@@ -187,7 +202,27 @@ public final class Runner {
       if let i = game.world.npc(a), game.world.revive(i) { try session.save(game); refresh(); sink(.world("\(game.world.npcs[i].name) lebt")) } else { sink(.info("/lebt <Figur>: keine tote Figur '\(a)'")) }
     case .regeln(let a):
       if a.isEmpty { sink(.info("Regeln: \(regelwerk(game.world.regeln).titel)  (/regeln frei | saeulen)")) }
-      else if ["frei", "saeulen"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen")) }
+      else if ["frei", "saeulen", "schicksal"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen | schicksal")) }
+    case .regie(let a):      // hidden GM note for the next narration: never logged, never shown in the story
+      if a.isEmpty { sink(.info("/regie <Text>  (versteckte Spielleiter-Notiz für die nächste Erzählung)")) } else { game.pendingRegie.append(clean(a, 300)); sink(.info("Regie-Notiz vorgemerkt (nur für die nächste Erzählung).")) }
+    case .sp(let a): try spCommand(a, speaker: speaker)
+    case .rast(let a):
+      if a == "kurz" { game.partyGain(sp: 1); sink(.info("Kurze Rast: +1 SP, +1 Wunde")) } else if a == "lang" { game.partyGain(sp: 3, wunden: 3); sink(.info("Lange Rast: +3 SP, +3 Wunden")) } else if a == "fest" { game.partyGain(sp: 2); sink(.info("Fest: +2 SP")) } else { sink(.info("/rast kurz | lang | fest")) }
+      game.partyStore.with { p in for i in p.indices where a == "kurz" { p[i].wunden = min(p[i].wundenMax, p[i].wunden) } }; try session.save(game); refresh()
+    case .wunden(let a):
+      let parts = a.split(separator: " ").map(String.init)
+      if let d = parts.last.flatMap({ Int($0) }), parts.count >= 1 {
+        let who = parts.count >= 2 ? parts.dropLast().joined(separator: " ") : (speaker ?? "")
+        game.partyStore.with { p in if let i = p.firstIndex(where: { norm($0.name) == norm(who) || norm($0.speaker) == norm(who) }) { p[i].wunden = max(-5, min(p[i].wundenMax, p[i].wunden + d)) } }; game.announceSheet()
+      }
+      sink(.info(game.partyStore.all.map { "\($0.name): Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ").isEmpty ? "Keine Gruppe." : game.partyStore.all.map { "\($0.name): Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ")))
+    case .saeulen(let a) where game.isSchicksal:
+      var p: [String: Int] = [:]
+      for kv in a.split(separator: " ") { let x = kv.split(separator: "="); if x.count == 2, let v = Int(x[1]), ["kampf", "sozial", "wissen"].contains(x[0].lowercased()) { p[x[0].lowercased()] = v } }
+      if let i = game.pcIndex(speaker) {
+        var cur = game.partyStore.all[i].pillars; for (k, v) in p { cur[k] = v }
+        if SR.validPillars(cur) { game.partyStore.with { $0[i].pillars = cur }; game.announceSheet(); sink(.info("Säulen: \(game.partyStore.all[i].line)")) } else { sink(.info("Säulen müssen 30/40/50 sein (je einmal): /saeulen kampf=50 sozial=30 wissen=40")) }
+      }
     case .saeulen(let a):
       let (pc, msgs) = applySaeulen(a, game.world.pc); game.world.pc = pc
       msgs.forEach { sink(.info($0)) }
@@ -201,7 +236,7 @@ public final class Runner {
       if let ti = game.world.straenge.firstIndex(where: { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" }) {      // P6: all core clues of the thread must be found
         if let m = missingClues(game.world.straenge[ti].titel, game.hidden.clues, hinweise: game.world.straenge[ti].hinweise.count) { sink(.info(m)); return true }
       }
-      if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
+      if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); if game.isSchicksal { game.partyGain(sp: 2) }; sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
@@ -218,7 +253,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -239,6 +274,10 @@ public enum Cmd: Equatable {
     if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
+    if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
+    if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
+    if t == "/rast" || t.hasPrefix("/rast ") { return .rast(arg(5)) }
+    if t == "/wunden" || t.hasPrefix("/wunden ") { return .wunden(arg(7)) }
     if t == "/figur" || t.hasPrefix("/figur ") { return .figur(arg(6)) }
     if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
     return t.hasPrefix("/") ? .unknown(t) : .say(t)
@@ -246,7 +285,7 @@ public enum Cmd: Equatable {
 }
 
 /// Harness tags that exist for the model only; they must never reach the UI (hidden clue text!) or /state.
-let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Regie verdeckt|Orakel|Welt|Auftakt|Bekannt|System|Fakt)\]"#)
+let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Regie verdeckt|Orakel|Welt|Auftakt|Bekannt|System|Fakt|Spieler)\]"#)
 func isHarnessLine(_ l: String) -> Bool { harnessTag.firstMatch(in: l, range: NSRange(l.startIndex..., in: l)) != nil }
 
 /// Display story from the chat history: user lines minus harness tags, narration = last prose line of each model message
@@ -312,4 +351,24 @@ public func figurProblem(_ f: String) -> String? {
   if let c = t.firstIndex(of: ":"), t[..<c].trimmingCharacters(in: .whitespaces).isEmpty { return "/figur: Name fehlt vor dem ':' – /figur Name: Beschreibung" }
   if t.hasPrefix("regeln=") { return "/figur: Name fehlt – /figur Name: Beschreibung regeln=saeulen" }
   return nil
+}
+
+extension Runner {
+  /// /sp +2 (pre-spend on the next check) | /sp ziel <Name> -1 | /sp reroll | /sp orakel +1 | /sp survive | /sp geben <Name> +1 (GM grant) | /sp
+  func spCommand(_ a: String, speaker: String?) throws {
+    let w = a.split(separator: " ").map(String.init)
+    func num(_ s: String?) -> Int? { s.flatMap { Int($0.hasPrefix("+") ? String($0.dropFirst()) : $0) } }
+    var res: [String: Any]?
+    if w.isEmpty { /* show */ }
+    else if let n = num(w[0]) { res = game.applySP(speaker: speaker, delta: n, mode: "pre") }
+    else if w[0] == "ziel", w.count >= 3, let n = num(w.last) { res = game.applySP(speaker: speaker, delta: n, target: w[1..<(w.count - 1)].joined(separator: " ")) }
+    else if w[0] == "reroll" { res = game.applySP(speaker: speaker, delta: 0, mode: "reroll") }
+    else if w[0] == "orakel" { res = game.applySP(speaker: speaker, delta: num(w.dropFirst().first) ?? 1, mode: "orakel") }
+    else if w[0] == "survive" { res = game.applySP(speaker: speaker, delta: 0, mode: "survive") }
+    else if w[0] == "geben", w.count >= 3, let n = num(w.last) { res = game.applySP(speaker: w[1..<(w.count - 1)].joined(separator: " "), delta: n) }
+    else { sink(.info("/sp +2 | /sp ziel <Name> -1 | /sp reroll | /sp orakel +1 | /sp survive | /sp geben <Name> +1")); return }
+    _ = res
+    sink(.info(game.partyStore.all.map { "\($0.name): SP \($0.sp)/\($0.spMax)\($0.pendingSp > 0 ? " (+\($0.pendingSp * 10) vorgemerkt)" : "")" }.joined(separator: " · ")))
+    try session.save(game); refresh()
+  }
 }

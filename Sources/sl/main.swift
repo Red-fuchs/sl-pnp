@@ -80,10 +80,13 @@ func show(_ o: Out) {
   case .info(let s): print("\(dim)\(s)\(off)")
   case .progress(let t, let d, let n): print("\r\u{1B}[2K\(dim)[\(d ?? 0)/\(n ?? 0)] \(t)\(off)", terminator: (d != nil && d == n) ? "\n" : ""); fflush(stdout)
   case .world(let w): print("\(dim)🌍 \(w)\(off)")
+  case .roll(let c): print("\(dim)🎲 \(c.fact)\(off)")
+  case .sheet: break
   }
 }
 runner.sink = show
 runner.debug = opt["debug"] != nil
+runner.defaultRules = opt["rules"]
 runner.neglect = opt["neglect"].flatMap { Int($0) }
 if let t = opt["temp"], let v = Float(t) { runner.temp = v }
 
