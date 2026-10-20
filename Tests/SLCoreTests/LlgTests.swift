@@ -194,3 +194,24 @@ final class SaeulenGateTests: XCTestCase {   // N4
     XCTAssertTrue(oddsLabel(["odds": .int(0), "shift": .int(1)]).contains("+1"))
   }
 }
+
+final class RiskGateTests: XCTestCase {   // P4
+  func testRiskArt() {
+    XCTAssertEqual(riskArt("Ich klettere die Mauer hoch."), .sonst); XCTAssertEqual(riskArt("Ich greife den Wächter an."), .kampf)
+    XCTAssertEqual(riskArt("Ich überrede den Zöllner."), .sozial); XCTAssertEqual(riskArt("Ich entziffere die Inschrift."), .wissen)
+    XCTAssertNil(riskArt("Ich sehe mich um.")); XCTAssertNil(riskArt("Ich gehe zum Markt und kaufe Brot."))
+  }
+  func testRiskyForcesOracleAndArt() throws {
+    guard let (t, l) = Llg.ctx else { throw XCTSkip("no model dir") }
+    var g = Gate(); g.head = true; g.open = true; g.art = true; g.risky = .kampf
+    let head = "Erwartung: Der Wächter zieht blank.\nOrtswechsel/Zeitsprung: nein\nFrage: "
+    func rej(_ rest: String) throws -> Bool {
+      let c = try LlgConstraint(tok: l, lark: Gr.grammar(g).lark)
+      for id in t.encode(text: head + rest, addSpecialTokens: false) { let m = try c.computeMask(); if (m.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return true }; _ = try c.commit(Int32(id)) }
+      return false
+    }
+    XCTAssertTrue(try rej("-\nArt: sonst\nWerkzeug: nein\n"))             // no narration-only head
+    XCTAssertTrue(try rej("Trifft der Hieb?\nArt: sozial\nWerkzeug: ja\n"))   // wrong Art
+    XCTAssertFalse(try rej("Trifft der Hieb?\nArt: kampf\nWerkzeug: ja\n"))
+  }
+}

@@ -41,6 +41,7 @@ public struct Gate {
   public var mustAsk = false       // >=1 quiet turn in this scene: no narration-only head, ask the oracle (or end the scene)
   public var figurNames: [String] = []   // name candidates for the player character (from the name generator); the model picks one
   public var art = false           // rules module active: the head carries "Art: kampf|sozial|wissen|sonst" (classification only)
+  public var risky: Art?           // P4: deterministic risk class of the player action: the oracle must be asked, with exactly this Art
   public var noAsk = false         // W-question via /frage: the oracle only answers yes/no -> no ask_oracle this turn
   public var needFigur = false     // no player character yet: the narration must end with a "Du: Name (Rolle, Merkmal)" slot
   public var selfQ = false         // self-question (wer bin ich ...): short narration, no oracle, no scene change
@@ -103,7 +104,7 @@ public enum Gr {
   public static var delta: Grammar { Grammar(.js(DELTA_SCHEMA)) }
 
   /// `risky: false` = the branch WITHOUT an oracle call: while the oracle can still be asked, kampf/sozial/wissen actions may not skip it (Säulen would otherwise never matter)
-  static func artG(_ t: Gate, risky: Bool = true) -> [G] { t.art ? [.s("\nArt: "), risky || !canAsk(t) ? GenGr.en(Art.allCases.map(\.rawValue)) : .s("sonst")] : [] }
+  static func artG(_ t: Gate, risky: Bool = true) -> [G] { t.art ? [.s("\nArt: "), risky && t.risky != nil && canAsk(t) ? .s(t.risky!.rawValue) : (risky || !canAsk(t) ? GenGr.en(Art.allCases.map(\.rawValue)) : .s("sonst"))] : [] }
   static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks && !t.noAsk }
 
   public static func grammar(_ t: Gate) -> Grammar {
@@ -117,7 +118,7 @@ public enum Gr {
       // end_scene ONLY after "Ortswechsel/Zeitsprung: ja"; otherwise ask the oracle or narrate
       var br: [G] = [.seq([ja, endScene])]
       if t.selfQ { return Grammar(.seq(hd + [.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }   // self-question: narration only
-      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t, risky: false) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }
+      if !(t.mustAsk || t.risky != nil) || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t, risky: false) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }
       if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q] + artG(t) + [.s("\nWerkzeug: ja\n"), askCall])) }
       return Grammar(.seq(hd + [.or(br)]))
     }
