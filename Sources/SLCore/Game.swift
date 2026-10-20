@@ -280,7 +280,7 @@ func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary":
   })
 }
 
-let gatePrefixes = ["Du: ", "Figuren: ", "Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
+let gatePrefixes = ["Art: ", "Du: ", "Figuren: ", "Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
 /// true while a partial line could still become a gate line (narration never contains ":" and never starts like a gate label)
 public func isGatePrefix(_ l: String) -> Bool { gatePrefixes.contains { $0.hasPrefix(l) || l.hasPrefix($0) } }
 

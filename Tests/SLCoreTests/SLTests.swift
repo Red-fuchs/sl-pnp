@@ -649,6 +649,15 @@ final class RegelwerkTests: XCTestCase {
   }
 }
 
+final class ArtLineTests: XCTestCase {
+  func testArtLineNeverShownAsNarration() {
+    XCTAssertTrue(isGatePrefix("Art: sozial")); XCTAssertTrue(isGatePrefix("Ar"))
+    let s = displayStory([.m("Erwartung: x\nOrtswechsel/Zeitsprung: nein\nFrage: -\nArt: sozial\nWerkzeug: nein\nDer Raum ist kalt. Zwei. Drei.\nFiguren: -"), .m("Art: kampf\nWerkzeug: ja\n<end_scene>{}</end_scene>")])
+    XCTAssertEqual(s.map { $0["text"]! }, ["Der Raum ist kalt. Zwei. Drei."])
+    let ns = NarrStream { _ in }; ns.feed("Frage: -\nArt: sozial\nWerkzeug: nein\nDer Raum ist kalt und still. Zwei. Drei.\nFiguren: -"); ns.finish(); XCTAssertFalse(ns.bad)
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))
@@ -1065,4 +1074,5 @@ final class GrammarTests: XCTestCase {
     }
   }
 }
+
 

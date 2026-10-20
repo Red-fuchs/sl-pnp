@@ -140,7 +140,8 @@ extension Game {
     var note = ""
     for attempt in 0..<2 {
       let user = world.block() + "\n---\nGeheim (nur für dich):\n\(facts)\nAktion der Spielfigur: \(clean(player, 200))\(note)\nAusgabe:"
-      guard let (txt, _) = try? lm.aux(system: sys, user: user, Gr.regie, temp: 0.7, maxTok: 120, ban: banFor(secretList(), knownText())) else { return nil }
+      guard let (txt, st) = try? lm.aux(system: sys, user: user, Gr.regie, temp: 0.7, maxTok: 120, ban: banFor(secretList(), knownText())) else { return nil }
+      if debug { out(.info("[debug] Regie-Pass: \(st.line)")) }
       let lines = txt.split(separator: "\n").map { String($0).replacingOccurrences(of: "Regie: ", with: "") }
       let joined = lines.joined(separator: " ")
       if let l = leakCheck(joined, secrets: secretList(), known: knownText()) {
