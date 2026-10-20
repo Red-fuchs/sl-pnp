@@ -163,7 +163,7 @@ public enum GenGr {
 public enum GenPromptEx { public static var slots: String { GenPrompt.ex["slots"]!.components(separatedBy: "\n").dropFirst().joined(separator: "\n") }; public static var premise: String { GenPrompt.ex["premise"]! }; public static var place: String { GenPrompt.ex["place"]! }; public static var npc: String { GenPrompt.ex["npc"]! }; public static var thread: String { GenPrompt.ex["thread"]! }; public static var start: String { GenPrompt.ex["start"]! } }
 
 enum GenPrompt {
-  static let sys = "Du erschaffst die Welt eines düsteren Solo-Rollenspiels auf Deutsch. Konkret, ungewöhnlich, keine Klischees. Du hältst dich an die Vorgaben und erfindest keine Zusatzfelder. Antworte genau im vorgegebenen Zeilenformat."
+  static let sys = "Du erschaffst die Welt eines düsteren Solo-Rollenspiels auf Deutsch. Konkret, ungewöhnlich, keine Klischees. Du hältst dich an die Vorgaben und erfindest keine Zusatzfelder. Antworte genau im vorgegebenen Zeilenformat." + " " + MINOR_RULE
   static let ex: [String: String] = [
     "slots": "Text: Eine Karawanenstadt stirbt langsam, der Brunnen versiegt.\nTon: bitter\nEpoche: offen\nOrt: Karawanenstadt\nBedrohung: Hungersnot\nLicht: offen\nMuss: Brunnen\nNicht: -",
     "premise": "Prämisse: Seit drei Monaten fällt kein Regen, und die Karawanenstadt verkauft ihr letztes Wasser an den Meistbietenden.\nAlltag: Der Basar am Brunnentor",
@@ -176,6 +176,7 @@ enum GenPrompt {
 
 /// Validator shared by all stages: banned words, darf_nicht, literal oracle pairs (both words verbatim -> reject).
 public func genCheck(_ t: String, _ g: GenState) -> String? {
+  if minorHarm(t) { return "Kinder dürfen nie Opfer von Gewalt oder Teil von Sexuellem sein – streiche die Stelle" }
   if !isCleanText(t) { return "unzulässige Zeichen (nur lateinische Buchstaben, Umlaute und Satzzeichen)" }
   let low = t.lowercased()
   for b in NameGen.banned.union(["schatten", "uralt", "flüstern", "flüstert", "raunen"]) where low.range(of: "\\b\(b)\\b", options: .regularExpression) != nil { return "Wort '\(b)' ist verboten" }

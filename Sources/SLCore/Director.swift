@@ -165,7 +165,7 @@ extension Game {
   func directorPass(player: String) -> String? {
     let who = hidden.directorBearers(in: world, named: namedBy(player)); guard !who.isEmpty else { return nil }
     let facts = hidden.directorFacts(for: who, known: knownText())
-    let sys = "Du bist Regisseur eines düsteren Rollenspiels. Du kennst die Geheimnisse der anwesenden Figuren. Beschreibe in höchstens zwei kurzen Zeilen, wie sich die betroffenen Figuren jetzt VERHALTEN (Körpersprache, Ausweichen, Blicke, Tonfall, Handgriffe). Nenne niemals das Geheimnis, das Ziel oder Fakten daraus – nur sichtbares Verhalten. Zeilenformat: \"Regie: <Name> <Verhalten>\"."
+    let sys = "Du bist Regisseur eines düsteren Rollenspiels. Du kennst die Geheimnisse der anwesenden Figuren. Beschreibe in höchstens zwei kurzen Zeilen, wie sich die betroffenen Figuren jetzt VERHALTEN (Körpersprache, Ausweichen, Blicke, Tonfall, Handgriffe). Nenne niemals das Geheimnis, das Ziel oder Fakten daraus – nur sichtbares Verhalten. Zeilenformat: \"Regie: <Name> <Verhalten>\"." + " " + MINOR_RULE
     var note = ""
     for attempt in 0..<2 {
       let user = world.block() + "\n---\nGeheim (nur für dich):\n\(facts)\nAktion der Spielfigur: \(clean(player, 200))\(note)\nAusgabe:"

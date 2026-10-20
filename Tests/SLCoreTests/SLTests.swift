@@ -1295,3 +1295,21 @@ final class DeathTests: XCTestCase {   // N5
     XCTAssertTrue(w.revive(0)); XCTAssertFalse(w.npcs[0].tot)
   }
 }
+
+final class MinorRuleTests: XCTestCase {   // N14 (hard content rule)
+  func testDetect() {
+    for bad in ["Der Söldner erschlägt das Kind mit einem Hieb.", "Ein Mädchen liegt tot im Graben.", "Ein Kind weint am Rand. Es wird geschlagen.", "Der Säugling wird geopfert.",
+                "Die Kinderschuhe liegen im Blut.", "Der Knabe wird entführt.", "Das Mädchen ist nackt."] { XCTAssertTrue(minorHarm(bad), bad) }
+    for ok in ["Ein Kind spielt im Staub, die Wirtin schaut zu.", "Der Söldner erschlägt den Wächter.", "Die Kinder lachen über den Narren. Der Bauer stirbt später an Fieber.", "Das Mädchen reicht dir Brot.", "Die Wirtin kocht."] { XCTAssertFalse(minorHarm(ok), ok) }
+    XCTAssertEqual(dropMinorSentences("Du betrittst die Gasse. Ein Mädchen liegt tot im Graben. Der Wind weht."), "Du betrittst die Gasse. Der Wind weht.")
+    XCTAssertNotNil(genCheck("Ein Kind wird erschlagen", GenState()))
+    XCTAssertNil(genCheck("Eine Händlerin mit zwei Kindern", GenState()))
+  }
+  func testStreamNeverShowsViolation() {
+    var shown = ""
+    let ns = NarrStream(out: { if case .delta(let d) = $0 { shown += d } })
+    ns.feed("Du betrittst die Gasse. Ein Kind liegt am Boden. Es ist tot. Der Wind weht.\n")
+    XCTAssertEqual(ns.leak?.topic, minorTopic); XCTAssertFalse(shown.contains("tot")); XCTAssertTrue(shown.contains("Gasse"))
+    let a = argLeak(["q": .str("Wird das Kind erschlagen?")] as J, secrets: [], known: ""); XCTAssertEqual(a?.topic, minorTopic)
+  }
+}
