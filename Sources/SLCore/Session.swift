@@ -51,7 +51,7 @@ public final class Session {
     hidden = (try? JSONDecoder().decode(HiddenWorld.self, from: Data(contentsOf: hiddenURL))) ?? HiddenWorld()
     var w = World()
     if let d = try? Data(contentsOf: worldURL) {
-      if let x = try? JSONDecoder().decode(World.self, from: d) { w = x }
+      if var x = try? JSONDecoder().decode(World.self, from: d) { x.repairText(); w = x }
       else { let bak = worldURL.appendingPathExtension("bak"); try? FileManager.default.removeItem(at: bak); try? FileManager.default.moveItem(at: worldURL, to: bak); warning = "world.json unlesbar - Welt leer neu gestartet, Original: \(bak.lastPathComponent)" }
     }
     return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)

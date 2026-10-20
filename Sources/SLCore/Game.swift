@@ -143,12 +143,17 @@ public final class Game {
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       var ns = NarrStream(out: out)
       let gm = Gr.grammar(gate)
-      var txt = "", truncated = false
+      var txt = "", truncated = false, metaRetry = false
       for attempt in 0..<3 {
         ns = NarrStream(out: out)
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : 0.4, maxTok: 600) { d in ns.feed(d) }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && ns.bad }) { d in ns.feed(d) }
           break
+        } catch is AbortedError {
+          // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
+          ns.discard(); metaRetry = true
+          out(.retract); out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch"))
+          try syncCache()
         } catch let e as TruncatedError {
           if let sv = salvageNarration(e.partial) {   // narration finished, only the tail overran: keep the story, drop the tail
             ns.finish(); txt = sv; out(.info("Figuren-Zeile abgeschnitten")); truncated = true; break
@@ -268,6 +273,7 @@ public func splitTail(_ txt: String) -> (body: String, tail: String?, du: String
 /// (a missing .end once glued paragraphs together and dropped the SL lines from transcript.md); gate/tail lines go to .gate.
 public final class NarrStream {
   var line = "", narr = false
+  public private(set) var bad = false          // narration must be regenerated (foreign glyph / planner scaffold, see F2)
   let out: (Out) -> Void
   public init(out: @escaping (Out) -> Void) { self.out = out }
   public func feed(_ d: String) {
@@ -276,11 +282,12 @@ public final class NarrStream {
       line.append(ch)
       if narr { out(.delta(String(ch))) }
       else if !isGatePrefix(line) && !line.hasPrefix("<") { narr = true; out(.delta(line)) }
+      if narr, !bad, isMetaNarration(line) || !isCleanText(String(ch)) { bad = true }
     }
   }
   func endLine() { if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }; line = ""; narr = false }
   public func finish() { endLine() }
-  public func discard() { line = ""; narr = false }
+  public func discard() { line = ""; narr = false; bad = false }
 }
 
 /// Self-questions are answered from [Welt] in 1-3 sentences: no oracle, no scene change.
@@ -304,4 +311,12 @@ public func okFigurName(_ n: String, _ role: String) -> Bool {
   if ["die", "der", "das", "dein", "deine", "mein", "meine", "ein", "eine", "name", "ihr", "sie", "er", "spielfigur", "figur"].contains(f) { return false }
   if norm(n).contains("spielfigur") || norm(n).contains("name") { return false }
   return !norm(role).contains("unbekannt") && !norm(role).contains("name") && !role.contains("[")
+}
+
+/// F2: the 4B model sometimes puts the planner scaffold into the narration slot ("Erwartung eines Kindes …", "Deutunglichst plausibel ist, dass …").
+public func isMetaNarration(_ line: String) -> Bool {
+  let t = line.trimmingCharacters(in: .whitespaces)
+  let w = String(t.prefix { $0.isLetter })
+  if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
+  return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
 }

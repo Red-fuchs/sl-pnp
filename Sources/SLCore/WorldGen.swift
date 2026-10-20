@@ -114,6 +114,7 @@ enum GenPrompt {
 
 /// Validator shared by all stages: banned words, darf_nicht, literal oracle pairs (both words verbatim -> reject).
 public func genCheck(_ t: String, _ g: GenState) -> String? {
+  if !isCleanText(t) { return "unzulässige Zeichen (nur lateinische Buchstaben, Umlaute und Satzzeichen)" }
   let low = t.lowercased()
   for b in NameGen.banned.union(["schatten", "uralt", "flüstern", "flüstert", "raunen"]) where low.range(of: "\\b\(b)\\b", options: .regularExpression) != nil { return "Wort '\(b)' ist verboten" }
   for n in g.slots.nicht where !n.isEmpty && low.contains(norm(n)) { return "'\(n)' darf nicht vorkommen" }

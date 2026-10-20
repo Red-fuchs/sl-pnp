@@ -56,9 +56,20 @@ func cutw(_ s: String, _ n: Int) -> String {
   if let i = p.lastIndex(of: " "), p.distance(from: p.startIndex, to: i) > n / 2 { return String(p[..<i]) }
   return p
 }
+/// Characters that may appear in generated data: Latin + German umlauts, digits, punctuation, arrows/check marks. Everything else
+/// (Tibetan, Devanagari, CJK, Cyrillic, ...) is the signature of a decoding fault and is dropped / triggers a regeneration.
+func isCleanScalar(_ u: Unicode.Scalar) -> Bool {
+  switch u.value {
+  case 0x20...0x7E, 0xA0...0x17F, 0x2010...0x2027, 0x2030...0x205E, 0x2190...0x21FF, 0x2713, 0x2717, 0xB7: return true
+  default: return u.value == 0x0A || u.value == 0x09
+  }
+}
+public func isCleanText(_ s: String) -> Bool { s.unicodeScalars.allSatisfy(isCleanScalar) }
+public func stripForeign(_ s: String) -> String { String(String.UnicodeScalarView(s.unicodeScalars.filter(isCleanScalar))) }
+
 /// Sanitize any model-produced string before it reaches the prompt (newlines, separators, control tokens).
 public func clean(_ s: String, _ n: Int = 60) -> String {
-  var t = s
+  var t = stripForeign(s)
   for bad in ["<turn|>", "<|turn>", "<|im_start|>", "<|im_end|>", "<bos>", "[Welt]", "---", "|", "<", ">", "\n", "\r", "\t"] { t = t.replacingOccurrences(of: bad, with: " ") }
   t = t.split(separator: " ", omittingEmptySubsequences: true).joined(separator: " ").trimmingCharacters(in: CharacterSet(charactersIn: " .,;:–-"))
   return cutw(t, n)
@@ -437,5 +448,36 @@ public struct World: Codable, Equatable {
       } else if let (i, new) = addNpc(name: h.name, kurz: h.role, ort: ort), new { log.append("neu \(npcs[i].name) (\(h.role))") }
     }
     return log
+  }
+}
+
+/// Repairs glyph-corrupted values in an existing world (older sessions): a value with foreign characters is matched against the known
+/// word lists (slot enums, roles) with the foreign run as a wildcard; otherwise the foreign characters are dropped.
+public func repairGlyphs(_ s: String, vocab: [String] = []) -> String {
+  if isCleanText(s) { return s }
+  let words = Set(vocab + GenSlots.enums.values.flatMap { $0 } + GenGr.roles)
+  // "tr࿋" / "Glཬkner": a run of foreign scalars becomes `.{1,3}`; the (shortest) vocabulary word that fits is the repair
+  var pat = ""; var inRun = false
+  for u in s.unicodeScalars { if isCleanScalar(u) { pat += NSRegularExpression.escapedPattern(for: String(u)); inRun = false } else if !inRun { pat += ".{1,3}"; inRun = true } }
+  var out = s
+  if !s.contains(" "), let re = try? NSRegularExpression(pattern: "^" + pat + "$", options: [.caseInsensitive]) {
+    let hits = words.filter { re.firstMatch(in: $0, range: NSRange($0.startIndex..., in: $0)) != nil }.sorted { $0.count < $1.count }
+    if let h = hits.first { return h }
+  }
+  out = stripForeign(s)
+  return out
+}
+extension World {
+  /// Repair all stored strings of a loaded world (F4: sessions written before the const_string fix).
+  public mutating func repairText() {
+    func fix(_ s: String) -> String { repairGlyphs(s) }
+    name = name.map(fix); kurz = kurz.map(fix); ort = ort.map(fix)
+    zustand = zustand.map(fix); inventar = inventar.map(fix)
+    for i in npcs.indices { npcs[i].name = fix(npcs[i].name); npcs[i].kurz = fix(npcs[i].kurz); npcs[i].ort = npcs[i].ort.map(fix); npcs[i].zustand = npcs[i].zustand.map(fix); npcs[i].inventar = npcs[i].inventar.map(fix); npcs[i].bekannt = npcs[i].bekannt.map(fix) }
+    orte = Dictionary(orte.map { (fix($0.key), fix($0.value)) }, uniquingKeysWith: { a, _ in a })
+    for i in straenge.indices { straenge[i].titel = fix(straenge[i].titel); straenge[i].stand = fix(straenge[i].stand); straenge[i].hinweise = straenge[i].hinweise.map(fix) }
+    for k in GenSlots.keys { gen.slots[k] = fix(gen.slots[k]) }
+    gen.praemisse = fix(gen.praemisse); gen.alltag = fix(gen.alltag); gen.start = fix(gen.start); gen.szene = fix(gen.szene)
+    gen.orte = Dictionary(gen.orte.map { (fix($0.key), fix($0.value)) }, uniquingKeysWith: { a, _ in a })
   }
 }

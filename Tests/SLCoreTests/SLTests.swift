@@ -79,7 +79,7 @@ final class DispatchTests: XCTestCase {
     // BIND: actual answer is a fixed string; event adds Deutung (verwerfen allowed) then narration
     g.open = true; g.ans = "NEIN+"; g.deut = true
     let g3 = Gr.grammar(g).tag
-    XCTAssertTrue(g3.contains("Antwort: NEIN+ → ")); XCTAssertFalse(g3.contains("Antwort: JA")); XCTAssertTrue(g3.contains("Deutung: ")); XCTAssertTrue(g3.contains("verwerfen")); XCTAssertFalse(g3.contains("<start_scene>"))
+    XCTAssertTrue(g3.contains("Antwort: NEIN")); XCTAssertTrue(g3.contains("→")); XCTAssertFalse(g3.contains("Antwort: JA"))   // literal with → is a regex now (xgrammar const_string bug); XCTAssertTrue(g3.contains("Deutung: ")); XCTAssertTrue(g3.contains("verwerfen")); XCTAssertFalse(g3.contains("<start_scene>"))
     // question budget
     g = Gate(); g.open = true; g.asks = 6; g.head = true
     XCTAssertFalse(Gr.grammar(g).tag.contains("ask_oracle"))
@@ -266,6 +266,47 @@ final class DisplayStoryTests: XCTestCase {   // F1 + F9
     XCTAssertEqual(s.map { $0["who"]! }, ["me", "sl", "me", "sl", "sl"])                       // every narration is present (F9), calls/tags-only messages produce nothing
     XCTAssertEqual(s[0]["text"], "Ich betrete die Taverne."); XCTAssertEqual(s[2]["text"], "Ich frage das Schicksal: Ist Ida da?")
     XCTAssertEqual(s[1]["text"], "Der Raum ist kalt. Zwei. Drei."); XCTAssertEqual(s[4]["text"], "Letzte Zeile ist Prosa. Zwei. Drei.")
+  }
+}
+
+final class MetaAndGlyphTests: XCTestCase {   // F2 + F4
+  func testMetaNarrationDetected() {
+    for bad in ["Erwartung eines Kindes im dunklen Keller.", "Deutunglichst plausibel ist, dass Morr lebt.", "Deutung: verwerfen", "Antwort NEIN bedeutet", "Werkzeug ja", "Der Wirt wirkt, plausibel ist, dass er lügt."] { XCTAssertTrue(isMetaNarration(bad), bad) }
+    for ok in ["Erwartungsvoll blickt der Wirt auf.", "Antwortet er leise, bleibt die Tür zu.", "Der Regen peitscht über die Planken.", "Fragend hebt Marta die Hand.", "Hinweisschilder rosten am Tor."] { XCTAssertFalse(isMetaNarration(ok), ok) }
+  }
+  func testNarrStreamFlagsBadNarration() {
+    func run(_ txt: String) -> Bool { let ns = NarrStream { _ in }; ns.feed(txt); return ns.bad }
+    XCTAssertTrue(run("Erwartung: x\nFrage: -\nWerkzeug: nein\nErwartung eines Kindes im Keller. Zwei. Drei."))        // scaffold in the narration slot
+    XCTAssertTrue(run("Frage: -\nWerkzeug: nein\nDer Raum ist tr\u{0FCB}b und kalt."))                                     // foreign glyph
+    XCTAssertFalse(run("Erwartung: Der Wirt schweigt.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Raum ist trüb und kalt. Zwei. Drei.\nFiguren: -"))   // gate lines are not narration
+    let ns = NarrStream { _ in }; ns.feed("Deutunglichst plausibel"); XCTAssertTrue(ns.bad); ns.discard(); XCTAssertFalse(ns.bad)
+  }
+  func testGlyphCleaning() {
+    XCTAssertTrue(isCleanText("Größe, trüb – „Glöckner“ → ✓ …")); XCTAssertFalse(isCleanText("tr\u{0FCB}")); XCTAssertFalse(isCleanText("\u{0917}\u{0930}rt")); XCTAssertFalse(isCleanText("Привет"))
+    XCTAssertEqual(clean("Gl\u{0F6C}ckner"), "Glckner")                                       // clean() never lets foreign scalars into the prompt
+    XCTAssertEqual(repairGlyphs("tr\u{0FCB}"), "trüb"); XCTAssertEqual(repairGlyphs("Gl\u{0F6C}ckner"), "Glöckner"); XCTAssertEqual(repairGlyphs("Ein \u{0917}\u{0930}rt Haus"), "Ein rt Haus")   // multi-word text: foreign run dropped
+    var w = World(); w.gen.slots.licht = "tr\u{0FCB}"; w.addNpc(name: "Kira", kurz: "Gl\u{0F6C}ckner", ort: nil); w.npcs[0].kurz = "Gl\u{0F6C}ckner"
+    w.repairText(); XCTAssertEqual(w.gen.slots.licht, "trüb"); XCTAssertEqual(w.npcs[0].kurz, "Glöckner")
+    var g = GenState(); g.slots.licht = "hell"; XCTAssertNotNil(genCheck("Ein tr\u{0FCB}ber Tag", g))
+  }
+  /// root cause of F4: xgrammar const_string mis-compiles 2-byte UTF-8; umlauts in literals go through the regex path now
+  func testUmlautLiteralsAcceptedByGrammar() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    let words = Set(GenSlots.enums.values.flatMap { $0 } + GenGr.roles + ["trüb", "Größe", "Ortswechsel/Zeitsprung", "→", "Wörter"]).filter { w in w.unicodeScalars.contains { $0.value > 127 } }
+    XCTAssertGreaterThan(words.count, 5)
+    for w in words {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Grammar(.seq([.s("X: "), .or([.s(w), .s("zzz")])])).tag)
+      var ok = true
+      for id in t.encode(text: "X: " + w, addSpecialTokens: false) { let r = try c.computeMask(); if r.needsApply && (r.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { ok = false; break }; _ = try c.commitToken(Int32(id)) }
+      XCTAssertTrue(ok, "grammar rejects the correct tokens of '\(w)'")
+    }
+    // after "tr" the correct continuation "üb" must be allowed and the lone Tibetan lead byte <0xE0> must not be
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: GenGr.slots.tag)
+    for id in t.encode(text: GenPromptEx.slots.components(separatedBy: "Licht:")[0] + "Licht: tr", addSpecialTokens: false) { _ = try c.computeMask(); _ = try c.commitToken(Int32(id)) }
+    let m = try c.computeMask(); let ub = t.convertTokenToId("üb")!, e0 = t.convertTokenToId("<0xE0>")!
+    XCTAssertEqual((m.mask[ub / 32] >> Int32(ub % 32)) & 1, 1); XCTAssertEqual((m.mask[e0 / 32] >> Int32(e0 % 32)) & 1, 0)
   }
 }
 

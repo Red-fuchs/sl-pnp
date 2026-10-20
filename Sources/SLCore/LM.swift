@@ -108,12 +108,12 @@ public final class LM {
   public func compile(_ g: Grammar) throws -> Double { let (c, k, t) = try take(g); giveBack(c, k, committed: 0); return t }
 
   /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = end-of-turn.
-  public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, onDelta: (String) -> Void) throws -> (String, GenStats) {
+  public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, abort: @escaping () -> Bool = { false }, onDelta: (String) -> Void) throws -> (String, GenStats) {
     if dirty { throw SLError("cache dirty, reset needed") }
     try ensureLoaded()
     dirty = true
     if cache.isEmpty { cache = try ctx.model.newCache(parameters: nil) }
-    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, onDelta: onDelta)
+    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, onDelta: onDelta)
     pending = tmpl.end
     cached += r.added
     dirty = false
@@ -132,7 +132,7 @@ public final class LM {
   }
   public var auxLast = GenStats()
 
-  func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
+  func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, abort: () -> Bool = { false }, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
     var st = GenStats()
     let (con, gkey, ct) = try take(g)
     st.compileS = ct
@@ -172,6 +172,7 @@ public final class LM {
       det.append(token: tok)
       if let s = det.next() { out += s; onDelta(s) }
       n += 1
+      if abort() { throw AbortedError() }
       // every sampled token goes through the model (also the terminating one) so the cache == rendered history
       let o = ctx.model(LMInput.Text(tokens: MLXArray([Int32(tok)]))[text: .newAxis], cache: cache, state: nil)
       added += 1
@@ -220,5 +221,8 @@ public final class LM {
 
 /// Generation hit maxTok: the partial text is kept so a finished narration can be salvaged (cut the tail, not the story).
 public struct TruncatedError: Error, CustomStringConvertible { public let partial: String; public var description: String { "maxTok reached" } }
+
+/// The caller stopped a generation on purpose (bad narration); the cache holds the aborted tokens and must be rebuilt.
+public struct AbortedError: Error {}
 
 public struct SLError: Error, CustomStringConvertible { public let description: String; public init(_ s: String) { description = s } }

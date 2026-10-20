@@ -1,11 +1,17 @@
 import Foundation
 
 /// xgrammar structural-tag builder: whole output = one strict grammar.
+func regexEscape(_ v: String) -> String { v.map { "\\.*+?()[]{}|^$/".contains($0) ? "\\\($0)" : String($0) }.joined() }
+
 public indirect enum G {
   case s(String), re(String), js(String), seq([G]), or([G])
   var o: Any {
     switch self {
-    case .s(let v): return ["type": "const_string", "value": v]
+    case .s(let v):
+      // xgrammar 0.1.30 compiles 2-byte UTF-8 (ä ö ü ß) in const_string to the wrong bytes (after "tr" only <0xE0> was allowed -> Tibetan glyphs).
+      // Non-ASCII literals therefore go through the regex path, which handles UTF-8 correctly.
+      if v.unicodeScalars.contains(where: { $0.value > 127 }) { return ["type": "regex", "pattern": regexEscape(v)] }
+      return ["type": "const_string", "value": v]
     case .re(let v): return ["type": "regex", "pattern": v]
     case .js(let v): return ["type": "json_schema", "json_schema": try! JSONSerialization.jsonObject(with: Data(v.utf8))]
     case .seq(let e): return ["type": "sequence", "elements": e.filter { if case .s(let v) = $0, v.isEmpty { return false }; return true }.map(\.o)]
