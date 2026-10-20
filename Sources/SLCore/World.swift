@@ -453,6 +453,8 @@ public struct World: Codable, Equatable {
     return log
   }
   /// ids of NPCs named in a text (player line) - counts as contact
+  /// NPCs spoken to via /gespraech since the last tick (tick clears the set - read it BEFORE ticking)
+  public func talkedNames() -> [String] { npcs.filter { talkedThisTurn.contains($0.id) }.map(\.name) }
   public func mentioned(in text: String) -> Set<String> {
     let t = Set(tokens(text)); return Set(npcs.filter { !Set(tokens($0.name)).isDisjoint(with: t) }.map(\.id))
   }

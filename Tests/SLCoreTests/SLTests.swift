@@ -728,6 +728,19 @@ final class ReviewV6DeathTests: XCTestCase {
   }
 }
 
+final class ReviewV6TalkSpurTests: XCTestCase {
+  // MED 5
+  func testGespraechCountsForSpur() {
+    var w = World(); w.setFigur("A: Mann"); w.ort = "Hof"; w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Hof"); w.npcs[0].anwesend = true
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.typ = "zeit"; n.ref = "99"; h.npcs["Zubeir"] = n
+    w.talkedThisTurn.insert(w.npcs[0].id)
+    let talked = w.talkedNames(); XCTAssertEqual(talked, ["Zubeir"])               // captured first ...
+    _ = w.tick(contacts: [w.npcs[0].id]); XCTAssertTrue(w.talkedNames().isEmpty)    // ... because tick clears it (this is what lost the event)
+    _ = h.updateSpur(&w, player: "Ich warte.", oracle: [], talked: talked)
+    XCTAssertEqual(h.npcs["Zubeir"]!.spur, 1)                                      // "asking the bearer" +1 although the player line does not name him
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

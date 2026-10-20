@@ -102,12 +102,13 @@ public final class Game {
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
       if let d = try? J.parse(txt) { let old = world.ort; log += world.apply(d); world.figurMoved(from: old) }
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
+    let talkedNames = world.talkedNames()      // read BEFORE tick(): tick clears talkedThisTurn (the Spur event "asking the bearer" was lost for /gespraech)
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
     genLazy()
-    let sp = hidden.updateSpur(&world, bonus: { [regel, pc = world.pc, art = lastArt ?? classifyArt(player)] tier in regel.spurBonus(art: art, pc: pc, tier: tier) }, player: player, oracle: turnQA, talked: namedBy(player) + world.npcs.filter { world.talkedThisTurn.contains($0.id) }.map(\.name))
+    let sp = hidden.updateSpur(&world, bonus: { [regel, pc = world.pc, art = lastArt ?? classifyArt(player)] tier in regel.spurBonus(art: art, pc: pc, tier: tier) }, player: player, oracle: turnQA, talked: namedBy(player) + talkedNames)
     if debug { sp.filter { $0.hasPrefix("[debug]") }.forEach { out(.info($0)) } }
-    let rv = genReveals(oracle: turnQA, talked: namedBy(player)) + sp.filter { !$0.hasPrefix("[debug]") }
+    let rv = genReveals(oracle: turnQA, talked: namedBy(player) + talkedNames) + sp.filter { !$0.hasPrefix("[debug]") }
     if !rv.isEmpty { pendingHint = rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
