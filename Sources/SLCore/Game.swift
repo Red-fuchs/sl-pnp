@@ -164,13 +164,14 @@ public final class Game {
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
 
   /// Gate state at the start of a turn (a pure function so a test can assert every field; a trailing `//` once swallowed all of them).
-  static func initialGate(player: String, pre: J?, forceEnd: Bool, noOracle: Bool, firstTurn: Bool, figurKnown: Bool, quiet: Int, saeulen: Bool, open: Bool = true) -> Gate {
+  static func initialGate(player: String, pre: J?, forceEnd: Bool, noOracle: Bool, firstTurn: Bool, figurKnown: Bool, quiet: Int, saeulen: Bool, open: Bool = true, isDialogue: Bool = false) -> Gate {
     var gate = Gate()
     gate.figurLine = firstTurn && !figurKnown
     gate.selfQ = isSelfQuestion(player)
     gate.noAsk = noOracle || pre != nil || !(askOpener(player) || quiet >= 3)   // free asks only when the player opens something (ob/weiß/kennt/?...) or after a long quiet stretch; the harness vetoes irrelevant ones
     gate.art = saeulen
     gate.mustAsk = quiet >= 3 && !isWQuestion(player) && !gate.selfQ
+    gate.quote = isDialogue
     gate.head = pre == nil || open     // pre turns keep the head (Erwartung) with `Frage: -`
     gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     return gate
@@ -194,6 +195,7 @@ public final class Game {
     var pre = pre
     var actionRes = false
     var actionNein = false
+    if pre == nil, !noOracle, !firstTurn, !minorTarget, cls == nil, let (fact, res) = resolveNameAsk(player) { player += "\n" + fact; pre = res; actionRes = true }
     if pre == nil, !noOracle, !firstTurn, !minorTarget, let (fact, res, cancel) = resolveClaim(player) {      // M2: claimed item not in the inventory
       player += "\n" + fact
       if cancel, let r = res { cls = nil; pre = r; actionRes = true; actionNein = true }
@@ -209,7 +211,7 @@ public final class Game {
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + ((regie ?? motifNote()).map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
-    var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen", open: eng.st.open)
+    var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen", open: eng.st.open, isDialogue: isDialogueTurn(playerOrig, world))
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = actionRes || pre != nil, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = pre.map { [fmtResult("ask_oracle", $0).replacingOccurrences(of: "[Orakel] ", with: "")] } ?? []
     var done = false, callLeakRetries = 0

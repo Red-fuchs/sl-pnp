@@ -226,3 +226,27 @@ final class RiskGateTests: XCTestCase {   // P4
     XCTAssertFalse(try rej("Trifft der Hieb?\nArt: kampf\nWerkzeug: ja\n"))
   }
 }
+
+final class QuoteSlotTests: XCTestCase {   // v7 plan d
+  func testQuoteRequiredOnDialogueTurns() throws {
+    guard let (t, l) = Llg.ctx else { throw XCTSkip("no model dir") }
+    var g = Gate(); g.quote = true; g.open = true
+    let tail = "\nFiguren: -"
+    let withQ = "Die Wirtin wischt den Tisch ab. „Setz dich, Fremder, der Eintopf ist heiß.“ Draußen fällt kalter Regen. Ein Hund bellt irgendwo in der Gasse." + tail
+    let noQ = "Die Wirtin wischt den Tisch ab. Sie sagt dir, du sollst dich setzen. Draußen fällt kalter Regen. Ein Hund bellt irgendwo in der Gasse." + tail
+    let t0 = Date(); let c1 = try LlgConstraint(tok: l, lark: Gr.grammar(g).lark); let comp = Date().timeIntervalSince(t0)
+    XCTAssertLessThan(comp, 5, "compile time")
+    func rej(_ s: String) throws -> Bool { let c = try LlgConstraint(tok: l, lark: Gr.grammar(g).lark); for id in t.encode(text: s, addSpecialTokens: false) { let m = try c.computeMask(); if (m.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return true }; _ = try c.commit(Int32(id)) }; return false }
+    _ = c1
+    let q1 = "„Setz dich, Fremder, der Eintopf ist heiß.“ Die Wirtin wischt den Tisch ab. Draußen fällt kalter Regen." + tail
+    let q3 = "Die Wirtin wischt den Tisch ab. Draußen fällt kalter Regen. „Setz dich, Fremder, der Eintopf ist heiß.“" + tail
+    XCTAssertFalse(try rej(q1)); XCTAssertFalse(try rej(q3))
+    XCTAssertFalse(try rej(withQ)); XCTAssertTrue(try rej(noQ))
+  }
+  func testDialogueAndNameAsk() {
+    var w = World(); w.npcs = [Npc(id: "n1", name: "Wache", kurz: "Wache", ort: "x"), Npc(id: "n2", name: "Marta", kurz: "Wirtin", ort: "x")]
+    XCTAssertTrue(isDialogueTurn("Ich frage die Wirtin nach dem Weg.", w)); XCTAssertFalse(isDialogueTurn("Ich sehe mich um.", w))
+    XCTAssertTrue(isNameAsk("Wie heißt du?")); XCTAssertTrue(isNameAsk("Ich frage die Wache nach ihrem Namen.") || isNameAsk("Ich frage nach seinem Namen.")); XCTAssertFalse(isNameAsk("Ich frage nach dem Weg."))
+    XCTAssertTrue(w.isGenericName(0)); XCTAssertFalse(w.isGenericName(1))
+  }
+}

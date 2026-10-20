@@ -180,3 +180,42 @@ extension Game {
     return ("[Orakel] Antwort: \(ans)\n[Fakt] Die Spielfigur hat kein \(disp) dabei: die Hand greift ins Leere. Erzähle das ausdrücklich; die Handlung gelingt nicht mit diesem Gegenstand.", res, true)
   }
 }
+
+// MARK: N7 dialogue and names
+let speechRe = try! NSRegularExpression(pattern: #"\b(frage|frag|sage|sag|spreche|sprich|rufe|rede|flüstere|bitte|antworte|erkundige|erzähle|begrüße|grüße)\w*"#, options: .caseInsensitive)
+let nameAskRe = try! NSRegularExpression(pattern: #"\b(wie heißt|wie heisst|wie nennt|wie lautet (?:dein|ihr|sein)\w* name|(?:dein|sein|ihr|eur)\w*\s+name\w*|stell\w* (?:dich|sich) vor|wer bist du)\b"#, options: .caseInsensitive)
+/// a dialogue turn: the player speaks to / asks someone and a (living) NPC is present
+public func isDialogueTurn(_ player: String, _ w: World) -> Bool {
+  speechRe.firstMatch(in: player, range: NSRange(player.startIndex..., in: player)) != nil && w.npcs.contains { $0.anwesend && !$0.tot }
+}
+public func isNameAsk(_ player: String) -> Bool { nameAskRe.firstMatch(in: player, range: NSRange(player.startIndex..., in: player)) != nil }
+extension World {
+  /// a role label instead of a name ("Wache", "Händler", "Frau")
+  public func isGenericName(_ i: Int) -> Bool {
+    let n = npcs[i].name.lowercased()
+    return GenGr.roles.contains { $0.lowercased() == n } || ["wache", "fremde", "fremder", "frau", "mann", "kind", "dorfbewohner", "unbekannter", "unbekannte", "alte", "alter"].contains(n) || (tokens(npcs[i].kurz).contains(n) && !n.isEmpty)
+  }
+}
+extension Game {
+  /// the player asks a present, still unnamed NPC for its name: the oracle decides ("Nennt X seinen Namen?"); JA assigns a generated name and registers it
+  func resolveNameAsk(_ player: String) -> (fact: String, res: J)? {
+    guard isNameAsk(player) else { return nil }
+    let tg = world.resolveTarget(player, last: lastTargetId)
+    guard case .npc(let i) = tg, world.isGenericName(i) else { return nil }
+    let old = world.npcs[i].name
+    let args: J = ["q": .str("Nennt \(old) den eigenen Namen?"), "odds": .int(0), "shift": .int(max(-2, min(2, world.npcs[i].haltung)))]
+    let res = eng.call("ask_oracle", args)
+    guard res["error"].isNull, let ans = res["answer"].str else { return nil }
+    out(.tool("ask_oracle", args, res)); turnQA.append(("Nennt \(old) den eigenen Namen?", ans)); lastTargetId = world.npcs[i].id
+    var fact = fmtResult("ask_oracle", res)
+    if ans.hasPrefix("JA") {
+      var ng = NameGen(used: Set(world.gen.used), rand: rnd)
+      let nn = ng.next(culture: NameGen.culture(for: world.gen.slots.line), avoid: Set(world.npcs.map { norm($0.name) })); world.gen.used = ng.used.sorted()
+      if let h = hidden.npcs.removeValue(forKey: old) { hidden.npcs[nn] = h }
+      world.npcs[i].name = nn; if world.npcs[i].kurz.isEmpty { world.npcs[i].kurz = old }
+      out(.world("\(old) heißt \(nn)"))
+      fact += "\n[Fakt] \(old) nennt den Namen: \(nn). Die Figur sagt ihn wörtlich in „…“."
+    } else { fact += "\n[Fakt] \(old) verweigert den Namen. Erzähle die Weigerung." }
+    return (fact, res)
+  }
+}

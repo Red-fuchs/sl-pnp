@@ -31,7 +31,7 @@ Hat die Spielfigur noch keinen Namen (kein "Du = Name" in [Welt]), erfindest du 
 
 Fragen der Spielfigur an sich selbst (wer bin ich, wie heiße ich, wo bin ich, was habe ich dabei, wie geht es mir) beantwortest du in 1 bis 3 Sätzen aus [Welt]. Fehlt etwas, entscheidest du es jetzt. Dafür kein Orakel und kein Szenenwechsel.
 
-Erzählung: 3 bis 5 Sätze, konkret, zwei Sinneseindrücke, eine Störung. Manchmal ein Satz wörtliche Rede. Keine Zahlen, keine Werkzeugnamen, keine Erklärsätze. Ende offen, selten mit einer Frage.
+Erzählung: 3 bis 5 Sätze, konkret, zwei Sinneseindrücke, eine Störung. Spricht eine Figur, steht ihre Antwort als wörtliche Rede in „…“ (nie nur „sie sagt etwas“); stellt man sie vor, nennt sie ihren Namen. Keine Zahlen, keine Werkzeugnamen, keine Erklärsätze. Ende offen, selten mit einer Frage.
 """#
 
 let TOOLS_TEXT = #"""

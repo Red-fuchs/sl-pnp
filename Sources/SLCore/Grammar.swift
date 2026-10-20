@@ -42,6 +42,7 @@ public struct Gate {
   public var figurNames: [String] = []   // name candidates for the player character (from the name generator); the model picks one
   public var art = false           // rules module active: the head carries "Art: kampf|sozial|wissen|sonst" (classification only)
   public var risky: Art?           // P4: deterministic risk class of the player action: the oracle must be asked, with exactly this Art
+  public var quote = false         // dialogue turn: the narration must contain one quoted sentence („…“)
   public var noAsk = false         // W-question via /frage: the oracle only answers yes/no -> no ask_oracle this turn
   public var needFigur = false     // no player character yet: the narration must end with a "Du: Name (Rolle, Merkmal)" slot
   public var selfQ = false         // self-question (wer bin ich ...): short narration, no oracle, no scene change
@@ -68,13 +69,16 @@ public enum Gr {
   static let sent = "[ ]?" + Cls.rep(Cls.narr, 6) + "[.!?][\"“”»«]?"
   public static let narrPattern = "(\(sent)){3}(\(sent)){0,2}"   // 3-5 sentences
   public static let narrBody = G.re(narrPattern)
+  static let quoteSent = "[ ]?„" + Cls.rep(Cls.narr, 4) + "[.!?]“"
+  /// 3-5 sentences, one of the first three is a quoted line
+  public static let quotePattern = "(\(quoteSent)(\(sent)){2}|(\(sent))\(quoteSent)(\(sent))|(\(sent)){2}\(quoteSent))(\(sent)){0,2}"
   static let shortPattern = "(\(sent))(\(sent)){0,2}"   // 1-3 sentences (self-questions)
   static func duSlot(_ names: [String]) -> G {   // the NAME is an enum of generated candidates (the 4B model kept evading with "dein Name ist dir unbekannt")
     .seq([names.isEmpty ? G.re(#"[A-ZÄÖÜ][a-zäöüß]{2,}"#) : GenGr.en(names), .s(" ("), .re(Cls.rep(Cls.paren, 3)), .s(")")])
   }
   /// narration + mandatory tails: [Du: Name (Rolle, Merkmal) while no character exists] + "Figuren: Name (Rolle), …" | "-" (both stripped from display)
   public static func narrG(_ t: Gate) -> G {
-    var p: [G] = [t.selfQ ? G.re(shortPattern) : narrBody]
+    var p: [G] = [t.selfQ ? G.re(shortPattern) : (t.quote ? G.re(quotePattern) : narrBody)]
     if t.needFigur { p += [.s("\nDu: "), duSlot(t.figurNames)] }
     p += [.s("\nFiguren: "), .or([.s("-"), .re(Cls.rep(Cls.line, 2))])]
     return .seq(p)
