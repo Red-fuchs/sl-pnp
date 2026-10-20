@@ -102,7 +102,8 @@ public enum Gr {
   }
   public static var delta: Grammar { Grammar(.js(DELTA_SCHEMA)) }
 
-  static func artG(_ t: Gate) -> [G] { t.art ? [.s("\nArt: "), GenGr.en(Art.allCases.map(\.rawValue))] : [] }
+  /// `risky: false` = the branch WITHOUT an oracle call: while the oracle can still be asked, kampf/sozial/wissen actions may not skip it (Säulen would otherwise never matter)
+  static func artG(_ t: Gate, risky: Bool = true) -> [G] { t.art ? [.s("\nArt: "), risky || !canAsk(t) ? GenGr.en(Art.allCases.map(\.rawValue)) : .s("sonst")] : [] }
   static func canAsk(_ t: Gate) -> Bool { t.open && t.asks < maxAsks && !t.noAsk }
 
   public static func grammar(_ t: Gate) -> Grammar {
@@ -116,7 +117,7 @@ public enum Gr {
       // end_scene ONLY after "Ortswechsel/Zeitsprung: ja"; otherwise ask the oracle or narrate
       var br: [G] = [.seq([ja, endScene])]
       if t.selfQ { return Grammar(.seq(hd + [.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }   // self-question: narration only
-      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }
+      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t, risky: false) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }
       if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q] + artG(t) + [.s("\nWerkzeug: ja\n"), askCall])) }
       return Grammar(.seq(hd + [.or(br)]))
     }

@@ -27,7 +27,7 @@ func jsonOut(_ o: Out) -> [String: Any]? {
     var m: [String: Any] = ["t": "tool", "name": n, "text": describe(n, a, r)]
     if n == "ask_oracle" || n == "start_scene" {
       m["card"] = ["tool": n, "q": a["q"].str ?? a["expect"].str ?? "", "answer": r["answer"].str ?? r["outcome"].str ?? "", "roll": r["roll"].int ?? -1,
-                   "p": r["p"].int ?? -1, "s": r["s"].int ?? -1, "rng": r["rng"].str ?? "", "odds": a["odds"].int.map { oddsText($0) } ?? ""] as [String: Any]
+                   "p": r["p"].int ?? -1, "s": r["s"].int ?? -1, "rng": r["rng"].str ?? "", "odds": a["odds"].int == nil ? "" : oddsLabel(a)] as [String: Any]
     }
     return m
   case .event(let e): return ["t": "event", "text": e]

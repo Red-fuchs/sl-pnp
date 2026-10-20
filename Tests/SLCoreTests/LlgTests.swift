@@ -172,3 +172,25 @@ final class LlgWorldGenTests: XCTestCase {
     }
   }
 }
+
+final class SaeulenGateTests: XCTestCase {   // N4
+  func testRiskyActionMustAskOracle() throws {
+    guard let (t, l) = Llg.ctx else { throw XCTSkip("no model dir") }
+    var g = Gate(); g.head = true; g.open = true; g.art = true
+    let head = "Erwartung: Der Wächter zieht blank und greift an.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nArt: "
+    func rejectAt(_ art: String) throws -> Int? {
+      let c = try LlgConstraint(tok: l, lark: Gr.grammar(g).lark)
+      var ids = t.encode(text: head + art + "\nWerkzeug: nein\n", addSpecialTokens: false)
+      for (i, id) in ids.enumerated() { let m = try c.computeMask(); if (m.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return i }; _ = try c.commit(Int32(id)) }
+      ids.removeAll(); return nil
+    }
+    XCTAssertNil(try rejectAt("sonst"))
+    for a in ["kampf", "sozial", "wissen"] { XCTAssertNotNil(try rejectAt(a), a) }
+    g.asks = 99          // no oracle budget left: the model may narrate
+    XCTAssertNil(try rejectAt("kampf"))
+  }
+  func testOddsLabel() {
+    XCTAssertEqual(oddsLabel(["odds": .int(0)]), oddsText(0))
+    XCTAssertTrue(oddsLabel(["odds": .int(0), "shift": .int(1)]).contains("+1"))
+  }
+}

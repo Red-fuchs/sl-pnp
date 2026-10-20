@@ -3,11 +3,16 @@ import Schicksal
 
 let oddsName = ["fast unmöglich", "sehr unwahrscheinlich", "unwahrscheinlich", "offen", "wahrscheinlich", "sehr wahrscheinlich", "fast sicher"]
 public func oddsText(_ o: Int) -> String { oddsName[max(0, min(6, o + 3))] }
+/// odds label incl. the applied shift ("offen · Säule +1 → wahrscheinlich")
+public func oddsLabel(_ a: J) -> String {
+  let o = a["odds"].int ?? 0, sh = a["shift"].int ?? 0
+  return sh == 0 ? oddsText(o) : "\(oddsText(o)) \(sh > 0 ? "+" : "")\(sh) → \(oddsText(o + sh))"
+}
 
 public func describe(_ name: String, _ a: J, _ r: J) -> String {
   if let e = r["error"].str { return "⚀ \(name): Fehler: \(e)" }
   switch name {
-  case "ask_oracle": return "⚀ ask_oracle: \(a["q"].str ?? "") (\(oddsText(a["odds"].int ?? 0))) → \(r["answer"].str ?? "?") [\(r["rng"].str ?? "")]"
+  case "ask_oracle": return "⚀ ask_oracle: \(a["q"].str ?? "") (\(oddsLabel(a))) → \(r["answer"].str ?? "?") [\(r["rng"].str ?? "")]"
   case "start_scene": return "⚀ start_scene: \(a["expect"].str ?? "") → \(r["outcome"].str ?? "?")"
   case "end_scene": return "⚀ end_scene: \(a["summary"].str ?? "") (Spannung \(r["s_before"].int ?? 0)→\(r["s"].int ?? 0))"
   case "random_event": return "⚀ random_event: \(r["dir"].str ?? "")"
@@ -102,9 +107,11 @@ public final class Runner {
   public func frage(_ q: String, odds: Int) throws {
     guard game.eng.st.open else { sink(.info("Keine offene Szene – beschreibe zuerst deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).")); return }
     if isWQuestion(q) { sink(.info("W-Frage: wird als normaler Zug gespielt (das Orakel beantwortet nur Ja/Nein-Fragen).")); session.log("\n**Spieler:** \(q)\n"); try run { try game.turn(q, noOracle: true) }; return }
-    let r = game.eng.call("ask_oracle", ["q": .str(q), "odds": .int(odds)])
+    var args: J = ["q": .str(q), "odds": .int(odds)]
+    if var o = args.obj, let sh = combinedShift(haltung: game.world.shift(forQuestion: q), regel: game.regel.oddsShift(art: classifyArt(q), pc: game.world.pc, input: q)) { o["shift"] = .int(sh); args = .obj(o) }   // N4: NPC attitude + Säulen, same as the auto-oracle
+    let r = game.eng.call("ask_oracle", args)
     if r["error"].isNull == false { sink(.info("Fehler: \(r["error"].str ?? "")")); return }
-    sink(.tool("ask_oracle", ["q": .str(q), "odds": .int(odds)], r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
+    sink(.tool("ask_oracle", args, r)); rolls.append(r); lastRng = r["rng"].str ?? lastRng
     if let e = evInfo("ask_oracle", r) { sink(.event(evShow(e))) }
     session.log("\n**Spieler:** /frage \(q) → \(r.json)\n")
     var fb = fmtResult("ask_oracle", r)   // short German text only; rng/roll/step stay in the UI

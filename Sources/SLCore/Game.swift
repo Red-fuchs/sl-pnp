@@ -80,6 +80,9 @@ public final class Game {
     self.hidden = hidden; self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
   }
 
+  /// after a failed attempt: the LM already rolled its cache back (dirty == false) unless it could not
+  static let forceAbort = ProcessInfo.processInfo.environment["SL_FORCE_ABORT"] != nil   // test aid: first attempt of every call aborts
+  func recoverCache() throws { if lm.dirty { try syncCache() } }
   public func syncCache() throws { try lm.reset(lm.tmpl.render(sys: sys, FEW + msgs)) }
 
   func compact() throws {
@@ -172,7 +175,7 @@ public final class Game {
       for attempt in 0..<3 {
         ns = mkStream()
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }, ban: ban, soft: softBanFor(known)) { d in ns.feed(d) }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil || (attempt == 0 && Game.forceAbort && ns.n > 8)) }, ban: ban, soft: softBanFor(known)) { d in ns.feed(d) }
           break
         } catch is AbortedError {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
@@ -183,7 +186,7 @@ public final class Game {
           } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
           ns.discard(); metaRetry = true
           out(.retract)
-          try syncCache()
+          if ns.leak != nil { try syncCache() } else { try recoverCache() }
         } catch let e as TruncatedError {
           if let sv = salvageNarration(e.partial) {   // narration finished, only the tail overran: keep the story, drop the tail
             ns.finish(); txt = sv; out(.info("Figuren-Zeile abgeschnitten")); truncated = true; break
@@ -191,7 +194,7 @@ public final class Game {
           ns.discard()
           guard attempt < 2 else { throw e }
           out(.retract); out(.info("Ausgabe zu lang – neuer Versuch"))   // nothing usable: restart, and the UI drops the partial text
-          try syncCache()   // drop the half-generated tokens from the cache
+          try recoverCache()   // drop the half-generated tokens from the cache
         }
       }
       if debug { out(.info("· " + lm.last.line)) }
@@ -200,8 +203,9 @@ public final class Game {
         var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }), isMetaNarration(lines[k]) || !isCleanText(lines[k]) {
           if !hold { out(.retract) }
-          out(.delta("Die Szene verharrt für einen Augenblick.")); out(.end)
-          lines[k] = "Die Szene verharrt für einen Augenblick."; txt = lines.joined(separator: "\n"); truncated = true
+          let kept = stripMeta(lines[k]) ?? "Die Szene verharrt für einen Augenblick."   // best attempt minus the meta sentences; the stock line only when nothing is left
+          out(.delta(kept)); out(.end)
+          lines[k] = kept; txt = lines.joined(separator: "\n"); truncated = true
         }
       }
       if let l = ns.leak {   // still leaking after the regeneration: drop the offending sentences, show the rest
@@ -346,7 +350,9 @@ public final class NarrStream {
   let hold: Bool, check: ((String) -> Leak?)?
   /// hold: narration deltas are buffered until the line is complete and checked (only on turns with secret-bearing NPCs present)
   public init(hold: Bool = false, check: ((String) -> Leak?)? = nil, out: @escaping (Out) -> Void) { self.hold = hold; self.check = check; self.out = out }
+  public private(set) var n = 0
   public func feed(_ d: String) {
+    n += 1
     for ch in d {
       if ch == "\n" { endLine(); continue }
       line.append(ch)
@@ -395,6 +401,12 @@ public func isMetaNarration(_ line: String) -> Bool {
   let w = String(t.prefix { $0.isLetter })
   if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
   return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
+}
+
+/// Narration line minus planner/meta sentences and foreign glyphs; nil when nothing readable is left.
+public func stripMeta(_ line: String) -> String? {
+  let r = sentences(of: line).filter { !isMetaNarration($0) }.map { stripForeign($0).trimmingCharacters(in: .whitespaces) }.filter { $0.count > 3 }.joined(separator: " ")
+  return r.count >= 20 ? r : nil
 }
 
 /// UI/SSE text for a guarded narration: never names the bearer or the topic (the info line is replayed to late joiners and shown to the player).

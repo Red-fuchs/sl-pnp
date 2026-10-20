@@ -1260,3 +1260,13 @@ final class PlaceKeyTests: XCTestCase {   // N2
     w.ort = "Krypta"; XCTAssertTrue(w.samePlace(w.ort, "Die Krypta"))
   }
 }
+
+final class MetaStripTests: XCTestCase {   // N3
+  func testStripMetaKeepsStory() {
+    let l = "Der Wind pfeift durch die Gassen und die Wirtin sieht dich misstrauisch an. Erwartung des Gastes ist, dass er bleibt. Niemand sagt ein Wort."
+    // meta check is per sentence start word
+    let r = stripMeta(l)
+    XCTAssertNotNil(r); XCTAssertTrue(r!.contains("Wirtin")); XCTAssertFalse(r!.contains("Erwartung"))
+    XCTAssertNil(stripMeta("Erwartung: nichts."))
+  }
+}

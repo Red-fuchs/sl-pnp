@@ -124,7 +124,15 @@ public final class LM {
     try ensureLoaded()
     dirty = true
     if cache.isEmpty { cache = try ctx.model.newCache(parameters: nil) }
-    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, ban: ban, soft: soft, onDelta: onDelta)
+    let snap = (st: cache.map { $0.state }, meta: cache.map { $0.metaState }, pending: pending, cached: cached)
+    let r: (out: String, st: GenStats, added: Int)
+    do { r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, ban: ban, soft: soft, onDelta: onDelta) }
+    catch {
+      // aborted / truncated attempt: put the KV cache back to the start of this turn (arrays are immutable, so the snapshot is exact;
+      // works for sliding-window layers too). The retry then prefills only the new turn instead of the whole history.
+      if error is AbortedError || error is TruncatedError, snap.st.allSatisfy({ !$0.isEmpty }) { for i in cache.indices { var c = cache[i]; c.state = snap.st[i]; c.metaState = snap.meta[i] }; pending = snap.pending; cached = snap.cached; dirty = false }
+      throw error
+    }
     pending = tmpl.end
     cached += r.added
     dirty = false
