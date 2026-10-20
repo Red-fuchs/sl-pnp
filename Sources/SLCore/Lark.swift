@@ -48,7 +48,7 @@ func positivize(_ re: String) -> String {
 /// first letter either case, trailing -e/-n/-en/-er/-s/-es dropped, ä/ö/ü/ß also as ae/oe/ue/ss.
 public func llgBanRegex(_ terms: [String]) -> String? {
   var alts = Set<String>()
-  for t in terms {
+  for t in terms.prefix(24) {
     var w = t.lowercased().filter { $0.isLetter }
     guard w.count >= 4 else { continue }
     for suf in ["ern", "en", "er", "es", "e", "n", "s"] where w.hasSuffix(suf) && w.count - suf.count >= 4 { w = String(w.dropLast(suf.count)); break }
@@ -70,7 +70,8 @@ struct LarkBuilder {
     "\"" + v.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"").replacingOccurrences(of: "\n", with: "\\n").replacingOccurrences(of: "\r", with: "\\r").replacingOccurrences(of: "\t", with: "\\t") + "\""
   }
   static func re(_ v: String) -> String { "/" + positivize(v).replacingOccurrences(of: "/", with: "\\/") + "/" }
-  static func isFree(_ v: String) -> Bool { v.contains("]*") || v.contains("]+") }
+  /// unbounded repetition anywhere (`]*`, `]+`, `{n,}`): the terminal can carry free text, so the ban applies
+  static func isFree(_ v: String) -> Bool { v.contains("]*") || v.contains("]+") || v.range(of: #"\{\d+,\}"#, options: .regularExpression) != nil }
   mutating func emit(_ g: G) -> String {
     switch g {
     case .s(let v): return Self.lit(v)

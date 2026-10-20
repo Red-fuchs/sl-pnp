@@ -5,7 +5,7 @@ import MLXGuidedGeneration
 @testable import SLCore
 
 /// One LlgTok per test run (0.7 s); skipped when the Gemma-4 tokenizer is not in the HF cache.
-private enum Llg {
+enum Llg {
   static let ctx: (tok: any MLXLMCommon.Tokenizer, llg: LlgTok)? = {
     guard let d = modelDir else { return nil }
     let sem = DispatchSemaphore(value: 0); nonisolated(unsafe) var t: (any Tokenizers.Tokenizer)?
@@ -107,5 +107,40 @@ final class LlgTests: XCTestCase {
       worst = max(worst, Date().timeIntervalSince(t0))
     } }
     print("[llg] \(gs.count) grammars x2 compiled, worst \(Int(worst * 1000)) ms")
+  }
+}
+
+/// ban coverage: every free-text (unbounded) regex of every sl grammar must carry the Lark ban; only %json strings rely on the token trie
+final class LlgBanCoverageTests: XCTestCase {
+  func res(_ g: G) -> [String] { switch g { case .re(let v): return LarkBuilder.isFree(v) ? [v] : []; case .seq(let e), .or(let e): return e.flatMap(res); default: return [] } }
+  func testEveryFreeTerminalCarriesTheBan() {
+    var gs: [Grammar] = [Gr.talk, Gr.regie, GenGr.slots, GenGr.premise, GenGr.place(), GenGr.npc(name: "Z", places: ["A", "B"], npcs: ["Z"]), GenGr.thread(refs: ["A", "B"]), GenGr.start(places: ["A", "B"])]
+    for bits in 0..<(1 << 9) {
+      var g = Gate(); g.head = bits & 1 != 0; g.open = bits & 2 != 0; g.deut = bits & 4 != 0; g.forceEnd = bits & 8 != 0; g.figurLine = bits & 16 != 0; g.mustAsk = bits & 32 != 0
+      g.noAsk = bits & 64 != 0; g.needFigur = bits & 128 != 0; g.selfQ = bits & 256 != 0; g.ans = bits % 3 == 0 ? "JA+" : nil; g.art = bits % 5 == 0
+      gs.append(Gr.grammar(g))
+    }
+    for g in gs {
+      let free = Set(res(g.g)); guard !free.isEmpty else { continue }
+      let l = g.lark(ban: ["Salzlake"]); let banned = l.components(separatedBy: "\n").filter { $0.hasPrefix("FREE") && $0.contains("& ~") }.count
+      XCTAssertEqual(banned, free.count, "free terminals without ban in \(l.prefix(300))")
+      XCTAssertEqual(l.components(separatedBy: "& ~").count - 1, banned)
+    }
+  }
+}
+
+final class LlgFuelProbe: XCTestCase {
+  func testProbe() throws {
+    guard let c = Llg.ctx else { throw XCTSkip("no model") }
+    let all = ["Bittermandelöl", "panscht", "Brunnenwasser", "Schlüssel", "Zisterne", "Schmuggler", "heimlich", "Zeughaus", "Stadtgeheimnisse", "Kontamination", "akzeptiert", "Wachsspuren"]
+    for n in [2, 4, 6, 8, 12] {
+      let t0 = Date()
+      do {
+        let k = try LlgConstraint(tok: c.llg, lark: Grammar(Gr.narr).lark(ban: Array(all.prefix(n))))
+        var worst = 0.0
+        for id in c.tok.encode(text: "Die Wasserträger rasten am Tor. Der Wind trägt Staub herbei. Niemand spricht ein Wort. Im Hof liegt ein Eimer neben dem Brunnen, und die Wache starrt ins Leere.", addSpecialTokens: false) { let t1 = Date(); _ = try k.computeMask(); worst = max(worst, Date().timeIntervalSince(t1)); _ = try k.commit(Int32(id)) }
+        print("[probe] \(n) terms ok \(Int(Date().timeIntervalSince(t0) * 1000)) ms, worst mask \(Int(worst * 1000)) ms") }
+      catch { print("[probe] \(n) terms FAIL \(error) \(Int(Date().timeIntervalSince(t0) * 1000)) ms") }
+    }
   }
 }

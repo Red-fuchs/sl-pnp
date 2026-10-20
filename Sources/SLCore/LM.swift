@@ -22,9 +22,9 @@ struct TokLoader: TokenizerLoader {
   func load(from d: URL) async throws -> any MLXLMCommon.Tokenizer { TokBridge(u: try await AutoTokenizer.from(modelFolder: d)) }
 }
 
-public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0, maskS = 0.0, compileS = 0.0, cmS = 0.0, cbS = 0.0, ccS = 0.0
+public struct GenStats { public var prefillTok = 0, prefillS = 0.0, genTok = 0, ttft = 0.0, decS = 0.0, maskS = 0.0, compileS = 0.0, cmS = 0.0, cbS = 0.0, ccS = 0.0, banL = 0, banT = 0, banSteps = 0
   public var maskUs: Int { genTok > 0 ? Int(maskS * 1e6 / Double(genTok)) : 0 }
-  public var line: String { String(format: "prefill %d tok %.2fs · gen %d tok %.2fs (%.1f tok/s) · grammar mask %d µs/tok (engine %d · build %d · commit %d) · compile %.2fs", prefillTok, prefillS, genTok, decS, tps, maskUs, genTok > 0 ? Int(cmS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(cbS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(ccS * 1e6 / Double(genTok)) : 0, compileS) }
+  public var line: String { String(format: "prefill %d tok %.2fs · gen %d tok %.2fs (%.1f tok/s) · grammar mask %d µs/tok (engine %d · build %d · commit %d) · compile %.2fs%@", prefillTok, prefillS, genTok, decS, tps, maskUs, genTok > 0 ? Int(cmS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(cbS * 1e6 / Double(genTok)) : 0, genTok > 0 ? Int(ccS * 1e6 / Double(genTok)) : 0, compileS, banSteps > 0 || banL > 0 || banT > 0 ? " · ban masked lark \(banL) trie \(banT) tokens in \(banSteps) steps" : "") }
   public var tps: Double { decS > 0 ? Double(genTok) / decS : 0 } }
 
 
@@ -149,6 +149,10 @@ public final class LM {
     st.compileS = ct
     var committed = 0
     defer { giveBack(con, gkey, committed: committed) }
+    // SL_BANSTAT=1: shadow matcher without the Lark ban, to count the tokens the ban removes (measurement only, doubles mask cost)
+    var shadow: (Constraint, String)?
+    if ProcessInfo.processInfo.environment["SL_BANSTAT"] != nil, gkey.hasPrefix("L"), ban?.terms.isEmpty == false { let (c, k, _, _) = try take(g, ban: nil); shadow = (c, k) }
+    defer { if let (c, k) = shadow { giveBack(c, k, committed: committed) } }
     let t0 = Date()
     let ids = tok.encode(text: text, addSpecialTokens: false)
     st.prefillTok = ids.count
@@ -167,6 +171,8 @@ public final class LM {
       st.cmS += Date().timeIntervalSince(tm)
       var l = logits[0..., -1, 0...]
       let blk = trie ? ban?.blocked(after: gen) ?? [] : [], sft = soft?.blocked(after: gen) ?? []
+      if !blk.isEmpty { let h = blk.filter { $0 < m.mask.count * 32 && (m.mask[$0 >> 5] >> Int32($0 & 31)) & 1 == 1 || !m.needsApply }.count; if h > 0 { st.banT += h; st.banSteps += 1 } }
+      if let (sc, _) = shadow, let sm = try? sc.computeMask() { var h = 0; for w in 0..<min(sm.mask.count, m.mask.count) { h += (UInt32(bitPattern: sm.mask[w]) & ~UInt32(bitPattern: m.mask[w])).nonzeroBitCount }; if h > 0 { st.banL += h; st.banSteps += 1 } }
       if m.needsApply || !blk.isEmpty || !sft.isEmpty {
         // repetition penalty on content words, only while the grammar leaves free text (narration), also against the previous turn ("Die Treppe" x3)
         let free = !m.needsApply || m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
@@ -177,7 +183,7 @@ public final class LM {
       if st.ttft == 0 { st.ttft = Date().timeIntervalSince(t1) }
       if stop.contains(tok) { break }
       let tc = Date()
-      let r = try con.commit(Int32(tok))
+      let r = try con.commit(Int32(tok)); if let (sc, _) = shadow { _ = try? sc.commit(Int32(tok)) }
       st.maskS += Date().timeIntervalSince(tc); st.ccS += Date().timeIntervalSince(tc)
       committed += 1 + r.tokens.count
       gen.append(tok)

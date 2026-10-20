@@ -61,6 +61,9 @@ public final class LlgConstraint: Constraint, @unchecked Sendable {
     var ci = LlgConstraintInit()
     llg_constraint_init_set_defaults(&ci, tok.p)
     ci.backtrack_ok = false; ci.ff_tokens_ok = false
+    // derivre fuel: the default (200k) is exhausted at mask time by `& ~` with >= 6 ban terms ("too many expressions constructed"); 12 terms need < 5M
+    let fuel = ProcessInfo.processInfo.environment["SL_LLG_FUEL"].flatMap { UInt64($0) } ?? 20_000_000
+    ci.limits.initial_lexer_fuel = fuel; ci.limits.step_lexer_fuel = fuel
     m = llg_new_matcher(&ci, "lark", lark)
     if llg_matcher_is_error(m) { let e = String(cString: llg_matcher_get_error(m)); llg_free_matcher(m); throw LlgError(description: e) }
   }
