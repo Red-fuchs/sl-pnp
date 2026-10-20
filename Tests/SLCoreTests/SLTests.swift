@@ -711,6 +711,23 @@ final class ReviewV6BanTests: XCTestCase {
   }
 }
 
+final class ReviewV6DeathTests: XCTestCase {
+  // MED 4
+  func w() -> World { var w = World(); w.setFigur("Aether: Mann"); w.ort = "Hof"; for n in ["Marta", "Bork", "Kara"] { w.addNpc(name: n, kurz: "x", ort: "Hof") }; for i in w.npcs.indices { w.npcs[i].anwesend = true }; return w }
+  func testReportedSpeechAndObserversDoNotKill() {
+    var a = w(); a.markDeaths(narr: "Marta erzählt, dass ihr Vater vor Jahren starb."); XCTAssertFalse(a.npcs[0].tot)               // reported speech
+    var b = w(); b.markDeaths(narr: "Marta sagt: Bork stirbt bald."); XCTAssertFalse(b.npcs.contains { $0.tot })
+    var c = w(); c.markDeaths(narr: "Marta sah, wie Bork erschlagen wurde."); XCTAssertFalse(c.npcs[0].tot); XCTAssertTrue(c.npcs[1].tot)   // observer survives, the victim (last name before the verb) dies
+    var d = w(); d.markDeaths(narr: "Kara und Bork stehen am Tor. Bork stirbt röchelnd."); XCTAssertTrue(d.npcs[1].tot); XCTAssertFalse(d.npcs[2].tot)
+    var e = w(); e.markDeaths(narr: "Kara erschlägt Bork mit dem Ruder."); XCTAssertTrue(e.npcs[1].tot); XCTAssertFalse(e.npcs[2].tot)
+  }
+  func testDeathIsReversible() {
+    var a = w(); a.markDeaths(narr: "Bork stirbt am Tor."); XCTAssertTrue(a.npcs[1].tot); XCTAssertFalse(a.npcs[1].anwesend)
+    XCTAssertTrue(a.revive(1)); XCTAssertFalse(a.npcs[1].tot); XCTAssertTrue(a.npcs[1].anwesend); XCTAssertFalse(a.npcs[1].zustand.contains("tot")); XCTAssertFalse(a.revive(1))
+    XCTAssertEqual(Cmd.parse("/lebt Bork"), .lebt("Bork"))
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

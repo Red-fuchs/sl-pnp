@@ -373,7 +373,7 @@ public struct World: Codable, Equatable {
   }
   static let intransitive = ["stirbt", "starb", "gestorben", "ist tot", "war tot", "fällt tot", "stürzt tot", "tot zu boden", "verendet", "verblutet", "röchelt sein letztes", "haucht sein leben", "haucht ihr leben"]
   static let transitive = ["erschlägt", "ersticht", "tötet", "erdolcht", "erwürgt", "erschießt", "richtet hin", "ermordet", "erschlagen", "erstochen", "getötet", "hingerichtet", "erschossen"]
-  static let hedges = ["nicht", "kaum", "beinahe", "fast ", "wäre", "könnte", "würde", "angeblich", "gerüchte", "wenn ", "falls", "kein ", "niemand"]
+  static let hedges = ["nicht", "kaum", "beinahe", "fast ", "wäre", "könnte", "würde", "angeblich", "gerüchte", "wenn ", "falls", "kein ", "niemand", "sagt", "sagte", "erzählt", "berichtet", "dass", "meint", "glaubt", "behauptet", "erinnert", "vor jahren", "damals"]   // reported speech / past events (observers are handled by "name right before the verb")
   /// Narration says a named NPC dies -> mark dead (the delta step often misses it: "Ithror stirbt" left him alive in [Welt]).
   /// "X stirbt" / "X wurde erschlagen": X is before the verb; "Kara erschlägt X": X is after the verb.
   @discardableResult
@@ -388,16 +388,25 @@ public struct World: Codable, Equatable {
       let iv = Self.intransitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
       let tv = Self.transitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
       var hit = false
-      for i in npcs.indices where !npcs[i].tot {
-        let pos = tokens(npcs[i].name).compactMap { sn.range(of: $0)?.lowerBound }.min()
-        guard let p = pos else { continue }
-        hit = true
-        if let d = iv, p < d.lowerBound { log += kill(i) }
-        else if let d = tv { if passive ? p < d.lowerBound : p > d.upperBound { log += kill(i) } }
+      // candidates in order of appearance
+      let named = npcs.indices.compactMap { i -> (Int, String.Index)? in
+        guard !npcs[i].tot, let p = tokens(npcs[i].name).compactMap({ sn.range(of: $0)?.lowerBound }).min() else { return nil }
+        return (i, p) }.sorted { $0.1 < $1.1 }
+      if !named.isEmpty { hit = true }
+      if let d = iv, let victim = named.last(where: { $0.1 < d.lowerBound }) { log += kill(victim.0) }       // "X stirbt": the name right before the verb (an observer named earlier is not the victim)
+      else if let d = tv {
+        if passive { if let victim = named.last(where: { $0.1 < d.lowerBound }) { log += kill(victim.0) } }   // "X wurde erschlagen": LAST name before the verb
+        else if let victim = named.first(where: { $0.1 > d.upperBound }) { log += kill(victim.0) }           // "Kara erschlägt X": first name after the verb
       }
       if !hit, let l = last, !npcs[l].tot, iv != nil, sn.trimmingCharacters(in: .whitespaces).hasPrefix("er ") || sn.trimmingCharacters(in: .whitespaces).hasPrefix("sie ") { log += kill(l) }   // pronoun subject
     }
     return log
+  }
+  /// Undo a wrongly detected death (`/lebt <Figur>`).
+  @discardableResult
+  public mutating func revive(_ i: Int) -> Bool {
+    guard npcs[i].tot else { return false }
+    npcs[i].tot = false; npcs[i].zustand.removeAll { $0 == "tot" }; npcs[i].anwesend = samePlace(npcs[i].ort, ort); return true
   }
   /// An NPC named in the narration, last seen at the player's current place, is present (the tail/delta steps often forget this).
   public mutating func syncPresence(narr: String) {

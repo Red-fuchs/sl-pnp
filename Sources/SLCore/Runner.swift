@@ -172,6 +172,8 @@ public final class Runner {
       session = try Session(name: nextSessionName(base: session.name), root: session.dir.deletingLastPathComponent())   // keeps the --name the user chose
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
+    case .lebt(let a):
+      if let i = game.world.npc(a), game.world.revive(i) { try session.save(game); refresh(); sink(.world("\(game.world.npcs[i].name) lebt")) } else { sink(.info("/lebt <Figur>: keine tote Figur '\(a)'")) }
     case .regeln(let a):
       if a.isEmpty { sink(.info("Regeln: \(regelwerk(game.world.regeln).titel)  (/regeln frei | saeulen)")) }
       else if ["frei", "saeulen"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen")) }
@@ -200,7 +202,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -217,6 +219,7 @@ public enum Cmd: Equatable {
     }
     if t == "/gespraech" || t.hasPrefix("/gespraech ") { return .gespraech(arg(10)) }
     if t == "/geloest" || t.hasPrefix("/geloest ") { return .geloest(arg(8)) }
+    if t == "/lebt" || t.hasPrefix("/lebt ") { return .lebt(arg(5)) }
     if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
