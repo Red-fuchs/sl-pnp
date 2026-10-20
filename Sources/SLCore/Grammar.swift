@@ -45,7 +45,7 @@ public enum Gr {
   public static let narrPattern = "(\(sent)){3}(\(sent)){0,2}"   // 3-5 sentences
   public static let narrBody = G.re(narrPattern)
   static let shortPattern = "(\(sent))(\(sent)){0,2}"   // 1-3 sentences (self-questions)
-  static let duSlot = G.re(#"[^\n<(]{2}[^\n<(]*\([^\n<)]{3}[^\n<)]*\)"#)
+  static let duSlot = G.re(#"[A-ZÄÖÜ][a-zäöüß]{2,}( [A-ZÄÖÜ][a-zäöüß]+)? \([^\n<)\[\]]{3}[^\n<)\[\]]*\)"#)   // concrete name, no "[Name]" placeholders
   /// narration + mandatory tails: [Du: Name (Rolle, Merkmal) while no character exists] + "Figuren: Name (Rolle), …" | "-" (both stripped from display)
   public static func narrG(_ t: Gate) -> G {
     var p: [G] = [t.selfQ ? G.re(shortPattern) : narrBody]

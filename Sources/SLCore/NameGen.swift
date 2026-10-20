@@ -33,7 +33,7 @@ public struct NameGen {
       n += c.suf[rand(c.suf.count)]
       n = n.prefix(1).uppercased() + n.dropFirst().lowercased()
       let k = n.lowercased()
-      if n.count >= 4, n.count <= 11, !used.contains(k), !Self.banned.contains(k), !avoid.contains(k) { used.insert(k); return n }
+      if n.count >= 4, n.count <= 11, !used.contains(k), !Self.banned.contains(k), !avoid.contains(k), !used.contains(where: { $0.prefix(3) == k.prefix(3) }) { used.insert(k); return n }   // no look-alikes (Ingulf/Ingmund)
     }
     // exhausted combinations: disambiguate with a deterministic suffix (never a number)
     var n = c.pre[rand(c.pre.count)] + c.suf[rand(c.suf.count)] + "ar"

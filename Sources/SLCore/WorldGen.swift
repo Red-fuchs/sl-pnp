@@ -57,6 +57,9 @@ public enum GenError: Error, CustomStringConvertible { case msg(String); public 
 public enum GenGr {
   static func en(_ v: [String]) -> G { v.count == 1 ? .s(v[0]) : .or(v.map { .s($0) }) }
   static let line = G.re(#"[^\n<]{6}[^\n<]*"#)
+  static let hintLine = G.re(#"[^\n<@]{6}[^\n<@]*"#)
+  /// proper place name: optional article, capitalised words (+ small connectors) - no glued "Die"+junk
+  static let placeName = G.re(#"((Der|Die|Das|Zum|Zur|Am|Im) )?[A-ZÄÖÜ][a-zäöüß]{3,}(( (von|der|des|am|zum|zur|im|zu|an))? [A-ZÄÖÜ][a-zäöüß]{3,}){0,2}"#)
   static let word = G.re(#"[A-ZÄÖÜ][a-zäöüß]{3,}( [a-zäöüß]{3,})?"#)
   static let optLine = G.or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])
   static let roles = ["Händler", "Schmied", "Heiler", "Jäger", "Fährmann", "Priester", "Bürgermeister", "Wache", "Bauer", "Köhler", "Schreiber", "Bote", "Gerber", "Fischer", "Müller", "Bäcker", "Wirt", "Magd", "Knecht", "Söldner", "Wanderprediger", "Kräuterfrau", "Totengräber", "Zöllner", "Spielmann", "Bettler", "Schäfer", "Glöckner", "Steinmetz", "Schiffer", "Webermeister", "Waffenmeister", "Hebamme", "Archivar", "Pilger", "Schmuggler", "Hauptmann", "Mönch", "Nonne", "Alchemist"]
@@ -68,9 +71,9 @@ public enum GenGr {
     p += [.s("Muss: "), optLine, .s("\nNicht: "), optLine]
     return Grammar(.seq(p))
   }
-  public static let premise = Grammar(.seq([.s("Prämisse: "), line, .s("\nAlltag: "), .re(#"[A-ZÄÖÜ][^\n<]{3}[^\n<]*"#)]))
+  public static let premise = Grammar(.seq([.s("Prämisse: "), line, .s("\nAlltag: "), placeName]))
   public static func place(name: String? = nil) -> Grammar {
-    Grammar(.seq([.s("Ort: "), name.map { G.s($0) } ?? G.re(#"[A-ZÄÖÜ][a-zäöüß]{3}[^\n<]*"#), .s("\nKurz: "), line, .s("\nHerrscht: "), line]))
+    Grammar(.seq([.s("Ort: "), name.map { G.s($0) } ?? placeName, .s("\nKurz: "), line, .s("\nHerrscht: "), line]))
   }
   static func revealG(places: [String], npcs: [String]) -> G {
     var alts: [G] = [.seq([.s("zeit "), .re("[1-9][0-9]?")]), .seq([.s("gegenstand "), word])]
@@ -79,12 +82,12 @@ public enum GenGr {
     return .or(alts)
   }
   /// NPC stage: the NAME is fixed by the name generator (const string), role / place / reveal from enums.
-  public static func npc(name: String, places: [String], npcs: [String], role: String? = nil, place: String? = nil) -> Grammar {
-    Grammar(.seq([.s("Name: \(name)\nRolle: "), en(role.map { [$0] } ?? roles), .s("\nHaltung: "), .re(#"-?[0-2]"#), .s("\nOrt: "), en(place.map { [$0] } ?? places), .s("\nGruppe: "), line,
+  public static func npc(name: String, places: [String], npcs: [String], role: String? = nil, place: String? = nil, roles avail: [String]? = nil) -> Grammar {
+    Grammar(.seq([.s("Name: \(name)\nRolle: "), en(role.map { [$0] } ?? (avail?.isEmpty == false ? avail! : roles)), .s("\nHaltung: "), .re(#"-?[0-2]"#), .s("\nOrt: "), en(place.map { [$0] } ?? places), .s("\nGruppe: "), line,
                   .s("\nZiel: "), line, .s("\nGeheimnis: "), line, .s("\nEnthüllung: "), revealG(places: places, npcs: npcs)]))
   }
   public static func thread(refs: [String]) -> Grammar {
-    let hint = { (n: Int) -> [G] in [.s("\nHinweis\(n): "), line, .s(" @ "), en(refs)] }
+    let hint = { (n: Int) -> [G] in [.s("\nHinweis\(n): "), hintLine, .s(" @ "), en(refs)] }
     return Grammar(.seq([.s("Frage: "), .or(["Wer ", "Wo ", "Was ", "Warum ", "Wie "].map { .s($0) }), .re(#"[^\n<?]{8}[^\n<?]*"#), .s("?")] + hint(1) + hint(2) + hint(3)))
   }
   public static func start(places: [String]) -> Grammar {
@@ -141,12 +144,15 @@ extension Game {
     var last = ""
     for attempt in 0..<3 {
       let user = ctx + "\nVerbotene Wörter (niemals verwenden): \(banned.joined(separator: ", ")).\(note)\nBeispiel (andere Welt, NICHT übernehmen):\n\(GenPrompt.ex[stage] ?? "")\nAufgabe: \(task)\nAusgabe:"
-      let (txt, _) = try lm.aux(system: GenPrompt.sys, user: user, g, temp: attempt == 0 ? 0.9 : 0.7, maxTok: maxTok)
-      last = txt
-      guard let why = validate(txt) else { return txt }
-      note = "\nDein letzter Versuch war ungültig: \(why). Mach es anders."
+      do {
+        let (txt, _) = try lm.aux(system: GenPrompt.sys, user: user, g, temp: attempt == 0 ? 0.9 : 0.7, maxTok: maxTok)
+        last = txt
+        guard let why = validate(txt) else { return txt }
+        note = "\nDein letzter Versuch war ungültig: \(why). Mach es anders."
+      } catch is TruncatedError { note = "\nDein letzter Versuch war zu lang. Fasse dich kurz: eine kurze Zeile pro Feld."; last = "" }
     }
-    return last   // accept the last attempt (validator reasons were reported in the note); callers re-check what matters
+    if last.isEmpty { throw GenError.msg("Stufe \(stage) fehlgeschlagen (zu lang)") }
+    return last   // accept the last attempt after 3 tries
   }
 
   func ctxBlock() -> String {
@@ -207,35 +213,36 @@ extension Game {
     func tick(_ what: String, _ t0: Date) { done += 1; world.gen.secs[what] = Date().timeIntervalSince(t0); prog(what, done, total) }
     prog("Prämisse …", 0, total)
     var t0 = Date()
-    let pr = Self.fields(try genCall("premise", ctx: ctxBlock(), task: "Schreibe die Prämisse (eine Zeile, Spannung + Alltag) und nenne den Alltagsort.", GenGr.premise, validate: check))
-    world.gen.praemisse = clean(pr["Prämisse"] ?? "", 260); world.gen.alltag = clean(pr["Alltag"] ?? "Marktplatz", 50)
+    let pr = Self.fields((try? genCall("premise", ctx: ctxBlock(), task: "Schreibe die Prämisse (eine Zeile, Spannung + Alltag) und nenne den Alltagsort.", GenGr.premise, validate: check)) ?? "")
+    world.gen.praemisse = clean(pr["Prämisse"] ?? "", 260); world.gen.alltag = clean(pr["Alltag"] ?? "Der Marktplatz", 50)
     tick("Prämisse", t0)
     // places
     var places: [String] = []
     for i in 0..<nPlaces {
       prog("Orte \(i)/\(nPlaces) …", done, total); t0 = Date()
       let taken = places.joined(separator: ", ")
-      let t = try genCall("place", ctx: ctxBlock(), task: i == 0 ? "Beschreibe den Alltagsort '\(world.gen.alltag)' (Name unverändert übernehmen)." : "Erfinde einen weiteren, anderen Ort (bereits vergeben: \(taken)). Wer herrscht dort?", i == 0 ? GenGr.place(name: world.gen.alltag) : GenGr.place(), validate: { t in
+      guard let t = try? genCall("place", ctx: ctxBlock(), task: i == 0 ? "Beschreibe den Alltagsort '\(world.gen.alltag)' (Name unverändert übernehmen)." : "Erfinde einen weiteren, anderen Ort (bereits vergeben: \(taken)). Wer herrscht dort?", i == 0 ? GenGr.place(name: world.gen.alltag) : GenGr.place(), validate: { t in
         let f = Self.fields(t); let n = f["Ort"] ?? ""
         if places.contains(where: { norm($0) == norm(n) }) { return "Ortsname '\(n)' ist schon vergeben" }
-        return self.check(t) })
+        return self.check(t) }) else { out(.info("Ort \(i + 1) fehlgeschlagen – weiter")); continue }
       let f = Self.fields(t); let n = clean(f["Ort"] ?? "Ort\(i + 1)", 40)
       if places.contains(where: { norm($0) == norm(n) }) { continue }
       places.append(n); world.gen.orte[n] = clean((f["Kurz"] ?? "") + " · " + (f["Herrscht"] ?? ""), 140); world.orte[n] = clean(f["Kurz"] ?? "", 80)
       tick("Orte \(places.count)/\(nPlaces)", t0)
     }
-    guard let startPlace = places.first else { throw GenError.msg("keine Orte erzeugt") }
+    if places.isEmpty { places = [world.gen.alltag]; world.gen.orte[world.gen.alltag] = ""; world.orte[world.gen.alltag] = "" }
+    let startPlace = places[0]
     // npcs (name = const from the generator)
     for i in 0..<nNpcs {
       prog("Figuren \(i)/\(nNpcs) …", done, total); t0 = Date()
-      try genNpc(names: &names, culture: cult, places: places, place: i == 0 ? startPlace : nil, role: nil)
+      do { try genNpc(names: &names, culture: cult, places: places, place: i == 0 ? startPlace : nil, role: nil) } catch { out(.info("Figur \(i + 1) fehlgeschlagen – weiter")) }
       tick("Figuren \(i + 1)/\(nNpcs)", t0)
     }
     // threads (question arcs; clues stay hidden)
     for i in 0..<nThreads {
       prog("Fäden \(i)/\(nThreads) …", done, total); t0 = Date()
       let refs = places + world.npcs.map(\.name)
-      let t = try genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: check, maxTok: 380)
+      guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: check, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
       let f = Self.fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
       if okThread(q) {
         world.straenge.append(Strang(titel: q, stand: ""))
@@ -245,7 +252,7 @@ extension Game {
     }
     // start scene + player hook
     prog("Startszene …", done, total); t0 = Date()
-    let s = Self.fields(try genCall("start", ctx: ctxBlock(), task: "Lege den Beginn fest: Startort, erste Szene (2. Person, ein Satz), Ziel der Figur und ein geheimes Ziel.", GenGr.start(places: places), validate: check))
+    let s = Self.fields((try? genCall("start", ctx: ctxBlock(), task: "Lege den Beginn fest: Startort, erste Szene (2. Person, ein Satz), Ziel der Figur und ein geheimes Ziel.", GenGr.start(places: places), validate: check)) ?? "")
     world.gen.start = places.contains(s["Start"] ?? "") ? s["Start"]! : startPlace
     world.gen.szene = clean(s["Szene"] ?? "", 200); world.gen.pcZiel = clean(s["Ziel der Figur"] ?? "", 100); hidden.pcGeheim = clean(s["Geheimes Ziel"] ?? "", 100)
     world.ort = world.gen.start
@@ -263,7 +270,7 @@ extension Game {
   func genNpc(names: inout NameGen, culture: String, places: [String], place: String?, role: String?, fixedName: String? = nil) throws {
     let name = fixedName ?? names.next(culture: culture, avoid: Set(world.npcs.map { norm($0.name) }))
     let others = world.npcs.map(\.name)
-    let t = try genCall("npc", ctx: ctxBlock(), task: "Erschaffe eine Figur. Name '\(name)' ist vorgegeben. Rolle nicht doppeln (bereits: \(world.npcs.map(\.kurz).joined(separator: ", "))). Geheimnis + Ziel kurz, konkret; Enthüllung = wodurch das Geheimnis herauskommen kann.", GenGr.npc(name: name, places: places, npcs: others + [name], role: role, place: place), validate: check, maxTok: 340)
+    let t = try genCall("npc", ctx: ctxBlock(), task: "Erschaffe eine Figur. Name '\(name)' ist vorgegeben. Rolle nicht doppeln (bereits: \(world.npcs.map(\.kurz).joined(separator: ", "))). Geheimnis + Ziel kurz, konkret; Enthüllung = wodurch das Geheimnis herauskommen kann.", GenGr.npc(name: name, places: places, npcs: others + [name], role: role, place: place, roles: GenGr.roles.filter { r in !world.npcs.contains { $0.kurz == r } }), validate: check, maxTok: 340)
     let f = Self.fields(t)
     let ort = places.contains(f["Ort"] ?? "") ? f["Ort"]! : (place ?? places.first ?? "")
     guard let (i, _) = world.addNpcGen(name: name, kurz: f["Rolle"] ?? "", ort: ort, haltung: Int(f["Haltung"] ?? "0") ?? 0) else { return }
