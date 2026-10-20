@@ -20,6 +20,7 @@ func jsonOut(_ o: Out) -> [String: Any]? {
   switch o {
   case .delta(let d): return ["t": "delta", "d": d]
   case .end: return ["t": "end"]
+  case .retract: return ["t": "retract"]
   case .tool(let n, let a, let r):
     var m: [String: Any] = ["t": "tool", "name": n, "text": describe(n, a, r)]
     if n == "ask_oracle" || n == "start_scene" {
@@ -177,16 +178,17 @@ function render(s){if(s.s!==undefined){$('s').textContent=s.s;$('sb').style.widt
  if(s.busy!==undefined){document.body.classList.toggle('busy',s.busy)}}
 function card(r){const d=document.createElement('div');d.className='c';const b=document.createElement('b');b.className=cls(r.answer);b.textContent=r.answer;d.append(b);
  const sm=document.createElement('small');sm.textContent=(r.q?r.q+' · ':'')+(r.odds?r.odds+' · ':'')+(r.roll>=0?'W100 '+r.roll+(r.p>=0?' / '+r.p:''):'')+' · '+r.rng;d.append(sm);return d}
-fetch('/state').then(r=>r.json()).then(s=>{(s.story||[]).forEach(m=>add(m.who,m.text));render(s)});
+fetch('/state').then(r=>r.json()).then(s=>{(s.story||[]).forEach(m=>add(m.who,m.text));render(s);if(!(s.story||[]).length&&(s.figur===undefined||s.figur==='-'))add('inf','Wer bist du? /figur Name: Beschreibung – oder einfach losspielen, dann erfinde ich dich.')});
 const es=new EventSource('/events');
 es.onmessage=e=>{const m=JSON.parse(e.data);
  if(m.t=='delta'){if(!cur)cur=add('sl','');cur.textContent+=m.d;story.scrollTop=story.scrollHeight}
  else if(m.t=='end'){cur=null}
- else if(m.t=='tool'){add('tool',m.text);if(m.card){const r=document.createElement('div');}}
+ else if(m.t=='retract'){if(cur){cur.remove();cur=null}}
+ else if(m.t=='tool'){cur=null;add('tool',m.text);if(m.card){const r=document.createElement('div');}}
  else if(m.t=='event')add('ev','⚡ '+m.text);
  else if(m.t=='world')add('ev','🌍 '+m.text);
  else if(m.t=='info')add('inf',m.text);
- else if(m.t=='user')add('me',m.text);
+ else if(m.t=='user'){cur=null;add('me',m.text)}
  else if(m.t=='state'){if(m.s===undefined)render(m);else render(m)}
  else if(m.t=='bye')add('inf','Leerlauf – Modell entladen, Server beendet. Mit --resume neu starten.')};
 $('f').onsubmit=e=>{e.preventDefault();const t=$('in').value.trim();if(!t)return;$('in').value='';fetch('/say',{method:'POST',headers:{'x-sl':'1'},body:JSON.stringify({text:t})})};

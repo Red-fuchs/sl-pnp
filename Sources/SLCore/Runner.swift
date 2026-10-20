@@ -42,6 +42,7 @@ public final class Runner {
     game.out = { [unowned self] o in
       switch o {
       case .delta(let d): narr += d
+      case .retract: narr = ""
       case .end: session.log("\n**SL:** \(narr)\n"); narr = ""
       case .tool(let n, let a, let r):
         session.log("- `\(n)` \(a.json) → \(r.json)\n"); lastRng = r["rng"].str ?? lastRng
@@ -106,7 +107,7 @@ public final class Runner {
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
-    return Status(figur: game.figur, welt: game.world.block(full: true), name: session.name, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
+    return Status(figur: game.figur, welt: game.world.panel(), name: session.name, s: st.s, scene: st.scene, open: st.open, q: st.q, rng: game.eng.rngName, source: r["source"].str ?? "", akteure: st.akteure.count, straenge: st.straenge.count, journal: j)
   }
 
   /// Shared command handling (CLI + web): ONE dispatcher. Returns false on quit.
@@ -116,7 +117,7 @@ public final class Runner {
     case .quit: return false
     case .ende: try ende()
     case .status: let s = status(); sink(.info(([s.text] + s.journal.map { "· " + $0 }).joined(separator: "\n")))
-    case .welt: let b = game.world.block(full: true); sink(.info(b.isEmpty ? "Welt: noch leer" : b))
+    case .welt: sink(.info(game.world.panel()))
     case .frage(let q, let odds): if q.isEmpty { sink(.info("/frage[+N|-N] <text>")) } else { try frage(q, odds: odds) }
     case .figur(let f):
       game.figur = f.isEmpty ? nil : f

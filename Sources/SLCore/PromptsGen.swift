@@ -27,6 +27,10 @@ Szenen: Die erste Szene beginnt mit start_scene. Nur bei Ortswechsel/Zeitsprung 
 
 Nach der Erzählung steht eine letzte Zeile "Figuren: Name (Rolle), …" mit allen Figuren, die in dieser Erzählung auftreten (Eigenname, sonst die Rolle; bekannte Figuren aus [Welt] mit ihrem Namen), oder "Figuren: -".
 
+Hat die Spielfigur noch keinen Namen (kein "Du = Name" in [Welt]), erfindest du in deiner ersten Erzählung Name, Rolle und ein Merkmal und schreibst nach der Erzählung die Zeile "Du: Name (Rolle, Merkmal)". Weiche nie aus mit "dein Name ist dir bekannt".
+
+Fragen der Spielfigur an sich selbst (wer bin ich, wie heiße ich, wo bin ich, was habe ich dabei, wie geht es mir) beantwortest du in 1 bis 3 Sätzen aus [Welt]. Fehlt etwas, entscheidest du es jetzt. Dafür kein Orakel und kein Szenenwechsel.
+
 Erzählung: 3 bis 5 Sätze, konkret, zwei Sinneseindrücke, eine Störung. Manchmal ein Satz wörtliche Rede. Keine Zahlen, keine Werkzeugnamen, keine Erklärsätze. Ende offen, selten mit einer Frage.
 """#
 
@@ -72,25 +76,25 @@ public let DELTA_SCHEMA = #"""
 """#
 
 public let FEW: [Msg] = [
-  .u("Ich, ein verschlossener Matrose mit vernarbter Hand, klettere im Nebel an Bord des Frachtseglers und suche den Steuermann."),
-  .m("Spielfigur: verschlossener Matrose mit vernarbter Hand\nErwartung: Der Frachtsegler liegt still im Nebel, am Ruder steht jemand.\nOrtswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n<start_scene>{\"expect\":\"Die Spielfigur geht im Nebel an Bord des Frachtseglers\",\"el\":{\"ort\":\"Deck\",\"beteiligte\":\"Steuermann\"}}</start_scene>"),
+  .u("Ich klettere im Nebel an Bord des Frachtseglers und suche den Steuermann."),
+  .m("Spielfigur: -\nErwartung: Der Frachtsegler liegt still im Nebel, am Ruder steht jemand.\nOrtswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n<start_scene>{\"expect\":\"Die Spielfigur geht im Nebel an Bord des Frachtseglers\",\"el\":{\"ort\":\"Deck\",\"beteiligte\":\"Steuermann\"}}</start_scene>"),
   .u("[Orakel] Szene 1 beginnt wie erwartet."),
-  .m("Das Deck ist nass und glatt, und irgendwo schlägt eine Glocke im Takt der Wellen. Der Nebel riecht nach Salz und altem Teer. Am Ruder steht ein breiter Mann, der dich nicht anzusehen scheint. Ein loses Tau schleift mit leisem Quietschen über die Planken.\nFiguren: Steuermann (breiter Mann am Ruder)"),
-  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (breiter Mann am Ruder · hier)\n---\nIch trete zu ihm und frage, wer hier das Kommando hat."),
+  .m("Das Deck ist nass und glatt, und irgendwo schlägt eine Glocke im Takt der Wellen. Der Nebel riecht nach Salz und altem Teer. Am Ruder steht ein breiter Mann, der dich nicht anzusehen scheint. Ein loses Tau schleift mit leisem Quietschen über die Planken.\nDu: Jaro (Matrose, vernarbte Hand)\nFiguren: Steuermann (breiter Mann am Ruder)"),
+  .u("[Welt]\nDu = Jaro\nMatrose, vernarbte Hand. Ort: Deck.\nFiguren: Steuermann (breiter Mann am Ruder · hier)\n---\nIch trete zu ihm und frage, wer hier das Kommando hat."),
   .m("Erwartung: Der Mann am Ruder weicht zuerst aus.\nOrtswechsel/Zeitsprung: nein\nFrage: Ist der Steuermann selbst der Kapitän?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Ist der Steuermann selbst der Kapitän?\",\"odds\":-1}</ask_oracle>"),
   .u("[Orakel] Antwort: JA"),
   .m("Antwort: JA → Der Steuermann ist der Kapitän und gibt es nur widerwillig zu.\nEr dreht den Kopf, sein Bart glänzt feucht im Laternenlicht. „Wer fragt, will meistens etwas“, brummt er und lässt das Ruder nicht los. Hinter dir knarrt eine Luke, als würde jemand unter Deck lauschen.\nFiguren: Steuermann (Kapitän)"),
-  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch lehne mich an die Reling, trinke einen Schluck aus meiner Flasche und lasse die Zeit verstreichen."),
+  .u("[Welt]\nDu = Jaro\nMatrose, vernarbte Hand. Ort: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch lehne mich an die Reling, trinke einen Schluck aus meiner Flasche und lasse die Zeit verstreichen."),
   .m("Erwartung: Die Zeit vergeht langsam, der Nebel bleibt.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Branntwein brennt warm in deiner Kehle, während die Wellen träge gegen den Rumpf schlagen. Der Kapitän beobachtet dich aus den Augenwinkeln, ohne ein Wort zu sagen. Im Nebel zeichnet sich für einen Moment ein Schatten ab und verschwindet wieder.\nFiguren: Steuermann (Kapitän)"),
-  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch versuche, dem Kapitän das Ruder abzunehmen."),
+  .u("[Welt]\nDu = Jaro\nMatrose, vernarbte Hand. Ort: Deck.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · misstrauisch)\n---\nIch versuche, dem Kapitän das Ruder abzunehmen."),
   .m("Erwartung: Der Kapitän wehrt sich, das wird unangenehm.\nOrtswechsel/Zeitsprung: nein\nFrage: Gelingt es mir, das Ruder zu übernehmen?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Gelingt es mir, das Ruder zu übernehmen?\",\"odds\":-2}</ask_oracle>"),
   .u("[Orakel] Antwort: NEIN+\n[Orakel] Ereignis: figur_schaden – dir widerfährt ein Nachteil. Wörter: stolpern + Tau"),
   .m("Antwort: NEIN+ → Der Kapitän stößt dich hart zurück.\nDeutung: Du stolperst über das lose Tau und stürzt auf die Planken.\nDer Stoß trifft dich an der Schulter, und du taumelst rückwärts. Das lose Tau fängt deinen Fuß, und du schlägst mit dem Knie auf das nasse Holz. „Noch ein Versuch, und du schwimmst“, sagt der Kapitän ruhig.\nFiguren: Steuermann (Kapitän)"),
-  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nIch rufe nach unten, ob dort noch jemand ist."),
+  .u("[Welt]\nDu = Jaro\nMatrose, vernarbte Hand. Ort: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nIch rufe nach unten, ob dort noch jemand ist."),
   .m("Erwartung: Unter Deck lauscht jemand und antwortet vielleicht.\nOrtswechsel/Zeitsprung: nein\nFrage: Antwortet jemand von unten?\nWerkzeug: ja\n<ask_oracle>{\"q\":\"Antwortet jemand von unten?\",\"odds\":0}</ask_oracle>"),
   .u("[Orakel] Antwort: NEIN\n[Orakel] Ereignis: fern – etwas geschieht fern. Wörter: Hunger + Zahn"),
   .m("Antwort: NEIN → Unten bleibt es still, nur das Holz knackt.\nDeutung: verwerfen\nDeine Stimme verliert sich im Nebel, und die Luke bleibt dunkel. Nur das Knacken der Spanten antwortet dir, langsam und gleichmäßig. Der Kapitän tut, als hätte er nichts gehört.\nFiguren: Steuermann (Kapitän)"),
-  .u("[Welt]\nDu = verschlossener Matrose mit vernarbter Hand\nOrt: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nAls der Morgen graut, gehe ich an Land und suche eine Schenke im Hafen."),
+  .u("[Welt]\nDu = Jaro\nMatrose, vernarbte Hand. Ort: Deck. Zustand: Knie aufgeschlagen.\nFiguren: Steuermann (Kapitän, breiter Mann am Ruder · hier · feindlich)\n---\nAls der Morgen graut, gehe ich an Land und suche eine Schenke im Hafen."),
   .m("Erwartung: Der Morgen bringt Licht, im Hafen beginnt eine neue Szene.\nOrtswechsel/Zeitsprung: ja\nFrage: -\nWerkzeug: ja\n<end_scene>{\"summary\":\"Auf dem Frachtsegler wurde die Spielfigur vom Kapitän zurückgewiesen.\",\"why\":\"Die Spielfigur wurde gestoßen und verletzt\",\"control\":false}</end_scene>"),
   .u("[Orakel] Szene beendet. Die Lage wird unruhiger."),
   .m("<start_scene>{\"expect\":\"Im Morgengrauen betritt die Spielfigur eine Schenke im Hafen\",\"el\":{\"ort\":\"Hafenschenke\",\"beteiligte\":\"Wirtin\"}}</start_scene>"),

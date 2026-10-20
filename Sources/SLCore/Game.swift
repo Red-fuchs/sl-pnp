@@ -8,6 +8,7 @@ public enum Out {
   case event(String)                // ⚡ line
   case end                          // narration finished
   case info(String)
+  case retract                      // drop the narration streamed so far (a retry restarts it)
   case world(String)                // 🌍 world-state change
 }
 
@@ -93,47 +94,42 @@ public final class Game {
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
-    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.mustAsk = quiet >= 1 && !isWQuestion(player); gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
+    var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
-    var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, oracle: [String] = []
+    var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
     var done = false
     for _ in 0..<14 {
-      gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls
-      var line = "", narr = false
-      let flush = { (final: Bool) in
-        if !narr { self.out(.gate(line)) }
-        line = ""; narr = false
-      }
+      gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
+      var ns = NarrStream(out: out)
       let gm = Gr.grammar(gate)
-      var txt = ""
+      var txt = "", truncated = false
       for attempt in 0..<3 {
-        line = ""; narr = false
+        ns = NarrStream(out: out)
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : 0.4, maxTok: 600) { d in
-            for ch in d {
-              if ch == "\n" { flush(false); continue }
-              line.append(ch)
-              if narr { self.out(.delta(String(ch))) }
-              else if !isGatePrefix(line) && !line.hasPrefix("<") { narr = true; self.out(.delta(line)) }
-            }
-          }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : 0.4, maxTok: 600) { d in ns.feed(d) }
           break
-        } catch let e as SLError where e.description.contains("maxTok") && attempt < 2 {
-          out(.info("Ausgabe zu lang – neuer Versuch")); if narr { out(.end) }
+        } catch let e as TruncatedError {
+          if let sv = salvageNarration(e.partial) {   // narration finished, only the tail overran: keep the story, drop the tail
+            ns.finish(); txt = sv; out(.info("Figuren-Zeile abgeschnitten")); truncated = true; break
+          }
+          ns.discard()
+          guard attempt < 2 else { throw e }
+          out(.retract); out(.info("Ausgabe zu lang – neuer Versuch"))   // nothing usable: restart, and the UI drops the partial text
           try syncCache()   // drop the half-generated tokens from the cache
         }
       }
       if debug { out(.info("· " + lm.last.line)) }
-      if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }
+      ns.finish()
       if gate.figurLine, let l = txt.split(separator: "\n").first(where: { $0.hasPrefix("Spielfigur: ") }) {
         let f = String(l.dropFirst(12)).trimmingCharacters(in: .whitespaces)
         if f != "-" && !f.isEmpty, let g = groundedFigur(f, player) { figur = g; world.setFigur(g); world.syncLists(eng); figurChanged = true }
       }
       gate.figurLine = false
       msgs.append(.m(txt)); onMsg(.m(txt))
+      if truncated { try syncCache() }   // the cache still holds the cut tail tokens
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
-      let (body, tail) = splitTail(txt)
-      guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; break }
+      let (body, tail, du) = splitTail(txt)
+      guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; finalDu = du; break }
       if name == "ask_oracle", args["shift"].isNull, let h = world.shift(forQuestion: args["q"].str ?? ""), var o = args.obj { o["shift"] = .int(h); args = .obj(o) }   // NPC attitude -> social oracle shift (polarity-aware)
       let res = eng.call(name, args)
       calls += 1
@@ -153,6 +149,13 @@ public final class Game {
       push(.u(fb))
     }
     if !done { out(.info("Aufruflimit")) }
+    if done, figur == nil, let d = finalDu {   // narrator invented the player character: register it (system prompt changes -> cache rebuild)
+      let t = String(d.dropFirst(4)).trimmingCharacters(in: .whitespaces)
+      if let o = t.firstIndex(of: "("), let c = t.lastIndex(of: ")"), o < c {
+        let n = clean(String(t[..<o]), 40), k = clean(String(t[t.index(after: o)..<c]), 80)
+        if okName(n) { figur = "\(n): \(k)"; world.setFigur(figur!); figurChanged = true; out(.world("Spielfigur: \(figur!)")) }
+      }
+    }
     if done { worldStep(player: player, narr: finalNarr, tail: finalTail, oracle: oracle) }
     if eng.st.open { quiet = asked ? 0 : quiet + 1 } else { quiet = 0 }
     if figurChanged { try syncCache() }   // pinned character changes the system prompt -> rebuild the cache once
@@ -185,7 +188,7 @@ func clip(_ a: J, _ limits: [String: Int] = ["q": 200, "expect": 300, "summary":
   })
 }
 
-let gatePrefixes = ["Figuren: ", "Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
+let gatePrefixes = ["Du: ", "Figuren: ", "Spielfigur: ", "Erwartung: ", "Ortswechsel/Zeitsprung: ", "Frage: ", "Werkzeug: ", "Antwort: ", "Deutung: "]
 /// true while a partial line could still become a gate line (narration never contains ":" and never starts like a gate label)
 public func isGatePrefix(_ l: String) -> Bool { gatePrefixes.contains { $0.hasPrefix(l) || l.hasPrefix($0) } }
 
@@ -209,10 +212,46 @@ public func stripWelt(_ t: String) -> String {
   return String(t[r.upperBound...])
 }
 
-/// Split the narrator tail ("Figuren: …") off a step text.
-public func splitTail(_ txt: String) -> (body: String, tail: String?) {
+/// Split the narrator tails ("Du: Name (Rolle, Merkmal)" and "Figuren: …") off a step text.
+public func splitTail(_ txt: String) -> (body: String, tail: String?, du: String?) {
   var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
-  guard let l = lines.last, l.hasPrefix("Figuren: ") else { return (txt, nil) }
+  guard let l = lines.last, l.hasPrefix("Figuren: ") else { return (txt, nil, nil) }
   lines.removeLast()
-  return (lines.joined(separator: "\n"), l)
+  var du: String? = nil
+  if let d = lines.last, d.hasPrefix("Du: ") { du = d; lines.removeLast() }
+  return (lines.joined(separator: "\n"), l, du)
+}
+
+/// Line-wise splitter of the generated text: narration lines stream as deltas and ALWAYS close with `.end` at their line break
+/// (a missing .end once glued paragraphs together and dropped the SL lines from transcript.md); gate/tail lines go to .gate.
+public final class NarrStream {
+  var line = "", narr = false
+  let out: (Out) -> Void
+  public init(out: @escaping (Out) -> Void) { self.out = out }
+  public func feed(_ d: String) {
+    for ch in d {
+      if ch == "\n" { endLine(); continue }
+      line.append(ch)
+      if narr { out(.delta(String(ch))) }
+      else if !isGatePrefix(line) && !line.hasPrefix("<") { narr = true; out(.delta(line)) }
+    }
+  }
+  func endLine() { if narr { out(.end) } else if !line.isEmpty { out(.gate(line)) }; line = ""; narr = false }
+  public func finish() { endLine() }
+  public func discard() { line = ""; narr = false }
+}
+
+/// Self-questions are answered from [Welt] in 1-3 sentences: no oracle, no scene change.
+public func isSelfQuestion(_ t: String) -> Bool {
+  t.lowercased().range(of: #"\b(bin ich|heiße ich|heisse ich|mein name|lautet mein|habe ich dabei|habe ich bei mir|trage ich|besitze ich|geht es mir|fühle ich mich|sehe ich aus|mein zustand|meine ausrüstung)\b"#, options: .regularExpression) != nil
+}
+
+/// A truncated generation is usable if its narration line is complete (ends in a sentence terminator, 3+ sentences): returns head+narration without the cut tail.
+public func salvageNarration(_ partial: String) -> String? {
+  var lines = partial.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+  guard lines.count >= 2 else { return nil }
+  lines.removeLast()                                   // the last line is the incomplete one (the tail that overran)
+  while let l = lines.last, l.hasPrefix("Du: ") || l.hasPrefix("Figuren:") { lines.removeLast() }
+  guard let narr = lines.last, narr.range(of: "^" + Gr.narrPattern + "$", options: .regularExpression) != nil else { return nil }
+  return lines.joined(separator: "\n")
 }

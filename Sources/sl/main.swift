@@ -62,6 +62,7 @@ func show(_ o: Out) {
   switch o {
   case .delta(let d): print(d, terminator: "")
   case .end: print("\n")
+  case .retract: print("\(dim)(neu)\(off)")
   case .tool(let n, let a, let r): print("\(dim)\(describe(n, a, r))\(off)")
   case .event(let e): print("\(dim)⚡ \(e)\(off)")
   case .gate(let l): if opt["debug"] != nil { print("\(dim)· \(l)\(off)") }
@@ -80,7 +81,7 @@ if web {
 
 let t0 = Date()
 if resuming { try runner.resume(); print("\(dim)Sitzung \(name) fortgesetzt (\(runner.game.msgs.count) Nachrichten)\(off)") }
-else { try runner.startNew(setting: opt["setting"]); print("\(dim)Sitzung \(name) · Setting: \(runner.setting)\nBeschreibe deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).\(off)") }
+else { try runner.startNew(setting: opt["setting"]); print("\(dim)Sitzung \(name) · Setting: \(runner.setting)\nWer bist du? /figur Name: Beschreibung – oder einfach losspielen, dann erfinde ich dich.\nBeschreibe deinen Auftakt (Szene 1 beginnt mit deinem ersten Zug).\(off)") }
 if opt["debug"] != nil { err(String(format: "start %.1fs", Date().timeIntervalSince(t0))) }
 
 func prompt() { print("\(bold)Du> \(off)", terminator: ""); fflush(stdout) }

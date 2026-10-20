@@ -33,6 +33,8 @@ public struct Gate {
   public var forceEnd = false      // /ende: head must call end_scene
   public var figurLine = false     // first turn of a session: head starts with "Spielfigur: <text>|-"
   public var mustAsk = false       // >=1 quiet turn in this scene: no narration-only head, ask the oracle (or end the scene)
+  public var needFigur = false     // no player character yet: the narration must end with a "Du: Name (Rolle, Merkmal)" slot
+  public var selfQ = false         // self-question (wer bin ich ...): short narration, no oracle, no scene change
   public var endNarr = false       // /ende turn: narration allowed after end_scene (else start_scene only)
   public init() {}
 }
@@ -42,8 +44,16 @@ public enum Gr {
   static let sent = #"[ ]?[^<.!?\n:]{6}[^<.!?\n:]*[.!?]["“”»«]?"#
   public static let narrPattern = "(\(sent)){3}(\(sent)){0,2}"   // 3-5 sentences
   public static let narrBody = G.re(narrPattern)
-  /// narration + mandatory tail "Figuren: Name (Rolle), …" | "-" (stripped from display, feeds the world state)
-  public static let narr = G.seq([narrBody, .s("\nFiguren: "), .or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])])
+  static let shortPattern = "(\(sent))(\(sent)){0,2}"   // 1-3 sentences (self-questions)
+  static let duSlot = G.re(#"[^\n<(]{2}[^\n<(]*\([^\n<)]{3}[^\n<)]*\)"#)
+  /// narration + mandatory tails: [Du: Name (Rolle, Merkmal) while no character exists] + "Figuren: Name (Rolle), …" | "-" (both stripped from display)
+  public static func narrG(_ t: Gate) -> G {
+    var p: [G] = [t.selfQ ? G.re(shortPattern) : narrBody]
+    if t.needFigur { p += [.s("\nDu: "), duSlot] }
+    p += [.s("\nFiguren: "), .or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])]
+    return .seq(p)
+  }
+  public static let narr = narrG(Gate())
   static let line = #"[^\n<]{8}[^\n<]*"#
   public static let maxAsks = 6
   static let str = #"{"type":"string"}"#   // xgrammar sorts schema keys alphabetically -> key order is built by hand
@@ -73,15 +83,16 @@ public enum Gr {
       if t.forceEnd { return Grammar(.seq(hd + [ja, endScene])) }
       // end_scene ONLY after "Ortswechsel/Zeitsprung: ja"; otherwise ask the oracle or narrate
       var br: [G] = [.seq([ja, endScene])]
-      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n"), narr])) }
+      if t.selfQ { return Grammar(.seq(hd + [.s("Ortswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n"), narrG(t)])) }   // self-question: narration only
+      if !t.mustAsk || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n"), narrG(t)])) }
       if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q, .s("\nWerkzeug: ja\n"), askCall])) }
       return Grammar(.seq(hd + [.or(br)]))
     }
     var parts: [G] = []
     if let a = t.ans { parts += [.s("Antwort: \(a) → "), .re(line), .s("\n")] }
     if t.deut { parts += [.s("Deutung: "), .or([.re(line), .s("verwerfen")]), .s("\n")] }
-    if t.ans != nil || t.deut || t.open || t.calls >= 8 { parts.append(narr) }       // after ask / event / start_scene: narration
-    else { parts.append(t.endNarr ? .or([narr, startScene]) : startScene) }          // after end_scene: next step is start_scene
+    if t.ans != nil || t.deut || t.open || t.calls >= 8 { parts.append(narrG(t)) }       // after ask / event / start_scene: narration
+    else { parts.append(t.endNarr ? .or([narrG(t), startScene]) : startScene) }          // after end_scene: next step is start_scene
     return Grammar(.seq(parts))
   }
 }

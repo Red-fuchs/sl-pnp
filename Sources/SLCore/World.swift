@@ -119,6 +119,13 @@ public struct World: Codable, Equatable {
     }
     return l.joined(separator: "\n")
   }
+  /// Display text for /welt and the web panel: no "[Welt]" header, no "Spielfigur" placeholder.
+  public func panel() -> String {
+    var l = block(full: true).split(separator: "\n", omittingEmptySubsequences: false).map(String.init).filter { $0 != "[Welt]" }
+    let noFigur = name == nil && (kurz ?? "").isEmpty
+    if noFigur { if l.first?.hasPrefix("Du = ") == true { l.removeFirst() }; l.insert("Du = –  (noch keine Figur: /figur Name: Beschreibung)", at: 0) }
+    return l.joined(separator: "\n")
+  }
   func label(_ id: String) -> String { id == "du" ? "du" : (npcs.first { $0.id == id }?.name ?? id) }
   func card(_ n: Npc) -> String {
     var x: [String] = []

@@ -103,7 +103,7 @@ final class WorldTests: XCTestCase {
     FEW.filter { $0.role == "user" && $0.text.hasPrefix("[Welt]") }.map { String($0.text[..<$0.text.range(of: "\n---\n")!.lowerBound]) }
   }
   func testBlockMatchesFewShot() {
-    var w = World(); w.setFigur("verschlossener Matrose mit vernarbter Hand"); w.ort = "Deck"
+    var w = World(); w.setFigur("Jaro: Matrose, vernarbte Hand"); w.ort = "Deck"
     w.applyTail("Figuren: Steuermann (breiter Mann am Ruder)")
     let b = blocks()
     XCTAssertEqual(b.count, 5); XCTAssertEqual(w.block(), b[0])
@@ -235,6 +235,8 @@ final class WorldTests: XCTestCase {
     XCTAssertNil(World.parseFigur("ein grauer Mann mit Brille").0)
   }
   func testTailSplit() {
+    let t = splitTail("Text. Zwei. Drei.\nDu: Jaro (Matrose, vernarbte Hand)\nFiguren: -"); XCTAssertEqual(t.du, "Du: Jaro (Matrose, vernarbte Hand)"); XCTAssertEqual(t.body, "Text. Zwei. Drei."); XCTAssertEqual(t.tail, "Figuren: -")
+    XCTAssertNil(splitTail("Text.\nFiguren: -").du)
     XCTAssertEqual(splitTail("Text eins. Zwei.\nFiguren: Marta (Wirtin)").tail, "Figuren: Marta (Wirtin)")
     XCTAssertEqual(splitTail("Text eins. Zwei.\nFiguren: Marta (Wirtin)").body, "Text eins. Zwei.")
     XCTAssertNil(splitTail("<ask_oracle>{}</ask_oracle>").tail)
@@ -272,6 +274,50 @@ final class MiscTests: XCTestCase {
   func testNegativeContentLength() {   // finding 8
     XCTAssertEqual(httpContentLength("POST /say HTTP/1.1\r\nContent-Length: -5"), 0); XCTAssertEqual(httpContentLength("POST / HTTP/1.1\r\nContent-Length: abc"), 0)
     XCTAssertEqual(httpContentLength("POST / HTTP/1.1\r\nContent-Length: 12"), 12); XCTAssertEqual(httpContentLength("GET / HTTP/1.1"), 0)
+  }
+  /// regression: narration lines must close with .end (missing .end glued web paragraphs and dropped **SL:** lines from transcript.md)
+  func testNarrStreamAlwaysEnds() {
+    var ev: [String] = []
+    let ns = NarrStream { o in switch o { case .delta(let d): ev.append("d:" + d); case .end: ev.append("END"); case .gate(let g): ev.append("g:" + g); default: break } }
+    for ch in "Erwartung: x\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDu bist ein Matrose. Dein Name ist Jaro.\nDu: Jaro (Matrose, Narbe)\nFiguren: -" { ns.feed(String(ch)) }
+    ns.finish()
+    XCTAssertEqual(ev.filter { $0 == "END" }.count, 1)                                         // exactly one narration paragraph ended
+    XCTAssertEqual(ev.filter { $0.hasPrefix("d:") }.map { String($0.dropFirst(2)) }.joined(), "Du bist ein Matrose. Dein Name ist Jaro.")
+    XCTAssertTrue(ev.contains("g:Du: Jaro (Matrose, Narbe)")); XCTAssertTrue(ev.contains("g:Figuren: -"))
+    ev = []; let n2 = NarrStream { o in if case .end = o { ev.append("END") } }
+    n2.feed("Eins. Zwei. Drei."); n2.finish(); n2.feed("Vier. Fünf. Sechs."); n2.finish(); XCTAssertEqual(ev.count, 2)       // two turns -> two ends
+  }
+  /// generation overran inside the tail (or never produced it): the story is kept, only the tail is cut; no second generation is appended
+  func testSalvageWhenTailFails() {
+    let narr = "Der Regen peitscht über die Planken. Die Laternen flackern wie sterbende Glühwürmer. Am Ruder steht ein breiter Mann."
+    let head = "Erwartung: Der Mann reagiert nicht.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n"
+    XCTAssertEqual(salvageNarration(head + narr + "\nFiguren: Steuermann (Kapitän), Bork (Fähr"), head + narr)           // tail overran
+    XCTAssertEqual(salvageNarration(head + narr + "\nDu: Jaro (Matrose, Nar"), head + narr)                                  // Du slot overran
+    XCTAssertEqual(salvageNarration(head + narr + "\nDu: Jaro (Matrose, Narbe)\nFiguren: Steu"), head + narr)               // complete Du, cut Figuren
+    XCTAssertNil(salvageNarration(head + "Der Regen peitscht über die Planken. Die Laternen flac"))                           // narration itself incomplete -> no salvage
+    XCTAssertNil(salvageNarration(head + "Nur ein Satz.\nFiguren: -"))                                                         // fewer than 3 sentences
+    XCTAssertEqual(splitTail(head + narr).tail, nil)                                                                           // no tail at all: body stays the whole text
+  }
+  func testRetractDiscardsPartial() {
+    var ev: [String] = []
+    let ns = NarrStream { o in switch o { case .delta(let d): ev.append(d); case .end: ev.append("END"); default: break } }
+    ns.feed("Erwartung: x\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Regen peitscht über die"); ns.discard()
+    XCTAssertFalse(ev.contains("END"))                                    // a discarded partial never closes a paragraph
+    ns.feed("Neue Erzählung. Zwei. Drei.\n"); XCTAssertEqual(ev.filter { $0 == "END" }.count, 1)
+  }
+  func testPanelPlaceholder() {
+    var w = World(); w.ort = "Hafenkeller"
+    XCTAssertFalse(w.panel().contains("[Welt]")); XCTAssertFalse(w.panel().contains("Spielfigur")); XCTAssertTrue(w.panel().hasPrefix("Du = –"))
+    w.setFigur("Jaro: Matrose"); XCTAssertTrue(w.panel().hasPrefix("Du = Jaro"))
+  }
+  func testSelfQuestions() {
+    for q in ["wer bin ich", "Wie lautet mein Name?", "wie heiße ich", "was habe ich dabei", "wie geht es mir", "wo bin ich"] { XCTAssertTrue(isSelfQuestion(q), q) }
+    for q in ["Wie öffne ich die Tür?", "Wer ist die Wirtin?", "ich gehe nach Hause"] { XCTAssertFalse(isSelfQuestion(q), q) }
+    var g = Gate(); g.head = true; g.open = true; g.selfQ = true
+    let t = Gr.grammar(g).tag
+    XCTAssertFalse(t.contains("ask_oracle")); XCTAssertFalse(t.contains("end_scene")); XCTAssertTrue(t.contains("Werkzeug: nein"))   // no oracle, no scene change
+    g.needFigur = true; XCTAssertTrue(Gr.grammar(g).tag.contains("Du: ")); g.needFigur = false; XCTAssertFalse(Gr.grammar(g).tag.contains("Du: "))
+    var h = Gate(); h.open = true; h.calls = 1; h.needFigur = true; XCTAssertTrue(Gr.grammar(h).tag.contains("\\nDu: "))
   }
   func testHttpHeader() {
     let h = "POST /say HTTP/1.1\r\nHost: 127.0.0.1:8791\r\nContent-Length: 12\r\nOrigin: http://x"
@@ -340,6 +386,19 @@ final class GrammarTests: XCTestCase {
     }
     print(String(format: "delta grammar compile+check %.2fs", Date().timeIntervalSince(t0)))
   }
+  /// regression "wer bin ich -> no narration": after the gate the model may NOT stop (EOS) before at least one sentence
+  func testNarrationCannotBeEmpty() async throws {
+    let (t, gt) = try await tok()
+    for (selfQ, need) in [(false, false), (true, false), (true, true)] {
+      var g = Gate(); g.head = true; g.open = true; g.selfQ = selfQ; g.needFigur = need
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar(g).tag)
+      for id in t.encode(text: "Erwartung: Die Spielfigur schaut sich um.\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\n", addSpecialTokens: false) { _ = try c.computeMask(); _ = try c.commitToken(Int32(id)) }
+      let r = try c.computeMask(); XCTAssertTrue(r.needsApply)
+      XCTAssertEqual((r.mask[106 / 32] >> Int32(106 % 32)) & 1, 0, "EOS allowed before any narration (selfQ=\(selfQ))")
+      for id in t.encode(text: "Du bist ein Matrose namens Jaro.", addSpecialTokens: false) { let m = try c.computeMask(); XCTAssertTrue((m.mask[id / 32] >> Int32(id % 32)) & 1 == 1); _ = try c.commitToken(Int32(id)) }
+      let r2 = try c.computeMask(); XCTAssertEqual((r2.mask[106 / 32] >> Int32(106 % 32)) & 1, 0)   // tail still mandatory
+    }
+  }
   /// no Fork in xgrammar 0.1.30: a used matcher must be reusable after rollback
   func testRollbackReuse() async throws {
     let (t, gt) = try await tok()
@@ -356,7 +415,7 @@ final class GrammarTests: XCTestCase {
     func G(_ f: (inout Gate) -> Void) -> Gate { var g = Gate(); f(&g); return g }
     let gates: [Gate] = [
       G { $0.head = true; $0.figurLine = true },                        // start_scene (head_scene, first turn)
-      G { $0.open = true; $0.calls = 1 },                               // narr
+      G { $0.open = true; $0.calls = 1; $0.needFigur = true },          // narr + Du slot (no character yet)
       G { $0.head = true; $0.open = true },                             // ask
       G { $0.open = true; $0.asks = 1; $0.ans = "JA"; $0.calls = 1 },
       G { $0.head = true; $0.open = true; $0.asks = 1 },                // nein + narr (no scene change)

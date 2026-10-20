@@ -60,7 +60,7 @@ public final class LM {
 
   /// Start a fresh cache; `text` = full rendered history (no trailing generation prompt).
   public func reset(_ text: String) throws {
-    cache = try ctx.model.newCache(parameters: nil); cached = 0; dirty = false; pending = text
+    cache = try ctx.model.newCache(parameters: nil); cached = 0; dirty = false; pending = text; recent = []
   }
   public func append(_ t: String) { pending += t }
 
@@ -122,7 +122,11 @@ public final class LM {
       let tm = Date()
       let m = try con.computeMask()
       var l = logits[0..., -1, 0...]
-      if m.needsApply { l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim) }
+      if m.needsApply {
+        // repetition penalty on content words, only while the grammar leaves free text (narration), also against the previous turn ("Die Treppe" x3)
+        let free = m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
+        l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [])
+      }
       st.maskS += Date().timeIntervalSince(tm)
       let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))
       if st.ttft == 0 { st.ttft = Date().timeIntervalSince(t1) }
@@ -132,6 +136,7 @@ public final class LM {
       st.maskS += Date().timeIntervalSince(tc)
       committed += 1 + r.tokens.count
       gen.append(tok)
+      recent.append(tok); if recent.count > 160 { recent.removeFirst(recent.count - 160) }
       det.append(token: tok)
       if let s = det.next() { out += s; onDelta(s) }
       n += 1
@@ -145,7 +150,7 @@ public final class LM {
     let full = ctx.tokenizer.decode(tokenIds: gen)
     if full.count > out.count, full.hasPrefix(out) { let rest = String(full.dropFirst(out.count)); onDelta(rest); out = full }
     st.genTok = n; st.decS = Date().timeIntervalSince(t1)
-    if n >= maxTok { throw SLError("maxTok reached") }
+    if n >= maxTok { throw TruncatedError(partial: out) }
     return (out, st, added)
   }
 
@@ -158,7 +163,14 @@ public final class LM {
   }
 
   var maskBuf: [Float] = []
-  func maskArr(_ m: MaskResult, vocab: Int, dim: Int) -> MLXArray {
+  var recent: [Int] = []                // last generated tokens (cross-turn), for the repetition penalty on free text
+  var contentIds: [Int: Bool] = [:]
+  func isContent(_ id: Int) -> Bool {
+    if let b = contentIds[id] { return b }
+    let t = ctx.tokenizer.convertIdToToken(id) ?? ""
+    let b = t.filter(\.isLetter).count >= 5; contentIds[id] = b; return b
+  }
+  func maskArr(_ m: MaskResult, vocab: Int, dim: Int, pen: Set<Int> = []) -> MLXArray {
     if maskBuf.count != dim { maskBuf = [Float](repeating: -Float.infinity, count: dim) }
     var touched: [Int] = []
     m.mask.withUnsafeBufferPointer { b in
@@ -166,7 +178,7 @@ public final class LM {
       for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 { touched.append(w) }
       maskBuf.withUnsafeMutableBufferPointer { f in
         for i in 0..<dim { f[i] = -Float.infinity }
-        for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = 0 } } }
+        for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = pen.contains(i) ? -1.5 : 0 } } }
       }
     }
     return MLXArray(maskBuf)
@@ -174,5 +186,8 @@ public final class LM {
 
   public func unload() { cache = []; gcache = [:]; MLX.GPU.clearCache() }
 }
+
+/// Generation hit maxTok: the partial text is kept so a finished narration can be salvaged (cut the tail, not the story).
+public struct TruncatedError: Error, CustomStringConvertible { public let partial: String; public var description: String { "maxTok reached" } }
 
 public struct SLError: Error, CustomStringConvertible { public let description: String; public init(_ s: String) { description = s } }
