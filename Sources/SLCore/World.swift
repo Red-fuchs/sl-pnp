@@ -230,15 +230,16 @@ public struct World: Codable, Equatable {
   }
 
   // MARK: oracle shift from attitude (only for social questions, with polarity)
-  static let posVerbs = ["hilft", "helfen", "hilfst", "vertraut", "vertrauen", "verrät", "verraten", "gibt", "geben", "lässt", "erlaubt", "glaubt", "antwortet", "redet", "spricht", "erzählt", "zeigt", "folgt", "begleitet", "teilt", "schenkt", "bietet", "gewährt", "empfängt", "kooperiert", "stimmt zu", "hört zu"]
+  static let posVerbs = ["mag ", "mögen", "mag mich", "liebt", "schätzt", "respektiert", "verzeiht", "vergibt", "mich noch", "freund", "hilft", "helfen", "hilfst", "vertraut", "vertrauen", "verrät", "verraten", "gibt", "geben", "lässt", "erlaubt", "glaubt", "antwortet", "redet", "spricht", "erzählt", "zeigt", "folgt", "begleitet", "teilt", "schenkt", "bietet", "gewährt", "empfängt", "kooperiert", "stimmt zu", "hört zu"]
   static let negVerbs = ["greift", "angreift", "bedroht", "verfolgt", "betrügt", "belügt", "lügt", "verrät mich", "verweigert", "verjagt", "wirft raus", "schlägt", "tötet", "meldet", "verhaftet", "stiehlt", "misstraut"]
   public func shift(forQuestion q: String) -> Int? {
     let t = norm(q)
     let pos = Self.posVerbs.contains { t.contains($0) }, neg = Self.negVerbs.contains { t.contains($0) }
     guard pos != neg else { return nil }
     let qt = Set(tokens(t))
-    for n in npcs where n.anwesend && !n.tot && n.haltung != 0 {
-      if !Set(tokens(n.name)).isDisjoint(with: qt) { return pos ? n.haltung : -n.haltung }
+    for n in npcs where n.anwesend && !n.tot && (n.haltung != 0 || n.gekraenkt) {
+      let h = n.gekraenkt ? min(n.haltung, -1) : n.haltung      // a hurt NPC counts as at least wary
+      if !Set(tokens(n.name)).isDisjoint(with: qt) { return pos ? h : -h }
     }
     return nil
   }
@@ -348,7 +349,7 @@ public struct World: Codable, Equatable {
       if a2 == "du" || b2 == "du", let j = npcs.firstIndex(where: { $0.id == (a2 == "du" ? b2 : a2) }), npcs[j].haltung != w { log += setHaltung(j, w) }
     }
     for e in d["tot"].arr ?? [] { if let w = e["wer"].str, let i = npc(w) { log += kill(i) } }
-    for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { log += setHaltung(i, v) } }
+    for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { log += setHaltung(i, min(v, npcs[i].haltung + 1)) } }   // M1: attitude recovers one step per turn at most (a beaten NPC does not turn friendly on one JA+)
     for e in d["strang"].arr ?? [] {   // the delta step may only ADD HINTS (or open a thread); it can never mark one answered
       guard var t = e["titel"].str.map({ clean($0, 70) }) else { continue }
       while t.hasSuffix("?") { t.removeLast() }

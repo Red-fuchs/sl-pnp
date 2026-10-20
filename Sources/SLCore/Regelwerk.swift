@@ -79,17 +79,3 @@ public func classifyArt(_ t: String) -> Art {
   return .sonst
 }
 
-/// P4: deterministic risk gate. A risky action (verb list on the player input) always asks the oracle, with this Art; trivial actions return nil.
-public func riskArt(_ text: String) -> Art? {
-  let t = " " + text.lowercased()
-  let kampf = ["kämpfe", "kämpfen", "greife", "angreife", "greife ", "schlage", "steche", "schieße", "erschieße", "töte", "erschlage", "trete ", "ringe ", "verprügele", "ramme", "stürme", "ziele auf", "werfe", "attackiere", "würge", "erdolche", "ersteche"]
-  let sozial = ["überrede", "überzeuge", "lüge", "belüge", "bluffe", "verhandle", "bestech", "einschüchter", "drohe", "betrüge", "täusche", "feilsche", "schmeichle", "erpresse", "beruhige"]
-  let wissen = ["entziffere", "untersuche", "analysiere", "erinnere mich", "identifiziere", "recherchiere", "entschlüssele", "deute ", "studiere", "durchsuche", "erkenne "]
-  let koerper = ["klettere", "schleiche", "schwimme", "springe", "stehle", "klaue", "breche auf", "knacke", "balanciere", "fliehe", "renne", "verstecke mich", "weiche aus", "tauche", "überquere", "schwinge mich", "entkomme", "fälsche", "taschendieb", "reite"]
-  func hit(_ l: [String]) -> Bool { l.contains { t.contains($0) } }
-  if hit(kampf) { return .kampf }
-  if hit(sozial) { return .sozial }
-  if hit(wissen) { return .wissen }
-  if hit(koerper) { return .sonst }
-  return nil
-}

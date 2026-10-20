@@ -199,7 +199,7 @@ public final class Runner {
     case .gespraech(let rest): try gespraech(rest)
     case .geloest(let f):
       if let ti = game.world.straenge.firstIndex(where: { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" }) {      // P6: all core clues of the thread must be found
-        if let m = missingClues(game.world.straenge[ti].titel, game.hidden.clues) { sink(.info(m)); return true }
+        if let m = missingClues(game.world.straenge[ti].titel, game.hidden.clues, hinweise: game.world.straenge[ti].hinweise.count) { sink(.info(m)); return true }
       }
       if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
@@ -246,7 +246,7 @@ public enum Cmd: Equatable {
 }
 
 /// Harness tags that exist for the model only; they must never reach the UI (hidden clue text!) or /state.
-let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Regie verdeckt|Orakel|Welt|Auftakt|Bekannt|System)\]"#)
+let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Regie verdeckt|Orakel|Welt|Auftakt|Bekannt|System|Fakt)\]"#)
 func isHarnessLine(_ l: String) -> Bool { harnessTag.firstMatch(in: l, range: NSRange(l.startIndex..., in: l)) != nil }
 
 /// Display story from the chat history: user lines minus harness tags, narration = last prose line of each model message
@@ -276,8 +276,9 @@ public func nextSessionName(base: String, root: URL = sessionsRoot) -> String {
 }
 
 /// P6: `/geloest` needs every core clue of the thread; nil = allowed
-public func missingClues(_ titel: String, _ clues: [Clue]) -> String? {
+public func missingClues(_ titel: String, _ clues: [Clue], hinweise: Int = 0) -> String? {
   let cl = clues.filter { $0.thread == titel }
+  if cl.isEmpty { return hinweise >= 2 ? nil : "Dieser Faden hat noch keine belegten Hinweise (\(hinweise)/2) – ermittle weiter oder frage das Orakel." }   // no loophole for threads without clue entries
   return cl.contains { !$0.found } ? "Es fehlen noch Hinweise (\(cl.filter(\.found).count)/\(cl.count)) – erst ermitteln." : nil
 }
 

@@ -201,9 +201,14 @@ private func firstRejectIn(_ c: Constraint, _ ids: [Int]) throws -> Int? {
 }
 final class RiskGateTests: XCTestCase {   // P4
   func testRiskArt() {
-    XCTAssertEqual(riskArt("Ich klettere die Mauer hoch."), .sonst); XCTAssertEqual(riskArt("Ich greife den Wächter an."), .kampf)
-    XCTAssertEqual(riskArt("Ich überrede den Zöllner."), .sozial); XCTAssertEqual(riskArt("Ich entziffere die Inschrift."), .wissen)
-    XCTAssertNil(riskArt("Ich sehe mich um.")); XCTAssertNil(riskArt("Ich gehe zum Markt und kaufe Brot."))
+    let risky = ["Ich schleiche an der Wache vorbei.", "Ich springe über die Schlucht.", "Ich breche die Eisentür auf.", "Ich klettere die Mauer hoch.", "Ich schwimme durch den Fluss.", "Ich greife den Wächter an.", "Ich überrede den Zöllner, mich durchzulassen.", "Ich belüge den Wirt über meine Herkunft.", "Ich stehle dem Händler den Beutel.", "Ich trete die Tür ein."]
+    let trivial = ["Ich trinke etwas Wasser.", "Ich schaue aus dem Fenster.", "Ich nicke der Wache zu.", "Ich gehe zur Tür.", "Ich sehe mich um.", "Ich frage den Wirt nach dem Weg.", "Ich nehme den Schlüssel vom Tisch.", "Ich öffne die Tür.", "Ich setze mich ans Feuer.", "Ich erkenne die Geste."]
+    XCTAssertEqual(risky.filter { classifyAction($0) != nil }.count, 10, "\(risky.filter { classifyAction($0) == nil })")
+    XCTAssertEqual(trivial.filter { classifyAction($0) != nil }.count, 0, "\(trivial.filter { classifyAction($0) != nil })")
+    XCTAssertEqual(classifyAction("Ich erschieße Oruiel mit der Armbrust, direkt ins Herz."), .kill)
+    XCTAssertEqual(classifyAction("Ich steche dem Waffenmeister den Dolch mitten in die Brust."), .kill)
+    XCTAssertEqual(classifyAction("Ich überrede den Zöllner."), .risky(.sozial))
+    XCTAssertEqual(classifyAction("Ich klettere die Mauer hoch."), .risky(.sonst))
   }
   func testRiskyForcesOracleAndArt() throws {
     guard let (t, l) = Llg.ctx else { throw XCTSkip("no model dir") }

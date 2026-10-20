@@ -1428,3 +1428,22 @@ final class StoryLogTests: XCTestCase {   // r4 #3/#4
     XCTAssertEqual(displayStory([Msg.u("Ich schlage Tom.")]).first?["text"], "Ich schlage Tom.")
   }
 }
+
+final class R4Tests: XCTestCase {
+  func testGeloestLoophole() {
+    XCTAssertNotNil(missingClues("T", [], hinweise: 0)); XCTAssertNotNil(missingClues("T", [], hinweise: 1)); XCTAssertNil(missingClues("T", [], hinweise: 2))
+  }
+  func testBeatenNpcOdds() {
+    var w = World(); w.npcs = [Npc(id: "n1", name: "Sylor", kurz: "Waffenmeister", ort: "x")]; w.npcs[0].gekraenkt = true
+    XCTAssertEqual(w.shift(forQuestion: "Mag Sylor mich jetzt noch?"), -1)
+    w.npcs[0].gekraenkt = false; w.npcs[0].haltung = -2
+    XCTAssertEqual(w.shift(forQuestion: "Mag Sylor mich jetzt noch?"), -2)
+    _ = w.apply(try! J.parse(#"{"haltung":[{"wer":"Sylor","wert":2}]}"#)); XCTAssertEqual(w.npcs[0].haltung, -1)
+  }
+  func testActionTargetAndOdds() {
+    var w = World(); w.npcs = [Npc(id: "n1", name: "Amum", kurz: "Wirt", ort: "x"), Npc(id: "n2", name: "Garrek", kurz: "Hauptmann der Wache", ort: "x")]
+    XCTAssertEqual(w.actionTarget("Ich erschieße Amum."), 0); XCTAssertEqual(w.actionTarget("Ich ersteche den Hauptmann."), 1); XCTAssertNil(w.actionTarget("Ich erschieße ihn."))
+    w.npcs[1].anwesend = false; XCTAssertEqual(w.actionTarget("Ich erschieße ihn."), 0, "single present NPC")
+    XCTAssertGreaterThan(w.killOdds("Ich steche den Wirt von hinten ins Herz.", target: 0), w.killOdds("Ich steche den Hauptmann nieder.", target: 1))
+  }
+}
