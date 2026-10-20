@@ -69,6 +69,7 @@ public struct GenState: Codable, Equatable {
   public var orte: [String: String] = [:]    // generated places: name -> "kurz · herrscht"
   public var used: [String] = []             // name generator used-set (lowercase)
   public var wuerze: [[String]] = []         // oracle word pairs ("inspiration only")
+  public var motive: [String]? = nil         // M3: concrete recurring signs of the premise (3), shown in [Welt]
   public var ready = false                   // "spielbar"
   public var secs: [String: Double] = [:]    // timing per stage
   public init() {}
@@ -286,6 +287,7 @@ extension Game {
     let pr = Self.fields((try? genCall("premise", ctx: ctxBlock(), task: "Schreibe die Prämisse (eine Zeile, Spannung + Alltag)\(ortFix.map { " am Ort '\($0)'" } ?? "") und nenne den Alltagsort.\(musst)", GenGr.premise(alltag: ortFix), validate: { t in self.check(t) ?? slots.missing(in: t).map { "Pflichtbegriff '\($0)' fehlt" } })) ?? "")
     world.gen.praemisse = clean(pr["Prämisse"] ?? "", 260); world.gen.alltag = clean(pr["Alltag"] ?? "Der Marktplatz", 50)
     tick("Prämisse", t0)
+    world.gen.motive = genMotive()
     // places
     var places: [String] = []
     for i in 0..<nPlaces {
@@ -446,5 +448,26 @@ extension HiddenWorld {
     for i in clues.indices { clues[i].thread = repairGlyphs(clues[i].thread); clues[i].at = repairGlyphs(clues[i].at); clues[i].text = repairGlyphs(clues[i].text) }
     npcs = Dictionary(npcs.map { (repairGlyphs($0.key), $0.value) }, uniquingKeysWith: { a, _ in a })
     for k in npcs.keys { npcs[k]!.ref = repairGlyphs(npcs[k]!.ref); npcs[k]!.geheimnis = repairGlyphs(npcs[k]!.geheimnis); npcs[k]!.ziel = repairGlyphs(npcs[k]!.ziel) }
+  }
+}
+
+extension Game {
+  /// M3: three concrete, perceivable signs of the premise / must-have terms (one short aux call at world generation)
+  func genMotive() -> [String]? {
+    let g = world.gen
+    let user = "Prämisse: \(g.praemisse)\(g.slots.muss.isEmpty ? "" : "\nPflichtbegriffe: " + g.slots.muss.joined(separator: ", "))\nNenne drei konkrete, sinnlich wahrnehmbare Zeichen, an denen man dies im Alltag bemerkt, je eine kurze Zeile (höchstens 6 Wörter).\nAusgabe:"
+    let short = G.re(Cls.rep(Cls.lineNoQ, 6))
+    guard let (txt, _) = try? lm.aux(system: GenPrompt.sys, user: user, Grammar(.seq([.s("1: "), short, .s("\n2: "), short, .s("\n3: "), short])), temp: 0.8, maxTok: 90) else { return nil }
+    let m = txt.split(separator: "\n").map { clean(String($0.dropFirst(3)), 60) }.filter { !$0.isEmpty && !minorHarm($0) }
+    return m.count == 3 ? m : nil
+  }
+  /// every 4th turn: if premise / must-have / motif lemmas are absent from the last three narrations, a Regie line asks for one concrete sign
+  func motifNote() -> String? {
+    guard turnNo > 0, turnNo % 4 == 0, let mot = world.gen.motive, !mot.isEmpty else { return nil }
+    let recent = msgs.filter { $0.role == "model" }.suffix(3).map(\.text).joined(separator: " ")
+    let rl = Set(contentWords(recent).map(lemma))
+    let keys = Set((mot + world.gen.slots.muss).flatMap { contentWords($0).map(lemma) })
+    if !rl.isDisjoint(with: keys) { return nil }
+    return "\(mot[(turnNo / 4) % mot.count]) ist spürbar: ein konkretes Zeichen, ohne es zu erklären."
   }
 }

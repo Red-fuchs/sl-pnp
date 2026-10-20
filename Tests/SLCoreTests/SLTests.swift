@@ -1524,3 +1524,12 @@ final class ClaimedItemTests: XCTestCase {   // v7 plan b
     XCTAssertTrue(s.panel().contains("Inventar:") || w.panel().contains("Inventar:"))
   }
 }
+
+final class MotifTests: XCTestCase {   // v7 plan c
+  func testBlockShowsPremiseAndMotifs() {
+    var w = World(); w.name = "Kara"; w.gen.ready = true; w.gen.praemisse = "Die Pest bringt Unruhe in das Bergdorf"; w.gen.motive = ["Rote Kreuze an Türen", "Husten im Dunkeln", "Leere Betten"]
+    let b = w.block(); XCTAssertTrue(b.contains("Thema: Die Pest") && b.contains("Zeichen: Rote Kreuze an Türen"))
+    var old = GenState(); old.motive = nil
+    let d = try! JSONDecoder().decode(GenState.self, from: JSONEncoder().encode(old)); XCTAssertNil(d.motive)
+  }
+}

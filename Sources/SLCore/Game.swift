@@ -67,6 +67,7 @@ public final class Game {
   var turnQA: [(q: String, a: String)] = []
   var lastOracleQ = ""
   var lastTargetId: String?
+  var turnNo = 0
   var sceneQs: [String] = []
   var metaVetoes = 0
   var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
@@ -182,7 +183,7 @@ public final class Game {
     world.updateMinors(player)
     let playerOrig = player
     var player = player
-    turnQA = []; lastArt = nil
+    turnQA = []; lastArt = nil; turnNo += 1
     var cls: ActionClass? = (pre == nil && !noOracle && !firstTurn && !isWQuestion(player) && !isSelfQuestion(player)) ? classifyAction(player) : nil
     var minorTarget = false
     if let c = cls, c == .kill || c == .risky(.kampf), case .npc(let i) = world.resolveTarget(player, last: lastTargetId), world.npcs[i].minor { minorTarget = true }
@@ -205,7 +206,7 @@ public final class Game {
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
     let regie = directorPass(player: player)   // behaviour cue from the secrets (side cache); [Regie verdeckt] never reaches the UI
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
-    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
+    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + ((regie ?? motifNote()).map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
     var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen", open: eng.st.open)

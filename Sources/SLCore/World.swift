@@ -186,6 +186,7 @@ public struct World: Codable, Equatable {
     var l = ["[Welt]"]
     let head = name ?? (kurz?.isEmpty == false ? kurz! : "Spielfigur")
     l.append("Du = \(head)")
+    if gen.ready, !gen.praemisse.isEmpty { l.append("Thema: " + cutw(gen.praemisse, 140) + ((gen.motive ?? []).isEmpty ? "" : " · Zeichen: " + gen.motive!.joined(separator: "; "))) }   // M3: the premise stays in view
     var p: [String] = []
     if name != nil, let k = kurz, !k.isEmpty { p.append(k) }
     if let o = ort, !o.isEmpty { p.append("Ort: \(o)") }
