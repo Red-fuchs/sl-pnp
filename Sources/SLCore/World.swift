@@ -207,6 +207,7 @@ public struct World: Codable, Equatable {
     var l = block(full: true).split(separator: "\n", omittingEmptySubsequences: false).map(String.init).filter { $0 != "[Welt]" }
     let noFigur = name == nil && (kurz ?? "").isEmpty
     if noFigur { if l.first?.hasPrefix("Du = ") == true { l.removeFirst() }; l.insert("Du = –  (noch keine Figur: /figur Name: Beschreibung)", at: 0) }
+    if !noFigur, !l.contains(where: { $0.contains("Inventar:") }) { l.insert("Inventar: –", at: min(2, l.count)) }   // M2: /welt always shows the inventory line
     if regeln == "saeulen" { l.insert("Regeln: Drei Säulen — " + pc.line, at: min(2, l.count)) }   // char sheet only while the module is active
     return l.joined(separator: "\n")
   }

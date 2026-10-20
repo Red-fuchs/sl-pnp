@@ -183,7 +183,7 @@ public final class Game {
     let playerOrig = player
     var player = player
     turnQA = []; lastArt = nil
-    let cls: ActionClass? = (pre == nil && !noOracle && !firstTurn && !isWQuestion(player) && !isSelfQuestion(player)) ? classifyAction(player) : nil
+    var cls: ActionClass? = (pre == nil && !noOracle && !firstTurn && !isWQuestion(player) && !isSelfQuestion(player)) ? classifyAction(player) : nil
     var minorTarget = false
     if let c = cls, c == .kill || c == .risky(.kampf), case .npc(let i) = world.resolveTarget(player, last: lastTargetId), world.npcs[i].minor { minorTarget = true }
     if minorHarm(player, names: world.minorNames) || minorTarget {      // P1: the act never happens - deflected in the fiction, the player is told
@@ -193,7 +193,11 @@ public final class Game {
     var pre = pre
     var actionRes = false
     var actionNein = false
-    if let c = cls, !minorTarget, let (fb, res) = resolveAction(player, c) {
+    if pre == nil, !noOracle, !firstTurn, !minorTarget, let (fact, res, cancel) = resolveClaim(player) {      // M2: claimed item not in the inventory
+      player += "\n" + fact
+      if cancel, let r = res { cls = nil; pre = r; actionRes = true; actionNein = true }
+    }
+    if let c = cls, pre == nil, !minorTarget, let (fb, res) = resolveAction(player, c) {
       player += "\n" + fb
       if let r = res { pre = r; actionRes = true; actionNein = r["answer"].str?.hasPrefix("NEIN") ?? false }
     }

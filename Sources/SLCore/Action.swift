@@ -131,3 +131,52 @@ extension Game {
     return (fb, res)
   }
 }
+
+// MARK: M2 claimed items
+let itemList = ["schwert", "dolch", "messer", "bogen", "armbrust", "pistole", "gewehr", "revolver", "granate", "axt", "speer", "schild", "rüstung", "schlüssel", "dietrich", "seil", "fackel", "laterne", "trank", "elixier", "amulett", "ring", "karte", "buch", "zauberstab", "stab", "hammer", "brecheisen", "pfeife", "flöte", "laute", "beutel", "münzen", "gold", "brief", "siegel", "fernglas", "kompass", "werkzeug", "rucksack", "mantel", "umhang", "helm", "handschuhe", "stiefel", "kette", "glocke", "horn", "schaufel", "spaten", "kreuz", "handy", "laser", "bombe", "streitkolben", "keule", "säbel", "degen", "morgenstern", "pfeil", "pfeile", "bolzen", "bolzen"]
+let anachronisms = ["pistole", "gewehr", "revolver", "granate", "handy", "laser", "bombe"]
+let basicGear = ["messer", "beutel", "mantel", "umhang", "stiefel", "rucksack", "handschuhe", "seil", "fackel"]
+let armedRoles = ["söldner", "krieger", "ritter", "jäger", "wache", "kämpfer", "soldat", "hauptmann", "waffenmeister", "leibwächter"]
+
+/// "mein Schwert", "mit dem Dolch", "ziehe den Dolch": items the player claims to hold (allowlist only; never Hand/Augen/Stimme)
+public func claimedItems(_ text: String) -> [String] {
+  let pats = [#"\bmein(?:e|en|em|er|es)?\s+(\p{L}+)"#, #"\bmit\s+(?:dem|der|einem|einer|meinem|meiner|meinen)\s+(\p{L}+)"#, #"\b(?:ziehe|zücke|greife\s+zu|greife\s+nach|werfe|schwinge|hebe)\s+(?:den|die|das|mein\w*|einen|eine|ein)\s+(\p{L}+)"#]
+  var out: [String] = []
+  for p in pats {
+    guard let re = try? NSRegularExpression(pattern: p, options: .caseInsensitive) else { continue }
+    for m in re.matches(in: text, range: NSRange(text.startIndex..., in: text)) {
+      if let r = Range(m.range(at: 1), in: text) { let w = text[r].lowercased(); if let it = itemList.first(where: { w == $0 || (w.count > $0.count && w.hasPrefix($0)) || (w.hasSuffix($0) && $0.count >= 5) }), !out.contains(it) { out.append(it) } }
+    }
+  }
+  return out
+}
+extension World {
+  /// claimed items the character demonstrably does not have (inventory / figure description / armed role / basic gear)
+  public func missingItems(_ text: String) -> [String] {
+    let have = (inventar + [kurz ?? "", name ?? ""]).joined(separator: " ").lowercased()
+    let armed = armedRoles.contains { have.contains($0) }
+    return claimedItems(text).filter { it in
+      if have.contains(it) || have.contains(String(it.prefix(max(4, it.count - 2)))) { return false }
+      if basicGear.contains(it) { return false }
+      if armed, ["schwert", "dolch", "bogen", "armbrust", "axt", "speer", "schild", "rüstung", "helm", "säbel", "degen", "keule", "streitkolben", "pfeil", "pfeile", "bolzen"].contains(it) { return false }
+      return true }
+  }
+}
+extension Game {
+  /// Oracle "Habe ich X dabei?" for a claimed item that is not in the inventory. JA adds it; NEIN is an in-fiction fact and cancels the action.
+  func resolveClaim(_ player: String) -> (fact: String, res: J?, cancel: Bool)? {
+    guard let item = world.missingItems(player).first else { return nil }
+    let disp = item.prefix(1).uppercased() + item.dropFirst()
+    let q = "Habe ich \(disp) dabei?", odds = anachronisms.contains(item) ? -3 : -2
+    let args: J = ["q": .str(q), "odds": .int(odds)]
+    let res = eng.call("ask_oracle", args)
+    guard res["error"].isNull, let ans = res["answer"].str else { return nil }
+    out(.tool("ask_oracle", args, res)); if let e = evInfo("ask_oracle", res) { out(.event(evShow(e))) }
+    turnQA.append((q, ans)); lastOracleQ = q
+    if ans.hasPrefix("JA") {
+      if world.inventar.count < 8 { world.inventar.append(disp) }
+      return ("[Orakel] Antwort: \(ans)\n[Fakt] Die Spielfigur hat \(disp) dabei.", res, false)
+    }
+    return ("[Orakel] Antwort: \(ans)\n[Fakt] Die Spielfigur hat kein \(disp) dabei: die Hand greift ins Leere. Erzähle das ausdrücklich; die Handlung gelingt nicht mit diesem Gegenstand.", res, true)
+  }
+}

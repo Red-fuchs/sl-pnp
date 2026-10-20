@@ -1512,3 +1512,15 @@ final class ContradictionCuesTests: XCTestCase {   // v7 plan a
     for (a, q, n, exp) in cases { XCTAssertEqual(oracleContradicted(answer: a, question: q, narration: n), exp, "\(a) \(q) \(n)") }
   }
 }
+
+final class ClaimedItemTests: XCTestCase {   // v7 plan b
+  func testClaims() {
+    var w = World(); w.name = "Kara"; w.kurz = "Wanderheilerin"; w.inventar = ["Dolch", "Heiltrank"]
+    let absent = ["Ich ziehe mein Schwert.", "Ich greife zu meiner Armbrust.", "Ich schieße mit der Pistole.", "Ich zücke den Zauberstab.", "Ich öffne die Tür mit meinem Dietrich.", "Ich werfe die Granate.", "Ich nehme mein Brecheisen.", "Ich blase in mein Horn.", "Ich ziehe meinen Säbel.", "Ich lese meine Karte."]
+    for t in absent { XCTAssertFalse(w.missingItems(t).isEmpty, t) }
+    for t in ["Ich ziehe meinen Dolch.", "Ich trinke meinen Heiltrank.", "Ich greife zu meinem Messer.", "Ich schaue meine Hand an.", "Ich öffne mit dem Dolch die Kiste."] { XCTAssertTrue(w.missingItems(t).isEmpty, t) }
+    for t in ["Ich sehe mich um.", "Ich frage den Wirt nach dem Weg.", "Ich gehe zur Tür.", "Meine Stimme zittert, als ich spreche.", "Ich hebe meine Augen.", "Ich spreche mit dem Händler.", "Ich nehme den Schlüssel vom Tisch."] { XCTAssertTrue(w.missingItems(t).isEmpty, t) }
+    var s = w; s.kurz = "Söldner"; XCTAssertTrue(s.missingItems("Ich ziehe mein Schwert.").isEmpty, "armed role")
+    XCTAssertTrue(s.panel().contains("Inventar:") || w.panel().contains("Inventar:"))
+  }
+}
