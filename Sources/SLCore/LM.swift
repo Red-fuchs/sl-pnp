@@ -108,12 +108,12 @@ public final class LM {
   public func compile(_ g: Grammar) throws -> Double { let (c, k, t) = try take(g); giveBack(c, k, committed: 0); return t }
 
   /// Feed pending + model-turn prompt, sample under grammar until end of turn. Cache then holds prompt+output; pending = end-of-turn.
-  public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, abort: @escaping () -> Bool = { false }, onDelta: (String) -> Void) throws -> (String, GenStats) {
+  public func generate(_ g: Grammar, temp: Float = 0.7, maxTok: Int = 500, abort: @escaping () -> Bool = { false }, ban: BanSet? = nil, onDelta: (String) -> Void) throws -> (String, GenStats) {
     if dirty { throw SLError("cache dirty, reset needed") }
     try ensureLoaded()
     dirty = true
     if cache.isEmpty { cache = try ctx.model.newCache(parameters: nil) }
-    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, onDelta: onDelta)
+    let r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, ban: ban, onDelta: onDelta)
     pending = tmpl.end
     cached += r.added
     dirty = false
@@ -122,17 +122,17 @@ public final class LM {
   }
 
   /// Side generation with a throwaway cache (world-delta step): never touches the main cache or history.
-  public func aux(system: String, user: String, _ g: Grammar, temp: Float = 0.2, maxTok: Int = 400) throws -> (String, GenStats) {
+  public func aux(system: String, user: String, _ g: Grammar, temp: Float = 0.2, maxTok: Int = 400, ban: BanSet? = nil) throws -> (String, GenStats) {
     try ensureLoaded()
     let c = try ctx.model.newCache(parameters: nil)
     let text = tmpl.bos + tmpl.open("system") + system + tmpl.end + tmpl.open("user") + user + tmpl.end + tmpl.gen
-    let r = try core(cache: c, text: text, g, temp: temp, maxTok: maxTok, onDelta: { _ in })
+    let r = try core(cache: c, text: text, g, temp: temp, maxTok: maxTok, ban: ban, onDelta: { _ in })
     auxLast = r.st
     return (r.out, r.st)
   }
   public var auxLast = GenStats()
 
-  func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, abort: () -> Bool = { false }, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
+  func core(cache: [KVCache], text: String, _ g: Grammar, temp: Float, maxTok: Int, abort: () -> Bool = { false }, ban: BanSet? = nil, onDelta: (String) -> Void) throws -> (out: String, st: GenStats, added: Int) {
     var st = GenStats()
     let (con, gkey, ct) = try take(g)
     st.compileS = ct
@@ -154,10 +154,11 @@ public final class LM {
       let tm = Date()
       let m = try con.computeMask()
       var l = logits[0..., -1, 0...]
-      if m.needsApply {
+      let blk = ban?.blocked(after: gen) ?? []
+      if m.needsApply || !blk.isEmpty {
         // repetition penalty on content words, only while the grammar leaves free text (narration), also against the previous turn ("Die Treppe" x3)
-        let free = m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
-        l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [])
+        let free = !m.needsApply || m.mask.reduce(0) { $0 + UInt32(bitPattern: $1).nonzeroBitCount } > 3000
+        l = l + maskArr(m, vocab: gtok.vocabSize, dim: dim, pen: free ? Set(recent.filter(isContent)) : [], block: blk)
       }
       st.maskS += Date().timeIntervalSince(tm)
       let tok = temp <= 0 ? Int(argMax(l, axis: -1).item(UInt32.self)) : Int(categorical(l * (1 / temp)).item(UInt32.self))
@@ -203,16 +204,19 @@ public final class LM {
     let t = tok.convertIdToToken(id) ?? ""
     let b = t.filter(\.isLetter).count >= 5; contentIds[id] = b; return b
   }
-  func maskArr(_ m: MaskResult, vocab: Int, dim: Int, pen: Set<Int> = []) -> MLXArray {
+  func maskArr(_ m: MaskResult, vocab: Int, dim: Int, pen: Set<Int> = [], block: Set<Int> = []) -> MLXArray {
     if maskBuf.count != dim { maskBuf = [Float](repeating: -Float.infinity, count: dim) }
-    var touched: [Int] = []
-    m.mask.withUnsafeBufferPointer { b in
-      let p = UnsafeRawPointer(b.baseAddress!).assumingMemoryBound(to: UInt32.self)
-      for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 { touched.append(w) }
-      maskBuf.withUnsafeMutableBufferPointer { f in
-        for i in 0..<dim { f[i] = -Float.infinity }
-        for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = pen.contains(i) ? -1.5 : 0 } } }
-      }
+    maskBuf.withUnsafeMutableBufferPointer { f in
+      if m.needsApply {
+        var touched: [Int] = []
+        m.mask.withUnsafeBufferPointer { b in
+          let p = UnsafeRawPointer(b.baseAddress!).assumingMemoryBound(to: UInt32.self)
+          for w in 0..<((min(vocab, dim) + 31) / 32) where p[w] != 0 { touched.append(w) }
+          for i in 0..<dim { f[i] = -Float.infinity }
+          for w in touched { let x = p[w]; for bit in 0..<32 where (x >> UInt32(bit)) & 1 == 1 { let i = w * 32 + bit; if i < dim { f[i] = pen.contains(i) ? -1.5 : 0 } } }
+        }
+      } else { for i in 0..<dim { f[i] = pen.contains(i) ? -1.5 : 0 } }
+      for i in block where i < dim { f[i] = -Float.infinity }          // decode-time ban: the token that would complete a secret term
     }
     return MLXArray(maskBuf)
   }

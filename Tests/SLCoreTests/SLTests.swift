@@ -459,6 +459,37 @@ final class MinorFixTests: XCTestCase {
   }
 }
 
+final class DecodeBanTests: XCTestCase {
+  func testBanSetBlocksOnlyTheCompletingToken() {
+    let b = BanSet([[5, 6], [7], [5, 6, 9], [3, 4, 8]])
+    XCTAssertEqual(b.blocked(after: []), [7])                         // single-token term: always
+    XCTAssertEqual(b.blocked(after: [1, 5]), [7, 6])                 // 5 was just generated -> 6 would complete [5,6]
+    XCTAssertEqual(b.blocked(after: [5, 6]), [7, 9])                 // [5,6] generated -> 9 would complete [5,6,9]
+    XCTAssertEqual(b.blocked(after: [3]), [7]); XCTAssertEqual(b.blocked(after: [3, 4]), [7, 8]); XCTAssertEqual(b.blocked(after: [4]), [7])   // partial prefixes are not blocked
+  }
+  func testVariantsAndTerms() {
+    let v = banVariants("Salzlake")
+    for x in ["salzlake", "Salzlake", " Salzlake", " salzlake", "Salzlaken", "Salzlakes", "Salzlak"] { XCTAssertTrue(v.contains(x), x) }   // case, leading space, inflections, dropped -e
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.ziel = "Die Zunft vor dem Bankrott bewahren"; h.npcs["Zubeir"] = n
+    var w = World(); w.setFigur("Aether: Mann"); w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Hof"); w.gen.praemisse = "Die Zunft der Wasserwäger regiert."
+    let t = banTerms(secrets: h.secretList(), known: w.knownText())
+    XCTAssertTrue(t.contains("Salzlake")); XCTAssertTrue(t.contains("panscht")); XCTAssertTrue(t.contains("Bankrott"))
+    XCTAssertFalse(t.contains("Zunft")); XCTAssertFalse(t.contains("Wasser"))                    // visible / generic words are not banned
+  }
+  func testRealTokenizerBan() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d))
+    let ban = buildBan(terms: ["Salzlake"], encode: { t.encode(text: $0, addSpecialTokens: false) })
+    XCTAssertGreaterThan(ban.count, 5)
+    for form in ["Salzlake", " Salzlake", "salzlake", " Salzlaken"] {
+      let ids = t.encode(text: form, addSpecialTokens: false)
+      XCTAssertTrue(ban.blocked(after: Array(ids.dropLast())).contains(ids.last!), "'\(form)' not blocked at its last token")
+      if ids.count > 1 { XCTAssertFalse(ban.blocked(after: []).contains(ids[0])) }               // the first token alone stays free
+    }
+    let ok = t.encode(text: " Salzfass", addSpecialTokens: false); XCTAssertFalse(ban.blocked(after: Array(ok.dropLast())).contains(ok.last!))   // unrelated words stay usable
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

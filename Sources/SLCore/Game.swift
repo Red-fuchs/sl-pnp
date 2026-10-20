@@ -47,6 +47,13 @@ public final class Game {
   public var world = World()
   public var hidden = HiddenWorld()     // secrets of a generated world: never rendered into [Welt]
   var figurCandidates: [String] = []
+  var banCache: (key: String, ban: BanSet)?
+  /// decode-time ban for the unrevealed secret terms (cached per term set)
+  func banFor(_ secrets: [(topic: String, text: String)], _ known: String) -> BanSet? {
+    let terms = banTerms(secrets: secrets, known: known); guard !terms.isEmpty else { return nil }
+    let key = terms.joined(separator: "|"); if let c = banCache, c.key == key { return c.ban }
+    let b = buildBan(terms: terms, encode: { self.lm.tok.encode(text: $0, addSpecialTokens: false) }); banCache = (key, b); return b
+  }
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
@@ -146,18 +153,20 @@ public final class Game {
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       let secrets = secretList(), known = knownText(), hold = !secretBearersHere().isEmpty   // narration is held back for the leak check while a secret-bearing NPC is present
       let mkStream = { NarrStream(hold: hold, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
+      let ban = banFor(secrets, known)
       var ns = mkStream()
       let gm = Gr.grammar(gate)
       var txt = "", truncated = false, metaRetry = false
       for attempt in 0..<3 {
         ns = mkStream()
         do {
-          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }) { d in ns.feed(d) }
+          (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil) }, ban: ban) { d in ns.feed(d) }
           break
         } catch is AbortedError {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
           if let l = ns.leak, !msgs.isEmpty {   // leak guard: regenerate once with a "do not reveal" note (kept in the prompt text, stripped from the UI)
-            msgs[msgs.count - 1].text += "\n[Regie verdeckt] Verrate nicht: \(l.topic)."
+            // neutral note only (naming the forbidden term primes the model to use it); the decode-time ban is active for the retry
+            msgs[msgs.count - 1].text += "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
             out(.info("Erzählung verworfen (Geheimnis angedeutet: \(l.topic)) – neuer Versuch"))
           } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
           ns.discard(); metaRetry = true

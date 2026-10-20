@@ -73,11 +73,11 @@ extension Game {
     var note = ""
     for attempt in 0..<2 {
       let user = world.block() + "\n---\nGeheim (nur für dich):\n\(facts)\nAktion der Spielfigur: \(clean(player, 200))\(note)\nAusgabe:"
-      guard let (txt, _) = try? lm.aux(system: sys, user: user, Gr.regie, temp: 0.7, maxTok: 120) else { return nil }
+      guard let (txt, _) = try? lm.aux(system: sys, user: user, Gr.regie, temp: 0.7, maxTok: 120, ban: banFor(secretList(), knownText())) else { return nil }
       let lines = txt.split(separator: "\n").map { String($0).replacingOccurrences(of: "Regie: ", with: "") }
       let joined = lines.joined(separator: " ")
       if let l = leakCheck(joined, secrets: secretList(), known: knownText()) {
-        if attempt == 0 { note = "\nDein letzter Versuch verriet: \(l.topic). Verrate nichts davon, nur Verhalten."; continue }
+        if attempt == 0 { note = "\nBeschreibe nur sichtbares Verhalten, keine Fakten."; _ = l; continue }
         let kept = lines.filter { leakCheck($0, secrets: secretList(), known: knownText()) == nil }   // drop the leaking line(s)
         return kept.isEmpty ? nil : kept.joined(separator: " ")
       }
@@ -93,4 +93,50 @@ extension Gr {
     let line = G.re(#"[A-ZÄÖÜ][^\n<]{12}[^\n<]*"#)
     return Grammar(.or([.seq([.s("Regie: "), line]), .seq([.s("Regie: "), line, .s("\nRegie: "), line])]))
   }
+}
+
+// MARK: decode-time ban (first line of defence)
+
+/// Token sequences that must not be completed while generating. Only the LAST token of a banned sequence is masked, and only once the
+/// preceding tokens of that sequence have just been generated (prefix-trie style); exact token sequences only, hence the variant generator.
+public struct BanSet {
+  var single: Set<Int> = []                    // one-token terms: always banned
+  var byPrev: [Int: [(prefix: [Int], last: Int)]] = [:]   // key = token before the last one
+  public private(set) var count = 0
+  public init(_ seqs: [[Int]] = []) {
+    for q in seqs where !q.isEmpty {
+      count += 1
+      if q.count == 1 { single.insert(q[0]) } else { byPrev[q[q.count - 2], default: []].append((Array(q.dropLast()), q[q.count - 1])) }
+    }
+  }
+  public var isEmpty: Bool { count == 0 }
+  /// tokens that would complete a banned sequence as the next token
+  public func blocked(after gen: [Int]) -> Set<Int> {
+    var r = single
+    if let l = gen.last, let c = byPrev[l] { for (pre, last) in c where gen.count >= pre.count && gen.suffix(pre.count).elementsEqual(pre) { r.insert(last) } }
+    return r
+  }
+}
+
+/// Rare secret words (same filter as the leak check): not visible in [Welt], not stopwords, not generic nouns.
+public func banTerms(secrets: [(topic: String, text: String)], known: String) -> [String] {
+  let seen = Set(contentWords(known).map(stem))
+  var out: [String] = [], have = Set<String>()
+  for s in secrets { for w in contentWords(s.text) where !seen.contains(stem(w)) && !commonNouns.contains(w.lowercased()) && have.insert(w.lowercased()).inserted { out.append(w) } }
+  return out
+}
+/// HF-style bans match exact token sequences only -> generate the surface variants: lower / Capitalised, with and without leading space,
+/// common German inflections (plural, genitive, dropped -e).
+public func banVariants(_ w: String) -> [String] {
+  let low = w.lowercased(), cap = low.prefix(1).uppercased() + low.dropFirst()
+  var stems = [low, cap]
+  for b in [low, cap] { if b.hasSuffix("e") { stems.append(String(b.dropLast())) } }
+  var v: [String] = []
+  for b in stems { for suf in ["", "n", "e", "en", "s", "es", "er", "ern"] { v.append(b + suf) } }
+  return Array(Set(v)).flatMap { [$0, " " + $0] }
+}
+public func buildBan(terms: [String], encode: (String) -> [Int], cap: Int = 600) -> BanSet {
+  var seqs: [[Int]] = [], seen = Set<[Int]>()
+  for t in terms { for v in banVariants(t) { let ids = encode(v); if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs) } } }
+  return BanSet(seqs)
 }
