@@ -108,7 +108,7 @@ public final class Game {
       let (txt, st) = try lm.aux(system: DELTA_SYS, user: user, Gr.delta)
       if debug { out(.info("· Welt: \(st.line) · \(txt)")) }
       if let d = try? J.parse(txt) {
-        let old = world.ort, threads = world.straenge, injected = isInjection(player)
+        let old = world.ort, threads = world.straenge, injected = isInjection(player) || player.trimmingCharacters(in: .whitespaces).hasSuffix("?")   // injection and plain question turns never grow threads/hints (clues come from the reveal pipeline)
         log += world.apply(d); world.figurMoved(from: old)
         if injected { world.straenge = threads }      // N6: an injected frame never writes threads / hints
       }

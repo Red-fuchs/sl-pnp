@@ -1376,3 +1376,10 @@ final class ThreadYieldTests: XCTestCase {   // N1 yield
     XCTAssertNotNil(Game.threadProblem(ok.replacingOccurrences(of: "Wer hat den Detektiv bestochen", with: "Wer ist der Detektiv, und warum"), existing: [], must: nil))
   }
 }
+
+final class GeloestGateTests: XCTestCase {   // P6
+  func testNeedsAllClues() {
+    var a = Clue(thread: "T", text: "x", at: "y"), b = a; a.found = true; b.found = false
+    XCTAssertNotNil(missingClues("T", [a, b])); XCTAssertNil(missingClues("T", [a, a])); XCTAssertNil(missingClues("Andere", [b]))
+  }
+}

@@ -192,7 +192,11 @@ public final class Runner {
       try session.save(game); refresh(); sink(.info("Talente: \(game.world.pc.talente.isEmpty ? "-" : game.world.pc.talente.joined(separator: ", "))"))
     case .weltgen(let a): try weltgen(a)
     case .gespraech(let rest): try gespraech(rest)
-    case .geloest(let f): if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
+    case .geloest(let f):
+      if let ti = game.world.straenge.firstIndex(where: { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" }) {      // P6: all core clues of the thread must be found
+        if let m = missingClues(game.world.straenge[ti].titel, game.hidden.clues) { sink(.info(m)); return true }
+      }
+      if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
@@ -264,4 +268,10 @@ public func nextSessionName(base: String, root: URL = sessionsRoot) -> String {
   var n = 2
   while FileManager.default.fileExists(atPath: root.appendingPathComponent("\(b)-\(n)").path) { n += 1 }
   return "\(b)-\(n)"
+}
+
+/// P6: `/geloest` needs every core clue of the thread; nil = allowed
+public func missingClues(_ titel: String, _ clues: [Clue]) -> String? {
+  let cl = clues.filter { $0.thread == titel }
+  return cl.contains { !$0.found } ? "Es fehlen noch Hinweise (\(cl.filter(\.found).count)/\(cl.count)) – erst ermitteln." : nil
 }
