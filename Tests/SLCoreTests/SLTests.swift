@@ -1383,3 +1383,19 @@ final class GeloestGateTests: XCTestCase {   // P6
     XCTAssertNotNil(missingClues("T", [a, b])); XCTAssertNil(missingClues("T", [a, a])); XCTAssertNil(missingClues("Andere", [b]))
   }
 }
+
+final class OracleReflectTests: XCTestCase {   // M1/N8
+  func testContradiction() {
+    let q = "Ist das Messer blutig?"
+    XCTAssertTrue(oracleContradicted(answer: "NEIN+", question: q, narration: "Das Messer ist blutig, getränkt von Blut."))
+    XCTAssertFalse(oracleContradicted(answer: "NEIN", question: q, narration: "Das Messer ist nicht blutig, die Klinge blitzt sauber."))
+    XCTAssertTrue(oracleContradicted(answer: "JA", question: "Hilft dir der Wirt?", narration: "Der Wirt hilft dir nicht und wendet sich ab."))
+    XCTAssertFalse(oracleContradicted(answer: "JA", question: "Hilft dir der Wirt?", narration: "Der Wirt hilft dir sofort."))
+    XCTAssertFalse(oracleContradicted(answer: "JA", question: q, narration: "Der Wind pfeift."))
+  }
+  func testRelationSyncsLabel() {
+    var w = World(); w.name = "Kara"; w.npcs = [Npc(id: "n1", name: "Belric", kurz: "Wirt", ort: "x")]; w.npcs[0].haltung = 1
+    _ = w.apply(try! J.parse(#"{"beziehung":[{"a":"du","b":"Belric","wert":-1}]}"#))
+    XCTAssertEqual(w.npcs[0].haltung, -1); XCTAssertFalse(w.card(w.npcs[0]).contains("freundlich"))
+  }
+}

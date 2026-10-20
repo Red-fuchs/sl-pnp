@@ -195,6 +195,10 @@ final class SaeulenGateTests: XCTestCase {   // N4
   }
 }
 
+private func firstRejectIn(_ c: Constraint, _ ids: [Int]) throws -> Int? {
+  for (i, id) in ids.enumerated() { let m = try c.computeMask(); if (m.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return i }; _ = try c.commit(Int32(id)) }
+  return nil
+}
 final class RiskGateTests: XCTestCase {   // P4
   func testRiskArt() {
     XCTAssertEqual(riskArt("Ich klettere die Mauer hoch."), .sonst); XCTAssertEqual(riskArt("Ich greife den Wächter an."), .kampf)
@@ -211,6 +215,8 @@ final class RiskGateTests: XCTestCase {   // P4
       return false
     }
     XCTAssertTrue(try rej("-\nArt: sonst\nWerkzeug: nein\n"))             // no narration-only head
+    let c0 = try LlgConstraint(tok: l, lark: Gr.grammar(g).lark)
+    XCTAssertNotNil(try firstRejectIn(c0, t.encode(text: "Erwartung: Der Wächter zieht blank.\nOrtswechsel/Zeitsprung: ja\n", addSpecialTokens: false)))   // no scene change either
     XCTAssertTrue(try rej("Trifft der Hieb?\nArt: sozial\nWerkzeug: ja\n"))   // wrong Art
     XCTAssertFalse(try rej("Trifft der Hieb?\nArt: kampf\nWerkzeug: ja\n"))
   }

@@ -116,6 +116,7 @@ public final class Runner {
     session.log("\n**Spieler:** /frage \(q) → \(r.json)\n")
     var fb = fmtResult("ask_oracle", r)   // short German text only; rng/roll/step stay in the UI
     if evInfo("ask_oracle", r) != nil, !(game.eng.st.akteure.isEmpty && game.eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(game.eng.st.akteure.map(\.name), game.eng.st.straenge.map(\.name)) }
+    game.lastOracleQ = q
     try run { try game.turn("Ich frage das Schicksal: \(q)\n" + fb, pre: r) }
   }
   /// `rest` = "<Name> [Thema]"; the NPC name is matched longest-first against the known figures.

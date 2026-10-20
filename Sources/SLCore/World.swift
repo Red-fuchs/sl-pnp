@@ -342,6 +342,8 @@ public struct World: Codable, Equatable {
       if let i = beziehungen.firstIndex(where: { ($0.a == a2 && $0.b == b2) || ($0.a == b2 && $0.b == a2) }) { beziehungen[i].wert = w }
       else { beziehungen.append(Rel(a: a2, b: b2, wert: w)); if beziehungen.count > 20 { beziehungen.removeFirst() } }
       log.append("\(label(a2))↔\(label(b2)) \(w)")
+      // M1: a relation to the player IS the attitude; the label ("freundlich" at -1 was a bug) follows the number
+      if a2 == "du" || b2 == "du", let j = npcs.firstIndex(where: { $0.id == (a2 == "du" ? b2 : a2) }), npcs[j].haltung != w { log += setHaltung(j, w) }
     }
     for e in d["tot"].arr ?? [] { if let w = e["wer"].str, let i = npc(w) { log += kill(i) } }
     for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { log += setHaltung(i, v) } }

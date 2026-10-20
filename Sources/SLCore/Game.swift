@@ -65,6 +65,7 @@ public final class Game {
   }
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
+  var lastOracleQ = ""
   var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
@@ -181,13 +182,17 @@ public final class Game {
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       let secrets = hidden.guardList(), known = knownText(), hold = hidden.holdNarration   // held back whenever any tier-0/1 secret exists (also when its bearer is absent): a leak must never be shown and then retracted   // narration is held back for the leak check while a secret-bearing NPC is present
       let minors = world.minorNames
-      let mkStream = { NarrStream(hold: hold, minors: minors, check: secrets.isEmpty ? nil : { leakCheck($0, secrets: secrets, known: known) }, out: self.out) }
+      let ansQ = gate.ans.map { a in (a, turnQA.last?.q ?? lastOracleQ) }
+      let mkStream = { (attempt: Int) in NarrStream(hold: hold, minors: minors, check: secrets.isEmpty && ansQ == nil ? nil : { line in
+        if !secrets.isEmpty, let l = leakCheck(line, secrets: secrets, known: known) { return l }
+        if attempt == 0, let (a, q) = ansQ, !q.isEmpty, oracleContradicted(answer: a, question: q, narration: line) { return Leak(topic: "orakel", words: [], sentence: line) }   // M1: the oracle answer must show in the narration
+        return nil }, out: self.out) }
       let ban = banFor(hidden.secretList(), known)          // hard ban: tier 0 only; the check above also covers tier 1
-      var ns = mkStream()
+      var ns = mkStream(0)
       let gm = Gr.grammar(gate)
       var txt = "", truncated = false, metaRetry = false
       for attempt in 0..<3 {
-        ns = mkStream()
+        ns = mkStream(attempt)
         do {
           (txt, _) = try lm.generate(gm, temp: attempt == 0 ? temp : (metaRetry ? 0.9 : 0.4), maxTok: 600, abort: { attempt < 2 && (ns.bad || ns.leak != nil || (attempt == 0 && Game.forceAbort && ns.n > 8)) }, ban: ban, soft: softBanFor(known)) { d in ns.feed(d) }
           break
@@ -195,7 +200,7 @@ public final class Game {
           // planner scaffold / foreign glyphs in the narration: drop it (UI retracts) and sample again
           if let l = ns.leak, !msgs.isEmpty {   // leak guard: regenerate once with a "do not reveal" note (kept in the prompt text, stripped from the UI)
             // neutral note only (naming the forbidden term primes the model to use it); the decode-time ban is active for the retry
-            msgs[msgs.count - 1].text += l.topic == minorTopic ? "\n[Regie] Kinder bleiben unverletzt und unbedroht; nichts Sexuelles. Erzähle etwas anderes." : "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
+            msgs[msgs.count - 1].text += l.topic == "orakel" ? "\n[Regie] Das Orakel hat entschieden: \(gate.ans ?? ""). Erzähle dieses Ergebnis ausdrücklich und sichtbar." : l.topic == minorTopic ? "\n[Regie] Kinder bleiben unverletzt und unbedroht; nichts Sexuelles. Erzähle etwas anderes." : "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
             out(.info(leakNotice(dropped: false))); if debug { out(.info("[debug] Leck: \(l.topic)")) }
           } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
           ns.discard(); metaRetry = true
@@ -222,6 +227,7 @@ public final class Game {
           lines[k] = kept; txt = lines.joined(separator: "\n"); truncated = true
         }
       }
+      if let l = ns.leak, l.topic == "orakel" { ns.discardLeakFlag() }
       if let l = ns.leak {   // still leaking after the regeneration: drop the offending sentences, show the rest
         var lines = txt.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         if let k = lines.lastIndex(where: { !$0.isEmpty && !$0.hasPrefix("<") && !gatePrefixes.contains(where: $0.hasPrefix) }) {
@@ -406,6 +412,7 @@ public final class NarrStream {
     line = ""; narr = false; held = ""; prevMinor = false
   }
   public func finish() { endLine() }
+  func discardLeakFlag() { leak = nil }
   public func discard() { line = ""; narr = false; bad = false; leak = nil; held = ""; sent = ""; prevMinor = false }
 }
 
@@ -439,6 +446,18 @@ public func isMetaNarration(_ line: String) -> Bool {
   if ["Erwartung", "Werkzeug", "Ortswechsel", "Antwort", "Frage", "Hinweis"].contains(w) || w.hasPrefix("Deutung") { return true }
   if t.contains("zugänglich geworden") || t.contains("nun für dich zugänglich") || t.contains("Regeln ignor") { return true }   // N6: plays along with an injected frame
   return t.contains("plausibel ist, dass") || t.contains("plausibel ist dass")
+}
+
+/// M1: does the narration contradict (or ignore) the oracle answer to the question? Sentences sharing a content word with the question
+/// must not deny a JA, and must deny a NEIN (negation cue); a narration that never touches the question counts as ignoring it.
+public func oracleContradicted(answer: String, question: String, narration: String) -> Bool {
+  let qw = Set(contentWords(question).map(lemma)); guard !qw.isEmpty else { return false }
+  let rel = sentences(of: narration).filter { !Set(contentWords($0).map(lemma)).isDisjoint(with: qw) }
+  guard !rel.isEmpty else { return false }       // unrelated narration is not provably contradictory (the BIND line already carries the answer)
+  let neg = ["nicht", "kein", "nie ", "niemand", "nichts", "vergeblich", "leer", "misslingt", "scheitert", "fehl", "unmöglich", "verschlossen", "verwehr", "ohne "]
+  let denies = rel.contains { s in neg.contains { s.lowercased().contains($0) } }
+  let affirms = rel.contains { s in !neg.contains { s.lowercased().contains($0) } }
+  return answer.hasPrefix("JA") ? (denies && !affirms) : (!denies && affirms)
 }
 
 /// N9: tension must rise when the scene went badly (NEIN majority, random event) - the model nearly always claims "control".

@@ -119,7 +119,8 @@ public enum Gr {
       var br: [G] = [.seq([ja, endScene])]
       if t.selfQ { return Grammar(.seq(hd + [.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }   // self-question: narration only
       if !(t.mustAsk || t.risky != nil) || !canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t, risky: false) + [.s("\nWerkzeug: nein\n"), narrG(t)])) }
-      if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q] + artG(t) + [.s("\nWerkzeug: ja\n"), askCall])) }
+      if canAsk(t) { br.append(.seq([.s("Ortswechsel/Zeitsprung: nein\nFrage: "), q] + artG(t) + [.s("\nWerkzeug: ja\n"), askCall]))
+        if t.risky != nil { br = [br.last!] } }       // risky action: no scene change and no narration-only escape, the oracle decides first
       return Grammar(.seq(hd + [.or(br)]))
     }
     var parts: [G] = []
