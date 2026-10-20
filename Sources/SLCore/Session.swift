@@ -25,6 +25,17 @@ public final class Session {
   var statePath: String { dir.appendingPathComponent("state.json").path }
   var chatURL: URL { dir.appendingPathComponent("chat.json") }
   var worldURL: URL { dir.appendingPathComponent("world.json") }
+  var storyURL: URL { dir.appendingPathComponent("story.jsonl") }
+  /// append-only display log (UI /state, reload); compaction only trims the model context, never this
+  public func appendStory(_ e: [String: String]) {
+    guard let d = try? JSONSerialization.data(withJSONObject: e, options: [.sortedKeys]), var line = String(data: d, encoding: .utf8) else { return }
+    line += "\n"
+    if let h = try? FileHandle(forWritingTo: storyURL) { h.seekToEndOfFile(); h.write(Data(line.utf8)); try? h.close() } else { try? line.write(to: storyURL, atomically: true, encoding: .utf8) }
+  }
+  public func loadStory() -> [[String: String]]? {
+    guard let t = try? String(contentsOf: storyURL, encoding: .utf8) else { return nil }
+    return t.split(separator: "\n").compactMap { try? JSONSerialization.jsonObject(with: Data($0.utf8)) as? [String: String] }
+  }
   var mdURL: URL { dir.appendingPathComponent("transcript.md") }
   public var exists: Bool { FileManager.default.fileExists(atPath: statePath) && FileManager.default.fileExists(atPath: chatURL.path) }
 

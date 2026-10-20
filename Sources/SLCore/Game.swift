@@ -77,6 +77,9 @@ public final class Game {
   public var maxCtx = Int(ProcessInfo.processInfo.environment["SL_MAXCTX"] ?? "") ?? 14000   // SL_MAXCTX: test aid to force compaction
   public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
+  public var storyLog: [[String: String]] = []
+  public var onStory: ([String: String]) -> Void = { _ in }
+  func logStory(_ e: [String: String]) { storyLog.append(e); onStory(e) }
 
   public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World(), hidden: HiddenWorld = HiddenWorld()) {
     self.hidden = hidden; self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
@@ -162,6 +165,7 @@ public final class Game {
     if lm.cached > maxCtx { try compact() }
     let firstTurn = msgs.isEmpty
     world.updateMinors(player)
+    let playerOrig = player
     var player = player
     if minorHarm(player, names: world.minorNames) {      // P1: the act never happens - deflected in the fiction, the player is told
       out(.info("Hinweis: Gewalt oder Sexuelles gegen Kinder wird nicht gespielt – die Handlung kommt in der Geschichte nicht zustande."))
@@ -173,6 +177,7 @@ public final class Game {
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
+    if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.noAsk = noOracle; gate.risky = (pre == nil && !isWQuestion(player) && !isSelfQuestion(player)) ? riskArt(player) : nil; gate.art = world.regeln == "saeulen"; gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
@@ -244,7 +249,7 @@ public final class Game {
       }
       let hadFigurLine = gate.figurLine
       gate.figurLine = false
-      msgs.append(.m(txt)); onMsg(.m(txt))
+      msgs.append(.m(txt)); onMsg(.m(txt)); if let e = displayStory([Msg.m(txt)]).first { logStory(e) }
       if truncated { try syncCache() }   // the cache still holds the cut tail tokens
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
       let (body, tail, du) = splitTail(txt)

@@ -1418,3 +1418,13 @@ final class PlaceDedupeTests: XCTestCase {   // P8
     _ = w.apply(try! J.parse(#"{"ort_neu":[{"name":"Krypta der Grenzsteine","kurz":"x"}]}"#)); XCTAssertEqual(w.orte.count, 1)
   }
 }
+
+final class StoryLogTests: XCTestCase {   // r4 #3/#4
+  func testAppendOnlyRoundTrip() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-story-\(UUID().uuidString)")
+    let s = try Session(name: "t", root: root)
+    s.appendStory(["who": "me", "text": "Ich schlage Tom."]); s.appendStory(["who": "sl", "text": "Du hältst inne."])
+    XCTAssertEqual(s.loadStory()?.map { $0["text"]! }, ["Ich schlage Tom.", "Du hältst inne."])
+    XCTAssertEqual(displayStory([Msg.u("Ich schlage Tom.")]).first?["text"], "Ich schlage Tom.")
+  }
+}

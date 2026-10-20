@@ -65,6 +65,8 @@ public final class Runner {
       sink(o)
     }
     game.onMsg = { [unowned self] _ in try? session.save(game) }
+    game.onStory = { [unowned self] e in session.appendStory(e) }
+    if game.storyLog.isEmpty { if let l = session.loadStory() { game.storyLog = l } else { game.storyLog = displayStory(game.msgs); game.storyLog.forEach { session.appendStory($0) } } }
   }
 
   public func startNew(setting: String?) throws {
@@ -207,7 +209,7 @@ public final class Runner {
   }
 
   /// Story for UI reload: player lines and narrations only (display text is derived from the prompt text, never the other way round).
-  public func story() -> [[String: String]] { displayStory(game.msgs) }
+  public func story() -> [[String: String]] { game.storyLog }
 }
 
 public func isWQuestion(_ q: String) -> Bool {
