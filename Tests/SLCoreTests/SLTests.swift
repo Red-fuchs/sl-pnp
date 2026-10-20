@@ -695,6 +695,22 @@ final class ReviewV6EvictionTests: XCTestCase {
   }
 }
 
+final class ReviewV6BanTests: XCTestCase {
+  // MED 3
+  func testCompoundsAndRevealedClueWordsStayWritable() {
+    let sec = [(topic: "Geheimnis von X", text: "Er panscht das Wasser mit Salz und Gift")]
+    XCTAssertTrue(banTerms(secrets: sec, known: "").contains("Salz"))
+    XCTAssertFalse(banTerms(secrets: sec, known: "Salzspuren am Rand").contains("Salz"))             // revealed clue word "Salzspuren" lifts the ban on "Salz"
+    XCTAssertFalse(banTerms(secrets: sec, known: "Giftmischer in der Stadt").contains("Gift"))         // prefix-based visibility
+    XCTAssertTrue(banTerms(secrets: sec, known: "Salzspuren").contains("Gift"))
+    // short single-token terms are not hard-banned (fake tokenizer: every variant is ONE token)
+    let b = buildBan(terms: ["Salz", "Salzlake"], encode: { [$0.hashValue & 0xffff] })
+    XCTAssertEqual(b.count, banVariants("Salzlake").count)                              // only the long term's variants are in
+    XCTAssertTrue(buildBan(terms: ["Gift"], encode: { [$0.hashValue & 0xffff] }).isEmpty)
+    XCTAssertFalse(buildBan(terms: ["Gift"], encode: { _ in [1, 2] }).isEmpty)           // multi-token variants of short terms are still banned
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

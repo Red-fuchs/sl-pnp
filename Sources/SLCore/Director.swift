@@ -207,9 +207,11 @@ public struct BanSet {
 
 /// Rare secret words (same filter as the leak check): not visible in [Welt], not stopwords, not generic nouns.
 public func banTerms(secrets: [(topic: String, text: String)], known: String) -> [String] {
-  let seen = Set(contentWords(known).map(stem))
+  let seenWords = contentWords(known).map { $0.lowercased() }
+  // prefix-based: a term is visible when ANY known word starts with it ("Salz" is visible once "Salzspuren" is a revealed clue word)
+  func seen(_ w: String) -> Bool { let l = w.lowercased(); return seenWords.contains { $0.hasPrefix(l) || l.hasPrefix($0) && $0.count >= 6 } }
   var out: [String] = [], have = Set<String>()
-  for s in secrets { for w in contentWords(s.text) where !seen.contains(stem(w)) && !commonNouns.contains(w.lowercased()) && have.insert(w.lowercased()).inserted { out.append(w) } }
+  for s in secrets { for w in contentWords(s.text) where !seen(w) && !commonNouns.contains(w.lowercased()) && have.insert(w.lowercased()).inserted { out.append(w) } }
   return out
 }
 /// HF-style bans match exact token sequences only -> generate the surface variants: lower / Capitalised, with and without leading space,
@@ -224,6 +226,8 @@ public func banVariants(_ w: String) -> [String] {
 }
 public func buildBan(terms: [String], encode: (String) -> [Int], cap: Int = 600) -> BanSet {
   var seqs: [[Int]] = [], seen = Set<[Int]>()
-  for t in terms { for v in banVariants(t) { let ids = encode(v); if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs) } } }
+  for t in terms { for v in banVariants(t) { let ids = encode(v)
+    if ids.count == 1 && t.count < 6 { continue }          // a short single-token term would block every compound ("Salz" -> Salzspuren); the sentence guard handles those
+    if !ids.isEmpty, seen.insert(ids).inserted { seqs.append(ids) }; if seqs.count >= cap { return BanSet(seqs) } } }
   return BanSet(seqs)
 }
