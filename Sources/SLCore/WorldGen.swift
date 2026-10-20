@@ -117,7 +117,7 @@ public enum GenError: Error, CustomStringConvertible { case msg(String); public 
 public enum GenGr {
   static func en(_ v: [String]) -> G { v.count == 1 ? .s(v[0]) : .or(v.map { .s($0) }) }
   static let line = G.re(Cls.rep(Cls.line, 6))
-  static let hintLine = G.re(Cls.rep(Cls.line, 6))   // the class has no "@" (separator before the clue location)
+  static let hintLine = G.re(Cls.rep(Cls.line, 6))   // NB llg: a literal must not start with a char the preceding free-text class also accepts (" @" was rejected); the separator is "@ " and the text keeps its trailing space
   /// proper place name: optional article, capitalised words (+ small connectors) - no glued "Die"+junk
   static let placeName = G.re(#"((Der|Die|Das|Zum|Zur|Am|Im) )?[A-ZÄÖÜ][a-zäöüß]{3,}(( (von|der|des|am|zum|zur|im|zu|an))? [A-ZÄÖÜ][a-zäöüß]{3,}){0,2}"#)
   static let word = G.re(#"[A-ZÄÖÜ][a-zäöüß]{3,}( [a-zäöüß]{3,})?"#)
@@ -149,7 +149,7 @@ public enum GenGr {
                   .s("\nZiel: "), line, .s("\nGeheimnis: "), line, .s("\nEnthüllung: "), revealG(places: places, npcs: npcs)]))
   }
   public static func thread(refs: [String]) -> Grammar {
-    let hint = { (n: Int) -> [G] in [.s("\nHinweis\(n): "), hintLine, .s(" @ "), en(refs)] }
+    let hint = { (n: Int) -> [G] in [.s("\nHinweis\(n): "), hintLine, .s("@ "), en(refs)] }
     return Grammar(.seq([.s("Frage: "), .or(["Wer ", "Wo ", "Was ", "Warum ", "Wie "].map { .s($0) }), .re(Cls.rep(Cls.lineNoQ, 8)), .s("?")] + hint(1) + hint(2) + hint(3)))
   }
   public static func start(places: [String]) -> Grammar {
@@ -308,7 +308,7 @@ extension Game {
       let qt = Set(tokens(q)), dup = world.straenge.contains { let o = Set(tokens($0.titel)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }   // near-duplicate question
       if okThread(q) && !dup {
         world.straenge.append(Strang(titel: q, stand: "")); world.festeStraenge.insert(q)
-        for n in 1...3 { if let h = f["Hinweis\(n)"], let r = h.range(of: " @ ", options: .backwards) { hidden.clues.append(Clue(thread: q, text: clean(String(h[..<r.lowerBound]), 90), at: String(h[r.upperBound...]).trimmingCharacters(in: .whitespaces))) } }
+        for n in 1...3 { if let h = f["Hinweis\(n)"], let r = h.range(of: "@ ", options: .backwards) { hidden.clues.append(Clue(thread: q, text: clean(String(h[..<r.lowerBound]), 90), at: String(h[r.upperBound...]).trimmingCharacters(in: .whitespaces))) } }
       }
       tick("Fäden \(i + 1)/\(nThreads)", t0)
     }

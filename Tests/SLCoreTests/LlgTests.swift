@@ -144,3 +144,31 @@ final class LlgFuelProbe: XCTestCase {
     }
   }
 }
+
+final class LlgWorldGenTests: XCTestCase {
+  func need() throws -> (tok: any MLXLMCommon.Tokenizer, llg: LlgTok) { guard let c = Llg.ctx else { throw XCTSkip("no model dir") }; return c }
+  func fire(_ c: Constraint, _ ids: [Int]) throws -> Int? {
+    for (i, id) in ids.enumerated() { let m = try c.computeMask(); if !ok(m, id) { return i }; _ = try c.commit(Int32(id)) }
+    return nil
+  }
+  /// every world-gen stage must accept its own few-shot example, end exactly there (EOS only) and show no path-dependent surprises
+  func testAllStagesAcceptExample() throws {
+    let (t, l) = try need()
+    let refs = ["Brunnentor", "Zubeir", "Basar"]
+    let stages: [(String, Grammar, String)] = [
+      ("slots", GenGr.slots, GenPromptEx.slots),
+      ("premise", GenGr.premise, GenPromptEx.premise),
+      ("place", GenGr.place(), GenPromptEx.place),
+      ("thread", GenGr.thread(refs: refs), GenPromptEx.thread),
+      ("npc", GenGr.npc(name: "Zubeir", places: ["Brunnentor", "Basar"], npcs: ["Zubeir"]), GenPromptEx.npc),
+      ("start", GenGr.start(places: ["Brunnentor", "Basar"]), GenPromptEx.start.replacingOccurrences(of: "Start: Brunnentor", with: "Start: Brunnentor")),
+    ]
+    for (n, g, ex) in stages {
+      let c = try LlgConstraint(tok: l, lark: g.lark)
+      let ids = t.encode(text: ex, addSpecialTokens: false)
+      let r = try fire(c, ids)
+      XCTAssertNil(r, "\(n): rejected at token \(r ?? -1) of \(ids.count): \(r.map { t.decode(tokenIds: Array(ids[max(0, $0 - 3)...$0])) } ?? "")")
+      if r == nil { XCTAssertTrue(try c.computeMask().isTerminated || ok(try c.computeMask(), 106), "\(n): EOS not allowed after example") }
+    }
+  }
+}
