@@ -178,19 +178,8 @@ public final class Runner {
     return true
   }
 
-  /// Story for UI reload: player lines and final narrations.
-  public func story() -> [[String: String]] {
-    var r: [[String: String]] = []
-    for m in game.msgs {
-      if m.role == "user" {
-        guard !m.text.hasPrefix("[Orakel]") else { continue }
-        var t = stripWelt(m.text).split(separator: "\n", omittingEmptySubsequences: false).filter { !$0.hasPrefix("[Gespräch]") }.joined(separator: "\n"); if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
-        r.append(["who": "me", "text": t])
-      }
-      else if let l = splitTail(m.text).body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init), !l.hasPrefix("<"), !l.hasPrefix("Erwartung") { r.append(["who": "sl", "text": l]) }
-    }
-    return r
-  }
+  /// Story for UI reload: player lines and narrations only (display text is derived from the prompt text, never the other way round).
+  public func story() -> [[String: String]] { displayStory(game.msgs) }
 }
 
 public func isWQuestion(_ q: String) -> Bool {
@@ -220,4 +209,25 @@ public enum Cmd: Equatable {
     if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
     return t.hasPrefix("/") ? .unknown(t) : .say(t)
   }
+}
+
+/// Harness tags that exist for the model only; they must never reach the UI (hidden clue text!) or /state.
+let harnessTag = try! NSRegularExpression(pattern: #"^\[(Gespräch|Hinweis verdeckt|Orakel|Welt|Auftakt|Bekannt|System)\]"#)
+func isHarnessLine(_ l: String) -> Bool { harnessTag.firstMatch(in: l, range: NSRange(l.startIndex..., in: l)) != nil }
+
+/// Display story from the chat history: user lines minus harness tags, narration = last prose line of each model message
+/// (gate lines, calls and the Du:/Figuren: tails are skipped, so a message whose last line is a tail still shows its narration).
+public func displayStory(_ msgs: [Msg]) -> [[String: String]] {
+  var r: [[String: String]] = []
+  for m in msgs {
+    if m.role == "user" {
+      var t = stripWelt(m.text).split(separator: "\n", omittingEmptySubsequences: false).map(String.init).filter { !isHarnessLine($0) }.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+      if t.hasPrefix("Setting: "), let d = t.range(of: ". ") { t = String(t[d.upperBound...]) }
+      if !t.isEmpty { r.append(["who": "me", "text": t]) }
+    } else {
+      let prose = m.text.split(separator: "\n", omittingEmptySubsequences: false).map(String.init).filter { l in !l.isEmpty && !l.hasPrefix("<") && !gatePrefixes.contains { l.hasPrefix($0) } && !isHarnessLine(l) }
+      if let l = prose.last { r.append(["who": "sl", "text": l]) }
+    }
+  }
+  return r
 }

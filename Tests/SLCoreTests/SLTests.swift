@@ -250,6 +250,25 @@ final class WorldTests: XCTestCase {
   }
 }
 
+final class DisplayStoryTests: XCTestCase {   // F1 + F9
+  func testHarnessTagsNeverReachTheStory() {
+    let msgs: [Msg] = [
+      .u("[Welt]\nDu = Jaro\n---\n[Gespräch] Marta sagte: „Hm.“\n[Hinweis verdeckt] Hinweis zu 'Wer stahl den Schlüssel': Ida sah den Dieb\nIch betrete die Taverne."),
+      .m("Erwartung: x\nOrtswechsel/Zeitsprung: nein\nFrage: -\nWerkzeug: nein\nDer Raum ist kalt. Zwei. Drei.\nDu: Jaro (Matrose, Narbe)\nFiguren: -"),
+      .u("Ich frage das Schicksal: Ist Ida da?\n[Orakel] Antwort: NEIN\n[Bekannt] Figuren: Ida. Stränge: -."),
+      .m("Antwort: NEIN → Sie ist fort.\nIda fehlt. Der Stuhl ist leer. Draußen regnet es.\nFiguren: -"),
+      .u("[Orakel] Szene 2 beginnt wie erwartet."),
+      .m("<start_scene>{}</start_scene>"),
+      .m("Deutung: verwerfen\nLetzte Zeile ist Prosa. Zwei. Drei.\nFiguren: Marta (Wirtin)"),
+    ]
+    let s = displayStory(msgs); let all = s.map { $0["text"]! }.joined(separator: "\n")
+    XCTAssertFalse(all.contains("[Hinweis verdeckt]")); XCTAssertFalse(all.contains("Ida sah den Dieb")); XCTAssertFalse(all.contains("[Orakel]")); XCTAssertFalse(all.contains("[Gespräch]")); XCTAssertFalse(all.contains("[Bekannt]"))
+    XCTAssertEqual(s.map { $0["who"]! }, ["me", "sl", "me", "sl", "sl"])                       // every narration is present (F9), calls/tags-only messages produce nothing
+    XCTAssertEqual(s[0]["text"], "Ich betrete die Taverne."); XCTAssertEqual(s[2]["text"], "Ich frage das Schicksal: Ist Ida da?")
+    XCTAssertEqual(s[1]["text"], "Der Raum ist kalt. Zwei. Drei."); XCTAssertEqual(s[4]["text"], "Letzte Zeile ist Prosa. Zwei. Drei.")
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))
@@ -666,3 +685,4 @@ final class GrammarTests: XCTestCase {
     }
   }
 }
+

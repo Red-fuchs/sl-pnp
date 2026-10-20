@@ -91,7 +91,7 @@ public final class Game {
     log += world.tick(contacts: met)
     genLazy()
     let rv = genReveals(oracle: turnQA, talked: namedBy(player))
-    if !rv.isEmpty { pendingHint = rv.joined(separator: " "); out(.world("enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }
+    if !rv.isEmpty { pendingHint = rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
   }
@@ -119,7 +119,7 @@ public final class Game {
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
     pendingNote = "\(n.name) sagte: \(said)"
     let rv = genReveals(oracle: [], talked: [n.name])
-    if !rv.isEmpty { pendingHint = (pendingHint.map { $0 + " " } ?? "") + rv.joined(separator: " "); out(.world("enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }
+    if !rv.isEmpty { pendingHint = (pendingHint.map { $0 + " " } ?? "") + rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
     world.syncLists(eng)
   }
 
