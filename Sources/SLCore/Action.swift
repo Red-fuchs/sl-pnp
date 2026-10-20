@@ -3,37 +3,64 @@ import Schicksal
 
 /// Deterministic action gate (round 4): risky and lethal actions are resolved by the harness BEFORE the narrator runs, with an
 /// on-topic oracle question built from a template. The narrator then only gets the result as a hard fact (like /frage).
-public enum ActionClass: Equatable { case kill, risky(Art) }
+public enum ActionClass: Equatable { case kill, selfHarm, risky(Art) }
 
 private func has(_ t: String, _ l: [String]) -> Bool { l.contains { t.contains($0) } }
+private func words(_ t: String) -> [String] { t.lowercased().split(whereSeparator: { !$0.isLetter }).map(String.init) }
 
+/// Verb classes with object cues (no bare nouns: "meine Kehle ist trocken", "greife nach dem Becher", "werfe einen Blick" stay trivial).
 public func classifyAction(_ text: String) -> ActionClass? {
-  let t = " " + text.lowercased() + " "
-  let nonCombat = ["buch ", "karte ", "kapitel", "zelt", "lager auf", "seite ", "tür zu", "fenster"]
-  let kill = ["erstech", "ersteche", "erdolch", "erschieß", "erschiess", "schieße", "schiesse", "erschlag", "erschlage", "töte ", "töten", "ermord", "erwürg", "erdrossel", "enthaupt", "köpfe", "kehle", "ins herz", "umbring", "bringe ihn um", "bringe sie um", "meuchel", "ersteh", "erhäng", "dolch in", "messer in", "steche ", "in die brust", "in den rücken", "in den bauch", "schlitze", "ramme", "durchbohr"]
-  if has(t, kill) && !has(t, ["töte die zeit", "töte zeit"]) { return .kill }
-  let combat = ["kämpf", "angreif", "greife", " an,", "schlage ", "schlag ", "trete ", "ringe ", "prügel", "verprügel", "stürme", "attackier", "würge", "hieb", "stoße ", "werfe ", "ziele auf", "zücke"]
-  if has(t, combat) && !has(t, nonCombat) && !has(t, [" an ", " an."]) || has(t, ["greife", "greife ", "angreife"]) { return .risky(.kampf) }
-  if has(t, ["überred", "überzeug", "belüg", "lüge ", "bluffe", "verhandle", "bestech", "einschüchter", "drohe ", "bedrohe", "betrüge", "täusche", "feilsche", "schmeichle", "erpresse", "verkleide", "gebe mich als", "fälsche", "verführe"]) { return .risky(.sozial) }
-  if has(t, ["stehle", "klaue", "stibitze", "entwende", "taschendieb", "unbemerkt", "heimlich nehme", "schnappe mir heimlich", "stecke heimlich"]) { return .risky(.sonst) }
-  if has(t, ["aufbrech", "breche", "eintret", "trete die tür", "trete das tor", "schloss knack", "knacke", "aufstemm", "durchbrech", "sprenge", "schlosses", "gitter"]) && !has(t, ["breche das brot", "breche auf"]) { return .risky(.sonst) }
-  if has(t, ["schleich", "springe", "sprang", "klettere", "kletter", "schwimme", "tauche", "balanc", "renne ", "fliehe", "überquere", "abseil", "hinüber", "verstecke mich", "weiche aus", "anschleich", "krieche", "rutsche", "seil", "klettern"]) { return .risky(.sonst) }
-  if has(t, ["entziffer", "entschlüssel", "analysier", "identifizier", "recherchier"]) { return .risky(.wissen) }
+  let w = words(text), t = " " + text.lowercased() + " "
+  func verb(_ stems: [String]) -> Bool { w.contains { x in stems.contains { x.hasPrefix($0) } } }
+  func exact(_ vs: [String]) -> Bool { w.contains { vs.contains($0) } }
+  func next(_ v: [String], in ws: [String]) -> String? { for (i, x) in ws.enumerated() where v.contains(x) { return i + 1 < ws.count ? ws[i + 1] : "" }; return nil }
+  let selfRef = exact(["mich", "mir", "selbst"])
+  let personCue = exact(["ihn", "ihm", "sie", "ihr", "den", "dem", "die", "einen", "seinen", "ihren"]) || text.split(separator: " ").dropFirst().contains { $0.first?.isUppercase == true }
+  // --- lethal: strong verb, or weak verb + lethal complement
+  let strong = verb(["erstech", "ersteche", "erdolch", "erschieß", "erschiess", "erschlag", "töte", "töten", "ermord", "erwürg", "erdrossel", "enthaupt", "meuchel", "erhäng", "umbring", "durchbohr"]) || (exact(["bringe"]) && exact(["um"]))
+  let weak = exact(["steche", "ramme", "stoße", "schlitze", "schieße", "schiesse", "köpfe", "schneide", "hacke", "stich", "stoss"]) && has(t, ["kehle", "ins herz", "in die brust", "in den hals", "in den rücken", "in den bauch", "nieder", "tödlich", "den schädel"])
+  if strong || weak { return selfRef ? .selfHarm : (personCue ? .kill : nil) }
+  // --- combat: attack verb + target
+  let nonCombat = ["buch", "karte", "kapitel", "seite", "zelt", "lager", "feuer", "funken"]
+  if verb(["kämpf", "angreif", "attackier", "prügel", "verprügel", "würge"]) || (exact(["greife"]) && exact(["an"])) { return .risky(.kampf) }
+  if let n = next(["schlage", "schlag"], in: w), !w.contains(where: { nonCombat.contains($0) }), !w.contains("auf"), ["ihn", "ihm", "den", "die", "dem", "sie", "ihr", "nach"].contains(n) || text.split(separator: " ").dropFirst().contains(where: { $0.first?.isUppercase == true }) { return .risky(.kampf) }
+  if let n = next(["trete"], in: w), ["nach", "ihn", "den", "dem", "ihm"].contains(n), !w.contains("näher") { return .risky(.kampf) }
+  if exact(["stürme"]) && exact(["auf", "los", "ihn"]) || (exact(["ziele"]) && exact(["auf"])) { return .risky(.kampf) }
+  // --- social
+  if verb(["überred", "überzeug", "belüg", "bluff", "verhandel", "bestech", "einschüchter", "bedroh", "betrüg", "täusch", "feilsch", "schmeichel", "erpress", "verkleid", "fälsch"]) || exact(["lüge", "drohe"]) || (exact(["gebe"]) && exact(["mich"]) && exact(["als"])) { return .risky(.sozial) }
+  // --- theft
+  if verb(["stehle", "klaue", "stibitz", "entwend", "taschendieb"]) || exact(["unbemerkt"]) || (exact(["nehme", "stecke", "schnappe"]) && exact(["heimlich"])) { return .risky(.sonst) }
+  // --- force
+  if verb(["aufbrech", "aufstemm", "durchbrech", "sprenge"]) || (exact(["breche"]) && exact(["auf"]) && !exact(["brot", "lager", "zelt"])) || (exact(["trete"]) && exact(["ein"]) && exact(["tür", "tor", "pforte"])) || verb(["knack"]) { return .risky(.sonst) }
+  // --- movement
+  if verb(["schleich", "springe", "sprang", "klettere", "kletter", "schwimme", "tauche", "balanc", "fliehe", "überquere", "abseil", "anschleich", "krieche"]) || exact(["renne", "rutsche"]) || (exact(["verstecke"]) && exact(["mich"])) || (exact(["weiche"]) && exact(["aus"])) { return .risky(.sonst) }
+  // --- knowledge
+  if verb(["entziffer", "entschlüssel", "analysier", "identifizier", "recherchier"]) { return .risky(.wissen) }
   return nil
 }
 /// compatibility wrapper
-public func riskArt(_ text: String) -> Art? { if case .risky(let a)? = classifyAction(text) { return a }; if classifyAction(text) == .kill { return .kampf }; return nil }
+public func riskArt(_ text: String) -> Art? { switch classifyAction(text) { case .risky(let a)?: return a; case .kill?: return .kampf; default: return nil } }
 
 extension World {
-  /// the NPC an action is aimed at: named or role-named in the input, else the single present NPC
-  public func actionTarget(_ text: String) -> Int? {
+  /// Who an action is aimed at. Names/roles are matched over ALL npcs (absent/dead ones included); the single-present fallback only fires
+  /// for a bare pronoun ("ihn", "sie") and prefers the NPC of the previous action.
+  public enum Target: Equatable { case npc(Int), absent(Int), dead(Int), selfRef, none }
+  public func resolveTarget(_ text: String, last: String? = nil) -> Target {
     let p = text.lowercased()
-    let present = npcs.indices.filter { npcs[$0].anwesend && !npcs[$0].tot }
-    for i in present.sorted(by: { npcs[$0].name.count > npcs[$1].name.count }) {
-      let ts = tokens(npcs[i].name) + roleTokens(i) + tokens(npcs[i].kurz).filter { $0.count >= 5 }
-      if ts.contains(where: { p.contains($0) }) { return i }
+    var best: (pos: String.Index, i: Int)?
+    for i in npcs.indices {
+      let ts = tokens(npcs[i].name) + roleTokens(i) + (tokens(npcs[i].kurz).first.map { $0.count >= 4 ? [$0] : [] } ?? [])
+      for t in ts { if let r = p.range(of: t), best == nil || r.lowerBound < best!.pos { best = (r.lowerBound, i) } }
     }
-    return present.count == 1 ? present[0] : nil
+    if let (_, i) = best { return npcs[i].tot ? .dead(i) : (npcs[i].anwesend ? .npc(i) : .absent(i)) }
+    let ws = Set(p.split(whereSeparator: { !$0.isLetter }).map(String.init))
+    if !ws.isDisjoint(with: ["mich", "mir", "selbst"]) { return .selfRef }
+    if !ws.isDisjoint(with: ["ihn", "ihm", "sie", "ihr"]) {
+      let present = npcs.indices.filter { npcs[$0].anwesend && !npcs[$0].tot }
+      if let l = last, let i = present.first(where: { npcs[$0].id == l }) { return .npc(i) }
+      if present.count == 1 { return .npc(present[0]) }
+    }
+    return .none
   }
   /// odds of a lethal attack from the situation: surprise / vital spot / unarmed victim up, armed victim down
   public func killOdds(_ text: String, target i: Int?) -> Int {
@@ -48,9 +75,20 @@ extension World {
 }
 
 extension Game {
-  /// Resolves a risky/lethal action with the oracle before the narrator. Returns the extra user text (oracle result + hard facts) and the result.
-  func resolveAction(_ player: String, _ cls: ActionClass) -> (text: String, res: J)? {
-    let target = world.actionTarget(player)
+  /// Resolves a risky/lethal action with the oracle before the narrator. Returns the extra user text (hard facts / oracle result); `res` is nil when
+  /// no oracle was needed (absent, dead or self targets).
+  func resolveAction(_ player: String, _ cls: ActionClass) -> (text: String, res: J?)? {
+    if cls == .selfHarm { return ("[Fakt] Die Spielfigur zögert im letzten Moment: zeige das Zögern, keine Selbstverletzung, keine Methoden.", nil) }
+    let tg = world.resolveTarget(player, last: lastTargetId)
+    var target: Int?, named = false
+    switch tg {
+    case .absent(let i): if cls == .kill || cls == .risky(.kampf) { return ("[Fakt] \(world.npcs[i].name) ist nicht hier. Die Handlung läuft ins Leere; erzähle das.", nil) }
+    case .dead(let i): if cls == .kill || cls == .risky(.kampf) { return ("[Fakt] \(world.npcs[i].name) ist bereits tot. Erzähle, dass die Leiche daliegt.", nil) }
+    case .npc(let i): target = i; named = !(player.lowercased().split(whereSeparator: { !$0.isLetter }).map(String.init).contains { ["ihn", "ihm", "sie", "ihr"].contains($0) } && !world.npcs[i].name.isEmpty && !player.lowercased().contains(world.npcs[i].name.lowercased()))
+    default: break
+    }
+    if let t = target, world.npcs[t].minor { return nil }                  // belt and braces: the content rule deflects before this point
+    if let t = target { lastTargetId = world.npcs[t].id }
     let name = target.map { world.npcs[$0].name }
     var art = Art.kampf, q: String, odds = 0
     switch cls {
@@ -59,13 +97,15 @@ extension Game {
       art = a
       var act = player.trimmingCharacters(in: .whitespacesAndNewlines); while let l = act.last, ".!?".contains(l) { act.removeLast() }
       q = "Gelingt meine Handlung (\(clean(act, 80)))?"
+    case .selfHarm: return nil
     }
     var rel = 0
     if let t = target, art == .sozial { rel = world.npcs[t].haltung }                // a beaten / hostile NPC is hard to talk round
     let rs = regel.oddsShift(art: art, pc: world.pc, input: player)
     var args: J = ["q": .str(q), "odds": .int(odds)]
     if var o = args.obj, let sh = combinedShift(haltung: rel == 0 ? nil : rel, regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
-    lastArt = art; lastOracleQ = q
+    lastOracleQ = q
+    if world.regeln == "saeulen" { lastArt = art }
     let res = eng.call("ask_oracle", args)
     guard res["error"].isNull, let ans = res["answer"].str else { return nil }
     out(.tool("ask_oracle", args, res))
@@ -75,17 +115,17 @@ extension Game {
     if !res["event"].isNull { sceneEvents += 1 }
     var fb = fmtResult("ask_oracle", res)
     var facts: [String] = []
-    if let t = target, cls == .kill || art == .kampf {            // an attack makes the victim hostile whatever the result
-      let hit = ans.hasPrefix("JA")
+    let hit = ans.hasPrefix("JA")
+    if let t = target, cls == .kill || (named && art == .kampf) {            // an attack makes the (named) victim hostile whatever the result
       var l = world.setHaltung(t, hit || cls == .kill ? -2 : min(world.npcs[t].haltung, -1))
       if cls == .kill {
         if hit { l += world.kill(t); facts.append("[Fakt] \(world.npcs[t].name) ist tot. Erzähle den Tod ausdrücklich: er fällt, regt sich nicht mehr.") }
         else if ans == "NEIN" { if !world.npcs[t].zustand.contains("verletzt") { world.npcs[t].zustand.append("verletzt") }; facts.append("[Fakt] \(world.npcs[t].name) überlebt den Angriff, ist aber verletzt. Erzähle die Verletzung, nicht den Tod.") }
-        else { facts.append("[Fakt] Der Angriff geht fehl, \(world.npcs[t].name) bleibt unverletzt. Erzähle das Scheitern, nicht den Tod.") }
+        else { facts.append("[Fakt] Der Angriff geht fehl und \(world.npcs[t].name) schlägt zurück: die Spielfigur ist verletzt, \(world.npcs[t].name) bleibt unverletzt. Erzähle das Scheitern, nicht den Tod.") }
       }
       if !l.isEmpty { out(.world(l.joined(separator: " · "))) }
     } else if cls == .kill {
-      facts.append(ans.hasPrefix("JA") ? "[Fakt] Der Angriff ist tödlich. Erzähle den Tod ausdrücklich." : "[Fakt] Der Angriff trifft nicht tödlich. Erzähle das ausdrücklich.")
+      facts.append(hit ? "[Fakt] Der Angriff ist tödlich, aber niemand Bestimmtes steht da: erzähle ihn als Szene ohne benannte Figur." : "[Fakt] Der Angriff trifft nicht tödlich. Erzähle das ausdrücklich.")
     }
     if !facts.isEmpty { fb += "\n" + facts.joined(separator: "\n") }
     return (fb, res)

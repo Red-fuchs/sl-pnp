@@ -424,7 +424,7 @@ public struct World: Codable, Equatable {
   }
   /// role words (from `kurz`) that identify exactly one living NPC ("die Kräuterfrau" = Yorric)
   func roleTokens(_ i: Int) -> [String] {
-    tokens(npcs[i].kurz).filter { t in t.count >= 5 && npcs.indices.filter { $0 != i && !npcs[$0].tot && tokens(npcs[$0].kurz).contains(t) }.isEmpty }
+    tokens(npcs[i].kurz).filter { t in t.count >= 4 && npcs.indices.filter { $0 != i && !npcs[$0].tot && tokens(npcs[$0].kurz).contains(t) }.isEmpty }
   }
   /// names of children (for the content rule); updated from child roles and age statements in any text
   public var minorNames: [String] { npcs.filter(\.minor).map(\.name) }

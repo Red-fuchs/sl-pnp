@@ -66,6 +66,7 @@ public final class Game {
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
   var lastOracleQ = ""
+  var lastTargetId: String?
   var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
@@ -101,10 +102,10 @@ public final class Game {
 
   /// After the narration: (1) the narrator's own "Figuren:" tail sets presence / new characters, (2) one constrained delta step
   /// (items, attitude, threads, movement) on a throwaway cache, (3) Schicksal lists are re-derived from the world.
-  func worldStep(player: String, narr: String, tail: String?, oracle: [String]) {
+  func worldStep(player: String, narr: String, tail: String?, oracle: [String], harness: Bool = false, harnessNein: Bool = false) {
     var log: [String] = []
     if let t = tail { log += world.applyTail(t) } else { log += world.adoptNames(World.nameHints(player + " " + narr)) }
-    world.updateMinors(player + " " + narr); world.syncPresence(narr: narr); log += world.markDeaths(narr: narr); log += world.markKillIntent(player: player, narr: narr, oracleNein: oracle.contains { $0.contains("NEIN") })
+    world.updateMinors(player + " " + narr); world.syncPresence(narr: narr); if !harnessNein { log += world.markDeaths(narr: narr) }; if !harness { log += world.markKillIntent(player: player, narr: narr, oracleNein: oracle.contains { $0.contains("NEIN") }) }   // the harness oracle decides lethal actions; NEIN never kills
     defer { world.enforceDead(); world.shieldMinors() }
     let block = world.block()   // current state (after start_scene and the tail), not the one shown to the narrator
     let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(clean(player, 300))\nErzählung: \(clean(narr, 900))\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
@@ -179,32 +180,38 @@ public final class Game {
     world.updateMinors(player)
     let playerOrig = player
     var player = player
-    if minorHarm(player, names: world.minorNames) {      // P1: the act never happens - deflected in the fiction, the player is told
+    turnQA = []; lastArt = nil
+    let cls: ActionClass? = (pre == nil && !noOracle && !firstTurn && !isWQuestion(player) && !isSelfQuestion(player)) ? classifyAction(player) : nil
+    var minorTarget = false
+    if let c = cls, c == .kill || c == .risky(.kampf), case .npc(let i) = world.resolveTarget(player, last: lastTargetId), world.npcs[i].minor { minorTarget = true }
+    if minorHarm(player, names: world.minorNames) || minorTarget {      // P1: the act never happens - deflected in the fiction, the player is told
       out(.info("Hinweis: Gewalt oder Sexuelles gegen Kinder wird nicht gespielt – die Handlung kommt in der Geschichte nicht zustande."))
       player = "Ich will etwas Unüberlegtes tun, aber ein Geräusch lenkt mich im letzten Moment ab, und niemand kommt zu Schaden. (Kinder bleiben unverletzt und unbedroht.)"
     }
     var pre = pre
     var actionRes = false
-    if pre == nil, !noOracle, !firstTurn, !isWQuestion(player), !isSelfQuestion(player), let cls = classifyAction(player) {
-      if let (fb, res) = resolveAction(player, cls) { player += "\n" + fb; pre = res; actionRes = true }
+    var actionNein = false
+    if let c = cls, !minorTarget, let (fb, res) = resolveAction(player, c) {
+      player += "\n" + fb
+      if let r = res { pre = r; actionRes = true; actionNein = r["answer"].str?.hasPrefix("NEIN") ?? false }
     }
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
     let regie = directorPass(player: player)   // behaviour cue from the secrets (side cache); [Regie verdeckt] never reaches the UI
     if let r = regie, debug { out(.info("[debug] Regie: \(r)")) }
-    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
+    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
     var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen")
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
-    var calls = 0, asked = false, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = []
+    var calls = 0, asked = actionRes || pre != nil, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = pre.map { [fmtResult("ask_oracle", $0).replacingOccurrences(of: "[Orakel] ", with: "")] } ?? []
     var done = false, callLeakRetries = 0
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
       if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       let secrets = hidden.guardList(), known = knownText(), hold = hidden.holdNarration   // held back whenever any tier-0/1 secret exists (also when its bearer is absent): a leak must never be shown and then retracted   // narration is held back for the leak check while a secret-bearing NPC is present
       let minors = world.minorNames
-      let ansQ = gate.ans.map { a in (a, turnQA.last?.q ?? lastOracleQ) }
+      let ansQ = actionRes ? nil : gate.ans.map { a in (a, turnQA.last?.q ?? lastOracleQ) }
       let mkStream = { (attempt: Int) in NarrStream(hold: hold, minors: minors, check: secrets.isEmpty && ansQ == nil ? nil : { line in
         if !secrets.isEmpty, let l = leakCheck(line, secrets: secrets, known: known) { return l }
         if attempt == 0, let (a, q) = ansQ, !q.isEmpty, oracleContradicted(answer: a, question: q, narration: line) { return Leak(topic: "orakel", words: [], sentence: line) }   // M1: the oracle answer must show in the narration
@@ -225,7 +232,7 @@ public final class Game {
             msgs[msgs.count - 1].text += l.topic == "orakel" ? "\n[Regie] Das Orakel hat entschieden: \(gate.ans ?? ""). Erzähle dieses Ergebnis ausdrücklich und sichtbar." : l.topic == minorTopic ? "\n[Regie] Kinder bleiben unverletzt und unbedroht; nichts Sexuelles. Erzähle etwas anderes." : "\n[Regie verdeckt] Bleib bei Verhalten, nenne keine neuen Fakten."
             out(.info(leakNotice(dropped: false))); if debug { out(.info("[debug] Leck: \(l.topic)")) }
           } else { out(.info("Erzählung verworfen (Meta-Text oder fremde Zeichen) – neuer Versuch")) }
-          ns.discard(); metaRetry = true
+          metaRetry = ns.leak == nil; ns.discard()
           out(.retract)
           if ns.leak != nil { try syncCache() } else { try recoverCache() }
         } catch let e as TruncatedError {
@@ -320,7 +327,7 @@ public final class Game {
         if okFigurName(n, k) { figur = "\(n): \(k)"; world.setFigur(figur!); figurChanged = true; out(.world("Spielfigur: \(figur!)")) }
       }
     }
-    if done { worldStep(player: player, narr: finalNarr, tail: finalTail, oracle: oracle) }
+    if done { worldStep(player: player, narr: finalNarr, tail: finalTail, oracle: oracle, harness: actionRes, harnessNein: actionNein) }
     if eng.st.open { quiet = asked ? 0 : quiet + 1 } else { quiet = 0 }
     if figurChanged { try syncCache() }   // pinned character changes the system prompt -> rebuild the cache once
   }

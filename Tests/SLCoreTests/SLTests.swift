@@ -1442,8 +1442,8 @@ final class R4Tests: XCTestCase {
   }
   func testActionTargetAndOdds() {
     var w = World(); w.npcs = [Npc(id: "n1", name: "Amum", kurz: "Wirt", ort: "x"), Npc(id: "n2", name: "Garrek", kurz: "Hauptmann der Wache", ort: "x")]
-    XCTAssertEqual(w.actionTarget("Ich erschieße Amum."), 0); XCTAssertEqual(w.actionTarget("Ich ersteche den Hauptmann."), 1); XCTAssertNil(w.actionTarget("Ich erschieße ihn."))
-    w.npcs[1].anwesend = false; XCTAssertEqual(w.actionTarget("Ich erschieße ihn."), 0, "single present NPC")
+    XCTAssertEqual(w.resolveTarget("Ich erschieße Amum."), .npc(0)); XCTAssertEqual(w.resolveTarget("Ich ersteche den Hauptmann."), .npc(1)); XCTAssertEqual(w.resolveTarget("Ich erschieße ihn."), .none)
+    w.npcs[1].anwesend = false; XCTAssertEqual(w.resolveTarget("Ich erschieße ihn."), .npc(0), "single present NPC")
     XCTAssertGreaterThan(w.killOdds("Ich steche den Wirt von hinten ins Herz.", target: 0), w.killOdds("Ich steche den Hauptmann nieder.", target: 1))
   }
 }
@@ -1457,5 +1457,30 @@ final class InitialGateTests: XCTestCase {   // v7 #1
     XCTAssertTrue(h.head); XCTAssertTrue(h.noAsk); XCTAssertFalse(h.art); XCTAssertFalse(h.mustAsk)
     let p = Game.initialGate(player: "x", pre: ["answer": "JA"], forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false)
     XCTAssertFalse(p.head)
+  }
+}
+
+final class ActionV7Tests: XCTestCase {   // v7 #2-#5
+  func w() -> World { var w = World(); w.npcs = [Npc(id: "n1", name: "Sylor", kurz: "Waffenmeister", ort: "x"), Npc(id: "n2", name: "Oruiel", kurz: "Wirt", ort: "y", anwesend: false), Npc(id: "n3", name: "Tom", kurz: "Waisenjunge", ort: "x"), Npc(id: "n4", name: "Gorm", kurz: "Hexe", ort: "x")]; w.npcs[2].minor = true; return w }
+  func testNounsAreNotActions() {
+    for t in ["Meine Kehle ist trocken, ich trinke Wasser.", "Das geht mir ins Herz.", "Ich stecke das Messer in die Scheide.", "Ich beobachte die Köpfe der Leute.", "Ich greife nach dem Becher.", "Ich werfe einen Blick in den Raum.", "Ich trete näher.", "Ich stoße die Tür auf.", "Ich schlage das Buch auf."] { XCTAssertNil(classifyAction(t), t) }
+    XCTAssertEqual(classifyAction("Ich schneide mir die Kehle durch."), .selfHarm)
+    XCTAssertEqual(classifyAction("Ich ersteche Sylor."), .kill); XCTAssertEqual(classifyAction("Ich ramme dem Wirt das Messer in den Bauch."), .kill); XCTAssertEqual(classifyAction("Ich greife den Wächter an."), .risky(.kampf))
+  }
+  func testTargets() {
+    let w = w()
+    XCTAssertEqual(w.resolveTarget("Ich erschieße Oruiel."), .absent(1))
+    XCTAssertEqual(w.resolveTarget("Ich erschieße den Wirt."), .absent(1))
+    XCTAssertEqual(w.resolveTarget("Ich erdolche Sylor."), .npc(0))
+    XCTAssertEqual(w.resolveTarget("Ich erdolche die Hexe."), .npc(3), "role of 4 letters")
+    XCTAssertEqual(w.resolveTarget("Ich erschieße mich selbst."), .selfRef)
+    XCTAssertEqual(w.resolveTarget("Ich erschieße den Drachen."), .none, "no fallback to a random NPC")
+    var d = w; d.kill(0); XCTAssertEqual(d.resolveTarget("Ich erdolche Sylor."), .dead(0))
+    var one = World(); one.npcs = [Npc(id: "n1", name: "Sylor", kurz: "Wirt", ort: "x")]; XCTAssertEqual(one.resolveTarget("Ich erschieße ihn."), .npc(0))
+  }
+  func testMinorsKillVerbs() {
+    let w = w()
+    XCTAssertTrue(minorHarm("Ich ramme Tom das Messer in den Bauch.", names: w.minorNames));
+    XCTAssertEqual(w.resolveTarget("Ich ersteche Tom."), .npc(2)); XCTAssertTrue(w.npcs[2].minor)
   }
 }
