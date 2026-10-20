@@ -9,6 +9,8 @@ struct Chat: Codable { var setting: String; var msgs: [Msg]; var figur: String? 
 public final class Session {
   public let dir: URL
   public let name: String
+  public var hidden = HiddenWorld()       // loaded by loadEngine()
+  var hiddenURL: URL { dir.appendingPathComponent("hidden.json") }
   var lockFD: Int32 = -1
   public var warning: String?
   /// `mustExist`: resume of an unknown name must not create an empty dir. Holds an exclusive flock on state.json.lock (same convention as the schicksal CLI).
@@ -46,6 +48,7 @@ public final class Session {
   public func loadEngine() throws -> (Engine, setting: String, msgs: [Msg], figur: String?, quiet: Int, world: World) {
     let e = try Engine.load(path: statePath); e.machine = true
     let c = try JSONDecoder().decode(Chat.self, from: Data(contentsOf: chatURL))
+    hidden = (try? JSONDecoder().decode(HiddenWorld.self, from: Data(contentsOf: hiddenURL))) ?? HiddenWorld()
     var w = World()
     if let d = try? Data(contentsOf: worldURL) {
       if let x = try? JSONDecoder().decode(World.self, from: d) { w = x }
@@ -53,8 +56,9 @@ public final class Session {
     }
     return (e, c.setting, c.msgs, c.figur, c.quiet ?? 0, w)
   }
-  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world) }
-  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0, _ world: World = World()) throws {
+  public func save(_ g: Game) throws { try save(g.eng, g.setting, g.msgs, g.figur, g.quiet, g.world, g.hidden) }
+  public func save(_ e: Engine, _ setting: String, _ msgs: [Msg], _ figur: String? = nil, _ quiet: Int = 0, _ world: World = World(), _ hidden: HiddenWorld = HiddenWorld()) throws {
+    if hidden != HiddenWorld() { let he = JSONEncoder(); he.outputFormatting = [.sortedKeys, .prettyPrinted]; try he.encode(hidden).write(to: hiddenURL, options: .atomic) }
     let enc = JSONEncoder(); enc.outputFormatting = [.sortedKeys, .prettyPrinted]
     try enc.encode(world).write(to: worldURL, options: .atomic)
     try e.save(path: statePath)

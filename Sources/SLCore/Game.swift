@@ -9,6 +9,7 @@ public enum Out {
   case end                          // narration finished
   case info(String)
   case retract                      // drop the narration streamed so far (a retry restarts it)
+  case progress(String, Int?, Int?) // world generation progress (text, done, total)
   case world(String)                // 🌍 world-state change
 }
 
@@ -44,6 +45,9 @@ public final class Game {
   public var setting: String
   public var figur: String?
   public var world = World()
+  public var hidden = HiddenWorld()     // secrets of a generated world: never rendered into [Welt]
+  var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
+  var turnQA: [(q: String, a: String)] = []
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
   public var sys: String { SYS + figurBlock(figur) + recap }
@@ -55,8 +59,8 @@ public final class Game {
   public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
 
-  public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World()) {
-    self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
+  public init(eng: Engine, lm: LM, setting: String, msgs: [Msg] = [], figur: String? = nil, quiet: Int = 0, world: World = World(), hidden: HiddenWorld = HiddenWorld()) {
+    self.hidden = hidden; self.world = world; self.eng = eng; self.lm = lm; self.setting = setting; self.msgs = msgs; self.figur = figur; self.quiet = quiet
   }
 
   public func syncCache() throws { try lm.reset(lm.tmpl.render(sys: sys, FEW + msgs)) }
@@ -84,6 +88,9 @@ public final class Game {
     } catch { out(.info("Weltänderung fehlgeschlagen: \(error)")) }
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
+    genLazy()
+    let rv = genReveals(oracle: turnQA, talked: [])
+    if !rv.isEmpty { pendingHint = rv.joined(separator: " "); out(.world("enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }
     world.syncLists(eng)
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
   }
@@ -110,6 +117,8 @@ public final class Game {
     world.npcs[i].kontakt = world.turn
     if !log.isEmpty { out(.world(log.joined(separator: " · "))) }
     pendingNote = "\(n.name) sagte: \(said)"
+    let rv = genReveals(oracle: [], talked: [n.name])
+    if !rv.isEmpty { pendingHint = (pendingHint.map { $0 + " " } ?? "") + rv.joined(separator: " "); out(.world("enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }
     world.syncLists(eng)
   }
 
@@ -122,7 +131,7 @@ public final class Game {
     let firstTurn = msgs.isEmpty
     let wb = world.block()
     // [Welt] goes in front of the player text of THIS turn (the system prefix stays cacheable); scene 1 starts with the first player turn
-    let note = pendingNote.map { "[Gespräch] \($0)\n" } ?? ""; pendingNote = nil
+    let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil; turnQA = []
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     var gate = Gate(); gate.figurLine = firstTurn && figur == nil; gate.selfQ = isSelfQuestion(player); gate.mustAsk = quiet >= 1 && !isWQuestion(player) && !gate.selfQ; gate.head = pre == nil; gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
@@ -168,7 +177,7 @@ public final class Game {
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
       if name == "start_scene", res["error"].isNull { world.startScene(ort: args["el"]["ort"].str, beteiligte: args["el"]["beteiligte"].str ?? "", expect: args["expect"].str ?? "") }
-      if name == "ask_oracle", let a = res["answer"].str { let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { out(.world(l.joined(separator: " · "))) } }
+      if name == "ask_oracle", let a = res["answer"].str { turnQA.append((args["q"].str ?? "", a)); let l = world.oracleSolved(question: args["q"].str ?? "", answer: a); if !l.isEmpty { out(.world(l.joined(separator: " · "))) } }
       var fb = fmtResult(name, res)
       oracle.append(fmtResult(name, res).replacingOccurrences(of: "[Orakel] ", with: ""))
       if evInfo(name, res) != nil, !(eng.st.akteure.isEmpty && eng.st.straenge.isEmpty) { fb += "\n" + fmtKnown(eng.st.akteure.map(\.name), eng.st.straenge.map(\.name)) }

@@ -24,7 +24,7 @@ if opt["help"] != nil {
   print("""
   sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--idle 300] [--lease] [--neglect 8] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
-  Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
+  Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /welt orakel|\"text\"|mix \"text\"|slot|start /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
   """); exit(0)
 }
@@ -76,6 +76,7 @@ func show(_ o: Out) {
   case .event(let e): print("\(dim)⚡ \(e)\(off)")
   case .gate(let l): if opt["debug"] != nil { print("\(dim)· \(l)\(off)") }
   case .info(let s): print("\(dim)\(s)\(off)")
+  case .progress(let t, let d, let n): print("\r\u{1B}[2K\(dim)[\(d ?? 0)/\(n ?? 0)] \(t)\(off)", terminator: (d != nil && d == n) ? "\n" : ""); fflush(stdout)
   case .world(let w): print("\(dim)🌍 \(w)\(off)")
   }
 }

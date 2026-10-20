@@ -74,7 +74,7 @@ public final class Runner {
   public func resume() throws {
     let (e, s, m, f, q, w) = try session.loadEngine()
     setting = s
-    game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w); wire()
+    game = Game(eng: e, lm: lm, setting: s, msgs: m, figur: f, quiet: q, world: w, hidden: session.hidden); wire()
     if let n = neglect { game.world.neglectN = n }
     if let w = session.warning { sink(.info(w)) }
     try game.syncCache(); refresh()
@@ -120,6 +120,30 @@ public final class Runner {
     session.log("\n**Spieler:** /gespraech \(r)\n")
     try run { try game.talk(who, topic: topic) }
   }
+  /// /welt orakel | "text" | mix "text" | slots | slot k=v | start
+  public func weltgen(_ a0: String) throws {
+    let a = a0.trimmingCharacters(in: .whitespaces)
+    func table() { sink(.info("Welt-Vorgaben (\(game.world.gen.mode)):\n\(game.world.gen.slots.table)\nÄndern: /welt slot ton=düster · Start: /welt start")) }
+    func unq(_ s: String) -> String { s.trimmingCharacters(in: CharacterSet(charactersIn: " \"“”„")) }
+    do {
+      switch a.split(separator: " ", maxSplits: 1).first.map(String.init) ?? "" {
+      case "orakel": try game.genPrepare(mode: "orakel", text: ""); table()
+      case "mix": try run { try game.genPrepare(mode: "mix", text: unq(String(a.dropFirst(3)))) }; table()
+      case "slots": table()
+      case "slot":
+        let kv = String(a.dropFirst(4)).trimmingCharacters(in: .whitespaces).split(separator: "=", maxSplits: 1).map(String.init)
+        guard kv.count == 2 else { sink(.info("/welt slot ton=düster")); return }
+        try game.genSetSlot(kv[0].trimmingCharacters(in: .whitespaces), unq(kv[1])); table()
+      case "start":
+        let t0 = Date()
+        try run { try game.genRun() }
+        game.setting = game.world.gen.praemisse.isEmpty ? game.setting : game.world.gen.praemisse
+        session.log("\n**Welt (\(game.world.gen.mode)):** \(game.world.gen.praemisse) – \(String(format: "%.0f", Date().timeIntervalSince(t0))) s\n")
+        try session.save(game); refresh()
+      default: try run { try game.genPrepare(mode: "text", text: unq(a)) }; table()
+      }
+    } catch let e as GenError { sink(.info("\(e)")) }
+  }
   public func status() -> Status {
     let r = game.eng.call("session", ["op": "get"]), st = game.eng.st
     let j = st.journal.filter { $0["tool"].str == "end_scene" }.suffix(8).compactMap { $0["in"]["summary"].str }
@@ -145,6 +169,7 @@ public final class Runner {
       session = try Session(name: "sl-" + f.string(from: Date()))
       rolls = []
       try startNew(setting: st.isEmpty ? nil : st)
+    case .weltgen(let a): try weltgen(a)
     case .gespraech(let rest): try gespraech(rest)
     case .geloest(let f): if let t = game.world.solve(f) { sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info("kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
@@ -174,7 +199,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -183,6 +208,7 @@ public enum Cmd: Equatable {
     if t == "/ende" { return .ende }
     if t == "/status" { return .status }
     if t == "/welt" { return .welt }
+    if t.hasPrefix("/welt ") { return .weltgen(arg(6)) }
     if t.hasPrefix("/frage") {
       var rest = String(t.dropFirst(6)), odds = 0
       if let m = rest.range(of: #"^[+-]\d"#, options: .regularExpression) { odds = Int(rest[m]) ?? 0; rest = String(rest[m.upperBound...]) }

@@ -8,18 +8,20 @@ public struct Npc: Codable, Equatable {
   public var zustand: [String] = [], inventar: [String] = []
   public var haltung = 0              // -2 feindlich .. 2 loyal (towards the player character)
   public var notiz = ""
+  public var bekannt: [String] = []   // facts the player has learned (revealed secrets); the only hidden-derived text that reaches [Welt]
   public var basis = 0                // base attitude: neglect never decays below it
   public var kontakt = 0              // world turn of the last contact
   public var gekraenkt = false        // attitude decayed through neglect
   public var geruecht = 0.0           // fractional gossip residue (half-strength spreading)
   public init(id: String, name: String, kurz: String, ort: String?, anwesend: Bool = true) { self.id = id; self.name = name; self.kurz = kurz; self.ort = ort; self.anwesend = anwesend }
-  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, basis, kontakt, gekraenkt, geruecht }
+  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, basis, kontakt, gekraenkt, geruecht }
   public init(from d: Decoder) throws {
     let c = try d.container(keyedBy: K.self)
     id = try c.decode(String.self, forKey: .id); name = try c.decode(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz) ?? ""
     ort = try c.decodeIfPresent(String.self, forKey: .ort); anwesend = try c.decodeIfPresent(Bool.self, forKey: .anwesend) ?? true
     zustand = try c.decodeIfPresent([String].self, forKey: .zustand) ?? []; inventar = try c.decodeIfPresent([String].self, forKey: .inventar) ?? []
     haltung = try c.decodeIfPresent(Int.self, forKey: .haltung) ?? 0; notiz = try c.decodeIfPresent(String.self, forKey: .notiz) ?? ""
+    bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []
     basis = try c.decodeIfPresent(Int.self, forKey: .basis) ?? 0; kontakt = try c.decodeIfPresent(Int.self, forKey: .kontakt) ?? 0
     gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0
   }
@@ -98,6 +100,7 @@ public struct World: Codable, Equatable {
   public var straenge: [Strang] = []
   var nextId = 1
   public var turn = 0
+  public var gen = GenState()          // generated-world state (visible parts only; secrets live in hidden.json)
   public var neglectN = 8             // turns without contact before an attitude decays one step
   public init() {}
   public init(from d: Decoder) throws {
@@ -107,6 +110,7 @@ public struct World: Codable, Equatable {
     npcs = try c.decodeIfPresent([Npc].self, forKey: .npcs) ?? []; orte = try c.decodeIfPresent([String: String].self, forKey: .orte) ?? [:]
     beziehungen = try c.decodeIfPresent([Rel].self, forKey: .beziehungen) ?? []; straenge = try c.decodeIfPresent([Strang].self, forKey: .straenge) ?? []
     nextId = try c.decodeIfPresent(Int.self, forKey: .nextId) ?? 1; turn = try c.decodeIfPresent(Int.self, forKey: .turn) ?? 0; neglectN = try c.decodeIfPresent(Int.self, forKey: .neglectN) ?? 8
+    gen = try c.decodeIfPresent(GenState.self, forKey: .gen) ?? GenState()
   }
   public var isEmpty: Bool { name == nil && kurz == nil && ort == nil && npcs.isEmpty && straenge.isEmpty && zustand.isEmpty && inventar.isEmpty }
 
@@ -186,7 +190,7 @@ public struct World: Codable, Equatable {
     if !n.kurz.isEmpty && norm(n.kurz) != norm(n.name) { x.append(cutw(n.kurz, 50)) }
     x.append(n.anwesend ? "hier" : (n.ort.map { clean($0, 30) } ?? "anderswo"))
     if n.gekraenkt { x.append("gekränkt") } else if let h = haltungWort[n.haltung], !h.isEmpty { x.append(h) }
-    x += n.zustand.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }
+    x += n.zustand.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }; x += n.bekannt.suffix(2).map { "bekannt: \($0)" }
     return "\(n.name) (\(x.joined(separator: " · ")))"
   }
 
@@ -325,7 +329,7 @@ public struct World: Codable, Equatable {
   var _touched: Set<String> = []
   public var talkedThisTurn: Set<String> = []   // transient: /gespraech counts as contact for the next tick
   public internal(set) var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
-  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN }
+  enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen }
 
   // MARK: neglect + gossip
   /// Sets an attitude; a notable change (>=1 step) spreads at half strength along relations, one hop only.

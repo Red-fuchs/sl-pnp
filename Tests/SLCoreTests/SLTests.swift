@@ -319,6 +319,105 @@ final class DynamicsTests: XCTestCase {
   }
 }
 
+final class WorldGenTests: XCTestCase {
+  // (a) names
+  func testNameGeneratorUniqueDeterministic() throws {
+    let e1 = try Session.newEngine(rng: "seed:11"), e2 = try Session.newEngine(rng: "seed:11")
+    var a = NameGen(rand: { e1.randomBelow($0) }), b = NameGen(rand: { e2.randomBelow($0) })
+    let xs = (0..<300).map { i in a.next(culture: ["nord", "dunkel", "alt", "morgen"][i % 4]) }, ys = (0..<300).map { i in b.next(culture: ["nord", "dunkel", "alt", "morgen"][i % 4]) }
+    XCTAssertEqual(xs, ys)                                                                         // deterministic for the same random stream
+    XCTAssertEqual(Set(xs.map { $0.lowercased() }).count, 300)                                      // unique (used-set)
+    XCTAssertTrue(xs.allSatisfy { $0.count >= 4 && $0.first!.isUppercase })
+    XCTAssertTrue(xs.allSatisfy { !NameGen.banned.contains($0.lowercased()) })
+    var c = NameGen(used: Set(xs.map { $0.lowercased() }), rand: { e1.randomBelow($0) }); XCTAssertFalse(xs.contains(c.next()))   // used-set survives persistence
+    XCTAssertEqual(NameGen.culture(for: "Ort Wüste, Ton bitter"), "morgen"); XCTAssertEqual(NameGen.culture(for: "Ort Dorf"), "dunkel")
+  }
+  // (b) stage grammars: id enums
+  func accepts(_ g: Grammar, _ txt: String, _ gt: GrammarTokenizer, _ t: any MLXLMCommon.Tokenizer) throws -> Bool {
+    let c = try GrammarConstraint(tokenizer: gt, structuralTag: g.tag)
+    for id in t.encode(text: txt, addSpecialTokens: false) { let r = try c.computeMask(); if r.needsApply && (r.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return false }; _ = try c.commitToken(Int32(id)) }
+    let r = try c.computeMask(); return !r.needsApply || (r.mask[106 / 32] >> Int32(106 % 32)) & 1 == 1
+  }
+  func testStageGrammars() async throws {
+    guard let d = modelDir else { throw XCTSkip("no model dir") }
+    let t = TokBridge(u: try await AutoTokenizer.from(modelFolder: d)); let v = TokenizerVocabExtractor.extractForGrammar(from: t)
+    let gt = try GrammarTokenizer(vocab: v.vocab, vocabType: v.vocabType, eosTokenId: 106)
+    let places = ["Brunnentor", "Salzmarkt"], npcs = ["Zubeir"]
+    XCTAssertTrue(try accepts(GenGr.slots, GenPromptEx.slots, gt, t)); XCTAssertFalse(try accepts(GenGr.slots, GenPromptEx.slots.replacingOccurrences(of: "bitter", with: "lustig"), gt, t))   // enum value only
+    XCTAssertTrue(try accepts(GenGr.premise, GenPromptEx.premise, gt, t))
+    XCTAssertTrue(try accepts(GenGr.place(name: "Brunnentor"), GenPromptEx.place, gt, t)); XCTAssertFalse(try accepts(GenGr.place(name: "Salzmarkt"), GenPromptEx.place, gt, t))   // fixed name
+    let npc = GenGr.npc(name: "Zubeir", places: places, npcs: npcs)
+    XCTAssertTrue(try accepts(npc, GenPromptEx.npc, gt, t))
+    XCTAssertFalse(try accepts(npc, GenPromptEx.npc.replacingOccurrences(of: "Name: Zubeir", with: "Name: Marta"), gt, t))            // name = const from the generator
+    XCTAssertFalse(try accepts(npc, GenPromptEx.npc.replacingOccurrences(of: "Rolle: Zöllner", with: "Rolle: Drache"), gt, t))     // role enum
+    XCTAssertFalse(try accepts(npc, GenPromptEx.npc.replacingOccurrences(of: "ort_betreten Brunnentor", with: "ort_betreten Mordor"), gt, t))   // place id enum
+    XCTAssertFalse(try accepts(npc, GenPromptEx.npc.replacingOccurrences(of: "Haltung: -1", with: "Haltung: 5"), gt, t))
+    let th = GenGr.thread(refs: places + npcs)
+    XCTAssertTrue(try accepts(th, GenPromptEx.thread, gt, t))
+    XCTAssertFalse(try accepts(th, GenPromptEx.thread.replacingOccurrences(of: "@ Zubeir", with: "@ Niemand"), gt, t))              // clue location = id enum
+    XCTAssertFalse(try accepts(th, GenPromptEx.thread.replacingOccurrences(of: "Frage: Wer", with: "Frage: Der"), gt, t))           // question word
+    XCTAssertTrue(try accepts(GenGr.start(places: places), GenPromptEx.start, gt, t)); XCTAssertFalse(try accepts(GenGr.start(places: ["Salzmarkt"]), GenPromptEx.start, gt, t))
+  }
+  // validator
+  func testValidator() {
+    var g = GenState(); g.slots.nicht = ["Drache"]; g.wuerze = [["Nebel", "Glocke"]]
+    XCTAssertNil(genCheck("Ein Dorf am Moor, in dem die Brunnen versiegen.", g))
+    XCTAssertNotNil(genCheck("Die Wirtin Marta kennt das Geheimnis.", g))                       // banned names (few-shot bleed)
+    XCTAssertNotNil(genCheck("Ein uralter Fluch.", g) ?? genCheck("Das Schatten fällt.", g))     // banned words
+    XCTAssertNotNil(genCheck("Ein Drache kreist über dem Tal.", g))                              // darf_nicht
+    XCTAssertNotNil(genCheck("Im Nebel läutet die Glocke.", g))                                  // both oracle words verbatim
+    XCTAssertNil(genCheck("Im Nebel liegt ein Dorf.", g))                                        // one word is fine ("deute, zitiere nicht")
+    XCTAssertEqual(genFields("Ort: A\nKurz: x: y")["Kurz"], "x: y")
+  }
+  // (c) slots: oracle fills only open ones, player slots are hard constraints
+  func testSlotsOracleFillKeepsPlayerValues() throws {
+    let e = try Session.newEngine(rng: "seed:3")
+    var s = GenSlots(); s.ton = "bitter"; s.ort = "Wüste"
+    XCTAssertEqual(Set(s.offen), ["epoche", "bedrohung", "licht"])
+    s.fillOpen { e.randomBelow($0) }
+    XCTAssertEqual(s.ton, "bitter"); XCTAssertEqual(s.ort, "Wüste"); XCTAssertTrue(s.offen.isEmpty)
+    XCTAssertTrue(GenSlots.enums["epoche"]!.contains(s.epoche)); XCTAssertTrue(s.table.contains("Ton: bitter"))
+  }
+  // (e) hidden facts never in [Welt]; reveal moves them to bekannt
+  func testHiddenNeverInWeltUntilRevealed() {
+    var w = World(); w.setFigur("Aether: Mann"); w.ort = "Salzmarkt"; w.gen.mode = "orakel"
+    w.addNpc(name: "Zubeir", kurz: "Zöllner", ort: "Brunnentor"); w.npcs[0].anwesend = false
+    w.apply(["strang": [["titel": "Wer hat die Zisterne versiegelt", "hinweis": "x"]]]); w.straenge[0].hinweise = []; w.straenge[0].stufe = "frage"
+    var h = HiddenWorld(); var n = HiddenNpc(); n.geheimnis = "Er panscht das Wasser mit Salzlake"; n.typ = "ort_betreten"; n.ref = "Brunnentor"; h.npcs["Zubeir"] = n
+    h.clues = [Clue(thread: "Wer hat die Zisterne versiegelt", text: "Frischer Mörtel am Gitter", at: "Brunnentor")]
+    h.pcGeheim = "Beweise sammeln"
+    XCTAssertFalse(w.block(full: true).contains("panscht")); XCTAssertFalse(w.block(full: true).contains("Mörtel")); XCTAssertFalse(w.panel().contains("Beweise"))
+    XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty)                                    // player elsewhere: nothing
+    w.ort = "Brunnentor"; w.npcs[0].anwesend = true
+    let r = h.reveal(&w, oracle: [], talked: [])
+    XCTAssertEqual(r.count, 2); XCTAssertTrue(r.contains { $0.contains("panscht") }); XCTAssertTrue(r.contains { $0.contains("Mörtel") })
+    XCTAssertTrue(w.block().contains("bekannt: Er panscht das Wasser mit Salzlake")); XCTAssertTrue(w.block().contains("? Wer hat die Zisterne versiegelt (1 Hinweis)"))
+    XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty)                                    // each fact only once
+    XCTAssertFalse(w.block(full: true).contains("Beweise")); XCTAssertFalse(w.block(full: true).contains("Salzlake") && !w.block().contains("bekannt"))
+  }
+  func testRevealTypes() {
+    var w = World(); w.ort = "Hof"; w.addNpc(name: "Ida", kurz: "Magd", ort: "Hof"); w.addNpc(name: "Bork", kurz: "Wirt", ort: "Hof")
+    var h = HiddenWorld(); func hid(_ t: String, _ r: String) -> HiddenNpc { var n = HiddenNpc(); n.geheimnis = "g-\(t)"; n.typ = t; n.ref = r; return n }
+    h.npcs["Ida"] = hid("orakel", "Bork"); h.npcs["Bork"] = hid("zeit", "3")
+    XCTAssertTrue(h.reveal(&w, oracle: [("Lügt Bork?", "NEIN")], talked: []).isEmpty)              // NEIN does not reveal
+    XCTAssertEqual(h.reveal(&w, oracle: [("Lügt Bork?", "JA+")], talked: []), ["Ida: g-orakel"])
+    w.turn = 2; XCTAssertTrue(h.reveal(&w, oracle: [], talked: []).isEmpty); w.turn = 3; XCTAssertEqual(h.reveal(&w, oracle: [], talked: []), ["Bork: g-zeit"])
+    var g = HiddenWorld(); g.npcs["Ida"] = hid("npc_befragt", "Ida"); XCTAssertEqual(g.reveal(&w, oracle: [], talked: ["Ida"]).count, 1)
+    var it = HiddenWorld(); it.npcs["Bork"] = hid("gegenstand", "Schlüssel"); XCTAssertTrue(it.reveal(&w, oracle: [], talked: []).isEmpty); w.inventar = ["rostiger Schlüssel"]; XCTAssertEqual(it.reveal(&w, oracle: [], talked: []).count, 1)
+  }
+  func testHiddenPersistedSeparately() throws {
+    let root = FileManager.default.temporaryDirectory.appendingPathComponent("sl-h-\(UUID().uuidString)")
+    let s = try Session(name: "h", root: root); var w = World(); w.gen.mode = "mix"; w.gen.praemisse = "P"; var h = HiddenWorld(); h.pcGeheim = "geheim-xyz"
+    try s.save(try Session.newEngine(rng: "seed:1"), "S", [.u("a")], nil, 0, w, h)
+    let wj = try String(contentsOf: s.dir.appendingPathComponent("world.json"), encoding: .utf8)
+    XCTAssertFalse(wj.contains("geheim-xyz")); XCTAssertTrue(try String(contentsOf: s.dir.appendingPathComponent("hidden.json"), encoding: .utf8).contains("geheim-xyz"))   // secrets only in hidden.json
+    _ = try s.loadEngine(); XCTAssertEqual(s.hidden.pcGeheim, "geheim-xyz"); XCTAssertEqual(try s.loadEngine().world.gen.praemisse, "P")
+  }
+  func testWeltgenCommandParse() {
+    XCTAssertEqual(Cmd.parse("/welt orakel"), .weltgen("orakel")); XCTAssertEqual(Cmd.parse("/welt mix \"Piraten\""), .weltgen("mix \"Piraten\"")); XCTAssertEqual(Cmd.parse("/welt"), .welt)
+  }
+}
+
 final class LeaseTests: XCTestCase {
   func testAcquireReleaseWithStub() throws {   // stub gpu-run: drops "-n label --ram N" and runs the holder
     let d = FileManager.default.temporaryDirectory.appendingPathComponent("sl-stub-\(UUID().uuidString)"); try FileManager.default.createDirectory(at: d, withIntermediateDirectories: true)

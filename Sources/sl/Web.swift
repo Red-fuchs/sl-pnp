@@ -31,6 +31,7 @@ func jsonOut(_ o: Out) -> [String: Any]? {
   case .event(let e): return ["t": "event", "text": e]
   case .info(let s): return ["t": "info", "text": s]
   case .world(let w): return ["t": "world", "text": w]
+  case .progress(let t, let d, let n): return ["t": "progress", "text": t, "done": d ?? 0, "total": n ?? 0]
   case .gate: return nil
   }
 }
@@ -195,6 +196,7 @@ es.onmessage=e=>{const m=JSON.parse(e.data);
  else if(m.t=='tool'){cur=null;add('tool',m.text);if(m.card){const r=document.createElement('div');}}
  else if(m.t=='event')add('ev','⚡ '+m.text);
  else if(m.t=='world')add('ev','🌍 '+m.text);
+ else if(m.t=='progress'){if(!window.pg){window.pg=add('inf','')}window.pg.textContent='['+m.done+'/'+m.total+'] '+m.text;if(m.done>=m.total&&m.total>0)window.pg=null}
  else if(m.t=='info')add('inf',m.text);
  else if(m.t=='user'){cur=null;add('me',m.text)}
  else if(m.t=='state'){if(m.s===undefined)render(m);else render(m)}
