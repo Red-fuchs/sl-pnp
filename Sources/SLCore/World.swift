@@ -8,20 +8,21 @@ public struct Npc: Codable, Equatable {
   public var zustand: [String] = [], inventar: [String] = []
   public var haltung = 0              // -2 feindlich .. 2 loyal (towards the player character)
   public var notiz = ""
+  public var tot = false              // dead: never present again, shown as "tot"
   public var bekannt: [String] = []   // facts the player has learned (revealed secrets); the only hidden-derived text that reaches [Welt]
   public var basis = 0                // base attitude: neglect never decays below it
   public var kontakt = 0              // world turn of the last contact
   public var gekraenkt = false        // attitude decayed through neglect
   public var geruecht = 0.0           // fractional gossip residue (half-strength spreading)
   public init(id: String, name: String, kurz: String, ort: String?, anwesend: Bool = true) { self.id = id; self.name = name; self.kurz = kurz; self.ort = ort; self.anwesend = anwesend }
-  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, basis, kontakt, gekraenkt, geruecht }
+  enum K: String, CodingKey { case id, name, kurz, ort, anwesend, zustand, inventar, haltung, notiz, bekannt, tot, basis, kontakt, gekraenkt, geruecht }
   public init(from d: Decoder) throws {
     let c = try d.container(keyedBy: K.self)
     id = try c.decode(String.self, forKey: .id); name = try c.decode(String.self, forKey: .name); kurz = try c.decodeIfPresent(String.self, forKey: .kurz) ?? ""
     ort = try c.decodeIfPresent(String.self, forKey: .ort); anwesend = try c.decodeIfPresent(Bool.self, forKey: .anwesend) ?? true
     zustand = try c.decodeIfPresent([String].self, forKey: .zustand) ?? []; inventar = try c.decodeIfPresent([String].self, forKey: .inventar) ?? []
     haltung = try c.decodeIfPresent(Int.self, forKey: .haltung) ?? 0; notiz = try c.decodeIfPresent(String.self, forKey: .notiz) ?? ""
-    bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []
+    bekannt = try c.decodeIfPresent([String].self, forKey: .bekannt) ?? []; tot = try c.decodeIfPresent(Bool.self, forKey: .tot) ?? false
     basis = try c.decodeIfPresent(Int.self, forKey: .basis) ?? 0; kontakt = try c.decodeIfPresent(Int.self, forKey: .kontakt) ?? 0
     gekraenkt = try c.decodeIfPresent(Bool.self, forKey: .gekraenkt) ?? false; geruecht = try c.decodeIfPresent(Double.self, forKey: .geruecht) ?? 0
   }
@@ -76,13 +77,18 @@ public func clean(_ s: String, _ n: Int = 60) -> String {
 }
 let rejectNames: Set<String> = ["du", "dir", "dich", "dein", "mich", "ich", "mir", "mein", "wir", "ihr", "er", "sie", "es", "man", "niemand", "jemand", "spielfigur", "figur", "spieler", "-", "unbekannt", "umgebung", "alle"]
 /// Status/item entries must be short noun phrases: no sentence punctuation, no finite verb, no "Name" statement, not the player's own name.
-func okEntry(_ t: String, pc: Set<String>) -> Bool {
+func okEntry(_ t: String, pc: Set<String>, allowComma: Bool = false) -> Bool {
   let w = t.split(separator: " ").map { $0.lowercased() }
-  guard !w.isEmpty, w.count <= 6, !t.contains(where: { ".!?:;,".contains($0) }) else { return false }
+  guard !w.isEmpty, w.count <= 6, !t.contains(where: { (allowComma ? ".!?:;" : ".!?:;,").contains($0) }) else { return false }
   if w.contains("name") || w.contains("namen") { return false }
   if w.contains(where: { ["ist", "sind", "war", "waren", "wird", "wurde", "hat", "haben", "hast", "bist", "bin", "dein", "deine", "deinen", "dir", "dich", "du", "ich", "mein", "meine"].contains($0) }) { return false }
   if !pc.isDisjoint(with: Set(w)) { return false }
   return true
+}
+/// F5: a place must be a plain name - no parentheses, hedges or placeholders ("Hafenschenke (oder ein ähnlicher Ort, abhängig von der")
+func okPlace(_ p: String) -> Bool {
+  let t = p.trimmingCharacters(in: .whitespaces)
+  return !t.isEmpty && t.count <= 50 && t.split(separator: " ").count <= 6 && !t.contains(where: { "()[]{}<>…".contains($0) }) && !["oder", "abhängig", "etwa", "ähnlich", "vielleicht", "unbekannt", "platzhalter"].contains { norm(t).contains($0) }
 }
 /// at most n words, cut at a word boundary
 func cutWords(_ s: String, _ n: Int) -> String { s.split(separator: " ").prefix(n).joined(separator: " ") }
@@ -199,7 +205,7 @@ public struct World: Codable, Equatable {
   func card(_ n: Npc) -> String {
     var x: [String] = []
     if !n.kurz.isEmpty && norm(n.kurz) != norm(n.name) { x.append(cutw(n.kurz, 50)) }
-    x.append(n.anwesend ? "hier" : (n.ort.map { clean($0, 30) } ?? "anderswo"))
+    x.append(n.tot ? "tot" : (n.anwesend ? "hier" : (n.ort.map { clean($0, 30) } ?? "anderswo")))
     if n.gekraenkt { x.append("gekränkt") } else if let h = haltungWort[n.haltung], !h.isEmpty { x.append(h) }
     x += n.zustand.prefix(2); x += n.inventar.prefix(2).map { "trägt \($0)" }; x += n.bekannt.suffix(2).map { "bekannt: \($0)" }
     return "\(n.name) (\(x.joined(separator: " · ")))"
@@ -213,7 +219,7 @@ public struct World: Codable, Equatable {
     let pos = Self.posVerbs.contains { t.contains($0) }, neg = Self.negVerbs.contains { t.contains($0) }
     guard pos != neg else { return nil }
     let qt = Set(tokens(t))
-    for n in npcs where n.anwesend && n.haltung != 0 {
+    for n in npcs where n.anwesend && !n.tot && n.haltung != 0 {
       if !Set(tokens(n.name)).isDisjoint(with: qt) { return pos ? n.haltung : -n.haltung }
     }
     return nil
@@ -222,7 +228,7 @@ public struct World: Codable, Equatable {
   // MARK: scene / presence
   /// New scene: nobody is present unless named in beteiligte/expect.
   public mutating func startScene(ort o: String?, beteiligte: String, expect: String) {
-    if let o, !o.isEmpty { ort = clean(o); if orte[clean(o)] == nil, orte.count < 30 { orte[clean(o)] = "" } }
+    if let o, okPlace(clean(o)) { ort = clean(o); if orte[clean(o)] == nil, orte.count < 30 { orte[clean(o)] = "" } }
     let txt = Set(tokens(beteiligte + " " + expect))
     for i in npcs.indices {
       let present = !Set(tokens(npcs[i].name)).isDisjoint(with: txt)
@@ -246,8 +252,10 @@ public struct World: Codable, Equatable {
       n = clean(n, 40)
       guard okName(n), !isFigur(n) else { continue }
       if let i = npc(n) ?? npcs.firstIndex(where: { norm($0.kurz) == norm(n) }) {      // known by name, or by its role ("Wirtin")
+        if npcs[i].tot { continue }
         if !r.isEmpty, !norm(npcs[i].kurz).contains(norm(r)), npcs[i].kurz.count < 40 { npcs[i].kurz = npcs[i].kurz.isEmpty ? r : "\(r), \(npcs[i].kurz)" }   // refine the role ("Kapitän, breiter Mann …")
-        if !npcs[i].anwesend { npcs[i].anwesend = true; npcs[i].ort = ort; log.append("\(npcs[i].name) anwesend") }
+        if !npcs[i].anwesend { npcs[i].anwesend = true; log.append("\(npcs[i].name) anwesend") }
+        npcs[i].ort = ort          // present NPCs are where the player is (stale ort made [Welt] say "Kielboden" for 20 turns)
         _tailIds.insert(npcs[i].id)
       } else if !r.isEmpty, let i = npcs.firstIndex(where: { $0.anwesend && norm($0.name) == norm(r) }) {   // role-named NPC gets its proper name
         log.append("\(npcs[i].name) heißt \(n)"); npcs[i].name = n; _tailIds.insert(npcs[i].id)
@@ -276,7 +284,7 @@ public struct World: Codable, Equatable {
   /// The player moved to another place without a scene change: everybody not named in this turn's narrator tail stays behind.
   public mutating func figurMoved(from old: String?) {
     guard !samePlace(old, ort) else { return }
-    for i in npcs.indices where !_tailIds.contains(npcs[i].id) && npcs[i].anwesend { npcs[i].anwesend = false; npcs[i].ort = old }
+    for i in npcs.indices where !npcs[i].tot { if _tailIds.contains(npcs[i].id) { npcs[i].anwesend = true; npcs[i].ort = ort } else if npcs[i].anwesend { npcs[i].anwesend = false; npcs[i].ort = old } }
   }
 
   // MARK: delta
@@ -285,28 +293,29 @@ public struct World: Codable, Equatable {
   public mutating func apply(_ d: J) -> [String] {
     var log: [String] = []
     let pcSnap = pcTokens
-    func edit(_ arr: inout [String], _ op: String, _ t0: String, _ cap: Int) {
-      let t = cutWords(clean(t0, 40), 6); guard !t.isEmpty, tokens(t).count >= 1, op == "-" || okEntry(t, pc: pcSnap) else { return }
-      if op == "+" { if !arr.contains(where: { norm($0) == norm(t) }) { arr.append(t); if arr.count > cap { arr.removeFirst() } } }
-      else { arr.removeAll { norm($0) == norm(t) || norm($0).contains(norm(t)) } }
+    @discardableResult
+    func edit(_ arr: inout [String], _ op: String, _ t0: String, _ cap: Int, comma: Bool = false) -> Bool {
+      let t = cutWords(clean(t0, 40), 6); guard !t.isEmpty, tokens(t).count >= 1, op == "-" || okEntry(t, pc: pcSnap, allowComma: comma) else { return false }
+      if op == "+" { if arr.contains(where: { norm($0) == norm(t) }) { return false }; arr.append(t); if arr.count > cap { arr.removeFirst() }; return true }
+      let n = arr.count; arr.removeAll { norm($0) == norm(t) || norm($0).contains(norm(t)) }; return arr.count != n
     }
-    if let o = d["spielfigur_ort"].str.map({ clean($0) }), !o.isEmpty { ort = o; log.append("du → \(o)") }
-    for e in d["ort_neu"].arr ?? [] { if let n = e["name"].str.map({ clean($0) }), !n.isEmpty, orte.count < 30 { orte[n] = clean(e["kurz"].str ?? "", 80); log.append("ort \(n)") } }
+    if let o = d["spielfigur_ort"].str.map({ clean($0) }), okPlace(o) { ort = o; log.append("du → \(o)") }
+    for e in d["ort_neu"].arr ?? [] { if let n = e["name"].str.map({ clean($0) }), okPlace(n), orte.count < 30 { orte[n] = clean(e["kurz"].str ?? "", 80); log.append("ort \(n)") } }
     for e in (d["figuren"].arr ?? []) + (d["npc_neu"].arr ?? []) {   // legacy / manual
       if let (i, new) = addNpc(name: e["name"].str ?? "", kurz: e["kurz"].str ?? "", ort: e["ort"].str.map { clean($0) }) { if new { log.append("neu \(npcs[i].name)") } }
     }
     for e in d["npc_ort"].arr ?? [] {
-      if let w = e["wer"].str, let o = e["ort"].str.map({ clean($0) }), !o.isEmpty, let i = npc(w) {
+      if let w = e["wer"].str, let o = e["ort"].str.map({ clean($0) }), okPlace(o), let i = npc(w), !npcs[i].tot {
         npcs[i].ort = o; npcs[i].anwesend = samePlace(o, ort); log.append("\(npcs[i].name) → \(o)")
       }
     }
     for e in d["zustand"].arr ?? [] {
       guard let w = e["wer"].str, let op = e["op"].str, let t = e["text"].str else { continue }
-      if isFigur(w) { edit(&zustand, op, t, 4); log.append("du \(op)\(clean(t, 40))") } else if let i = npc(w) { edit(&npcs[i].zustand, op, t, 3); log.append("\(npcs[i].name) \(op)\(clean(t, 40))") }
+      if isFigur(w) { if edit(&zustand, op, t, 4) { log.append("du \(op)\(clean(t, 40))") } } else if let i = npc(w) { if edit(&npcs[i].zustand, op, t, 3) { log.append("\(npcs[i].name) \(op)\(clean(t, 40))") } }
     }
     for e in d["item"].arr ?? [] {
       guard let w = e["wer"].str, let op = e["op"].str, let t = e["name"].str else { continue }
-      if isFigur(w) { edit(&inventar, op, t, 8); log.append("du \(op)\(clean(t, 40))") } else if let i = npc(w) { edit(&npcs[i].inventar, op, t, 4); log.append("\(npcs[i].name) \(op)\(clean(t, 40))") }
+      if isFigur(w) { if edit(&inventar, op, t, 8, comma: true) { log.append("du \(op)\(clean(t, 40))") } } else if let i = npc(w) { if edit(&npcs[i].inventar, op, t, 4, comma: true) { log.append("\(npcs[i].name) \(op)\(clean(t, 40))") } }
     }
     func rid(_ w: String) -> String? { isFigur(w) ? "du" : npc(w).map { npcs[$0].id } }
     for e in d["beziehung"].arr ?? [] {
@@ -316,6 +325,7 @@ public struct World: Codable, Equatable {
       else { beziehungen.append(Rel(a: a2, b: b2, wert: w)); if beziehungen.count > 20 { beziehungen.removeFirst() } }
       log.append("\(label(a2))↔\(label(b2)) \(w)")
     }
+    for e in d["tot"].arr ?? [] { if let w = e["wer"].str, let i = npc(w) { log += kill(i) } }
     for e in d["haltung"].arr ?? [] { if let w = e["wer"].str, let v = e["wert"].int, let i = npc(w) { log += setHaltung(i, v) } }
     for e in d["strang"].arr ?? [] {   // the delta step may only ADD HINTS (or open a thread); it can never mark one answered
       guard var t = e["titel"].str.map({ clean($0, 70) }) else { continue }
@@ -341,6 +351,48 @@ public struct World: Codable, Equatable {
   public var talkedThisTurn: Set<String> = []   // transient: /gespraech counts as contact for the next tick
   public internal(set) var _tailIds: Set<String> = []   // NPC ids named in this turn's narrator tail (transient)   // strands updated this turn (-> Schicksal bump); transient, not persisted
   enum CodingKeys: String, CodingKey { case name, kurz, ort, zustand, inventar, npcs, orte, beziehungen, straenge, nextId, turn, neglectN, gen }
+
+  // MARK: death + presence sync (F5)
+  @discardableResult
+  public mutating func kill(_ i: Int) -> [String] {
+    guard !npcs[i].tot else { return [] }
+    npcs[i].tot = true; npcs[i].anwesend = false; npcs[i].haltung = 0
+    if !npcs[i].zustand.contains("tot") { npcs[i].zustand.insert("tot", at: 0) }
+    return ["\(npcs[i].name) ist tot"]
+  }
+  static let intransitive = ["stirbt", "starb", "gestorben", "ist tot", "war tot", "fällt tot", "stürzt tot", "tot zu boden", "verendet", "verblutet", "röchelt sein letztes", "haucht sein leben", "haucht ihr leben"]
+  static let transitive = ["erschlägt", "ersticht", "tötet", "erdolcht", "erwürgt", "erschießt", "richtet hin", "ermordet", "erschlagen", "erstochen", "getötet", "hingerichtet", "erschossen"]
+  static let hedges = ["nicht", "kaum", "beinahe", "fast ", "wäre", "könnte", "würde", "angeblich", "gerüchte", "wenn ", "falls", "kein ", "niemand"]
+  /// Narration says a named NPC dies -> mark dead (the delta step often misses it: "Ithror stirbt" left him alive in [Welt]).
+  /// "X stirbt" / "X wurde erschlagen": X is before the verb; "Kara erschlägt X": X is after the verb.
+  @discardableResult
+  public mutating func markDeaths(narr: String) -> [String] {
+    var log: [String] = []
+    let sentences = narr.components(separatedBy: CharacterSet(charactersIn: ".!?")).map { $0.lowercased() }
+    var last: Int?                               // the single NPC named in the previous sentence ("Ithror sinkt zusammen. Er stirbt …")
+    for sn in sentences {
+      defer { let named = npcs.indices.filter { !tokens(npcs[$0].name).allSatisfy { !sn.contains($0) } }; if named.count == 1 { last = named[0] } }
+      guard !Self.hedges.contains(where: { sn.contains($0) }) else { continue }
+      let passive = ["wurde", "wird", "wurden", "worden", "ist ", "war "].contains { sn.contains($0) }
+      let iv = Self.intransitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
+      let tv = Self.transitive.compactMap { sn.range(of: $0) }.min { $0.lowerBound < $1.lowerBound }
+      var hit = false
+      for i in npcs.indices where !npcs[i].tot {
+        let pos = tokens(npcs[i].name).compactMap { sn.range(of: $0)?.lowerBound }.min()
+        guard let p = pos else { continue }
+        hit = true
+        if let d = iv, p < d.lowerBound { log += kill(i) }
+        else if let d = tv { if passive ? p < d.lowerBound : p > d.upperBound { log += kill(i) } }
+      }
+      if !hit, let l = last, !npcs[l].tot, iv != nil, sn.trimmingCharacters(in: .whitespaces).hasPrefix("er ") || sn.trimmingCharacters(in: .whitespaces).hasPrefix("sie ") { log += kill(l) }   // pronoun subject
+    }
+    return log
+  }
+  /// An NPC named in the narration, last seen at the player's current place, is present (the tail/delta steps often forget this).
+  public mutating func syncPresence(narr: String) {
+    let nt = Set(tokens(narr))
+    for i in npcs.indices where !npcs[i].tot && !npcs[i].anwesend && samePlace(npcs[i].ort, ort) && !Set(tokens(npcs[i].name)).isDisjoint(with: nt) { npcs[i].anwesend = true }
+  }
 
   // MARK: neglect + gossip
   /// Sets an attitude; a notable change (>=1 step) spreads at half strength along relations, one hop only.
@@ -372,7 +424,7 @@ public struct World: Codable, Equatable {
     turn += 1
     var log: [String] = []
     defer { talkedThisTurn = [] }
-    for i in npcs.indices {
+    for i in npcs.indices where !npcs[i].tot {
       if contacts.contains(npcs[i].id) { npcs[i].kontakt = turn; continue }
       guard turn - npcs[i].kontakt >= neglectN else { continue }
       npcs[i].kontakt = turn                                  // the timer restarts: one step per N quiet turns

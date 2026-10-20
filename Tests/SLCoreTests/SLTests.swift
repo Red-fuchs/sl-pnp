@@ -339,6 +339,42 @@ final class SlotCoercionTests: XCTestCase {   // F3
   }
 }
 
+final class WorldDriftTests: XCTestCase {   // F5
+  func world() -> World { var w = World(); w.setFigur("Aether: Mann"); w.ort = "Kielboden"; w.addNpc(name: "Ithror", kurz: "Schreiber", ort: "Kielboden"); w.addNpc(name: "Kara", kurz: "Söldnerin", ort: "Kielboden"); for i in w.npcs.indices { w.npcs[i].anwesend = true }; return w }
+  func testDeathIsTracked() {
+    var w = world()
+    XCTAssertTrue(w.markDeaths(narr: "Ithror sinkt zusammen. Er stirbt röchelnd auf dem Deck.").first?.contains("Ithror") == true)
+    XCTAssertTrue(w.npcs[0].tot); XCTAssertFalse(w.npcs[0].anwesend); XCTAssertTrue(w.block().contains("Ithror (Schreiber · tot"))
+    XCTAssertTrue(w.npcs[1].anwesend)                                                          // the killer is not marked
+    var v = world(); v.markDeaths(narr: "Kara erschlägt Ithror mit dem Ruder."); XCTAssertTrue(v.npcs[0].tot); XCTAssertFalse(v.npcs[1].tot)   // victim after an active verb
+    var p = world(); p.markDeaths(narr: "Ithror wurde erschlagen aufgefunden."); XCTAssertTrue(p.npcs[0].tot)                                   // passive
+    var h = world(); h.markDeaths(narr: "Ithror wäre beinahe gestorben. Kara sagt, er sei nicht tot."); XCTAssertFalse(h.npcs[0].tot)           // hedges
+    var d = world(); d.apply(["tot": [["wer": "Kara"]]]); XCTAssertTrue(d.npcs[1].tot)
+    d.applyTail("Figuren: Kara (Söldnerin)"); XCTAssertFalse(d.npcs[1].anwesend)                // a dead NPC is not resurrected by the tail
+    d.syncPresence(narr: "Kara lächelt."); XCTAssertFalse(d.npcs[1].anwesend)
+    XCTAssertNil(d.shift(forQuestion: "Hilft Kara mir?"))
+  }
+  func testSentenceItemsAndPlaceholderPlaces() {
+    var w = world()
+    let log = w.apply(["item": [["wer": "du", "op": "+", "name": "Du bist oben angekommen"], ["wer": "du", "op": "+", "name": "kleine, holzgebundene Kiste"]], "spielfigur_ort": "Hafenschenke (oder ein ähnlicher Ort, abhängig von der", "npc_ort": [["wer": "Kara", "ort": "Ort (unklar)"]]])
+    XCTAssertEqual(w.inventar, ["kleine, holzgebundene Kiste"])                                // pickup with comma kept, sentence rejected
+    XCTAssertFalse(log.contains { $0.contains("angekommen") })                                   // and not even logged
+    XCTAssertEqual(w.ort, "Kielboden"); XCTAssertEqual(w.npcs[1].ort, "Kielboden")                // placeholder places ignored
+    XCTAssertTrue(okPlace("Hafenrand")); XCTAssertTrue(okPlace("Die Stiegen des Gemeinschaftshauses")); XCTAssertFalse(okPlace("Ort (unklar)")); XCTAssertFalse(okPlace("irgendwo oder so"))
+  }
+  func testPresenceFollowsTheStory() {
+    var w = world()
+    w.apply(["spielfigur_ort": "Salzmagazin"]); w.figurMoved(from: "Kielboden")
+    XCTAssertTrue(w.npcs.allSatisfy { !$0.anwesend && $0.ort == "Kielboden" })                   // left behind at the old place
+    w.applyTail("Figuren: Kara (Söldnerin)")                                                   // Kara follows
+    XCTAssertTrue(w.npcs[1].anwesend); XCTAssertEqual(w.npcs[1].ort, "Salzmagazin")             // ort follows the player (was stale "Kielboden")
+    w.ort = "Kielboden"; w.syncPresence(narr: "Ithror hebt den Kopf und mustert dich.")         // named in the narration, last seen here -> present
+    XCTAssertTrue(w.npcs[0].anwesend)
+    var u = world(); u.apply(["spielfigur_ort": "Salzmagazin"]); u.applyTail("Figuren: Kara (Söldnerin)"); u.figurMoved(from: "Kielboden")
+    XCTAssertEqual(u.npcs[1].ort, "Salzmagazin"); XCTAssertTrue(u.npcs[1].anwesend)
+  }
+}
+
 final class CmdTests: XCTestCase {
   func testDispatcher() {   // one parser for CLI and web
     XCTAssertEqual(Cmd.parse("/figur Aether: grauer Mann"), .figur("Aether: grauer Mann"))

@@ -80,6 +80,7 @@ public final class Game {
   func worldStep(player: String, narr: String, tail: String?, oracle: [String]) {
     var log: [String] = []
     if let t = tail { log += world.applyTail(t) } else { log += world.adoptNames(World.nameHints(player + " " + narr)) }
+    world.syncPresence(narr: narr); log += world.markDeaths(narr: narr)
     let block = world.block()   // current state (after start_scene and the tail), not the one shown to the narrator
     let user = (block.isEmpty ? "" : block + "\n---\n") + "Aktion: \(clean(player, 300))\nErzählung: \(clean(narr, 900))\nOrakel: \(oracle.isEmpty ? "-" : oracle.joined(separator: "; "))\nAusgabe:"
     do {
