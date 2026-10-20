@@ -113,6 +113,11 @@ public enum Gr {
       if t.figurLine { hd += [.s("Spielfigur: "), .or([.re(Cls.rep(Cls.line, 6)), .s("-")]), .s("\n")] }
       hd += [.s("Erwartung: "), .re(Cls.rep(Cls.line, 10)), .s("\n")]
       let ja = G.seq([.s("Ortswechsel/Zeitsprung: ja\nFrage: -")] + artG(t) + [.s("\nWerkzeug: ja\n")])
+      if t.ans != nil && t.open {       // pre turn (harness oracle or /frage): head with `Frage: -`, then the bound answer and the narration
+        var pr: [G] = [.s("Ortswechsel/Zeitsprung: nein\nFrage: -")] + artG(t) + [.s("\nWerkzeug: nein\n"), .s("Antwort: \(t.ans!) → "), .re(line), .s("\n")]
+        if t.deut { pr += [.s("Deutung: "), .or([.re(line), .s("verwerfen")]), .s("\n")] }
+        return Grammar(.seq(hd + pr + [narrG(t)]))
+      }
       if !t.open { return Grammar(.seq(hd + [ja, startScene])) }                                   // head_scene: a new scene is a place/time change by definition
       if t.forceEnd { return Grammar(.seq(hd + [ja, endScene])) }
       // end_scene ONLY after "Ortswechsel/Zeitsprung: ja"; otherwise ask the oracle or narrate

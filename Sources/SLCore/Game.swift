@@ -67,6 +67,8 @@ public final class Game {
   var turnQA: [(q: String, a: String)] = []
   var lastOracleQ = ""
   var lastTargetId: String?
+  var sceneQs: [String] = []
+  var metaVetoes = 0
   var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
@@ -161,14 +163,14 @@ public final class Game {
   func push(_ m: Msg) { msgs.append(m); onMsg(m); lm.append(lm.tmpl.turn(m)) }
 
   /// Gate state at the start of a turn (a pure function so a test can assert every field; a trailing `//` once swallowed all of them).
-  static func initialGate(player: String, pre: J?, forceEnd: Bool, noOracle: Bool, firstTurn: Bool, figurKnown: Bool, quiet: Int, saeulen: Bool) -> Gate {
+  static func initialGate(player: String, pre: J?, forceEnd: Bool, noOracle: Bool, firstTurn: Bool, figurKnown: Bool, quiet: Int, saeulen: Bool, open: Bool = true) -> Gate {
     var gate = Gate()
     gate.figurLine = firstTurn && !figurKnown
     gate.selfQ = isSelfQuestion(player)
-    gate.noAsk = noOracle || (pre == nil && quiet < 3)        // the harness decides when to ask (risky/lethal actions, /frage); the model only asks itself after a long quiet stretch
+    gate.noAsk = noOracle || pre != nil || !(askOpener(player) || quiet >= 3)   // free asks only when the player opens something (ob/weiß/kennt/?...) or after a long quiet stretch; the harness vetoes irrelevant ones
     gate.art = saeulen
     gate.mustAsk = quiet >= 3 && !isWQuestion(player) && !gate.selfQ
-    gate.head = pre == nil
+    gate.head = pre == nil || open     // pre turns keep the head (Erwartung) with `Frage: -`
     gate.forceEnd = forceEnd; gate.endNarr = forceEnd
     return gate
   }
@@ -202,7 +204,7 @@ public final class Game {
     let note = (pendingNote.map { "[Gespräch] \($0)\n" } ?? "") + (pendingHint.map { "[Hinweis verdeckt] \($0)\n" } ?? "") + (regie.map { "[Regie verdeckt] \($0)\n" } ?? ""); pendingNote = nil; pendingHint = nil
     push(.u((wb.isEmpty ? "" : wb + "\n---\n") + note + (msgs.isEmpty ? "Setting: \(setting). \(player)" : player)))
     if let e = displayStory([Msg.u(playerOrig)]).first { logStory(e) }      // the story log keeps what the player typed (the model may have seen a deflection)
-    var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen")
+    var gate = Game.initialGate(player: player, pre: pre, forceEnd: forceEnd, noOracle: noOracle, firstTurn: firstTurn, figurKnown: figur != nil, quiet: quiet, saeulen: world.regeln == "saeulen", open: eng.st.open)
     if let p = pre { gate.ans = p["answer"].str; gate.deut = evInfo("ask_oracle", p) != nil }
     var calls = 0, asked = actionRes || pre != nil, figurChanged = false, finalNarr = "", finalTail: String? = nil, finalDu: String? = nil, oracle: [String] = pre.map { [fmtResult("ask_oracle", $0).replacingOccurrences(of: "[Orakel] ", with: "")] } ?? []
     var done = false, callLeakRetries = 0
@@ -278,6 +280,13 @@ public final class Game {
       if let g = txt.split(separator: "\n").first(where: { $0.hasPrefix("Ereignis: ") }), debug { out(.info(String(g))) }
       let (body, tail, du) = splitTail(txt)
       guard var (name, args) = parseCall(body, firstScene: eng.st.scene == 0) else { done = true; finalNarr = body.split(separator: "\n", omittingEmptySubsequences: false).last.map(String.init) ?? ""; finalTail = tail; finalDu = du; break }
+      // verdict design: the model may propose a scene/identity/NPC-reaction question in the head; the harness vetoes irrelevant or repeated ones and regenerates the head without asking
+      if name == "ask_oracle", pre == nil, let q = args["q"].str, !askAllowed(q: q, player: playerOrig) {
+        msgs.removeLast(); if !lm.undoLast() { try syncCache() }
+        gate.noAsk = true; gate.figurLine = hadFigurLine; metaVetoes += 1
+        if debug { out(.info("[debug] Orakelfrage verworfen: \(q)")) }
+        continue
+      }
       // leak guard for tool-call text that reaches the UI / journal / recap (oracle q, scene expect, summary, why): regenerate once or twice, then sanitise
       if let l = argLeak(args, secrets: secrets, known: known, minors: minors) {
         if callLeakRetries < 2, !msgs.isEmpty {
@@ -301,9 +310,9 @@ public final class Game {
       }
       let res = eng.call(name, args)
       if name == "ask_oracle", let a = res["answer"].str { if a.hasPrefix("NEIN") { sceneNein += 1 } else { sceneJa += 1 }; if !res["event"].isNull { sceneEvents += 1 } }
-      if name == "end_scene" || name == "start_scene" { sceneNein = 0; sceneJa = 0; sceneEvents = 0 }
+      if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0 }
       calls += 1
-      if name == "ask_oracle" { asked = true }
+      if name == "ask_oracle" { asked = true; sceneQs.append(args["q"].str ?? "") }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }
       out(.tool(name, args, res))
       if let e = evInfo(name, res) { out(.event(evShow(e))) }
@@ -528,3 +537,19 @@ public func sanitizeArgs(_ args: J, secrets: [(topic: String, text: String)], kn
   if var el = o["el"]?.obj { for (k, v) in el { if let t = v.str, leakCheck(t, secrets: secrets, known: known) != nil { el[k] = .str("-") } }; o["el"] = .obj(el) }
   return .obj(o)
 }
+
+let openerRe = try! NSRegularExpression(pattern: #"\?|\b(ob|weiß|weiss|kennt|kenne ich|hilft|helfen|gibt es|ist hier|finde ich|lügt|lüge|wer ist|ist das|sind das|versteht|erkennt|erkenne)\b"#, options: .caseInsensitive)
+public func askOpener(_ player: String) -> Bool { openerRe.firstMatch(in: player, range: NSRange(player.startIndex..., in: player)) != nil }
+
+/// harness veto for model-proposed oracle questions: yes/no, relevant (shares a content lemma with the player line, a present NPC or an open thread), not a repeat
+public func askRelevant(q: String, player: String, world: World, earlier: [String]) -> Bool {
+  if isWQuestion(q) { return false }
+  let ql = Set(contentWords(q).map(lemma)); guard !ql.isEmpty else { return false }
+  var ctx = Set(contentWords(player).map(lemma))
+  for n in world.npcs where n.anwesend && !n.tot { ctx.formUnion(tokens(n.name).map(lemma)); ctx.formUnion(contentWords(n.kurz).map(lemma)) }
+  for t in world.straenge where t.stufe != "antwort" { ctx.formUnion(contentWords(t.titel).map(lemma)) }
+  if ql.isDisjoint(with: ctx) { return false }
+  for old in earlier { let o = Set(contentWords(old).map(lemma)); if !o.isEmpty, Double(o.intersection(ql).count) / Double(max(o.count, ql.count)) >= 0.7 { return false } }
+  return true
+}
+extension Game { func askAllowed(q: String, player: String) -> Bool { askRelevant(q: q, player: player, world: world, earlier: sceneQs + turnQA.map(\.q)) } }

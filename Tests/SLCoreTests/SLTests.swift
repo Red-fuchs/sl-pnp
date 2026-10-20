@@ -1456,7 +1456,18 @@ final class InitialGateTests: XCTestCase {   // v7 #1
     let h = Game.initialGate(player: "Ich sehe mich um.", pre: nil, forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false)
     XCTAssertTrue(h.head); XCTAssertTrue(h.noAsk); XCTAssertFalse(h.art); XCTAssertFalse(h.mustAsk)
     let p = Game.initialGate(player: "x", pre: ["answer": "JA"], forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false)
-    XCTAssertFalse(p.head)
+    XCTAssertTrue(p.head, "pre turns keep the head"); XCTAssertTrue(p.noAsk)
+    XCTAssertFalse(Game.initialGate(player: "Weiß der Wirt etwas?", pre: nil, forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false).noAsk, "opener cue allows a free ask")
+    XCTAssertFalse(Game.initialGate(player: "Ich gehe zur Tür.", pre: ["answer": "JA"], forceEnd: false, noOracle: false, firstTurn: false, figurKnown: true, quiet: 0, saeulen: false, open: false).head)
+    let pre = Gr.grammar({ var x = p; x.open = true; x.ans = "JA"; return x }()).tag
+    XCTAssertTrue(pre.contains("Erwartung") && pre.contains("Antwort: JA"), "Erwartung kept on pre turns")
+  }
+  func testAskVeto() {
+    var w = World(); w.npcs = [Npc(id: "n1", name: "Marta", kurz: "Wirtin", ort: "x")]
+    XCTAssertTrue(askRelevant(q: "Kennt Marta den Fremden?", player: "Ich frage Marta nach dem Fremden.", world: w, earlier: []))
+    XCTAssertFalse(askRelevant(q: "Regnet es morgen in Spanien?", player: "Ich frage Marta.", world: w, earlier: []))
+    XCTAssertFalse(askRelevant(q: "Wer ist der Fremde?", player: "Ich frage Marta nach dem Fremden.", world: w, earlier: []))
+    XCTAssertFalse(askRelevant(q: "Kennt Marta den Fremden?", player: "Ich frage Marta.", world: w, earlier: ["Kennt Marta den Fremden?"]))
   }
 }
 

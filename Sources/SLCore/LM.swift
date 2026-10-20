@@ -98,9 +98,17 @@ public final class LM {
 
   /// Start a fresh cache (created lazily); `text` = full rendered history (no trailing generation prompt).
   public func reset(_ text: String) throws {
+    undoSnap = nil
     cache = []; cached = 0; dirty = false; pending = text; recent = []; stale = false
   }
   public func append(_ t: String) { pending += t }
+  var undoSnap: (st: [[MLXArray]], meta: [[String]], pending: String, cached: Int)?
+  /// take back the last successful generate (cache, pending): used when the harness discards the model's head; the next generate re-prefills the prompt
+  public func undoLast() -> Bool {
+    guard let s = undoSnap, s.st.allSatisfy({ !$0.isEmpty }), s.st.count == cache.count else { return false }
+    for i in cache.indices { var c = cache[i]; c.state = s.st[i]; c.metaState = s.meta[i] }
+    pending = s.pending; cached = s.cached; dirty = false; undoSnap = nil; return true
+  }
 
   /// Cache key per grammar text (+ ban terms on llg). Matchers are reused and rolled back after use.
   func take(_ g: Grammar, ban: BanSet?) throws -> (Constraint, String, Double, useTrie: Bool) {
@@ -125,6 +133,7 @@ public final class LM {
     dirty = true
     if cache.isEmpty { cache = try ctx.model.newCache(parameters: nil) }
     let snap = (st: cache.map { $0.state }, meta: cache.map { $0.metaState }, pending: pending, cached: cached)
+    undoSnap = snap
     let r: (out: String, st: GenStats, added: Int)
     do { r = try core(cache: cache, text: pending + tmpl.gen, g, temp: temp, maxTok: maxTok, abort: abort, ban: ban, soft: soft, onDelta: onDelta) }
     catch {
