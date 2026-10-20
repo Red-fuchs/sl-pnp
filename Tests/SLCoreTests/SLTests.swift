@@ -512,7 +512,7 @@ final class MiscTests: XCTestCase {
     let t = Gr.grammar(g).tag
     XCTAssertFalse(t.contains("ask_oracle")); XCTAssertFalse(t.contains("end_scene")); XCTAssertTrue(t.contains("Werkzeug: nein"))   // no oracle, no scene change
     g.needFigur = true; XCTAssertTrue(Gr.grammar(g).tag.contains("Du: ")); g.needFigur = false; XCTAssertFalse(Gr.grammar(g).tag.contains("Du: "))
-    var h = Gate(); h.open = true; h.calls = 1; h.needFigur = true; XCTAssertTrue(Gr.grammar(h).tag.contains("\\nDu: "))
+    var h = Gate(); h.open = true; h.calls = 1; h.needFigur = true; h.figurNames = ["Kira", "Jorn"]; XCTAssertTrue(Gr.grammar(h).tag.contains("\\nDu: ")); XCTAssertTrue(Gr.grammar(h).tag.contains("Kira")); XCTAssertTrue(Gr.grammar(h).tag.contains("Jorn"))
   }
   func testHttpHeader() {
     let h = "POST /say HTTP/1.1\r\nHost: 127.0.0.1:8791\r\nContent-Length: 12\r\nOrigin: http://x"
@@ -582,6 +582,19 @@ final class GrammarTests: XCTestCase {
     print(String(format: "delta grammar compile+check %.2fs", Date().timeIntervalSince(t0)))
   }
   /// regression "wer bin ich -> no narration": after the gate the model may NOT stop (EOS) before at least one sentence
+  /// the player-character name can only be one of the generated candidates (no "Dein Name ist unbekannt" evasion)
+  func testDuSlotNamesFromCandidates() async throws {
+    let (t, gt) = try await tok()
+    var g = Gate(); g.open = true; g.calls = 1; g.needFigur = true; g.figurNames = ["Kira", "Jorn"]
+    func run(_ du: String) throws -> Bool {
+      let c = try GrammarConstraint(tokenizer: gt, structuralTag: Gr.grammar(g).tag)
+      let txt = "Der Regen peitscht über die Planken. Die Laternen flackern wie sterbende Glühwürmer. Am Ruder steht ein breiter Mann.\nDu: " + du
+      for id in t.encode(text: txt, addSpecialTokens: false) { let r = try c.computeMask(); if r.needsApply && (r.mask[id / 32] >> Int32(id % 32)) & 1 == 0 { return false }; _ = try c.commitToken(Int32(id)) }
+      return true
+    }
+    XCTAssertTrue(try run("Kira (Söldnerin, Narbe)")); XCTAssertTrue(try run("Jorn (Matrose, hinkt)"))
+    XCTAssertFalse(try run("Dein Name (Schreiber, jung)")); XCTAssertFalse(try run("Deine (Der Name ist dir unbekannt)"))
+  }
   func testNarrationCannotBeEmpty() async throws {
     let (t, gt) = try await tok()
     for (selfQ, need) in [(false, false), (true, false), (true, true)] {

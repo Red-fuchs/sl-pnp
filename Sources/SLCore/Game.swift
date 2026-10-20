@@ -46,6 +46,7 @@ public final class Game {
   public var figur: String?
   public var world = World()
   public var hidden = HiddenWorld()     // secrets of a generated world: never rendered into [Welt]
+  var figurCandidates: [String] = []
   var pendingHint: String?              // one-shot "[Hinweis verdeckt]" for the next narrator turn (harness reveal)
   var turnQA: [(q: String, a: String)] = []
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
@@ -139,6 +140,7 @@ public final class Game {
     var done = false
     for _ in 0..<14 {
       gate.open = eng.st.open; gate.asks = eng.st.q; gate.calls = calls; gate.needFigur = figur == nil && world.name == nil && world.kurz == nil
+      if gate.needFigur { if figurCandidates.isEmpty { var ng = NameGen(used: Set(world.gen.used), rand: rnd); let c = NameGen.culture(for: world.gen.slots.line); figurCandidates = (0..<4).map { _ in ng.next(culture: c, avoid: Set(world.npcs.map { norm($0.name) })) }; world.gen.used = ng.used.sorted() }; gate.figurNames = figurCandidates }
       var ns = NarrStream(out: out)
       let gm = Gr.grammar(gate)
       var txt = "", truncated = false

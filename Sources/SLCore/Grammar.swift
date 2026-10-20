@@ -33,6 +33,7 @@ public struct Gate {
   public var forceEnd = false      // /ende: head must call end_scene
   public var figurLine = false     // first turn of a session: head starts with "Spielfigur: <text>|-"
   public var mustAsk = false       // >=1 quiet turn in this scene: no narration-only head, ask the oracle (or end the scene)
+  public var figurNames: [String] = []   // name candidates for the player character (from the name generator); the model picks one
   public var needFigur = false     // no player character yet: the narration must end with a "Du: Name (Rolle, Merkmal)" slot
   public var selfQ = false         // self-question (wer bin ich ...): short narration, no oracle, no scene change
   public var endNarr = false       // /ende turn: narration allowed after end_scene (else start_scene only)
@@ -45,11 +46,13 @@ public enum Gr {
   public static let narrPattern = "(\(sent)){3}(\(sent)){0,2}"   // 3-5 sentences
   public static let narrBody = G.re(narrPattern)
   static let shortPattern = "(\(sent))(\(sent)){0,2}"   // 1-3 sentences (self-questions)
-  static let duSlot = G.re(#"[A-ZÄÖÜ][a-zäöüß]{2,}( [A-ZÄÖÜ][a-zäöüß]+)? \([^\n<)\[\]]{3}[^\n<)\[\]]*\)"#)   // concrete name, no "[Name]" placeholders
+  static func duSlot(_ names: [String]) -> G {   // the NAME is an enum of generated candidates (the 4B model kept evading with "dein Name ist dir unbekannt")
+    .seq([names.isEmpty ? G.re(#"[A-ZÄÖÜ][a-zäöüß]{2,}"#) : GenGr.en(names), .s(" ("), .re(#"[^\n<)\[\]]{3}[^\n<)\[\]]*"#), .s(")")])
+  }
   /// narration + mandatory tails: [Du: Name (Rolle, Merkmal) while no character exists] + "Figuren: Name (Rolle), …" | "-" (both stripped from display)
   public static func narrG(_ t: Gate) -> G {
     var p: [G] = [t.selfQ ? G.re(shortPattern) : narrBody]
-    if t.needFigur { p += [.s("\nDu: "), duSlot] }
+    if t.needFigur { p += [.s("\nDu: "), duSlot(t.figurNames)] }
     p += [.s("\nFiguren: "), .or([.s("-"), .re(#"[^\n<]{2}[^\n<]*"#)])]
     return .seq(p)
   }

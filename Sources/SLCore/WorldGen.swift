@@ -244,7 +244,8 @@ extension Game {
       let refs = places + world.npcs.map(\.name)
       guard let t = try? genCall("thread", ctx: ctxBlock(), task: "Erfinde eine offene Frage der Welt (Faden \(i + 1)) mit drei Hinweisen, jeder an einem Ort oder bei einer Figur (nach @). Nicht mit '\(world.straenge.map(\.titel).joined(separator: "', '"))' doppeln.", GenGr.thread(refs: refs), validate: check, maxTok: 380) else { out(.info("Faden \(i + 1) fehlgeschlagen – weiter")); tick("Faden \(i + 1) übersprungen", t0); continue }
       let f = Self.fields(t); var q = clean(f["Frage"] ?? "", 70); while q.hasSuffix("?") { q.removeLast() }
-      if okThread(q) {
+      let qt = Set(tokens(q)), dup = world.straenge.contains { let o = Set(tokens($0.titel)); return !o.isEmpty && Double(o.intersection(qt).count) / Double(max(o.count, qt.count)) >= 0.6 }   // near-duplicate question
+      if okThread(q) && !dup {
         world.straenge.append(Strang(titel: q, stand: ""))
         for n in 1...3 { if let h = f["Hinweis\(n)"], let r = h.range(of: " @ ", options: .backwards) { hidden.clues.append(Clue(thread: q, text: clean(String(h[..<r.lowerBound]), 90), at: String(h[r.upperBound...]).trimmingCharacters(in: .whitespaces))) } }
       }
