@@ -1876,7 +1876,7 @@ final class VorlageTests: XCTestCase {   // pnp-22d: prepared world "Die Weberin
     let (w, h) = try Vorlage.worldData("weberin", roots: roots)
     XCTAssertEqual(w.regeln, "schicksal"); XCTAssertEqual(w.vorlage, "weberin"); XCTAssertTrue(w.gen.ready); XCTAssertEqual(w.ort, "Aschekreis")
     XCTAssertEqual(w.straenge.count, 3); XCTAssertEqual(h.clues.count, 9)
-    XCTAssertEqual(w.orte.count, 4)
+    XCTAssertEqual(w.orte.count, 5)
     let kater = try XCTUnwrap(w.npcs.first { $0.id == "n2" }); XCTAssertTrue(kater.gmFigur); XCTAssertTrue(w.card(kater).contains("Spielleitung"))
     XCTAssertEqual(w.npcs.filter(\.gmFigur).count, 1)
     for n in w.npcs { XCTAssertNotNil(h.npcs[n.name], "hidden entry for \(n.name)") }

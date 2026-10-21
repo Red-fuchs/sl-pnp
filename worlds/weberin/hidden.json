@@ -1,9 +1,9 @@
 {
   "clues": [
     {
-      "at": "Spindelhaus",
+      "at": "Kloster der Spinnerinnen",
       "found": false,
-      "text": "Das Fadenbuch nennt die Nadel: Knochen, nicht Eisen",
+      "text": "Das Fadenbuch im Skriptorium nennt die Nadel: Knochen, nicht Eisen",
       "thread": "Was ist die Nadel wirklich"
     },
     {
@@ -27,7 +27,7 @@
     {
       "at": "Jorrit Keil",
       "found": false,
-      "text": "Im Kanal liegen Tote in fremder Kleidung, ihre Fäden abgeschnitten",
+      "text": "In der Gruft liegen Tote in fremder Kleidung, ihre Fäden abgeschnitten",
       "thread": "Warum braucht die Weberin Fremde"
     },
     {
@@ -37,7 +37,7 @@
       "thread": "Warum braucht die Weberin Fremde"
     },
     {
-      "at": "Spindelhaus",
+      "at": "Kloster der Spinnerinnen",
       "found": false,
       "text": "Fehlings Aufträge tragen das Siegel der Vogtin",
       "thread": "Wem gehört Krähenfurt wirklich"
@@ -57,7 +57,7 @@
   ],
   "npcs": {
     "Agnet Rauhsohl": {
-      "geheimnis": "Sie hat frühere Gerufene an Fehling verkauft; ihre Fäden hängen im Spindelhaus.",
+      "geheimnis": "Sie hat frühere Gerufene an Fehling verkauft; ihre Fäden hängen am Webstuhl.",
       "gruppe": "Vogtei",
       "ref": "Ambros Fehling",
       "typ": "npc_befragt",
@@ -65,10 +65,17 @@
     },
     "Ambros Fehling": {
       "geheimnis": "Er setzt seit Jahren Fäden nach den Bestellungen der Vogtin: Gehorsam statt Lebenslauf.",
-      "gruppe": "Spindelhaus",
+      "gruppe": "Kloster",
       "ref": "Fadenbuch",
       "typ": "gegenstand",
       "ziel": "die Nadel schützen, seine Ruhe haben"
+    },
+    "Brand Quast": {
+      "geheimnis": "Er meldet jeden Neuankömmling der Äbtissin Odilie und verkauft Knochengarn unterm Ladentisch.",
+      "gruppe": "Kloster",
+      "ref": "Grams am Moor",
+      "typ": "ort_betreten",
+      "ziel": "Profit machen, seinen Laden behalten"
     },
     "Der Kater": {
       "geheimnis": "Er war der letzte Gerufene: die Weberin knotete ihn zum Kater und verwahrt seinen Namen als Pfand.",
@@ -92,7 +99,7 @@
       "ziel": "die Nadel bekommen"
     },
     "Jorrit Keil": {
-      "geheimnis": "Er kennt den Kanal ins Spindelhaus und hat dort die Gruft früherer Gerufener gesehen.",
+      "geheimnis": "Er kennt den Weg durch die Krypta ins Kloster und sah dort die Gruft früherer Gerufener.",
       "gruppe": "Schmuggler",
       "ref": "14",
       "typ": "zeit",
@@ -104,6 +111,13 @@
       "ref": "Wenke Sparr",
       "typ": "npc_befragt",
       "ziel": "die Weberin aufhalten, ohne selbst zu sterben"
+    },
+    "Äbtissin Odilie Wendt": {
+      "geheimnis": "Sie steht im Bund mit dem Kettler und reicht ihm jeden fremden Faden, den sie findet.",
+      "gruppe": "Schicksal",
+      "ref": "Fadenbuch",
+      "typ": "gegenstand",
+      "ziel": "den Webstuhl bewahren, Fremde ausliefern"
     }
   },
   "pcGeheim": "Die Weberin hat über die Leihe nie ganz die Wahrheit gesagt.",

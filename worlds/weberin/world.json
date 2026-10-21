@@ -17,11 +17,12 @@
     "orte": {
       "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden. Hier erwachen die Gerufenen. · herrscht: die Weberin",
       "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt. Eine Webstelle. · herrscht: niemand, der Kettler geht hier um",
-      "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen. · herrscht: Vogtin Agnet Rauhsohl",
-      "Spindelhaus": "Turm im Flussbogen, in dem Fäden gesetzt werden; ein Kanal führt unter das Fundament. · herrscht: Spindelmeister Ambros Fehling"
+      "Grams am Moor": "Moordorf zwischen Krähenfurt und Kloster: Taverne, Kapelle (Treppe in die Krypta), Laden, Schmiede, Zollhaus am Moordamm. · herrscht: Brand Quast (Händler), Zoll am Moordamm",
+      "Kloster der Spinnerinnen": "Kloster auf dem Hügel: blinde Nonnen spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf. · herrscht: Äbtissin Odilie Wendt",
+      "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen. · herrscht: Vogtin Agnet Rauhsohl"
     },
     "pcZiel": "Überlebe die Nacht und finde den Weg zurück nach Hause.",
-    "praemisse": "Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Spindelhaus setzt der Spindelmeister jedem Bewohner mit der Nadel seinen Faden. Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.",
+    "praemisse": "Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Kloster der Spinnerinnen auf dem Hügel über Grams am Moor spinnen blinde Nonnen jedem Bewohner den Faden auf einem riesigen Webstuhl, und der Spindelmeister setzt ihn mit der Nadel. Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.",
     "ready": true,
     "secs": {},
     "slots": {
@@ -42,7 +43,9 @@
       "ambros fehling",
       "agnet rauhsohl",
       "wenke sparr",
-      "jorrit keil"
+      "jorrit keil",
+      "brand quast",
+      "äbtissin odilie wendt"
     ],
     "wuerze": []
   },
@@ -104,9 +107,9 @@
       "haltung": -1,
       "id": "n4",
       "inventar": [],
-      "kurz": "Spindelmeister, müde und pedantisch",
+      "kurz": "Spindelmeister, Laienbruder und Klostervogt am Webstuhl, müde und pedantisch",
       "name": "Ambros Fehling",
-      "ort": "Spindelhaus",
+      "ort": "Kloster der Spinnerinnen",
       "wunden": 6,
       "zustand": []
     },
@@ -149,10 +152,40 @@
       "haltung": -1,
       "id": "n7",
       "inventar": [],
-      "kurz": "Schmuggler am Flusskanal",
+      "kurz": "Schmuggler auf den Moorwegen",
       "name": "Jorrit Keil",
       "ort": "Krähenfurt",
       "wunden": 6,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": 0,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": 0,
+      "id": "n8",
+      "inventar": [],
+      "kurz": "Gemischtwarenhändler in Grams, geschäftig und neugierig",
+      "name": "Brand Quast",
+      "ort": "Grams am Moor",
+      "wunden": 6,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": -1,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": -1,
+      "id": "n9",
+      "inventar": [],
+      "kurz": "Äbtissin der blinden Spinnerinnen, sanft und unbeugsam",
+      "name": "Äbtissin Odilie Wendt",
+      "ort": "Kloster der Spinnerinnen",
+      "wunden": 8,
       "zustand": []
     }
   ],
@@ -160,8 +193,9 @@
   "orte": {
     "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden",
     "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt",
-    "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen",
-    "Spindelhaus": "Turm im Flussbogen, in dem Fäden gesetzt werden; ein Kanal führt unter das Fundament"
+    "Grams am Moor": "Moordorf zwischen Krähenfurt und Kloster: Taverne, Kapelle (Treppe in die Krypta), Laden, Schmiede, Zollhaus am Moordamm",
+    "Kloster der Spinnerinnen": "Kloster auf dem Hügel: blinde Nonnen spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf",
+    "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen"
   },
   "regeln": "schicksal",
   "straenge": [
