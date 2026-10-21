@@ -179,7 +179,7 @@ public final class Runner {
       var f = f0
       if let bad = figurProblem(f0) { sink(.info(bad)); return true }
       if game.isSchicksal, !f.isEmpty {       // per speaker: background story -> traits -> budget -> pillars
-        let (nm, story) = World.parseFigur(f)
+        let (nm, story) = World.parseFigur(f, limit: SR.storyMax)   // the whole backstory goes to the trait extraction (a 140-char cut kept only the first sentence)
         sink(.info("Hintergrund wird ausgewertet …"))
         let dropped = game.createCharacter(speaker: speaker, name: nm ?? speaker ?? "Spieler", story: story.isEmpty ? f : story)
         if let i = game.pcIndex(speaker, create: false) {

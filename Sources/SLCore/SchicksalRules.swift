@@ -138,6 +138,12 @@ public enum SR {
   /// scene change: Schicksalsergeben is available again
   public static func resetScene(_ pcs: inout [Pc]) { for i in pcs.indices { pcs[i].ergebenUsed = false } }
   public static let ergebenMod = -10
+  /// backstory length that reaches the trait extraction and the story-item matcher
+  public static let storyMax = 900
+  /// tag-like prefixes in free player text lose their colon ("Merkmal: x" -> "Merkmal x"), so the story cannot fake extraction lines or harness tags
+  public static func defuse(_ s: String) -> String {
+    s.replacingOccurrences(of: #"(?i)\b(Regie|Fakt|System|Systemhinweis|Anweisung|Merkmal|Schwäche|Gegenstand|Urteil|Fairness|Tausch|Preis|Orakel|Antwort|Ausgabe|Grund|Spielleiter|Assistant|User|Welt|Spieler)\s*:"#, with: "$1 ", options: .regularExpression).split(separator: " ", omittingEmptySubsequences: true).joined(separator: " ")
+  }
   /// d: 1...100
   public static func check(_ pc: inout Pc, pillar: String, traits: [Trait], difficulty: Int, spUse: Int, reason: String, d100: Int, source: String = "sl", ergeben: Bool = false) -> Check {
     if ergeben, let r = ergebenRefusal(pc, difficulty: difficulty, spUse: spUse) {
@@ -276,7 +282,7 @@ public enum SR {
   public static func build(_ pc: inout Pc, name: String, story: String, traits: [Trait]) -> [Trait] {
     let fit = SR.fit(traits)
     if !name.isEmpty { pc.name = name }
-    pc.hintergrund = clean(story, 400); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
+    pc.hintergrund = clean(story, storyMax); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
     pc.taler = max(0, budgetLeft(fit)) * 10
     return traits.filter { !fit.contains($0) }
   }

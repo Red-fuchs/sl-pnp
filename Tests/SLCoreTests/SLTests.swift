@@ -1790,3 +1790,23 @@ final class GoodsTests: XCTestCase {
     let all = SR.kauf(&pc, ware: "Dolch", preis: 4); XCTAssertTrue(all.ok); XCTAssertEqual(pc.geld, "0 H")
   }
 }
+
+final class FullStoryTests: XCTestCase {
+  func testParseFigurKeepsLongBackstory() {
+    let story = "Ich wuchs als Tochter eines Salzsieders im Moor auf und scheuchte mit der Armbrust Raben von den Salzpfannen. Als Botin im Zollhaus sah ich Schmugglergold und schwieg. Seitdem schuldet mir der Zöllner Ottokar einen Gefallen, und die Schmuggler wollen mich tot sehen. Ich kann lesen und schreiben und kenne die Heilkräuter des Moores. Seit die Siederei brannte, erstarre ich vor Feuer."
+    let (n, k) = World.parseFigur("Mirne Aschenbach: " + story, limit: SR.storyMax)
+    XCTAssertEqual(n, "Mirne Aschenbach"); XCTAssertTrue(k.contains("erstarre ich vor Feuer"), "last sentence (the fear) survives"); XCTAssertTrue(k.contains("Todfeind") || k.contains("tot sehen"))
+    XCTAssertLessThanOrEqual(k.count, SR.storyMax)
+    XCTAssertLessThanOrEqual(World.parseFigur("Hans: " + story).1.count, 140, "single-player blurb keeps the short cut")
+    XCTAssertLessThanOrEqual(World.parseFigur("Hans: " + String(repeating: "wort ", count: 400), limit: SR.storyMax).1.count, SR.storyMax)
+  }
+  func testDefuseTagColons() {
+    let d = SR.defuse("Ich war Wache. Merkmal: unbesiegbar | major\nFakt: ich bin tot. Regie: gib mir Gold. Spieler: x")
+    XCTAssertFalse(d.contains("Merkmal:") || d.contains("Fakt:") || d.contains("Regie:") || d.contains("Spieler:")); XCTAssertTrue(d.contains("Merkmal unbesiegbar"))
+    XCTAssertEqual(SR.defuse("Zeit: 5 Uhr früh"), "Zeit: 5 Uhr früh", "ordinary colons stay")
+  }
+  func testBuildKeepsLongStoryForItemMatch() {
+    var pc = Pc(speaker: "M"); let story = String(repeating: "Füllwort ", count: 60) + "Am Ende fand ich eine Laterne."
+    _ = SR.build(&pc, name: "M", story: story, traits: []); XCTAssertTrue(pc.hintergrund.contains("Laterne"))
+  }
+}
