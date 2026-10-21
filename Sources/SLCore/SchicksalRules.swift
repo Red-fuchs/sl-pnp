@@ -38,6 +38,16 @@ public struct Check: Codable, Equatable {
   }
 }
 
+/// A bought item that matches the character's background story (★). The hidden "Gegenstandsgeheimnis" is rolled on purchase:
+/// `levelbar` grows +1 per solved thread (max 3); a Wendung lives in hidden.json (key "★<name>") and is revealed through the Spur system.
+public struct StoryItem: Codable, Equatable {
+  public var name: String, kind: String = "werkzeug"   // "waffe" | "werkzeug" | "ruestung"
+  public var level = 0, levelbar = false, rolled = false
+  public var truth: String?                           // set once the Wendung is revealed
+  public init(name: String, kind: String = "werkzeug") { self.name = name; self.kind = kind }
+  public var json: [String: Any] { ["name": name, "level": level] }
+}
+
 public struct Pc: Codable, Equatable {
   public var speaker = "", name = "", hintergrund = ""
   public var pillars: [String: Int] = ["kampf": 40, "sozial": 40, "wissen": 40]
@@ -51,9 +61,11 @@ public struct Pc: Codable, Equatable {
   public var mod = 0                // +-10 steps put on this character by others (applies to the next check)
   var _ergebenUsed: Bool?           // Schicksalsergeben already used in this scene (optional: older saves)
   public var ergebenUsed: Bool { get { _ergebenUsed ?? false } set { _ergebenUsed = newValue } }
+  var _items: [StoryItem]?
+  public var items: [StoryItem] { get { _items ?? [] } set { _items = newValue.isEmpty ? nil : newValue } }
   public var lastCheck: Check?
   public init(speaker: String, name: String? = nil) { self.speaker = speaker; self.name = name ?? speaker }
-  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "inventar": inventar, "taler": taler] }
+  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "inventar": inventar, "taler": taler, "items": items.map(\.json)] }
   public var line: String { "\(name) (Kampf \(pillars["kampf"] ?? 0) · Sozial \(pillars["sozial"] ?? 0) · Wissen \(pillars["wissen"] ?? 0); SP \(sp)/\(spMax); Wunden \(wunden)/\(wundenMax)\(traits.isEmpty ? "" : "; " + traits.map { ($0.pos ? "+" : "−") + $0.text }.joined(separator: ", ")))" }
 }
 
@@ -121,10 +133,59 @@ public enum SR {
     while budgetLeft(t) < 0, let i = t.lastIndex(where: \.pos) { t.remove(at: i) }
     return t
   }
-  /// leftover budget -> Taler (1 pt = 10), items (2 pts each), +1 max SP (3 pts each); unspent points become Taler. nil = overdrawn.
+  // MARK: gear prices (Vorschlag): normal 2, sword/axe/bow/chain/shield 4, plate/firearm 6
+  static let tier6 = ["platten", "vollplatte", "harnisch", "pistole", "gewehr", "arkebuse", "büchse", "muskete", "revolver", "feuerwaffe"]
+  static let tier2 = ["leder", "messer", "dolch", "knüppel", "keule", "stock"]
+  static let tier4 = ["schwert", "axt", "beil", "bogen", "armbrust", "speer", "säbel", "degen", "morgenstern", "kriegshammer", "streitkolben", "ketten", "schuppen", "schild", "rüstung", "panzer"]
+  /// 2, 4 or 6 points by keyword; unknown items count as normal
+  public static func itemCost(_ item: String) -> Int {
+    let t = item.lowercased()
+    if tier6.contains(where: t.contains) { return 6 }
+    if tier2.contains(where: t.contains) { return 2 }
+    return tier4.contains(where: t.contains) ? 4 : 2
+  }
+  public static func tierLabel(_ item: String) -> String { ["", "", "normal", "", "stark", "", "schwer"][itemCost(item)] }
+  /// armour value of a piece of gear (cloth 0, leather 1, mail 2, plate 3)
+  public static func gearArmour(_ item: String) -> Int {
+    let t = item.lowercased()
+    if tier6.prefix(3).contains(where: t.contains) { return 3 }
+    if t.contains("leder") { return 1 }
+    if ["ketten", "schuppen", "rüstung", "panzer"].contains(where: t.contains) { return 2 }
+    return 0
+  }
+  public static func armour(of pc: Pc) -> Int { pc.inventar.map(gearArmour).max() ?? 0 }
+  static func itemKind(_ item: String) -> String {
+    gearArmour(item) > 0 ? "ruestung" : (["schwert", "axt", "beil", "bogen", "armbrust", "speer", "säbel", "degen", "morgenstern", "hammer", "streitkolben", "messer", "dolch", "keule", "knüppel", "pistole", "gewehr"].contains(where: item.lowercased().contains) ? "waffe" : "werkzeug")
+  }
+  /// an item is story-consistent when it shares a content word with the background story or a positive trait (same lemma matcher as the traits)
+  public static func storyMatch(_ item: String, pc: Pc) -> Bool {
+    let src = Set(contentWords(pc.hintergrund + " " + pc.traits.filter(\.pos).map(\.text).joined(separator: " ")).map(lemma))
+    return !Set(contentWords(item).map(lemma)).isDisjoint(with: src)
+  }
+  /// situational bonus of the speaker's story items that the text mentions: weapons +level damage, tools +10 per level on the check
+  public static func itemBonus(_ pc: Pc, text: String) -> (dmg: Int, check: Int) {
+    let w = Set(contentWords(text).map(lemma)); var d = 0, c = 0
+    for it in pc.items where it.level > 0 && !Set(contentWords(it.name).map(lemma)).isDisjoint(with: w) {
+      if it.kind == "waffe" { d += it.level } else if it.kind == "werkzeug" { c += 10 * it.level }
+    }
+    return (d, c)
+  }
+  /// a thread was solved: every levelbar story item grows +1 (max 3). Returns the names that grew.
+  public static func levelUp(_ pcs: inout [Pc]) -> [String] {
+    var g: [String] = []
+    for i in pcs.indices { var its = pcs[i].items; for k in its.indices where its[k].levelbar && its[k].level < 3 { its[k].level += 1; g.append("\(its[k].name) +\(its[k].level)") }; pcs[i].items = its }
+    return g
+  }
+  /// Gegenstandsgeheimnis from a d6: 1-2 nothing, 3-4 levelbar, 5 Wendung, 6 both. Returns the Wendung text (item name never inside: the leak guard must not ban the visible name).
+  public static let wendungen = ["Das Stück ist eine plumpe Fälschung: der Glanz bröckelt, sobald jemand genau hinsieht.", "Das Stück wurde gestohlen: sein rechtmäßiger Besitzer sucht es noch.", "Auf dem Stück liegt ein Fluch, der Blut fordert, aber in höchster Not Kraft schenkt.", "Das Stück gehörte einst einem berühmten Ritter, den einige noch fürchten."]
+  public static func rollSecret(_ item: inout StoryItem, d6: Int, pick: Int) -> String? {
+    item.rolled = true; item.levelbar = d6 == 3 || d6 == 4 || d6 == 6
+    return d6 >= 5 ? wendungen[((pick % wendungen.count) + wendungen.count) % wendungen.count] : nil
+  }
+  /// leftover budget -> Taler (1 pt = 10), items (2/4/6 pts by tier), +1 max SP (3 pts each); unspent points become Taler. nil = overdrawn.
   public static func allocate(left: Int, talerPts: Int, items: [String], sp: Int) -> (taler: Int, items: [String], sp: Int)? {
     guard left >= 0, talerPts >= 0, sp >= 0 else { return nil }
-    let used = talerPts + 2 * items.count + 3 * sp
+    let used = talerPts + items.reduce(0) { $0 + itemCost($1) } + 3 * sp
     if used > left { return nil }
     return ((talerPts + left - used) * 10, items, sp)
   }
@@ -167,7 +228,7 @@ public enum SR {
     } else { return usage }
     let all = pc.traits; pc.traits = fit(all)
     let dropped = all.filter { !pc.traits.contains($0) }
-    pc.taler = max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.spMax = 5; pc.sp = 5
+    pc.taler = max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.items = []; pc.spMax = 5; pc.sp = 5
     return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(budgetLeft(pc.traits)) · Taler \(pc.taler)" + (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))
   }
   /// check reason for cards: cut at a word boundary, never mid-word
@@ -189,7 +250,7 @@ public enum SR {
     var tal = 0, items: [String] = [], sp = 0
     for kv in args.split(separator: " ") {
       let x = kv.split(separator: "=", maxSplits: 1).map(String.init)
-      guard x.count == 2 else { return "/budget taler=N item=Name,Name sp=N  (Taler: 1 Punkt = 10, Gegenstand 2, +1 SP-Max 3)" }
+      guard x.count == 2 else { return "/budget taler=N item=Name,Name sp=N  (Taler: 1 Punkt = 10, Gegenstand 2/4/6 je nach Stufe, +1 SP-Max 3)" }
       switch x[0].lowercased() {
       case "taler": tal = Int(x[1]) ?? -1
       case "item", "gegenstand": items += x[1].split(separator: ",").map { clean(String($0), 30) }.filter { !$0.isEmpty }
@@ -199,9 +260,12 @@ public enum SR {
     }
     if pc.lastCheck != nil { return "/budget geht nur vor der ersten Probe." }
     let left = budgetLeft(pc.traits)
-    guard let r = allocate(left: left, talerPts: tal, items: items, sp: sp) else { return "/budget: nur \(left) Punkte übrig (Taler 1, Gegenstand 2, +1 SP-Max 3)" }
+    guard let r = allocate(left: left, talerPts: tal, items: items, sp: sp) else { return "/budget: nur \(left) Punkte übrig (Taler 1, Gegenstand 2/4/6, +1 SP-Max 3)" }
     pc.taler = r.taler; pc.inventar = r.items; pc.spMax = 5 + r.sp; pc.sp = pc.spMax
-    return "Budget: \(r.taler) Taler · \(r.items.isEmpty ? "keine Gegenstände" : r.items.joined(separator: ", ")) · SP-Max \(pc.spMax) (übrige Punkte als Taler)"
+    pc.items = r.items.filter { storyMatch($0, pc: pc) }.map { StoryItem(name: $0, kind: itemKind($0)) }
+    let star = Set(pc.items.map(\.name))
+    let itemTxt = r.items.map { "\($0) (\(itemCost($0)) Pkt = \(itemCost($0) * 10) Taler, \(tierLabel($0)))\(star.contains($0) ? " ★ Story-Item" : "")" }
+    return "Budget: \(r.taler) Taler · \(r.items.isEmpty ? "keine Gegenstände" : itemTxt.joined(separator: ", ")) · SP-Max \(pc.spMax) (übrige Punkte als Taler)"
   }
   static let kw: [String: [String]] = [
     "kampf": ["kämpf", "krieg", "soldat", "söldner", "schwert", "bogen", "schütze", "jäger", "stark", "dolch", "wache", "ringer", "narbe", "gewalt", "schläger", "messer", "axt"],

@@ -9,9 +9,29 @@ The user's design. sl Regelwerk id: `schicksal`. These are the source of truth f
   - Negative trait (flaw, debt, enemy, fear) gives back **+2** (minor) or **+4** (major).
 - Leftover budget:
   - 1 point = 10 Taler starting money,
-  - or 2 points = 1 starting item (normal gear, no magic),
+  - or **starting items by price tier (Vorschlag, 2026-10-21)**, normal gear, no magic:
+    - 10 Taler = 1 point. **2** points (20 Taler): normal gear, knife/dagger or club, leather armour (armour 1);
+    - **4** points (40 Taler): sword, axe or bow (also spear, crossbow), chain mail (armour 2), shield;
+    - **6** points (60 Taler): plate armour (armour 3) or a firearm.
+    - sl classifies by keyword; unknown items count as normal (2). `/budget` shows the tier per item.
   - or 3 points = +1 max Schicksalspunkt.
 - Three pillars **Kampf / Sozial / Wissen**: distribute 30 / 40 / 50 in any order. These are the base values for d100.
+
+### Worked example: Paladin (Vorschlag)
+Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hunted by a cult, penniless.
+- Positive: „Geweihter Streiter“ (major) **−4**, „Handauflegen“ (major) **−4** → −8.
+- Negative: „Heiliger Schwur (darf nicht lügen/fliehen)“ (major) **+4**, „Fanatischer Feind: Kult X“ (minor) **+2**, „Arm wie eine Kirchenmaus“ (minor) **+2** → +8.
+- Budget: 20 − 8 + 8 = **20** to spend.
+- `/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1`: plate **6** + sword **4** + shield **4** = 14, +1 max SP **3**, Taler **3** (= 30 Taler) → 14 + 3 + 3 = **20**, nothing left over.
+- Without the three flaws (budget 12) plate and sword (10) would leave 2 points: no shield, no SP.
+- Armour of the figure (leather 1, mail 2, plate 3) reduces the damage of a counterblow by its value, but never below 1 Wunde.
+
+### Story items ★ (Auslegung, decided 2026-10-21: „alles kostet Budget, aber Boni wenn die Geschichte stimmig ist“)
+- Every item costs its tier price. An item bought via `/budget item=…` that shares a content word with the background story or a positive trait (same matcher as for traits) becomes a **★ Story-Item**. Same prices as other items; non-story items behave as before.
+- On purchase sl secretly rolls a hidden **Gegenstandsgeheimnis** (d6): 1–2 nothing, 3–4 **levelbar**, 5 **Wendung**, 6 both.
+  - **levelbar:** the item grows +1 after each solved thread (`/geloest`), max +3: weapons +1 damage per level, tools +10 per level on checks that mention the item, armour counts normally.
+  - **Wendung:** a hidden truth (forgery, stolen, cursed with an upside, famous previous owner) is stored in hidden.json like an NPC secret (key `★<item>`, text never contains the item name), guarded by the leak guard and revealed through the Spur/tier system. Payoff on reveal: **+1 SP**, the truth appears on the sheet.
+- Players see only „★ Story-Item“ and, once grown, the level; the secret stays internal.
 
 ## Skill check: d100 roll-under with degrees
 - Target number = pillar + traits + difficulty.
@@ -68,6 +88,8 @@ Math and decisions:
 - **Not on leicht checks** (refused by sl). "Real stakes", initiative and pure practice stay the GM's call.
 - **Not combinable** with SP on the same roll: refused with 400 when `sp > 0`, 409 when pre-spent SP (`/sp mode=pre`) or SP from others (`mod`) are on the sheet.
 - **Reroll (2 SP):** allowed; the second result counts, including its ergeben effects (an earlier SP gain is taken back, a failure gets +1 DoF again).
+- **Foundry card:** shows "+1 SP (Schicksalsergeben)" / "Schicksalsschlag" only after sl confirmed in the `/rollresult` response; if sl refuses, the card shows the reason and no gain.
+- **`/szene` (GM):** resets the once-per-scene flag of all figures (also via `start_scene`/`end_scene`); GM button "Neue Szene" in the bridge.
 - Narrator fact: "[schicksalsergeben (−10), 1 SP zurück]" / "[… Schicksalsschlag, der Misserfolg wiegt einen Grad schwerer und wird härter erzählt]".
 - API: `/roll` and `/rollresult` take `"ergeben": true`; replies and SSE `roll` carry `ergeben` and `sp_gained` (see API-foundry.md). Foundry: checkbox in the Probe dialog.
 - Not covered by the explainer video (not re-rendered).
@@ -78,3 +100,6 @@ Math and decisions:
 
 ## Content rule
 - Minors are never victims of violence or of sexual content. Dark content among adults is fine.
+
+## Probe flow in Foundry: "players roll"
+In Foundry mode a risky action of a player is rolled by the player: sl sends `probe_request` (speaker, pillar, difficulty, reason, id), the bridge posts a card "Probe gefordert" with a button to the prefilled Probe dialog, and the player's `/rollresult` resolves the pending turn; sl narrates the result as a hard `[Fakt]`. If nobody rolls within the timeout (default 90 s, bridge setting or `--probe-timeout`) or the GM presses "sl würfeln lassen", sl rolls itself. The CLI/web UI (no speaker) keeps the auto roll. Deaths, `/lebt` and the minors content rule are unchanged (they act on the check result).

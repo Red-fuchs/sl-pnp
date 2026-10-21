@@ -166,7 +166,8 @@ extension World {
 extension Game {
   /// Oracle "Habe ich X dabei?" for a claimed item that is not in the inventory. JA adds it; NEIN is an in-fiction fact and cancels the action.
   func resolveClaim(_ player: String) -> (fact: String, res: J?, cancel: Bool)? {
-    guard let item = world.missingItems(player).first else { return nil }
+    let own = (isSchicksal ? pcIndex(speaker, create: false).map { partyStore.all[$0].inventar } : nil)?.joined(separator: " ").lowercased() ?? ""
+    guard let item = world.missingItems(player).first(where: { !own.contains($0) && !own.contains(String($0.prefix(max(4, $0.count - 2)))) }) else { return nil }
     let disp = item.prefix(1).uppercased() + item.dropFirst()
     let q = "Habe ich \(disp) dabei?", odds = anachronisms.contains(item) ? -3 : -2
     let args: J = ["q": .str(q), "odds": .int(odds)]

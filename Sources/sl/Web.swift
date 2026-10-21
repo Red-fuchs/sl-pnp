@@ -47,6 +47,8 @@ func jsonOuts(_ o: Out) -> [[String: Any]] {
   case .progress(let t, let d, let n): return [["t": "progress", "text": t, "done": d ?? 0, "total": n ?? 0]]
   case .roll(let c): var j = c.json; j["t"] = "roll"; return [j]
   case .sheet: return [["t": "sheet"]]
+  case .probe(let r): var j = r.json; j["t"] = "probe_request"; return [j]
+  case .probeDone(let id, let how): return [["t": "probe_done", "id": id, "how": how]]
   case .gate: return []
   }
 }
@@ -62,6 +64,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
   let port = UInt16(opt["port"] ?? "8787") ?? 8787
   let idle = Double(opt["idle"] ?? (opt["lease"] != nil ? "300" : "600")) ?? 600
   let hub = Hub()
+  if let t = opt["probe-timeout"].flatMap({ Double($0) }) { Game.probeDefault = max(0, t) }
   let work = DispatchQueue(label: "work")
   let lock = NSLock()
   var busy = false, last = Date()
@@ -133,15 +136,24 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       let pillar = (j["pillar"] as? String ?? "kampf").lowercased()
       guard ["kampf", "sozial", "wissen"].contains(pillar) else { return json("400 Bad Request", ["error": "pillar: kampf|sozial|wissen"]) }
       guard let g = runner.game else { return json("503 Service Unavailable", ["error": "kein Spiel"]) }
+      let pid = j["id"] as? String
+      if let pid, let bad = g.probeProblem(pid, speaker: sp) { return json("409 Conflict", bad) }
       let ch = g.doCheck(speaker: sp, pillar: pillar, traits: j["traits"] as? [String] ?? [], difficulty: j["difficulty"] as? Int ?? 0, sp: j["sp"] as? Int ?? 0, reason: j["reason"] as? String ?? "", ergeben: j["ergeben"] as? Bool ?? false)
-      if let e = ch.error { json(ch.errCode == 409 ? "409 Conflict" : "400 Bad Request", ["error": e]) } else { json("200 OK", ch.json) }
+      if let e = ch.error { return json(ch.errCode == 409 ? "409 Conflict" : "400 Bad Request", ["error": e]) }
+      if let pid, !g.probes.resolve(pid, ch) { g.queueFact(ch.fact) }
+      json("200 OK", ch.json)
     case ("POST", "/rollresult"):
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, let t = j["target"] as? Int, let r = j["roll"] as? Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker, label, target, roll"]) }
       let erg = j["ergeben"] as? Bool ?? false
       if erg, (j["sp"] as? Int ?? 0) > 0 { return json("400 Bad Request", ["error": "Schicksalsergeben ist nicht kombinierbar mit Schicksalspunkten."]) }
-      let ch = g.foundryRoll(speaker: sp, label: j["label"] as? String ?? "Probe", target: t, roll: r, ergeben: erg, difficulty: j["difficulty"] as? Int ?? 0)
+      let pid = j["id"] as? String
+      if let pid, let bad = g.probeProblem(pid, speaker: sp) { return json("409 Conflict", bad) }
+      let ch = g.foundryRoll(speaker: sp, label: j["label"] as? String ?? "Probe", target: t, roll: r, ergeben: erg, difficulty: j["difficulty"] as? Int ?? 0, probe: pid)
       if let e = ch.error { return json(ch.errCode == 409 ? "409 Conflict" : ch.errCode == 404 ? "404 Not Found" : "400 Bad Request", ["error": e]) }
-      json("200 OK", ["success": ch.success, "dos": ch.dos, "dof": ch.dof, "crit": ch.crit as Any? ?? NSNull(), "label": ch.reason, "ergeben": ch.ergeben, "sp_gained": ch.spGained])
+      json("200 OK", ["success": ch.success, "dos": ch.dos, "dof": ch.dof, "crit": ch.crit as Any? ?? NSNull(), "label": ch.reason, "ergeben": ch.ergeben, "sp_gained": ch.spGained, "sp_left": ch.spLeft, "probe": pid as Any? ?? NSNull()])
+    case ("POST", "/probe/auto"):      // GM: "sl würfeln lassen"
+      guard let j = bodyJSON(), let id = j["id"] as? String, let g = runner.game else { return json("400 Bad Request", ["error": "id fehlt"]) }
+      if g.probes.forceAuto(id) { json("200 OK", ["ok": true]) } else { json("409 Conflict", ["error": "Probe nicht mehr offen", "stale": true]) }
     case ("POST", "/regie"):
       guard let j = bodyJSON(), let t = j["text"] as? String, !t.isEmpty, let g = runner.game else { return json("400 Bad Request", ["error": "text fehlt"]) }
       g.partyStore.lock.lock(); g.pendingRegie.append(clean(t, 300)); g.partyStore.lock.unlock()
@@ -170,6 +182,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       let sayJ = (try? JSONSerialization.jsonObject(with: body)) as? [String: Any]
       let text = String((sayJ?["text"] as? String ?? "").prefix(2000)), spk = (sayJ?["speaker"] as? String).flatMap { $0.isEmpty ? nil : $0 }
       rep("202 Accepted", "text/plain", Data("ok".utf8))
+      runner.game?.probeWait = (sayJ?["probe_timeout"] as? NSNumber)?.doubleValue      // bridge setting; absent = sl flag
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
         if !text.hasPrefix("/regie") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
         if Cmd.parse(text) == .quit { hub.send(["t": "info", "text": "/quit beendet nur die CLI – den Web-Server beendest du im Terminal (Ctrl-C)."]) }   // never kill the server over HTTP

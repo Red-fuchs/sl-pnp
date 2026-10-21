@@ -13,6 +13,8 @@ public enum Out {
   case world(String)                // 🌍 world-state change
   case roll(Check)                  // d100 check result
   case sheet                        // party sheets changed
+  case probe(ProbeReq)              // a Foundry player has to roll (probe_request)
+  case probeDone(String, String)    // id, how it ended: player | sl | timeout
 }
 
 public func wordsText(_ w: J) -> String {
@@ -84,6 +86,10 @@ public final class Game {
   public var pendingNote: String?      // /gespraech result, handed to the narrator with the next player line
   public var onMsg: (Msg) -> Void = { _ in }
   public let partyStore = PartyStore()
+  public let probes = ProbeBroker()
+  /// default wait for a Foundry player's own roll (seconds, 0 = sl always rolls); `probeWait` = per-message override from the bridge setting
+  nonisolated(unsafe) public static var probeDefault: Double = 90
+  public var probeWait: Double?
   var pendingFacts: [String] = []
   public var pendingRegie: [String] = []
   var npcMods: [String: Int] = [:]
@@ -133,8 +139,10 @@ public final class Game {
     var met = world._tailIds.union(world.mentioned(in: player)); met.formUnion(world.npcs.filter { $0.anwesend && world.talkedThisTurn.contains($0.id) }.map(\.id))
     log += world.tick(contacts: met)
     genLazy()
+    let itemsBefore = Set(hidden.npcs.filter { $0.key.hasPrefix("★") && $0.value.revealed }.keys)
     let sp = hidden.updateSpur(&world, bonus: { [regel, pc = world.pc, art = lastArt ?? classifyArt(player)] tier in regel.spurBonus(art: art, pc: pc, tier: tier) }, player: player, oracle: turnQA, talked: namedBy(player) + talkedNames)
     if debug { sp.filter { $0.hasPrefix("[debug]") }.forEach { out(.info($0)) } }
+    itemPayoffs(revealed: hidden.npcs.filter { $0.key.hasPrefix("★") && $0.value.revealed && !itemsBefore.contains($0.key) }.map(\.key)).forEach { out(.info($0)) }
     let rv = genReveals(oracle: turnQA, talked: namedBy(player) + talkedNames) + sp.filter { !$0.hasPrefix("[debug]") }
     if !rv.isEmpty { pendingHint = rv.joined(separator: " "); if debug { out(.info("[debug] enthüllt (nächste Szene): " + rv.joined(separator: " · "))) }  }
     world.syncLists(eng)

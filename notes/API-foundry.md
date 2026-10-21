@@ -20,6 +20,20 @@ Busy: SSE `info` "SL denkt noch" and the text is dropped (same as today).
 ## POST /rollresult   (roll made in Foundry)
 `{ "speaker": String, "label": String, "target": Int, "roll": Int, "ergeben"?: Bool, "difficulty"?: Int, "sp"?: Int }` -> `200 { "success", "dos", "dof", "crit", "label", "ergeben", "sp_gained" }`. With `ergeben: true` Foundry has already put the -10 into `target`; sl applies DoF+1 / the SP gain and emits `sheet` (Foundry takes the new SP from there, no local write). Same refusals as `/roll` (`400` for `sp > 0`, `difficulty > 0`, already used; `409` pending SP/mod; `404` unknown speaker). sl computes the degrees with the same rules and queues them as a hard fact for the next narration (also emits SSE `roll` with `source:"foundry"`).
 
+## Probe flow (players roll in Foundry)
+- A `/say` with `speaker` that triggers a risky/lethal action under `schicksal` does NOT auto-roll: the turn waits and SSE `probe_request` `{speaker, pillar, difficulty, reason, id, timeout}` is sent. `/say` accepts `"probe_timeout"` (seconds; absent = sl flag `--probe-timeout`, default 90; 0 = sl always rolls itself). Without `speaker` (CLI / built-in web UI) sl rolls as before.
+- `POST /rollresult` or `POST /roll` with `"id"` resolves the pending turn (the result is narrated as `[Fakt]`, no second fact is queued). `409 {error, stale:true}` when the probe is already closed (timeout, GM takeover, rolled): no second roll counts. `409` when the id belongs to another figure. Refusals (ergeben etc.) leave the probe pending.
+- `POST /probe/auto {id}`: GM "sl würfeln lassen" -> sl rolls itself (`200 {ok}`, else `409 stale`).
+- SSE `probe_done {id, how}` with `how` = `player` | `sl` | `timeout` closes the request (sl rolling itself also emits `roll` with `source:"sl"`).
+- While a probe is pending sl is busy: other `/say` get "SL denkt noch" (the bridge re-queues them). Rolls with an id must bypass that queue.
+- `/rollresult` response additionally carries `sp_left` and `probe`.
+
+## Slash command `/szene` (GM)
+`POST /say {text:"/szene"}`: resets the Schicksalsergeben flag of all figures (same as `start_scene`/`end_scene`), emits `sheet` and an `info`.
+
+## Story items
+`GET /state` and SSE `sheet`: each party member additionally has `items: [{name, level}]` (the ★ Story-Items among `inventar`; the secret is never sent).
+
 ## POST /regie
 `{ "text": String }` -> `202`. Hidden GM note, injected once into the next narration (never shown to players).
 

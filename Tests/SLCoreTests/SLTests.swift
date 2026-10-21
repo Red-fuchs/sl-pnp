@@ -1660,3 +1660,84 @@ final class WundenApiTests: XCTestCase {
     XCTAssertNil(st.wunden(speaker: "Nobody", delta: 1, set: nil)); XCTAssertEqual(st.all[0].wunden, -5)
   }
 }
+
+final class GearAndStoryItemTests: XCTestCase {
+  func testTiers() {
+    XCTAssertEqual(SR.itemCost("Seil"), 2); XCTAssertEqual(SR.itemCost("Messer"), 2); XCTAssertEqual(SR.itemCost("Lederrüstung"), 2)
+    XCTAssertEqual(SR.itemCost("Langschwert"), 4); XCTAssertEqual(SR.itemCost("Kettenhemd"), 4); XCTAssertEqual(SR.itemCost("Schild"), 4); XCTAssertEqual(SR.itemCost("Jagdbogen"), 4)
+    XCTAssertEqual(SR.itemCost("Plattenpanzer"), 6); XCTAssertEqual(SR.itemCost("Pistole"), 6); XCTAssertEqual(SR.itemCost("Drachenlaterne"), 2)
+    XCTAssertEqual(SR.gearArmour("Plattenpanzer"), 3); XCTAssertEqual(SR.gearArmour("Kettenhemd"), 2); XCTAssertEqual(SR.gearArmour("Lederweste"), 1); XCTAssertEqual(SR.gearArmour("Seil"), 0)
+  }
+  func testPlateOverBudgetRefused() {
+    var pc = Pc(speaker: "P"); pc.traits = [Trait(text: "x", major: true, pos: true), Trait(text: "y", major: true, pos: true), Trait(text: "z", major: true, pos: true), Trait(text: "w", major: true, pos: true), Trait(text: "v", major: false, pos: true)]  // 4*4+2 = 18 -> 2 left
+    XCTAssertEqual(SR.budgetLeft(pc.traits), 2)
+    XCTAssertTrue(SR.budget(&pc, args: "item=Plattenpanzer").contains("nur 2"))
+    XCTAssertTrue(pc.inventar.isEmpty)
+    XCTAssertNil(SR.allocate(left: 5, talerPts: 0, items: ["Schwert", "Seil"], sp: 0))      // 4 + 2 > 5
+    XCTAssertNotNil(SR.allocate(left: 6, talerPts: 0, items: ["Schwert", "Seil"], sp: 0))
+  }
+  func testPaladinArithmetic() {
+    var pc = Pc(speaker: "P")
+    let t = [Trait(text: "Geweihter Streiter", major: true, pos: true), Trait(text: "Handauflegen", major: true, pos: true), Trait(text: "Heiliger Schwur (darf nicht lügen/fliehen)", major: true, pos: false), Trait(text: "Fanatischer Feind: Kult X", major: false, pos: false), Trait(text: "Arm wie eine Kirchenmaus", major: false, pos: false)]
+    pc.traits = t; XCTAssertEqual(SR.budgetLeft(t), 20 - 4 - 4 + 4 + 2 + 2)    // 20 to spend
+    let a = SR.budget(&pc, args: "taler=3 item=Plattenpanzer,Schwert,Schild sp=1")        // 3 + (6+4+4) + 3 = 20
+    XCTAssertEqual(pc.inventar, ["Plattenpanzer", "Schwert", "Schild"]); XCTAssertEqual(pc.taler, 30); XCTAssertEqual(pc.spMax, 6)
+    XCTAssertTrue(a.contains("Plattenpanzer (6 Pkt = 60 Taler, schwer)") && a.contains("Schwert (4 Pkt = 40 Taler, stark)")); XCTAssertEqual(SR.armour(of: pc), 3)
+    XCTAssertTrue(SR.budget(&pc, args: "taler=3 item=Plattenpanzer,Schwert,Schild sp=2").contains("nur 20"), "one more SP-Max is over budget")
+  }
+  func testStoryItemsAndSecret() {
+    var pc = Pc(speaker: "T"); pc.hintergrund = "Mein Vater schmiedete mir ein Schwert aus Drachenstahl."
+    pc.traits = []
+    let a = SR.budget(&pc, args: "item=Drachenstahl-Schwert,Seil")
+    XCTAssertEqual(pc.items.map(\.name), ["Drachenstahl-Schwert"]); XCTAssertEqual(pc.items[0].kind, "waffe"); XCTAssertTrue(a.contains("★ Story-Item")); XCTAssertFalse(a.contains("Fälschung"))
+    XCTAssertEqual(pc.items[0].json["name"] as? String, "Drachenstahl-Schwert"); XCTAssertNil(pc.json["items"].flatMap { ($0 as? [[String: Any]])?.first?["levelbar"] })
+    var it = pc.items[0]
+    XCTAssertNil(SR.rollSecret(&it, d6: 1, pick: 0)); XCTAssertFalse(it.levelbar)
+    XCTAssertNil(SR.rollSecret(&it, d6: 4, pick: 0)); XCTAssertTrue(it.levelbar)
+    XCTAssertNotNil(SR.rollSecret(&it, d6: 5, pick: 0)); XCTAssertFalse(it.levelbar)
+    XCTAssertNotNil(SR.rollSecret(&it, d6: 6, pick: 7)); XCTAssertTrue(it.levelbar)
+    pc.items = [it]
+    var pcs = [pc]
+    for _ in 0..<5 { _ = SR.levelUp(&pcs) }
+    XCTAssertEqual(pcs[0].items[0].level, 3)
+    XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit dem Drachenstahl-Schwert zu").dmg, 3); XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit der Faust").dmg, 0)
+    let d = try! JSONDecoder().decode(Pc.self, from: JSONEncoder().encode(pcs[0])); XCTAssertEqual(d, pcs[0])
+    var plain = Pc(speaker: "N"); plain.hintergrund = "Ich bin Bauer."; _ = SR.budget(&plain, args: "item=Plattenpanzer"); XCTAssertTrue(plain.items.isEmpty)
+  }
+}
+
+final class ProbeBrokerTests: XCTestCase {
+  func chk(_ r: Int) -> Check { var c = Check(); c.roll = r; c.source = "foundry"; return c }
+  func testPlayerRollResolvesPending() {
+    let b = ProbeBroker(); let r = b.open(speaker: "Kara", pillar: "kampf", difficulty: 0, reason: "Angriff", timeout: 5)
+    XCTAssertEqual(b.pendingIDs, [r.id]); XCTAssertEqual(b.request(r.id)?.speaker, "Kara")
+    DispatchQueue.global().asyncAfter(deadline: .now() + 0.1) { XCTAssertTrue(b.resolve(r.id, self.chk(42))) }
+    guard case .player(let c) = b.wait(r.id, timeout: 5) else { return XCTFail("expected player roll") }
+    XCTAssertEqual(c.roll, 42); XCTAssertEqual(b.closedHow(r.id), "player"); XCTAssertTrue(b.pendingIDs.isEmpty)
+    XCTAssertFalse(b.resolve(r.id, chk(1)), "second roll with the same id is refused")
+  }
+  func testTimeoutClosesAndLateRollIsStale() {
+    let b = ProbeBroker(); let r = b.open(speaker: "Kara", pillar: "sozial", difficulty: -20, reason: "Lüge", timeout: 0.2)
+    let t0 = Date()
+    guard case .timeout = b.wait(r.id, timeout: 0.2) else { return XCTFail("expected timeout") }
+    XCTAssertGreaterThanOrEqual(Date().timeIntervalSince(t0), 0.19); XCTAssertEqual(b.closedHow(r.id), "timeout")
+    XCTAssertFalse(b.resolve(r.id, chk(10))); XCTAssertNil(b.request(r.id))
+  }
+  func testGMTakeover() {
+    let b = ProbeBroker(); let r = b.open(speaker: "Kara", pillar: "wissen", difficulty: 0, reason: "x", timeout: 5)
+    DispatchQueue.global().asyncAfter(deadline: .now() + 0.05) { XCTAssertTrue(b.forceAuto(r.id)) }
+    guard case .auto = b.wait(r.id, timeout: 5) else { return XCTFail("expected auto") }
+    XCTAssertEqual(b.closedHow(r.id), "sl"); XCTAssertFalse(b.forceAuto(r.id))
+  }
+  func testParallelProbesHaveOwnIds() {
+    let b = ProbeBroker(); let a = b.open(speaker: "A", pillar: "kampf", difficulty: 0, reason: "", timeout: 1), c = b.open(speaker: "B", pillar: "kampf", difficulty: 0, reason: "", timeout: 1)
+    XCTAssertNotEqual(a.id, c.id); XCTAssertTrue(b.resolve(c.id, chk(7)))
+    guard case .player(let x) = b.wait(c.id, timeout: 1) else { return XCTFail() }; XCTAssertEqual(x.roll, 7)
+    guard case .timeout = b.wait(a.id, timeout: 0.05) else { return XCTFail() }
+  }
+  func testSzeneCommandAndResetScene() {
+    XCTAssertEqual(Cmd.parse("/szene"), .szene)
+    var pcs = [Pc(speaker: "A"), Pc(speaker: "B")]; pcs[0].ergebenUsed = true; pcs[1].ergebenUsed = true
+    SR.resetScene(&pcs); XCTAssertFalse(pcs[0].ergebenUsed || pcs[1].ergebenUsed)
+  }
+}

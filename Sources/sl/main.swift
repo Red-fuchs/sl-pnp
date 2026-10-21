@@ -22,7 +22,7 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--rules frei|saeulen|schicksal] [--debug] [--input FILE|/dev/tty]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--probe-timeout 90] [--rules frei|saeulen|schicksal] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
   Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /welt orakel|\"text\"|mix \"text\"|slot|start /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
@@ -82,11 +82,14 @@ func show(_ o: Out) {
   case .world(let w): print("\(dim)🌍 \(w)\(off)")
   case .roll(let c): print("\(dim)🎲 \(c.fact)\(off)")
   case .sheet: break
+  case .probe(let r): print("\(dim)🎲 Probe gefordert: \(r.speaker) – \(r.pillar), \(r.reason)\(off)")
+  case .probeDone: break
   }
 }
 runner.sink = show
 runner.debug = opt["debug"] != nil
 runner.defaultRules = opt["rules"]
+if let t = opt["probe-timeout"].flatMap({ Double($0) }) { Game.probeDefault = max(0, t) }
 runner.neglect = opt["neglect"].flatMap { Int($0) }
 if let t = opt["temp"], let v = Float(t) { runner.temp = v }
 

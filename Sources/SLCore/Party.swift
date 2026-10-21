@@ -52,7 +52,7 @@ public extension Game {
     return c
   }
   /// a roll made in Foundry: degrees computed here, queued as a fact for the next narration
-  func foundryRoll(speaker: String?, label: String, target: Int, roll: Int, ergeben: Bool = false, difficulty: Int = 0) -> Check {
+  func foundryRoll(speaker: String?, label: String, target: Int, roll: Int, ergeben: Bool = false, difficulty: Int = 0, probe id: String? = nil) -> Check {
     var c = Check(); c.speaker = speaker ?? ""; c.reason = label; c.target = target; c.roll = roll; c.source = "foundry"
     let i = pcIndex(speaker, create: false)
     if ergeben {
@@ -66,7 +66,8 @@ public extension Game {
       c.speaker = partyStore.with { $0[i].name }; c.spLeft = partyStore.with { $0[i].sp }
       if ergeben { partyStore.with { p in var pc = p[i]; pc.ergebenUsed = true; SR.settleErgeben(&pc, &c); pc.lastCheck = c; p[i] = pc } }
     }
-    pendingFacts.append(c.fact); out(.roll(c))
+    if let id, probes.resolve(id, c) {} else { pendingFacts.append(c.fact) }      // a probe roll is narrated by the waiting turn itself
+    out(.roll(c))
     if ergeben { announceSheet() }
     return c
   }
@@ -107,11 +108,35 @@ public extension Game {
     guard isSchicksal, let i = pcIndex(speaker, create: false) else { return 0 }
     return partyStore.with { p in let s = p[i].pendingOracle - (p[i].sp == 0 ? 1 : 0); p[i].pendingOracle = 0; return s }
   }
+  /// /szene (GM): scene change for the table, Schicksalsergeben is available again for every figure
+  func newScene() { partyStore.with { SR.resetScene(&$0) }; announceSheet() }
   /// party-wide recovery (rest, feast, thread solved)
   func partyGain(sp: Int, wunden: Int = 0) { partyStore.with { p in for i in p.indices { p[i].sp = min(p[i].spMax, p[i].sp + sp); p[i].wunden = min(p[i].wundenMax, p[i].wunden + wunden) } }; announceSheet() }
   var partyBlock: String {
     let p = partyStore.all; guard isSchicksal, !p.isEmpty else { return "" }
     return "Gruppe: " + p.map { "\($0.name) (SP \($0.sp)/\($0.spMax), Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 3 ? ", schwer verletzt" : ""))" }.joined(separator: " | ")
+  }
+
+  func queueFact(_ f: String) { pendingFacts.append(f) }
+  // MARK: players roll in Foundry
+  /// Foundry-originated turn (speaker given) with probes enabled: emits probe_request and blocks until the player rolled; nil = sl rolls itself.
+  func awaitProbe(speaker: String?, pillar: String, difficulty: Int, reason: String) -> Check? {
+    let secs = probeWait ?? Game.probeDefault
+    guard isSchicksal, speaker != nil, secs > 0, let i = pcIndex(speaker, create: false) else { return nil }
+    let req = probes.open(speaker: partyStore.all[i].name, pillar: pillar, difficulty: difficulty, reason: reason, timeout: secs)
+    out(.probe(req))
+    switch probes.wait(req.id, timeout: secs) {
+    case .player(let c): out(.probeDone(req.id, "player")); return c
+    case .auto: out(.probeDone(req.id, "sl")); return nil
+    case .timeout: out(.probeDone(req.id, "timeout")); out(.info("Probe nicht gewürfelt: sl würfelt selbst.")); return nil
+    }
+  }
+
+  /// nil = fine (probe pending for this speaker, or unknown id = a plain roll); else the 409 body for a closed / foreign probe
+  func probeProblem(_ id: String, speaker: String) -> [String: Any]? {
+    if let r = probes.request(id) { return norm(r.speaker) == norm(speaker) || partyStore.all.contains { norm($0.speaker) == norm(speaker) && norm($0.name) == norm(r.speaker) } ? nil : ["error": "Diese Probe gehört \(r.speaker)."] }
+    if let how = probes.closedHow(id) { return ["error": how == "player" ? "Diese Probe ist schon gewürfelt." : "Diese Probe hat sl schon gewürfelt (\(how == "timeout" ? "Zeit abgelaufen" : "Spielleitung")). Kein zweiter Wurf.", "stale": true] }
+    return nil
   }
 
   // MARK: action resolution under `schicksal`
@@ -120,20 +145,23 @@ public extension Game {
     var pillar = "kampf", dif = 0
     if case .risky(let a) = cls { pillar = a == .sonst ? "kampf" : a.rawValue }
     if kill { dif = 10 * world.killOdds(player, target: target) }
-    let c = doCheck(speaker: speaker, pillar: pillar, difficulty: dif, reason: SR.shortReason(player), context: player)
+    let ib = pcIndex(speaker, create: false).map { SR.itemBonus(partyStore.all[$0], text: player) } ?? (dmg: 0, check: 0)
+    let reason = SR.shortReason(player)
+    let c = awaitProbe(speaker: speaker, pillar: pillar, difficulty: dif + ib.check, reason: reason) ?? doCheck(speaker: speaker, pillar: pillar, difficulty: dif + ib.check, reason: reason, context: player)
     var facts = [c.fact]
     if let t = target, kill || pillar == "kampf", cls != .risky(.sozial) {
       let name = world.npcs[t].name
       var l = world.setHaltung(t, -2)
       if c.success {
-        let dmg = max(0, SR.weaponDamage(player) + c.dos - SR.armour(role: world.npcs[t].kurz))
+        let dmg = max(0, SR.weaponDamage(player) + ib.dmg + c.dos - SR.armour(role: world.npcs[t].kurz))
         let hp = (world.npcs[t].wunden ?? 6) - dmg
         world.npcs[t].wunden = max(0, hp)
         if hp <= 0 { l += world.kill(t); facts.append("[Fakt] \(name) ist tot (Schaden \(dmg)). Erzähle den Tod ausdrücklich.") }
         else { if !world.npcs[t].zustand.contains("verletzt") { world.npcs[t].zustand.append("verletzt") }; facts.append("[Fakt] \(name) wird getroffen (Schaden \(dmg)) und lebt noch, verletzt. Erzähle die Verletzung, nicht den Tod.") }
       } else if c.dof >= 2 || c.crit == "failure" {
-        let dmg = 2 + (c.crit == "failure" ? 1 : 0)
+        var dmg = 2 + (c.crit == "failure" ? 1 : 0)
         if let i = pcIndex(speaker, create: false) {
+          dmg = armourReduce(dmg, i)
           let now: Int = partyStore.with { p in p[i].wunden -= dmg; return p[i].wunden }
           facts.append("[Fakt] Gegenschlag von \(name): \(partyStore.all[i].name) verliert \(dmg) Wunden (jetzt \(max(0, now)))." + (now <= 0 ? " Die Figur geht zu Boden; nur ein Schicksalspunkt hält sie am Leben." : ""))
           announceSheet()
@@ -172,10 +200,40 @@ public extension Game {
   }
   func applyMerkmal(_ i: Int, args: String) -> String {
     let m = partyStore.with { p in SR.editTrait(&p[i], args: args) }
-    announceSheet(); return m
+    dropItemSecrets(partyStore.all[i].speaker); announceSheet(); return m
   }
   func applyBudget(_ i: Int, args: String) -> String {
     let m = partyStore.with { p in SR.budget(&p[i], args: args) }
-    announceSheet(); return m
+    rollItemSecrets(i); announceSheet(); return m
   }
+  /// hidden.json keys of story items: "★<item>", owner in `gruppe`
+  func dropItemSecrets(_ owner: String) { for (k, h) in hidden.npcs where k.hasPrefix("★") && norm(h.gruppe) == norm(owner) { hidden.npcs.removeValue(forKey: k) } }
+  /// the hidden Gegenstandsgeheimnis of every new story item (d6): levelbar flag on the sheet, Wendung in hidden.json (revealed through the Spur system)
+  func rollItemSecrets(_ i: Int) {
+    let owner = partyStore.all[i].speaker
+    dropItemSecrets(owner)
+    var its = partyStore.all[i].items
+    for k in its.indices where !its[k].rolled {
+      if let w = SR.rollSecret(&its[k], d6: rnd(6) + 1, pick: rnd(SR.wendungen.count)) {
+        var h = HiddenNpc(); h.geheimnis = w; h.gruppe = owner; h.ziel = "+1 SP"; hidden.npcs["★" + its[k].name] = h
+      }
+    }
+    partyStore.with { $0[i].items = its }
+  }
+  /// a Wendung was revealed: the truth becomes visible on the sheet, +1 SP for the owner. Returns info lines.
+  func itemPayoffs(revealed keys: [String]) -> [String] {
+    var lines: [String] = []
+    for k in keys {
+      guard let h = hidden.npcs[k] else { continue }
+      let name = String(k.dropFirst())
+      partyStore.with { p in if let i = p.firstIndex(where: { norm($0.speaker) == norm(h.gruppe) }) {
+        p[i].sp = min(p[i].spMax, p[i].sp + 1)
+        if let j = p[i].items.firstIndex(where: { $0.name == name }) { var its = p[i].items; its[j].truth = h.geheimnis; p[i].items = its }
+        lines.append("★ \(name): Wendung enthüllt – +1 SP für \(p[i].name)") } }
+    }
+    if !lines.isEmpty { announceSheet() }
+    return lines
+  }
+  /// the speaker's armour reduces a counterblow (at least 1 Wunde is always lost)
+  func armourReduce(_ dmg: Int, _ i: Int) -> Int { max(1, dmg - SR.armour(of: partyStore.all[i])) }
 }

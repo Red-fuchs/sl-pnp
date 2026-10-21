@@ -211,6 +211,8 @@ public final class Runner {
     case .budget(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
+    case .szene:
+      if game.isSchicksal { game.newScene(); sink(.info("Neue Szene: Schicksalsergeben ist für alle Figuren wieder verfügbar.")); try session.save(game); refresh() } else { sink(.info("/szene gibt es nur unter --rules schicksal")) }
     case .rast(let a):
       if a == "kurz" { game.partyGain(sp: 1); sink(.info("Kurze Rast: +1 SP, +1 Wunde")) } else if a == "lang" { game.partyGain(sp: 3, wunden: 3); sink(.info("Lange Rast: +3 SP, +3 Wunden")) } else if a == "fest" { game.partyGain(sp: 2); sink(.info("Fest: +2 SP")) } else { sink(.info("/rast kurz | lang | fest")) }
       game.partyStore.with { p in for i in p.indices where a == "kurz" { p[i].wunden = min(p[i].wundenMax, p[i].wunden) } }; try session.save(game); refresh()
@@ -241,7 +243,7 @@ public final class Runner {
       if let ti = game.world.straenge.firstIndex(where: { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" }) {      // P6: all core clues of the thread must be found
         if let m = missingClues(game.world.straenge[ti].titel, game.hidden.clues, hinweise: game.world.straenge[ti].hinweise.count) { sink(.info(m)); return true }
       }
-      if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); if game.isSchicksal { game.partyGain(sp: 2) }; sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
+      if let t = game.world.solve(f) { game.world.pc = game.regel.progress(onThreadSolved: game.world.pc, art: nil); if game.isSchicksal { game.partyGain(sp: 2); let up = game.partyStore.with { SR.levelUp(&$0) }; if !up.isEmpty { game.announceSheet(); sink(.info("★ Story-Item wächst: " + up.joined(separator: ", "))) } }; sink(.world("gelöst: \(t)")); try session.save(game); refresh() } else { sink(.info(game.world.straenge.contains { norm($0.titel).contains(norm(f)) && $0.stufe != "antwort" && $0.hinweise.isEmpty } ? "Der Faden hat noch keinen Hinweis – erst ermitteln." : "kein offener Faden mit '\(f)'")) }
     case .unknown(let t): sink(.info("unbekannt: \(t)"))
     case .say(let t): try player(t)
     }
@@ -258,7 +260,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case szene, merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -279,6 +281,7 @@ public enum Cmd: Equatable {
     if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
+    if t == "/szene" { return .szene }
     if t == "/merkmal" || t.hasPrefix("/merkmal ") { return .merkmal(arg(8)) }
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
