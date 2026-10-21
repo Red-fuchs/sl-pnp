@@ -167,8 +167,8 @@ add(f'''<h1>4 Kampf</h1>
 <ol><li><b>Initiative:</b> Alle würfeln d100 gegen ihren Kampfwert (Zielzahl wie oben). Mehr DoS handelt zuerst; Misserfolge handeln zuletzt (Auslegung: weniger DoF zuerst). <i>Einfacher:</i> Spieler zuerst, dann Gegner.</li>
 <li><b>Angriff:</b> Der Handelnde würfelt eine Kampf-Probe. Gegen einen wehrlosen oder ahnungslosen Gegner reicht <b>mindestens 1 DoS</b>.</li>
 <li><b>Verteidigung:</b> Wer sich wehren kann, würfelt eine vergleichende Kampf-Probe (parieren/ausweichen). Gewinnt der Angreifer, trifft er. Gewinnt der Verteidiger, wehrt er ab (Auslegung: bei kritischem Erfolg ist ein Gegenangriff möglich). Verteidigen kostet keine Handlung. Scheitert der Angreifer, trifft er nicht.</li>
-<li><b>Schaden:</b> Waffe + DoS des Angreifers − Rüstung, mindestens 0 (Auslegung). Der Verteidiger streicht diese Zahl von seinen <b>LP</b> ab.</li></ol>
-<div class="box"><b class="t">Schaden = Waffe + DoS (Angreifer) − Rüstung</b> (nicht unter 0)</div>
+<li><b>Schaden:</b> Waffe + DoS des Angreifers − Rüstung. Ein Treffer auf eine Spielerfigur kostet mindestens 1 LP (Auslegung); Gegner können ihn ganz wegstecken. Der Verteidiger streicht diese Zahl von seinen <b>LP</b> ab.</li></ol>
+<div class="box"><b class="t">Schaden = Waffe + DoS (Angreifer) − Rüstung</b> (Treffer auf Spielerfigur: min. 1 LP)</div>
 <div class="grid"><div>{table(['Waffe','Schaden'],[['Faust, Ringen','1'],['Messer, Knüppel','2'],['Schwert, Axt','3'],['Bogen, Armbrust','3'],['Feuerwaffe','4']],'')}</div>
 <div>{table(['Rüstung','Abzug'],[['Stoff, Lumpen','0'],['Leder','1'],['Kettenhemd','2'],['Plattenpanzer','3']],'')}</div></div>
 <h3>LP (Lebenspunkte)</h3>
@@ -336,7 +336,7 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 {table(['SP-Kosten','Wirkung'],[['1','±10 auf eine Probe'],['1','Orakel um 1 Stufe'],['2','Neuwurf'],['1','Überleben bei 0 LP'],['+1','Ergeben: ≥ 2 DoS, Wurf ≤ Ziel − 20']],'')}
 {table(['SP-Erholung','+'],[['Rast 1 h','1'],['Nacht / sicher','3'],['Nachteil ausgespielt','1'],['Fest / Tempel','2'],['Strang abgeschlossen','2']],'')}</div></div>
 <div class="grid"><div>
-<b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). LP 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
+<b>Schaden</b> = Waffe + DoS − Rüstung (Treffer auf Spielerfigur min. 1 LP). LP 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
 <div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2/4/6 Punkte = Gegenstand (Vorschlag, Stufen in Kap. 2) · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
 <h3>Preise (Vorschlag, Kap. 11)</h3>
 <p style="margin-bottom:0">1 Taler = 2 Schilling = 4 Heller. Messer, Knüppel, Lederrüstung 20 T · Schwert, Axt, Bogen, Kette, Schild 40 T · Platte, Feuerwaffe 60 T. Mahlzeit 2 H, Tagelohn 1 T. 10 Taler = 1 Budgetpunkt.</p></div>''')

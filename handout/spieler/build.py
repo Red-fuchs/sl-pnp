@@ -144,7 +144,7 @@ def figur2():
 <div class="card c">{ic('shield', GOLD, 10)}<h3>Ausrüstung</h3><p class="small">Nach Stufe: <b>2, 4 oder 6 Punkte</b> je Stück (siehe unten).</p></div>
 <div class="card c">{ic('star', GOLD, 10)}<h3>Schicksal</h3><p class="small"><b>3 Punkte = +1</b> maximaler Schicksalspunkt.</p></div></div>
 <h2>Ausrüstung nach Stufe</h2>
-<div class="cols"><div class="card"><span class="pill">2 Punkte · 20 T</span><p class="small" style="margin-top:2mm"><b>Gewöhnlich:</b> normale Ausrüstung, Messer, Dolch, Knüppel, <b>Lederrüstung</b> (Rüstung 1)</p></div>
+<div class="cols"><div class="card"><span class="pill">2 Punkte · 20 T</span><p class="small" style="margin-top:2mm"><b>Gewöhnlich:</b> normale Ausrüstung, Messer, Dolch, Knüppel, <b>Lederwams</b> (Rüstung 1)</p></div>
 <div class="card"><span class="pill red">4 Punkte · 40 T</span><p class="small" style="margin-top:2mm"><b>Kampfausrüstung:</b> Schwert, Axt, Bogen, Speer, Armbrust, <b>Kettenhemd</b> (Rüstung 2), Schild</p></div>
 <div class="card"><span class="pill gold">6 Punkte · 60 T</span><p class="small" style="margin-top:2mm"><b>Schwerstes Gerät:</b> <b>Plattenpanzer</b> (Rüstung 3) oder eine Feuerwaffe</p></div></div>
 <p class="small mute">Alles ist normal und nicht magisch. Kennt sl einen Gegenstand nicht, zählt er als gewöhnlich (2 Punkte). <b>Passt ein Gegenstand zu deiner Geschichte</b> (Mirnes Armbrust zu „Armbrust gegen Raben“), wird er ein <b>★ Story-Item</b>: gleicher Preis, aber er kann mit deiner Geschichte wachsen. Manchmal steckt mehr dahinter. Das erfährst du im Spiel.</p>
@@ -159,7 +159,7 @@ def figur2():
 <tr><td>20 + 4 + 2 = Budget</td><td class="n"><b>26</b></td></tr>
 <tr><td>Stärken (4 + 10)</td><td class="n"><b>14</b></td></tr>
 <tr><td>Rest zum Ausgeben</td><td class="n"><b>12</b></td></tr>
-<tr><td>+1 max. SP (also 6)</td><td class="n">3</td></tr><tr><td>Armbrust</td><td class="n">4</td></tr><tr><td>Lederrüstung</td><td class="n">2</td></tr><tr><td>30 Taler</td><td class="n">3</td></tr></table></div></div>
+<tr><td>+1 max. SP (also 6)</td><td class="n">3</td></tr><tr><td>Armbrust</td><td class="n">4</td></tr><tr><td>Lederwams</td><td class="n">2</td></tr><tr><td>30 Taler</td><td class="n">3</td></tr></table></div></div>
 <p class="small">Ergebnis: Kampf 40 · Sozial 30 · Wissen 50 · LP 10 · SP 6 von 6. Beim Schießen hat sie Kampf <b>60</b> (40 + 20 durch die Stärke „geübte Armbrustschützin“; die Armbrust selbst ist ein Gegenstand).</p>
 <div class="box ex"><span class="lab">Kurz: Paladin (starke Ausrüstung braucht Schwächen)</span>
 Die zwei großen Stärken „Geweihter Streiter“ und „Handauflegen“ kosten zusammen 8. Dafür nimmt der Paladin drei Schwächen: „Heiliger Schwur“ (groß, +4), „Fanatischer Feind: Kult“ (klein, +2) und „Arm wie eine Kirchenmaus“ (klein, +2) = +8. Budget bleibt 20: <b>Plattenpanzer (6) + Schwert (4) + Schild (4) + 1 SP (3) + 30 Taler (3) = 20.</b> Ohne die drei Schwächen blieben nur 12 Punkte: kein Schild, kein SP.</div></section>'''
@@ -224,7 +224,7 @@ def kampf():
 <div class="cols"><div><table><tr><th>Waffe</th><th class="n">Schaden</th></tr><tr><td>Faust</td><td class="n"><b>1</b></td></tr><tr><td>Messer, Dolch, Knüppel</td><td class="n"><b>2</b></td></tr><tr><td>Schwert, Axt, Bogen, Armbrust</td><td class="n"><b>3</b></td></tr><tr><td>Feuerwaffe</td><td class="n"><b>4</b></td></tr></table></div>
 <div><table><tr><th>Rüstung</th><th class="n">Abzug</th></tr><tr><td>Stoff</td><td class="n"><b>0</b></td></tr><tr><td>Leder</td><td class="n"><b>1</b></td></tr><tr><td>Kette</td><td class="n"><b>2</b></td></tr><tr><td>Platte</td><td class="n"><b>3</b></td></tr></table></div></div>
 <div class="tip box"><span class="lab">Rüstung schützt auch dich</span>Sie zieht von jedem Treffer ab, den du einsteckst. Aber: <b>ein Treffer kostet dich mindestens 1 LP.</b></div>
-<div class="box ex"><span class="lab">Beispiel: Mirne gegen einen Schmuggler</span>Mirne (Kampf 40, Armbrust +20, Lederrüstung 1) gegen einen Schmuggler (Kampf 40, Schwert 3, Leder 1, 8 LP; Gegner haben oft weniger LP als du). Mirne würfelt 28, der Schmuggler 35: Mirne ist zuerst dran.<br>
+<div class="box ex"><span class="lab">Beispiel: Mirne gegen einen Schmuggler</span>Mirne (Kampf 40, Armbrust +20, Lederwams 1) gegen einen Schmuggler (Kampf 40, Schwert 3, Leder 1, 8 LP; Gegner haben oft weniger LP als du). Mirne würfelt 28, der Schmuggler 35: Mirne ist zuerst dran.<br>
 <b>Schuss:</b> Ziel 60, Wurf 41: 2 Erfolgsgrade. Der Schmuggler weicht aus (Ziel 40, Wurf 52): Misserfolg. Schaden: 3 + 2 − 1 = <b>4</b>. Schmuggler: 8 → 4 LP.<br>
 <b>Gegenschlag:</b> Der Schmuggler würfelt 19 (3 Grade), Mirne pariert mit 38 (1 Grad). Er trifft: 3 + 3 − 1 = <b>5</b>. Mirne: 10 → <b>5 LP</b>.</div>
 <div class="cols"><div class="card"><h3>3 LP oder weniger</h3><p class="small"><b>−10</b> auf alle Proben. Du bist angeschlagen.</p></div>
@@ -245,6 +245,7 @@ def orakel_geld():
 <h2>Geld und Einkaufen</h2>
 <div class="cols"><div><div style="margin:0 0 2mm"><svg width="100%" viewBox="0 0 300 84"><g font-family="Georgia,serif" font-weight="700" text-anchor="middle"><circle cx="35" cy="35" r="30" fill="{GOLD}"/><text x="35" y="44" font-size="22" fill="#fff">T</text><text x="100" y="42" font-size="16" fill="{INK}" font-family="Helvetica Neue,sans-serif">=</text><circle cx="140" cy="35" r="22" fill="#b9b3ae"/><text x="140" y="43" font-size="18" fill="#fff">S</text><text x="190" y="42" font-size="16" fill="{INK}" font-family="Helvetica Neue,sans-serif">=</text><circle cx="235" cy="35" r="15" fill="#a2673a"/><text x="235" y="41" font-size="14" fill="#fff">H</text></g><text x="35" y="80" font-size="10" text-anchor="middle" font-family="Helvetica Neue,sans-serif" fill="{INK}">Taler</text><text x="140" y="80" font-size="10" text-anchor="middle" font-family="Helvetica Neue,sans-serif" fill="{INK}">Schilling</text><text x="235" y="80" font-size="10" text-anchor="middle" font-family="Helvetica Neue,sans-serif" fill="{INK}">Heller</text></svg></div>
 <p><b>1 Taler = 2 Schilling = 4 Heller.</b> Kürzel: T, S, H.</p>
+<p class="small"><b>Einkaufen:</b> Sag der Spielleitung, was du kaufst. Sie bucht es (Preis ab, Ware auf deinen Bogen). Taler und Ausrüstung änderst du nicht selbst.</p>
 <p class="small"><b>Beispiel:</b> 3 T 1 S sind 3 × 4 + 1 × 2 = <b>14 Heller</b>. Und 15 Heller sind 3 T 1 S 1 H.</p>
 <p class="small mute">Ausrüstung kostet Taler: Messer, Dolch, Knüppel, Leder 20 T · Schwert, Axt, Bogen, Armbrust, Speer, Kette, Schild 40 T · Platte, Feuerwaffe 60 T.</p></div>
 <div><table><tr><th>Alltag</th><th class="n">Preis</th></tr>{price_rows()}</table></div></div>
@@ -284,8 +285,8 @@ def anhang1():
 <li><div><h3>Sag Hallo</h3><p>Schreib <span class="cmd">/sl Hallo</span> in den Chat. Antwortet sl, läuft alles.</p></div></li>
 <li><div><h3>Figur anlegen</h3><p><span class="cmd">/sl /figur Name: Geschichte</span><br>Schreib deine Hintergrundgeschichte (3–8 Sätze). sl antwortet mit den Merkmalen, deinen Säulen und deinem Budget.</p></div></li>
 <li><div><h3>Merkmale prüfen</h3><p>Fehlt etwas, korrigiere es (nur vor der ersten Probe):<br><span class="cmd">/sl /merkmal +Stärke</span> &nbsp;·&nbsp; <span class="cmd">/sl /merkmal -Schwäche</span> &nbsp;·&nbsp; <span class="cmd">/sl /merkmal x Text</span> (streichen).<br>Ohne Zusatz ist ein Merkmal klein. Groß: <span class="cmd">/sl /merkmal +geübte Armbrustschützin major</span></p></div></li>
-<li><div><h3>Budget ausgeben</h3><p><span class="cmd">/sl /budget taler=3 item=Armbrust,Lederrüstung sp=1</span><br><b>taler=3</b> sind 3 Punkte (30 Taler), <b>item=</b> die Gegenstände (2, 4 oder 6 Punkte je Stück), <b>sp=1</b> bedeutet +1 max. SP (3 Punkte). Mirne: 3 + 4 + 2 + 3 = 12.</p></div></li></ol></div>
-<div><div class="chat"><div class="card2" style="border-left-color:#5b7fa6"><b>Mirne</b> · jetzt<br><span style="font-family:Menlo,monospace;font-size:7.6pt">/budget taler=3 item=Armbrust,Lederrüstung sp=1</span> <span class="num" style="margin:0 0 0 1mm;background:#e2a62e;color:#1a1216">1</span></div><div class="card2" style="margin-top:1.6mm"><b>Spielleiter</b> · sl<br>Budget: 30 Taler · Armbrust, Lederrüstung · SP-Max 6 <span class="num" style="margin:0 0 0 1mm;background:#e2a62e;color:#1a1216">2</span></div></div><p class="small mute" style="margin-top:-1.5mm">① Dein Befehl im Chat. ② sl bestätigt Taler, Gegenstände und SP-Maximum. (Skizze, so ungefähr sieht es aus.)</p>
+<li><div><h3>Budget ausgeben</h3><p><span class="cmd">/sl /budget taler=3 item=Armbrust,Lederwams sp=1</span><br><b>taler=3</b> sind 3 Punkte (30 Taler), <b>item=</b> die Gegenstände (2, 4 oder 6 Punkte je Stück), <b>sp=1</b> bedeutet +1 max. SP (3 Punkte). Mirne: 3 + 4 + 2 + 3 = 12.</p></div></li></ol></div>
+<div><div class="chat"><div class="card2" style="border-left-color:#5b7fa6"><b>Mirne</b> · jetzt<br><span style="font-family:Menlo,monospace;font-size:7.6pt">/budget taler=3 item=Armbrust,Lederwams sp=1</span> <span class="num" style="margin:0 0 0 1mm;background:#e2a62e;color:#1a1216">1</span></div><div class="card2" style="margin-top:1.6mm"><b>Spielleiter</b> · sl<br>Budget: 30 Taler · Armbrust, Lederwams · SP-Max 6 <span class="num" style="margin:0 0 0 1mm;background:#e2a62e;color:#1a1216">2</span></div></div><p class="small mute" style="margin-top:-1.5mm">① Dein Befehl im Chat. ② sl bestätigt Taler, Gegenstände und SP-Maximum. (Skizze, so ungefähr sieht es aus.)</p>
 <div class="box ex" style="margin-top:0"><span class="lab">Dann geht’s los</span>Schreib, was deine Figur tut:<br><span class="cmd">/sl Ich öffne die Tür.</span><br>Jede Aktion, die du in der Welt tust, beginnt mit <span class="cmd">/sl</span>. Ohne das Kürzel hört sl nicht zu, das ist dann Tischgespräch mit den anderen.</div>
 </div></div>
 <div class="box ex"><span class="lab">So sieht eine Figur-Nachricht aus</span><span class="cmd" style="white-space:normal">/sl /figur Mirne: Ich wuchs als Tochter eines Salzsieders im Moor auf und scheuchte mit der Armbrust Raben von den Salzpfannen. Als Botin im Zollhaus sah ich Schmugglergold und schwieg. Seitdem schuldet mir der Zöllner Ottokar einen Gefallen, und die Schmuggler wollen mich tot sehen. Ich kann lesen und schreiben und kenne die Heilkräuter des Moores. Seit die Siederei brannte, erstarre ich vor Feuer.</span></div></section>'''
@@ -293,17 +294,17 @@ def anhang1():
 
 def anhang2():
     return f'''<section class="pg"><p class="kick">Anhang · Leitfaden</p><h1>Die Probe in Foundry</h1>
-<p class="lead">Ist deine Aktion riskant, fordert sl eine Probe. <b>Du</b> würfelst, nicht sl. Die Bilder zeigen die Figur Mara.</p>
-<div class="chat"><div class="card2"><b>Probe gefordert:</b> Mara – Wissen, leicht – Kräuter am Wegrand bestimmen<br><span class="btn hot">Probe würfeln</span></div></div>
+<p class="lead">Ist deine Aktion riskant, fordert sl eine Probe. <b>Du</b> würfelst, nicht sl. Die Bilder zeigen die Figur Mirne.</p>
+<div class="chat"><div class="card2"><b>Probe gefordert:</b> Mirne Aschenbach – Kampf, normal – Ich schleiche mich geduckt zum Lagerhaus<br><span class="btn hot">Probe würfeln</span></div></div>
 <div class="cols"><div>
 <ol class="steps">
 <li><div><h3>Karte „Probe gefordert“</h3><p>Sie erscheint im Chat und nennt Säule, Schwierigkeit und Grund.</p></div></li>
 <li><div><h3>Klick auf „Probe würfeln“</h3><p>Der Dialog öffnet sich schon ausgefüllt. Setz bei den <b>Eigenschaften</b> ein Häkchen für jedes Merkmal, das bei dieser Handlung hilft. sl achtet darauf, dass es stimmt.</p></div></li>
-<li><div><h3>Würfeln</h3><p>Unten steht deine <b>Zielzahl</b> (Foundry nennt sie „Zielwert“). Optional setzt du hier SP ein <b>oder</b> wählst Schicksalsergeben (beides zusammen geht nicht). Dann <b>Würfeln</b>.</p></div></li>
+<li><div><h3>Würfeln</h3><p>Unten steht deine <b>Zielzahl</b>. Optional setzt du hier SP ein <b>oder</b> wählst Schicksalsergeben (beides zusammen geht nicht). Dann <b>Würfeln</b>.</p></div></li>
 <li><div><h3>SP nachlegen</h3><p>Auf der Ergebniskarte kannst du kurz (ca. 8 Sekunden) mit <b>SP +10</b> oder <b>SP −10</b> nachhelfen. Danach erzählt sl das Ergebnis.</p></div></li></ol>
 <div class="box key"><span class="lab">Nicht doppelt würfeln</span>Würfle nie zusätzlich von Hand. Der zweite Wurf zählt nicht, sl meldet „schon gewürfelt“.</div></div>
-<div>{shot('dialog.png', [(3.6,15),(3.6,31.5),(3.6,51),(3.6,58.6),(3.6,91.8)], ['<b>Säule</b> (hier Wissen)','<b>Eigenschaften</b>: Häkchen bei passenden Merkmalen','<b>Schwierigkeit</b>','<b>SP einsetzen</b> oder Schicksalsergeben (nicht beides)','<b>Würfeln</b> (oder „sl würfeln lassen“)'])}
-{shot('karte.png', [(32,31),(31,87)], ['Dein Wurf gegen die Zielzahl, mit Erfolgs- oder Fehlergraden (Foundry: „Misserfolgsgrade“)','<b>SP +10 / SP −10</b>'])}</div></div>
+<div>{shot('dialog.png', [(2.5,11.3),(2.5,39.7),(2.5,61.5),(2.5,66.7),(2.5,93.4)], ['<b>Säule</b> (hier Kampf)','<b>Eigenschaften</b>: Häkchen bei passenden Merkmalen','<b>Schwierigkeit</b>','<b>SP einsetzen</b> oder Schicksalsergeben (nicht beides)','<b>Würfeln</b> (oder „sl würfeln lassen“)'], w='72%')}
+{shot('karte.png', [(4,26),(4,86)], ['Dein Wurf gegen die Zielzahl, mit Erfolgs- oder Fehlergraden (Foundry: „Misserfolgsgrade“)','<b>SP +10 / SP −10</b>'], w='86%')}</div></div>
 <p class="small mute">Der Knopf <b>Probe</b> im Chat öffnet denselben Dialog. Nutze ihn nur, wenn die Spielleitung dich am Tisch zum Würfeln auffordert. Sonst würfelst du nur auf die Karte „Probe gefordert“.</p></section>'''
 
 

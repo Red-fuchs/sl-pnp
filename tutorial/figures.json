@@ -2,36 +2,40 @@
  "usercfg": {
   "img": "r3-player-card",
   "view": [
-   460,
    560,
+   610,
    480,
-   260
+   250
   ],
-  "cap": "Foundry, Benutzermenü: Der Moderator weist dir hier deine Figur zu (Feld Player Character).",
+  "cap": "Foundry, Benutzermenü: Der Moderator weist dir hier deine Figur zu (Feld Player Character), hier Mirne Aschenbach für Anna.",
   "marks": [
    {
     "n": 1,
+    "t": "Hier wählt der Moderator deine Figur aus der Liste.",
     "box": [
-     568,
-     632,
-     336,
-     36
+     668,
+     668,
+     296,
+     34
     ],
-    "cx": 920,
-    "cy": 620,
-    "t": "Hier wählt der Moderator deine Figur aus der Liste."
+    "cx": 1012,
+    "cy": 685,
+    "tx": 966,
+    "ty": 685
    },
    {
     "n": 2,
+    "t": "Speichern. Danach erscheinen Figur und Werte in deinem Charakterbogen.",
     "box": [
-     478,
-     760,
+     578,
+     795,
      444,
-     40
+     38
     ],
-    "cx": 500,
-    "cy": 742,
-    "t": "Speichern. Danach erscheinen Figur und Werte in deinem Charakterbogen."
+    "cx": 1012,
+    "cy": 766,
+    "tx": 1000,
+    "ty": 794
    }
   ]
  },
@@ -39,9 +43,9 @@
   "img": "07-spielzug-erzaehlung",
   "view": [
    1000,
-   565,
+   380,
    600,
-   440
+   620
   ],
   "cap": "Der Foundry-Chat eines Spielers: unten schreibst du, mittendrin erzählt der Spielleiter.",
   "marks": [
@@ -55,7 +59,7 @@
      98
     ],
     "cx": 1033,
-    "cy": 887
+    "cy": 909
    },
    {
     "n": 2,
@@ -66,7 +70,7 @@
      92,
      36
     ],
-    "cx": 1500,
+    "cx": 1498,
     "cy": 800
    },
    {
@@ -74,24 +78,24 @@
     "t": "Deine Nachricht (hier ohne das Präfix <code>/sl</code>, wie Foundry sie anzeigt).",
     "box": [
      1045,
-     586,
+     438,
      550,
-     52
+     46
     ],
     "cx": 1033,
-    "cy": 592
+    "cy": 450
    },
    {
     "n": 4,
     "t": "Die Erzählung von sl erscheint als Chat-Karte &bdquo;Spielleiter&ldquo;.",
     "box": [
      1045,
-     664,
+     488,
      550,
-     132
+     106
     ],
     "cx": 1033,
-    "cy": 670
+    "cy": 500
    }
   ]
  },
@@ -99,35 +103,35 @@
   "img": "02-sl-antwort-figur",
   "view": [
    980,
-   0,
+   125,
    620,
-   300
+   330
   ],
-  "cap": "Im Foundry-Chat: Anna schreibt <code>/figur</code> mit ihrer Geschichte, sl antwortet mit der fertigen Figur.",
+  "cap": "Im Foundry-Chat: Anna schreibt <code>/sl /figur</code> mit Mirnes Geschichte, sl antwortet mit der Figurenkarte.",
   "marks": [
    {
     "n": 1,
-    "t": "<code>/figur Name: Geschichte</code>: deine Hintergrundgeschichte, 3 bis 8 Sätze.",
+    "t": "<code>/sl /figur Name: Geschichte</code>: deine Hintergrundgeschichte, 3 bis 8 Sätze. Im Chat steht nur der Befehl <code>/figur …</code>, das <code>/sl</code> davor schluckt die Bridge.",
     "box": [
      1045,
-     10,
+     141,
      550,
-     142
+     124
     ],
     "cx": 1033,
-    "cy": 22
+    "cy": 153
    },
    {
     "n": 2,
-    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, LP 10/10, die Wörter, Taler 120 und <b>Budget übrig 12</b>.",
+    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP, LP, Vorteile (+) und Nachteile (&minus;), Taler und das Restbudget. Passt etwas nicht, korrigierst du es mit <code>/sl /merkmal</code>.",
     "box": [
-     1056,
-     216,
-     536,
-     56
+     1045,
+     272,
+     550,
+     166
     ],
     "cx": 1033,
-    "cy": 212
+    "cy": 284
    }
   ]
  },
@@ -135,91 +139,109 @@
   "img": "08-probe-dialog",
   "view": [
    575,
-   275,
+   200,
    520,
-   445
+   620
   ],
-  "cap": "Der Proben-Dialog in Foundry (hier mit den Eigenschaften von Mara).",
+  "cap": "Der Proben-Dialog in Foundry, hier mit Mirnes Eigenschaften und einer Probe, die sl gefordert hat.",
   "marks": [
    {
     "n": 1,
-    "t": "<b>Säule</b>: Kampf, Sozial oder Wissen (hier Wissen 50).",
+    "t": "<b>Säule</b>: Kampf, Sozial oder Wissen (hier Kampf 40).",
+    "box": [
+     732,
+     258,
+     271,
+     32
+    ],
     "cx": 1050,
-    "cy": 348,
-    "tx": 1004,
-    "ty": 348
+    "cy": 274,
+    "tx": 1006,
+    "ty": 274
    },
    {
     "n": 2,
-    "t": "<b>Eigenschaften</b>: Haken setzen bei allem, was zur Probe passt (+20, &minus;10 &hellip;).",
+    "t": "<b>Eigenschaften</b>: Haken setzen bei allem, was zur Probe passt (+10 / +20 für Vorteile, &minus;10 / &minus;20 für Nachteile).",
     "box": [
-     596,
-     407,
+     597,
      330,
-     82
+     406,
+     234
     ],
     "cx": 1050,
-    "cy": 449,
-    "tx": 930,
-    "ty": 449
+    "cy": 450,
+    "tx": 1006,
+    "ty": 450
    },
    {
     "n": 3,
     "t": "<b>Schwierigkeit</b>: leicht +20 bis sehr schwer &minus;30.",
+    "box": [
+     732,
+     564,
+     271,
+     32
+    ],
     "cx": 1050,
-    "cy": 507,
-    "tx": 1004,
-    "ty": 507
+    "cy": 580,
+    "tx": 1006,
+    "ty": 580
    },
    {
     "n": 4,
     "t": "<b>SP einsetzen</b>: 0 bis 3 Schicksalspunkte, je +10.",
+    "box": [
+     732,
+     596,
+     271,
+     32
+    ],
     "cx": 1050,
-    "cy": 538,
-    "tx": 1004,
-    "ty": 538
+    "cy": 612,
+    "tx": 1006,
+    "ty": 612
    },
    {
     "n": 5,
-    "t": "<b>Schicksalsergeben</b> (&minus;10, bei mindestens 2 Erfolgsgraden +1 SP). Schließt SP aus.",
+    "t": "<b>Schicksalsergeben</b> (&minus;10, bei mindestens 2 Erfolgsgraden +1 SP): geht nicht zusammen mit SP.",
     "box": [
      597,
-     561,
-     308,
-     24
+     628,
+     406,
+     38
     ],
     "cx": 1050,
-    "cy": 573,
-    "tx": 908,
-    "ty": 573
+    "cy": 647,
+    "tx": 1006,
+    "ty": 647
    },
    {
     "n": 6,
-    "t": "<b>Zielwert</b>: Der Dialog rechnet alles zusammen und zeigt die Rechnung.",
+    "t": "<b>Zielzahl</b>: der Dialog rechnet alles zusammen und zeigt die Rechnung.",
     "box": [
      597,
-     630,
-     278,
-     20
+     704,
+     406,
+     35
     ],
     "cx": 1050,
-    "cy": 640,
-    "tx": 880,
-    "ty": 640
+    "cy": 722,
+    "tx": 1006,
+    "ty": 722
    },
    {
     "n": 7,
-    "t": "<b>Würfeln</b> (du würfelst in Foundry), <b>sl würfeln lassen</b> (Zufall von sl) oder <b>Abbrechen</b>.",
+    "t": "<b>Würfeln</b> (du würfelst in Foundry), <b>sl würfeln lassen</b> (Zufall von sl) oder Abbrechen.",
     "box": [
      597,
-     664,
+     755,
      406,
      40
     ],
     "cx": 1050,
-    "cy": 684,
+    "cy": 775,
     "tx": 1006,
-    "ty": 684
+    "ty": 775
    }
   ]
  },
@@ -227,95 +249,113 @@
   "img": "09-probe-karte-gradzahl",
   "view": [
    1000,
-   570,
+   515,
    600,
-   230
+   270
   ],
-  "cap": "Die Ergebniskarte im Chat (Beispiel: Wissen 50 + Kräuterkundige +20 + leicht +20 = 90, Wurf 93).",
+  "cap": "Die Ergebniskarte im Chat (Mirne: Kampf 40 + drei passende Eigenschaften zu je +10 = Zielzahl 70).",
   "marks": [
    {
     "n": 1,
-    "t": "<b>Wurf gegen Zielzahl</b>: 93 gegen 90.",
+    "t": "<b>Wurf gegen Zielzahl</b>: hier 1 gegen 70.",
     "box": [
-     1064,
-     630,
-     100,
-     30
+     1066,
+     584,
+     512,
+     34
     ],
-    "cx": 1033,
-    "cy": 645
+    "cx": 1054,
+    "cy": 596
    },
    {
     "n": 2,
-    "t": "Das Ergebnis: <b>Misserfolg</b> mit 1 Misserfolgsgrad.",
+    "t": "Das Ergebnis: <b>Erfolg</b> mit 7 Erfolgsgraden (aufgeklappt unten steht die Rechnung).",
     "box": [
-     1064,
-     657,
-     175,
-     18
+     1066,
+     616,
+     512,
+     20
     ],
-    "cx": 1033,
-    "cy": 670
+    "cx": 1054,
+    "cy": 628
    },
    {
     "n": 3,
-    "t": "<b>Rechnung</b> aufklappen: wie die Zielzahl entstanden ist.",
+    "t": "<b>Rechnung</b>: wie die Zielzahl entstanden ist (Säule, Eigenschaften, SP).",
     "box": [
-     1064,
-     675,
-     520,
-     72
+     1066,
+     634,
+     512,
+     90
     ],
-    "cx": 1033,
-    "cy": 705
+    "cx": 1054,
+    "cy": 646
    },
    {
     "n": 4,
     "t": "<b>SP +10 / SP &minus;10</b>: Schicksalspunkte einsetzen, bevor erzählt wird.",
     "box": [
-     1064,
-     750,
-     118,
+     1066,
+     727,
+     512,
      32
     ],
-    "cx": 1033,
-    "cy": 766
+    "cx": 1054,
+    "cy": 739
    }
   ]
  },
  "approve": {
   "img": "e4-approve",
   "view": [
-   440,
-   355,
-   500,
-   190
+   540,
+   380,
+   520,
+   240
   ],
   "cap": "Setzt du SP auf die Probe eines anderen, fragt der Moderator per Dialog.",
   "marks": [
    {
     "n": 1,
-    "cx": 472,
-    "cy": 440,
-    "tx": 515,
-    "ty": 440,
-    "t": "Wer setzt wie viele SP wofür ein (hier: 1 SP, &minus;10 auf Annas Probe)."
+    "t": "Wer setzt wie viele SP wofür ein (hier: Torvin, 1 SP, &minus;10 auf Mirnes Probe).",
+    "box": [
+     617,
+     472,
+     370,
+     40
+    ],
+    "cx": 580,
+    "cy": 492,
+    "tx": 615,
+    "ty": 492
    },
    {
     "n": 2,
-    "cx": 472,
-    "cy": 503,
-    "tx": 516,
-    "ty": 503,
-    "t": "<b>Erlauben</b>: Der Einsatz gilt, die SP werden abgezogen."
+    "t": "<b>Erlauben</b>: Der Einsatz gilt, die SP werden abgezogen.",
+    "box": [
+     617,
+     531,
+     179,
+     40
+    ],
+    "cx": 580,
+    "cy": 551,
+    "tx": 615,
+    "ty": 551
    },
    {
     "n": 3,
-    "cx": 925,
-    "cy": 503,
-    "tx": 886,
-    "ty": 503,
-    "t": "<b>Ablehnen</b>: Nichts passiert."
+    "t": "<b>Ablehnen</b>: Nichts passiert.",
+    "box": [
+     804,
+     531,
+     179,
+     40
+    ],
+    "cx": 1020,
+    "cy": 551,
+    "tx": 985,
+    "ty": 551
    }
   ]
  },
@@ -323,35 +363,47 @@
   "img": "e3-card-gm",
   "view": [
    1000,
-   330,
-   400,
-   130
+   570,
+   600,
+   140
   ],
   "cap": "Eine Orakel-Antwort im Chat.",
   "marks": [
    {
     "n": 1,
-    "cx": 1058,
-    "cy": 372,
-    "tx": 1115,
-    "ty": 372,
-    "t": "Die <b>Frage</b>, die gestellt wurde."
+    "t": "Die <b>Frage</b>, die gestellt wurde.",
+    "box": [
+     1066,
+     621,
+     330,
+     18
+    ],
+    "cx": 1560,
+    "cy": 630
    },
    {
     "n": 2,
-    "cx": 1058,
-    "cy": 402,
-    "tx": 1115,
-    "ty": 402,
-    "t": "Die <b>Antwort</b>: JA+, JA, NEIN oder NEIN+."
+    "t": "Die <b>Antwort</b>: JA+, JA, NEIN oder NEIN+.",
+    "box": [
+     1066,
+     639,
+     60,
+     18
+    ],
+    "cx": 1560,
+    "cy": 648
    },
    {
     "n": 3,
-    "cx": 1058,
-    "cy": 435,
-    "tx": 1126,
-    "ty": 422,
-    "t": "Chancen (wahrscheinlich), Prozentwert und Wurf."
+    "t": "Chancen (hier offen), Prozentwert und Wurf.",
+    "box": [
+     1066,
+     656,
+     220,
+     14
+    ],
+    "cx": 1560,
+    "cy": 665
    }
   ]
  },
@@ -360,34 +412,46 @@
   "view": [
    1000,
    520,
-   400,
-   270
+   600,
+   350
   ],
   "cap": "Pausiert: sl hört nicht mehr zu, die Spielleitung übernimmt von Hand.",
   "marks": [
    {
     "n": 1,
-    "cx": 1048,
-    "cy": 590,
-    "tx": 1104,
-    "ty": 590,
-    "t": "Meldung der Bridge: Die KI pausiert, die Spielleitung übernimmt (Orakel-Tabellen aus dem PDF)."
+    "t": "Meldung der Bridge: Die KI pausiert, die Spielleitung übernimmt (Orakel-Tabellen aus dem PDF).",
+    "box": [
+     1045,
+     663,
+     550,
+     66
+    ],
+    "cx": 1033,
+    "cy": 675
    },
    {
     "n": 2,
-    "cx": 1050,
-    "cy": 762,
-    "tx": 1176,
-    "ty": 732,
-    "t": "Die Lampe ist <b>gelb</b>: pausiert. Grün = verbunden, rot = nicht erreichbar."
+    "t": "Die Lampe ist <b>gelb</b>: pausiert. Grün = verbunden, rot = nicht erreichbar.",
+    "box": [
+     1232,
+     817,
+     22,
+     22
+    ],
+    "cx": 1244,
+    "cy": 790
    },
    {
     "n": 3,
-    "cx": 1330,
-    "cy": 768,
-    "tx": 1318,
-    "ty": 743,
-    "t": "<b>sl fortsetzen</b> (nur Moderator): zurück zur KI."
+    "t": "<b>sl fortsetzen</b> (nur Moderator): zurück zur KI.",
+    "box": [
+     1330,
+     812,
+     92,
+     32
+    ],
+    "cx": 1376,
+    "cy": 790
    }
   ]
  },
@@ -395,35 +459,35 @@
   "img": "03-merkmal-korrektur",
   "view": [
    980,
-   295,
+   570,
    620,
-   190
+   230
   ],
-  "cap": "Ein Merkmal nachtragen: <code>/merkmal -Angst vor offenem Wasser</code> fügt einen Nachteil hinzu, den sl übersehen hat.",
+  "cap": "Ein Merkmal nachtragen: <code>/sl /merkmal -Angst vor Feuer</code> fügt einen Nachteil hinzu, den sl übersehen hat.",
   "marks": [
    {
     "n": 1,
-    "t": "<code>/merkmal -Angst vor offenem Wasser</code>: <b>+</b> Stärke, <b>&minus;</b> Schwäche.",
+    "t": "<code>/sl /merkmal -Angst vor Feuer</code>: <b>+</b> Stärke, <b>&minus;</b> Schwäche (im Chat steht wieder nur <code>/merkmal …</code>).",
     "box": [
      1045,
-     303,
+     582,
      550,
-     50
+     56
     ],
     "cx": 1033,
-    "cy": 315
+    "cy": 594
    },
    {
     "n": 2,
-    "t": "sl nennt die Merkmale neu. Der Nachteil bringt Punkte zurück: <b>Budget übrig 14</b> (vorher 12), Taler 140.",
+    "t": "sl nennt die Merkmale neu. Der Nachteil bringt Punkte zurück: <b>Budget übrig 12</b>.",
     "box": [
-     1056,
-     416,
-     536,
-     38
+     1045,
+     645,
+     550,
+     150
     ],
     "cx": 1033,
-    "cy": 422
+    "cy": 657
    }
   ]
  },
@@ -431,35 +495,35 @@
   "img": "05-sl-antwort-budget",
   "view": [
    980,
-   480,
+   600,
    620,
-   170
+   200
   ],
-  "cap": "Den Rest verteilen: <code>/budget</code> und die Antwort von sl.",
+  "cap": "Den Rest verteilen: <code>/sl /budget</code> und die Antwort von sl (Mirnes Rest von 12 Punkten).",
   "marks": [
    {
     "n": 1,
-    "t": "<code>/budget taler=3 item=Seil,Laterne sp=1</code>: Punkte für Taler, Gegenstände und SP-Max.",
+    "t": "<code>/sl /budget taler=3 item=Armbrust,Lederwams sp=1</code>: Punkte für Taler, Gegenstände und mehr SP-Maximum.",
     "box": [
      1045,
-     488,
+     619,
      550,
-     46
+     54
     ],
     "cx": 1033,
-    "cy": 496
+    "cy": 631
    },
    {
     "n": 2,
-    "t": "sl bestätigt: 70 Taler, Seil und Laterne, SP-Max 6. Nicht verteilte Punkte werden zu Taler.",
+    "t": "sl bestätigt: 30 Taler, Armbrust (&#9733; Story-Item, weil sie zur Geschichte passt) und Lederwams, SP-Max 6.",
     "box": [
-     1056,
-     600,
-     536,
-     20
+     1045,
+     680,
+     550,
+     114
     ],
     "cx": 1033,
-    "cy": 597
+    "cy": 692
    }
   ]
  },
@@ -467,71 +531,71 @@
   "img": "06-figurenbogen",
   "view": [
    20,
-   75,
-   630,
-   615
+   70,
+   640,
+   630
   ],
-  "cap": "Der Charakterbogen in Foundry (Reiter Description): hier steht alles, was sl über deine Figur weiß.",
+  "cap": "Der Charakterbogen in Foundry (Reiter Description): hier steht alles, was sl über Mirne weiß.",
   "marks": [
    {
     "n": 1,
-    "t": "<b>LP</b> (links, aktuell/Maximum): hier 10 von 10. Auf dem Bild steht noch das alte Wort „LP“.",
+    "t": "<b>LP</b> (links, aktuell/Maximum): hier 10 von 10. Das Feld ist jetzt beschriftet.",
     "box": [
      168,
-     184,
+     189,
      214,
-     32
+     28
     ],
-    "cx": 162,
-    "cy": 178
+    "cx": 156,
+    "cy": 170
    },
    {
     "n": 2,
-    "t": "<b>SP</b>: hier 6 von 6, nach dem <code>/budget</code> mit <code>sp=1</code>.",
+    "t": "<b>SP</b> (rechts): hier 6 von 6, nach dem <code>/budget</code> mit <code>sp=1</code> ein Punkt mehr Maximum.",
     "box": [
      408,
-     184,
+     189,
      214,
-     32
+     28
     ],
-    "cx": 402,
-    "cy": 178
+    "cx": 396,
+    "cy": 170
    },
    {
     "n": 3,
-    "t": "Säulen, LP und Taler.",
+    "t": "Säulen, SP, LP und Geld (&bdquo;30 T&ldquo;, siehe unten).",
     "box": [
      44,
      320,
-     300,
-     46
+     430,
+     48
     ],
-    "cx": 38,
-    "cy": 316
+    "cx": 30,
+    "cy": 332
    },
    {
     "n": 4,
     "t": "Deine Eigenschaften mit Wert (+ oder &minus;).",
     "box": [
-     60,
-     406,
-     200,
-     52
+     44,
+     405,
+     270,
+     142
     ],
-    "cx": 54,
-    "cy": 402
+    "cx": 30,
+    "cy": 415
    },
    {
     "n": 5,
-    "t": "Die Ausrüstung aus dem <code>/budget</code>.",
+    "t": "Die Ausrüstung aus dem <code>/budget</code>; das &#9733; kennzeichnet ein Story-Item.",
     "box": [
-     60,
-     510,
-     100,
-     36
+     44,
+     596,
+     200,
+     40
     ],
-    "cx": 54,
-    "cy": 506
+    "cx": 30,
+    "cy": 606
    }
   ]
  },
@@ -539,59 +603,47 @@
   "img": "11-sp-einsatz-karte",
   "view": [
    1000,
-   545,
+   500,
    600,
-   255
+   290
   ],
-  "cap": "SP auf einer Karte eingesetzt: Die Rechnung zeigt jeden Einsatz.",
+  "cap": "SP auf einer Karte eingesetzt: Die Rechnung führt jeden Einsatz auf (Mirne +10, Torvin &minus;10).",
   "marks": [
    {
     "n": 1,
-    "t": "Wurf 62 gegen Zielzahl 40: Misserfolg mit 3 Misserfolgsgraden.",
+    "t": "Wurf gegen Zielzahl und Ergebnis, nach den SP-Einsätzen neu gerechnet.",
     "box": [
-     1064,
-     595,
-     190,
-     50
+     1066,
+     566,
+     512,
+     52
     ],
-    "cx": 1033,
-    "cy": 610
+    "cx": 1054,
+    "cy": 578
    },
    {
     "n": 2,
-    "t": "Die <b>Rechnung</b> führt die Schicksalspunkte als eigene Zeile.",
+    "t": "Die <b>Rechnung</b> führt die Einsätze als eigene Zeilen: wer wie viele SP wofür eingesetzt hat.",
     "box": [
-     1064,
-     692,
-     520,
-     18
+     1066,
+     640,
+     512,
+     84
     ],
-    "cx": 1033,
-    "cy": 700
+    "cx": 1054,
+    "cy": 652
    },
    {
     "n": 3,
-    "t": "Das Protokoll: wer wie viele SP eingesetzt hat.",
+    "t": "Mit <b>SP +10 / SP &minus;10</b> setzt du weitere Punkte ein (höchstens 3 SP je Probe).",
     "box": [
-     1064,
-     711,
-     200,
-     34
+     1066,
+     727,
+     512,
+     32
     ],
-    "cx": 1033,
-    "cy": 728
-   },
-   {
-    "n": 4,
-    "t": "Mit <b>SP +10 / SP &minus;10</b> setzt du weitere Punkte ein.",
-    "box": [
-     1064,
-     749,
-     118,
-     34
-    ],
-    "cx": 1033,
-    "cy": 766
+    "cx": 1054,
+    "cy": 739
    }
   ]
  },
@@ -599,47 +651,209 @@
   "img": "10-probe-karte-sl",
   "view": [
    1000,
-   690,
+   545,
    600,
-   115
+   150
   ],
-  "cap": "Eine Karte, die sl selbst gewürfelt hat.",
+  "cap": "Eine Karte, die sl selbst gewürfelt hat (Torvin; die Spielleitung drückte &bdquo;sl würfeln lassen&ldquo;).",
   "marks": [
    {
     "n": 1,
-    "t": "&bdquo;<b>von sl gewürfelt</b>&ldquo;: Niemand hat gewürfelt, also hat sl es getan.",
+    "t": "&bdquo;<b>von sl gewürfelt</b>&ldquo;: niemand hat gewürfelt, oder die Spielleitung hat es übernommen.",
     "box": [
-     1064,
-     716,
-     200,
-     20
+     1066,
+     573,
+     512,
+     34
     ],
-    "cx": 1033,
-    "cy": 726
+    "cx": 1054,
+    "cy": 585
    },
    {
     "n": 2,
-    "t": "Wurf 79 gegen Zielzahl 30.",
+    "t": "Wurf gegen Zielzahl: hier 32 gegen 50.",
     "box": [
-     1064,
-     739,
-     110,
-     30
+     1066,
+     609,
+     512,
+     28
     ],
-    "cx": 1033,
-    "cy": 752
+    "cx": 1054,
+    "cy": 621
    },
    {
     "n": 3,
-    "t": "Misserfolg mit 5 Misserfolgsgraden.",
+    "t": "Erfolg mit 2 Erfolgsgraden.",
     "box": [
-     1064,
-     765,
-     180,
-     18
+     1066,
+     637,
+     512,
+     20
+    ],
+    "cx": 1054,
+    "cy": 649
+   }
+  ]
+ },
+ "request": {
+  "img": "09a-probe-gefordert",
+  "view": [
+   980,
+   610,
+   620,
+   230
+  ],
+  "cap": "sl fordert eine Probe: Die Karte im Chat nennt Figur, Säule, Schwierigkeit und Grund.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "&bdquo;<b>Probe gefordert</b>&ldquo;: wer würfelt, auf welche Säule, wie schwer und wofür.",
+    "box": [
+     1045,
+     665,
+     550,
+     52
     ],
     "cx": 1033,
-    "cy": 780
+    "cy": 677
+   },
+   {
+    "n": 2,
+    "t": "<b>Probe würfeln</b> öffnet den Dialog, schon vorbelegt. Nur die Figur, die gefordert ist, darf klicken.",
+    "box": [
+     1064,
+     726,
+     100,
+     34
+    ],
+    "cx": 1182,
+    "cy": 743,
+    "tx": 1166,
+    "ty": 743
+   }
+  ]
+ },
+ "ergdialog": {
+  "img": "08b-probe-dialog-ergeben",
+  "view": [
+   575,
+   200,
+   520,
+   620
+  ],
+  "cap": "Derselbe Dialog mit gesetztem Haken Schicksalsergeben: &minus;10 kommen in die Rechnung, das SP-Feld ist gesperrt.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "Haken <b>Schicksalsergeben</b>: bei leichten Proben gesperrt, nicht zusammen mit SP.",
+    "box": [
+     597,
+     628,
+     406,
+     38
+    ],
+    "cx": 1050,
+    "cy": 647,
+    "tx": 1006,
+    "ty": 647
+   },
+   {
+    "n": 2,
+    "t": "Die <b>Zielzahl</b> sinkt um 10: Die Rechnung nennt &bdquo;Schicksalsergeben &minus;10&ldquo;.",
+    "box": [
+     597,
+     704,
+     406,
+     35
+    ],
+    "cx": 1050,
+    "cy": 722,
+    "tx": 1006,
+    "ty": 722
+   }
+  ]
+ },
+ "ergcard": {
+  "img": "09b-probe-karte-ergeben",
+  "view": [
+   1000,
+   540,
+   600,
+   240
+  ],
+  "cap": "Die Karte nach einer Schicksalsergeben-Probe: Zielzahl 40 (Sozial 30, ein passendes Wort +20, Schicksalsergeben &minus;10), Wurf 2.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "Wurf gegen Zielzahl: hier 2 gegen 40.",
+    "box": [
+     1066,
+     605,
+     512,
+     34
+    ],
+    "cx": 1054,
+    "cy": 617
+   },
+   {
+    "n": 2,
+    "t": "<b>Erfolg</b> mit 4 Erfolgsgraden, mindestens 2: <b>+1 SP (Schicksalsergeben)</b>. Die Zeile erscheint erst, nachdem sl bestätigt hat.",
+    "box": [
+     1066,
+     634,
+     512,
+     36
+    ],
+    "cx": 1054,
+    "cy": 646
+   },
+   {
+    "n": 3,
+    "t": "In der <b>Rechnung</b> steht das Schicksalsergeben mit &minus;10. Es gibt keine SP-Knöpfe auf dieser Karte.",
+    "box": [
+     1066,
+     671,
+     512,
+     72
+    ],
+    "cx": 1054,
+    "cy": 683
+   }
+  ]
+ },
+ "kauf": {
+  "img": "12-kauf-ergebnis",
+  "view": [
+   1000,
+   560,
+   600,
+   240
+  ],
+  "cap": "Ein Kauf, vom Moderator gebucht: <code>/kauf Mirne Aschenbach Seil 1S</code> zieht 1 Schilling ab und legt das Seil ins Inventar.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "Die Antwort von sl: <b>Kauf: Mirne Aschenbach zahlt 1 S für Seil · Rest 29 T 1 S</b>. Auf dem Charakterbogen steht das Seil jetzt in der Ausrüstung, das Geld ist neu.",
+    "box": [
+     1045,
+     700,
+     550,
+     95
+    ],
+    "cx": 1033,
+    "cy": 712
+   },
+   {
+    "n": 2,
+    "t": "Vorher hat der Seiler im Gespräch den Preis genannt: gekauft ist es aber erst, wenn der Moderator bucht.",
+    "box": [
+     1045,
+     600,
+     550,
+     95
+    ],
+    "cx": 1033,
+    "cy": 612
    }
   ]
  }
