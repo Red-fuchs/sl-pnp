@@ -10,7 +10,7 @@ var args = Array(CommandLine.arguments.dropFirst())
 var web = false
 if args.first == "web" { web = true; args.removeFirst() }
 var opt: [String: String] = [:]
-let flags: Set<String> = ["resume", "debug", "help", "no-gpu-check", "lease"]
+let flags: Set<String> = ["resume", "debug", "help", "no-gpu-check", "lease", "fullstory"]
 var i = 0
 while i < args.count {
   let a = args[i]; i += 1
@@ -89,6 +89,7 @@ func show(_ o: Out) {
 runner.sink = show
 runner.debug = opt["debug"] != nil
 runner.defaultRules = opt["rules"]
+runner.fullStory = opt["fullstory"] != nil
 if let c = opt["chargen"] { guard chargenModes.contains(c) else { die("--chargen a|b|c|bc") }; runner.chargen = c }
 if let t = opt["probe-timeout"].flatMap({ Double($0) }) { Game.probeDefault = max(0, t) }
 runner.neglect = opt["neglect"].flatMap { Int($0) }

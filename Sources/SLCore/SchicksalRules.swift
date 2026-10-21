@@ -3,8 +3,9 @@ import Foundation
 /// Schicksalsschlag rules v0.1 (notes/RULES-schicksalsschlag.md): d100 roll-under with degrees, word-budget characters, Schicksalspunkte, LP (Lebenspunkte; code name wunden).
 public struct Trait: Codable, Equatable {
   public var text: String, major: Bool, pos: Bool
-  var _farbe: Bool?, _teurer: Bool?       // chargen: flaw that refunds nothing ("Farbe" / trade-off); arbiter price x1.5 (optional: older saves)
+  var _farbe: Bool?, _teurer: Bool?, _of: String?       // chargen: flaw that refunds nothing ("Farbe" / trade-off); arbiter price x1.5 (optional: older saves)
   public var farbe: Bool { get { _farbe ?? false } set { _farbe = newValue ? true : nil } }
+  public var of: String? { get { _of } set { _of = newValue } }   // trade-off flaw: the strength it belongs to
   public var teurer: Bool { get { _teurer ?? false } set { _teurer = newValue ? true : nil } }
   public init(text: String, major: Bool, pos: Bool) { self.text = text; self.major = major; self.pos = pos }
   public var cost: Int { let b = major ? 4 : 2; return pos ? (teurer ? b * 3 / 2 : b) : (farbe ? 0 : b) }
@@ -232,14 +233,14 @@ public enum SR {
     } else if f == "+" || f == "-" {
       a = String(a.dropFirst()).trimmingCharacters(in: .whitespaces)
       var major = false; if a.hasSuffix(" major") { major = true; a = String(a.dropLast(6)) }
-      let txt = clean(a, 40); if txt.isEmpty || minorHarm(txt) { return usage }
+      let txt = Arb.defuse(clean(a, 40)); if txt.isEmpty || minorHarm(txt) { return usage }
       let t = Trait(text: txt, major: major, pos: f == "+")
       pc.traits = dedupe(pc.traits + [t]); if !pc.traits.contains(t) { return "/merkmal: '\(txt)' gibt es schon (ähnliches Merkmal)." }
     } else { return usage }
     let all = pc.traits; pc.traits = pc.cgB ? fitB(all).kept : fit(all)
     let dropped = all.filter { t in !pc.traits.contains { $0.text == t.text } }
     pc.taler = pc.cgB ? min(cashCap, max(0, leftT(pc.traits))) : max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.items = []; pc.spMax = 5; pc.sp = 5
-    return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(leftLabel(pc)) · Taler \(pc.taler)" + (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))
+    return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(leftLabel(pc)) · Taler \(pc.taler)" + (pc.cgB ? (fitB(all).notes.isEmpty ? "" : " · Angepasst oder gestrichen: " + fitB(all).notes.joined(separator: "; ")) : (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", ")))
   }
   /// check reason for cards: cut at a word boundary, never mid-word
   public static func shortReason(_ s: String, _ n: Int = 60) -> String {
@@ -252,7 +253,7 @@ public enum SR {
     var fit = SR.fit(traits), notes: [Trait] = []
     if pc.cgB { let b = fitB(traits); fit = b.kept; notes = traits.filter { t in !b.kept.contains { $0.text == t.text } } }
     if !name.isEmpty { pc.name = name }
-    pc.hintergrund = clean(story, 400); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
+    pc.hintergrund = clean(story, max(400, min(700, story.count))); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
     pc.taler = pc.cgB ? min(cashCap, max(0, leftT(fit))) : max(0, budgetLeft(fit)) * 10
     return pc.cgB ? notes : traits.filter { !fit.contains($0) }
   }

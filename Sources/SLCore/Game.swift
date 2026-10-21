@@ -93,6 +93,7 @@ public final class Game {
   var pendingFacts: [String] = []
   public var chargen = "a"              // --chargen a|b|c|bc (notes/CHARGEN-v2.md)
   public var cg: [String: CgState] = [:]
+  public var fitNotes: [String] = []     // b/bc: why /figur or /merkmal dropped or demoted a trait
   public var pendingRegie: [String] = []
   var npcMods: [String: Int] = [:]
   public var speaker: String?

@@ -42,6 +42,7 @@ public final class Runner {
   public var lastRng = "?"
   public var defaultRules: String?     // --rules schicksal
   public var chargen = "a"             // --chargen a|b|c|bc
+  public var fullStory = false         // --fullstory: read the whole backstory (700 chars) also under chargen a (test aid; the default a keeps the 140-char cut)
   public var rolls: [J] = []   // recent oracle results, newest last
 
   public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng; lm.notify = { [unowned self] s in self.sink(.info(s)) } }
@@ -180,14 +181,19 @@ public final class Runner {
       var f = f0
       if let bad = figurProblem(f0) { sink(.info(bad)); return true }
       if game.isSchicksal, !f.isEmpty {       // per speaker: background story -> traits -> budget -> pillars
-        let (nm, story) = World.parseFigur(f)
+        var (nm, story) = World.parseFigur(f, limit: game.chargen != "a" || fullStory ? 700 : 140)   // 140 chars cut the backstory to its first sentence; b/c/bc (and a with --fullstory) read up to 700
+        if game.chargen != "a" {        // b/c/bc: supernatural claims in the story are not free
+          let red = Arb.redactMagic(story.isEmpty ? f : story)
+          if !red.removed.isEmpty && !red.story.isEmpty { sink(.info("Aus der Geschichte gestrichen (Übernatürliches kostet Wunsch und Prüfung): " + red.removed.joined(separator: " "))); story = red.story; f = (nm.map { $0 + ": " } ?? "") + red.story }
+        }
         sink(.info("Hintergrund wird ausgewertet …"))
         let dropped = game.createCharacter(speaker: speaker, name: nm ?? speaker ?? "Spieler", story: story.isEmpty ? f : story)
         if let i = game.pcIndex(speaker, create: false) {
           let pc = game.partyStore.all[i]
           if game.figur == nil { game.figur = f; game.world.setFigur(f); game.world.syncLists(game.eng); try game.syncCache() }
           sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.leftLabel(pc)) (\(game.cgArb ? "weiter mit /wunsch und /pruefen" : "verteilen mit /budget taler=N item=Name sp=N"))"))
-          if !dropped.isEmpty { sink(.info("Über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))) }
+          if pc.cgB { if !game.fitNotes.isEmpty { sink(.info("Angepasst oder gestrichen: " + game.fitNotes.joined(separator: "; "))) } }
+          else if !dropped.isEmpty { sink(.info("Über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))) }
         }
         try session.save(game); refresh(); return true
       }

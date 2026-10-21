@@ -199,6 +199,7 @@ public extension Game {
   @discardableResult
   func setTraits(_ i: Int, name: String, story: String, traits: [Trait]) -> [Trait] {
     let d = partyStore.with { p in SR.build(&p[i], name: name, story: story, traits: traits) }
+    fitNotes = partyStore.all[i].cgB ? SR.fitB(traits).notes : []
     announceSheet(); return d
   }
   func applyMerkmal(_ i: Int, args: String) -> String {

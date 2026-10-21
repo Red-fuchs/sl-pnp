@@ -63,6 +63,24 @@ final class ChargenTests: XCTestCase {
     var pc = Pc(speaker: "S"); _ = SR.build(&pc, name: "S", story: "x", traits: [])
     _ = SR.budget(&pc, args: "item=Kurzes Messer,Seil sp=1"); XCTAssertEqual(pc.inventar, ["Kurzes Messer", "Seil"]); XCTAssertEqual(pc.spMax, 6)
   }
+  func testRedactMagicAndFullStory() {
+    let r = Arb.redactMagic("Ich bin Söldnerin. Seit dem Fluch bin ich unsterblich. Ich schulde dem Wirt Geld.")
+    XCTAssertEqual(r.removed.count, 1); XCTAssertFalse(r.story.contains("unsterblich")); XCTAssertTrue(r.story.contains("Wirt"))
+    let long = String(repeating: "Er kämpfte lange. ", count: 30)
+    XCTAssertLessThanOrEqual(World.parseFigur("Hans: " + long).1.count, 140); XCTAssertGreaterThan(World.parseFigur("Hans: " + long, limit: 700).1.count, 300)
+  }
+  func testUniqueGenericTradeoffs() {
+    let tr = [T("Gedankenleser", true), T("Unsterblich", true)]
+    let out = Arb.apply(tr.map { _ in v("ja") }, traits: tr, story: story)
+    XCTAssertNotEqual(out[0].tausch, out[1].tausch)
+  }
+  func testGearAndWealthDressedAsTraitsAreStopped() {
+    XCTAssertTrue(Shop.gearTrait("Besitzer der Drachenzahn-Klinge")); XCTAssertTrue(Shop.gearTrait("Träger eines Plattenpanzers (Familienerbe)")); XCTAssertTrue(Shop.gearTrait("Waffenschmied schenkt mir jede Waffe"))
+    XCTAssertFalse(Shop.gearTrait("Messerwerfer")); XCTAssertFalse(Shop.gearTrait("Bogenschütze"))
+    XCTAssertTrue(Shop.wealthTrait("reicher Erbe mit Schatztruhe"))
+    let r = SR.fitB([T("Träger eines Plattenpanzers", true), T("reicher Erbe mit Schatztruhe", true), T("Schreiner")])
+    XCTAssertEqual(r.kept.map(\.text), ["Schreiner"]); XCTAssertEqual(r.notes.count, 2)
+  }
   func testPriceLookup() {
     XCTAssertEqual(Shop.priceT("Langschwert").taler, 40); XCTAssertEqual(Shop.priceT("Kettenhemd").taler, 40); XCTAssertEqual(Shop.priceT("Plattenpanzer").taler, 60)
     XCTAssertEqual(Shop.priceT("Blubbdings").taler, 20); XCTAssertFalse(Shop.priceT("Blubbdings").listed)
