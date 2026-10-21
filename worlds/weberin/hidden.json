@@ -1,0 +1,116 @@
+{
+  "clues": [
+    {
+      "at": "Spindelhaus",
+      "found": false,
+      "text": "Das Fadenbuch nennt die Nadel: Knochen, nicht Eisen",
+      "thread": "Was ist die Nadel wirklich"
+    },
+    {
+      "at": "Wenke Sparr",
+      "found": false,
+      "text": "Die Weberin brach sie sich selbst aus dem Leib",
+      "thread": "Was ist die Nadel wirklich"
+    },
+    {
+      "at": "Fadenbruch",
+      "found": false,
+      "text": "Im Nebel reißt sich eine Frau einen Knochen aus der Hand",
+      "thread": "Was ist die Nadel wirklich"
+    },
+    {
+      "at": "Der Kettler",
+      "found": false,
+      "text": "Wer von hier die Nadel fasst, reißt seinen eigenen Faden",
+      "thread": "Warum braucht die Weberin Fremde"
+    },
+    {
+      "at": "Jorrit Keil",
+      "found": false,
+      "text": "Im Kanal liegen Tote in fremder Kleidung, ihre Fäden abgeschnitten",
+      "thread": "Warum braucht die Weberin Fremde"
+    },
+    {
+      "at": "Aschekreis",
+      "found": false,
+      "text": "Die Asche im Kreis besteht aus Garn früherer Gerufener",
+      "thread": "Warum braucht die Weberin Fremde"
+    },
+    {
+      "at": "Spindelhaus",
+      "found": false,
+      "text": "Fehlings Aufträge tragen das Siegel der Vogtin",
+      "thread": "Wem gehört Krähenfurt wirklich"
+    },
+    {
+      "at": "Krähenfurt",
+      "found": false,
+      "text": "Auf dem Markt widerspricht niemand der Vogtin, seit Jahren nicht",
+      "thread": "Wem gehört Krähenfurt wirklich"
+    },
+    {
+      "at": "Jorrit Keil",
+      "found": false,
+      "text": "Fehling näht, was Rauhsohl bestellt",
+      "thread": "Wem gehört Krähenfurt wirklich"
+    }
+  ],
+  "npcs": {
+    "Agnet Rauhsohl": {
+      "geheimnis": "Sie hat frühere Gerufene an Fehling verkauft; ihre Fäden hängen im Spindelhaus.",
+      "gruppe": "Vogtei",
+      "ref": "Ambros Fehling",
+      "typ": "npc_befragt",
+      "ziel": "Macht behalten, Fremde als Hebel nutzen"
+    },
+    "Ambros Fehling": {
+      "geheimnis": "Er setzt seit Jahren Fäden nach den Bestellungen der Vogtin: Gehorsam statt Lebenslauf.",
+      "gruppe": "Spindelhaus",
+      "ref": "Fadenbuch",
+      "typ": "gegenstand",
+      "ziel": "die Nadel schützen, seine Ruhe haben"
+    },
+    "Der Kater": {
+      "geheimnis": "Er war der letzte Gerufene: die Weberin knotete ihn zum Kater und verwahrt seinen Namen als Pfand.",
+      "gruppe": "Weberin",
+      "ref": "Nadel",
+      "typ": "gegenstand",
+      "ziel": "heimkehren, den Namen zurückbekommen"
+    },
+    "Der Kettler": {
+      "geheimnis": "Er kann Fremde nicht sehen, nur ihre Wirkung, und näht jede Abweichung fest, auch die der Figuren.",
+      "gruppe": "Schicksal",
+      "ref": "Fadenbruch",
+      "typ": "ort_betreten",
+      "ziel": "Fremde ausnähen, das Gewirk flicken"
+    },
+    "Die Weberin": {
+      "geheimnis": "Sie ist der abgetrennte Teil des Schicksals und will sich mit der Nadel wieder einweben, als Herrin über alle Fäden.",
+      "gruppe": "Weberin",
+      "ref": "Wenke Sparr",
+      "typ": "npc_befragt",
+      "ziel": "die Nadel bekommen"
+    },
+    "Jorrit Keil": {
+      "geheimnis": "Er kennt den Kanal ins Spindelhaus und hat dort die Gruft früherer Gerufener gesehen.",
+      "gruppe": "Schmuggler",
+      "ref": "14",
+      "typ": "zeit",
+      "ziel": "Taler verdienen, dem Höchstbietenden folgen"
+    },
+    "Wenke Sparr": {
+      "geheimnis": "Sie weiß, dass die Weberin sich als Herrin über alle Fäden wieder einweben will.",
+      "gruppe": "Weberin",
+      "ref": "Wenke Sparr",
+      "typ": "npc_befragt",
+      "ziel": "die Weberin aufhalten, ohne selbst zu sterben"
+    }
+  },
+  "pcGeheim": "Die Weberin hat über die Leihe nie ganz die Wahrheit gesagt.",
+  "schwellen": [
+    2,
+    4,
+    6
+  ],
+  "stuckN": 8
+}

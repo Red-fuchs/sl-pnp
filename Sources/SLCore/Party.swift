@@ -41,13 +41,16 @@ public extension Game {
   @discardableResult
   func doCheck(speaker: String?, pillar: String, traits: [String] = [], difficulty: Int = 0, sp: Int = 0, reason: String = "", context: String = "", ergeben: Bool = false) -> Check {
     let i = pcIndex(speaker)!
+    var fremd: Trait?
     let c: Check = partyStore.with { p in
       var pc = p[i]
       let fit = SR.fitting(reason + " " + context + " " + traits.joined(separator: " "), pc.traits)
+      fremd = SR.fremdUsed(fit)
       let r = SR.check(&pc, pillar: pillar, traits: fit, difficulty: difficulty, spUse: sp, reason: reason, d100: d100(), ergeben: ergeben)
       p[i] = pc; return r
     }
     if c.error != nil { return c }
+    if let fremd { fremdkraftUsed(partyStore.all[i].name, fremd) }
     if !c.success { sceneFails += 1 }
     out(.roll(c)); announceSheet()
     return c
@@ -68,6 +71,7 @@ public extension Game {
       if ergeben { partyStore.with { p in var pc = p[i]; pc.ergebenUsed = true; SR.settleErgeben(&pc, &c); pc.lastCheck = c; p[i] = pc } }
     }
     if !c.success { sceneFails += 1 }
+    if c.error == nil, let i, let t = SR.fremdUsed(SR.fitting(label, partyStore.with { $0[i].traits })) { fremdkraftUsed(c.speaker, t) }
     if let id, probes.resolve(id, c) {} else { pendingFacts.append(c.fact) }      // a probe roll is narrated by the waiting turn itself
     out(.roll(c))
     if ergeben { announceSheet() }

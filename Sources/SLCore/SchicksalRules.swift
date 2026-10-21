@@ -7,7 +7,9 @@ public struct Trait: Codable, Equatable {
   public var cost: Int { major ? 4 : 2 }
   /// check modifier when it fits the action
   public var bonus: Int { (major ? 20 : 10) * (pos ? 1 : -1) }
-  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos] }
+  /// Fremdkraft (setting "Die Weberin"): one supernatural home-world ability, written as "Fremdkraft: Feuerhand". Always a positive major trait; every check that uses it raises the tension by 1.
+  public var fremd: Bool { pos && text.lowercased().hasPrefix("fremdkraft") }
+  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos, "fremd": fremd] }
 }
 
 public struct Check: Codable, Equatable {
@@ -115,6 +117,8 @@ public enum SR {
     let w = Set(contentWords(text).map(lemma))
     return traits.filter { t in !Set(contentWords(t.text).map(lemma)).isDisjoint(with: w) }
   }
+  /// the Fremdkraft among the traits that fit a check (nil = none used)
+  public static func fremdUsed(_ fit: [Trait]) -> Trait? { fit.first(where: \.fremd) }
   public static func target(_ pc: Pc, pillar: String, fit: [Trait], difficulty: Int, spBonus: Int = 0) -> Int {
     (pc.pillars[pillar] ?? 40) + fit.reduce(0) { $0 + $1.bonus } + difficulty + penalty(pc) + spBonus + pc.mod
   }
@@ -237,7 +241,7 @@ public enum SR {
       let f = l[l.index(after: c)...].split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
       guard f.count == 2, !f[0].isEmpty, f[0] != "-" else { return nil }
       let t = clean(f[0], 40); if minorHarm(t) { return nil }
-      return Trait(text: t, major: f[1] == "major", pos: pos)
+      return Trait(text: t, major: f[1] == "major" || (pos && t.lowercased().hasPrefix("fremdkraft")), pos: pos)
     }
   }
   /// the extraction sometimes lists a flaw as a skill or twice ("Schulden bei X" / "Schuld bei X"): a trait that shares a content word with an earlier one or with any flaw is dropped (flaws win)
@@ -264,7 +268,8 @@ public enum SR {
       a = String(a.dropFirst()).trimmingCharacters(in: .whitespaces)
       var major = false; if a.hasSuffix(" major") { major = true; a = String(a.dropLast(6)) }
       let txt = clean(a, 40); if txt.isEmpty || minorHarm(txt) { return usage }
-      let t = Trait(text: txt, major: major, pos: f == "+")
+      var t = Trait(text: txt, major: major, pos: f == "+")
+      if t.fremd { if pc.traits.contains(where: \.fremd) { return "/merkmal: nur eine Fremdkraft pro Figur (erst /merkmal x Fremdkraft)." }; t.major = true }
       pc.traits = dedupe(pc.traits + [t]); if !pc.traits.contains(t) { return "/merkmal: '\(txt)' gibt es schon (ähnliches Merkmal)." }
     } else { return usage }
     let all = pc.traits; pc.traits = fit(all)

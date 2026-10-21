@@ -77,7 +77,7 @@ public final class Game {
   var sceneNein = 0, sceneJa = 0, sceneEvents = 0, sceneFails = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
-  public var sys: String { SYS + "\n\n" + MINOR_RULE + figurBlock(figur) + recap }
+  public var sys: String { SYS + "\n\n" + MINOR_RULE + vorlageBlock + figurBlock(figur) + recap }
   public var out: (Out) -> Void = { _ in }
   public var debug = false
   public var temp: Float = 0.7
@@ -340,7 +340,9 @@ public final class Game {
         tip = tensionStep(control: c, nein: sceneNein, ja: sceneJa, events: sceneEvents, fails: sceneFails)
         if o["control"]?.bool != c { o["control"] = .bool(c); args = .obj(o); if debug { out(.info("[debug] Spannung: control → \(c) (NEIN \(sceneNein), JA \(sceneJa), Ereignisse \(sceneEvents))")) } }
       }
+      let sBefore = eng.st.s
       let res = name == "end_scene" ? endSceneTension(eng, args, step: tip) : eng.call(name, args)
+      if name == "end_scene", res["error"].isNull { blickAfter(from: sBefore) }
       if name == "ask_oracle", let a = res["answer"].str { if a.hasPrefix("NEIN") { sceneNein += 1 } else { sceneJa += 1 }; if !res["event"].isNull { sceneEvents += 1 } }
       if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0; sceneFails = 0; partyStore.with { SR.resetScene(&$0) } }
       calls += 1

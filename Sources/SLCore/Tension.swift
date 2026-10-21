@@ -42,7 +42,11 @@ extension Game {
   public func setTension(_ arg: String) -> (ok: Bool, before: Int, now: Int) {
     let before = eng.st.s
     guard let n = parseTension(arg, cur: before) else { return (false, before, before) }
-    if n != before { _ = eng.call("session", ["op": "set_tension", "s": .int(n)]); if let c = tensionCue(from: before, to: n) { pendingRegie.append(c) } }
-    return (true, before, n)
+    if n != before {
+      _ = eng.call("session", ["op": "set_tension", "s": .int(n)])
+      if let v = vorlageInfo { let b = Blick.note(v, from: before, to: n); if b.cue == nil, let c = tensionCue(from: before, to: n) { pendingRegie.append(c) }; blickAfter(from: before) }
+      else if let c = tensionCue(from: before, to: n) { pendingRegie.append(c) }
+    }
+    return (true, before, eng.st.s)
   }
 }

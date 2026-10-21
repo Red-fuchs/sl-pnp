@@ -1,0 +1,190 @@
+{
+  "beziehungen": [],
+  "eingriffe": 0,
+  "festeStraenge": [
+    "Was ist die Nadel wirklich",
+    "Warum braucht die Weberin Fremde",
+    "Wem gehört Krähenfurt wirklich"
+  ],
+  "gen": {
+    "alltag": "Aschekreis",
+    "mode": "vorlage",
+    "motive": [
+      "loses Garn in der Luft",
+      "Asche, die nicht kalt wird",
+      "Hunde, die Fremde anheulen"
+    ],
+    "orte": {
+      "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden. Hier erwachen die Gerufenen. · herrscht: die Weberin",
+      "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt. Eine Webstelle. · herrscht: niemand, der Kettler geht hier um",
+      "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen. · herrscht: Vogtin Agnet Rauhsohl",
+      "Spindelhaus": "Turm im Flussbogen, in dem Fäden gesetzt werden; ein Kanal führt unter das Fundament. · herrscht: Spindelmeister Ambros Fehling"
+    },
+    "pcZiel": "Überlebe die Nacht und finde den Weg zurück nach Hause.",
+    "praemisse": "Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Spindelhaus setzt der Spindelmeister jedem Bewohner mit der Nadel seinen Faden. Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.",
+    "ready": true,
+    "secs": {},
+    "slots": {
+      "bedrohung": "Verschwörung",
+      "epoche": "mittelalterlich",
+      "licht": "neblig",
+      "muss": [],
+      "nicht": [],
+      "ort": "Sumpf",
+      "ton": "düster"
+    },
+    "start": "Aschekreis",
+    "szene": "Du erwachst im Aschekreis am Moorsaum, kalte Asche unter den Fingern, ein feines Garn um das Handgelenk, und in der Hand hältst du noch, was du im Augenblick des Zugriffs gehalten hast. Neben dir kommen andere zu sich, Fremde wie du, und am Rand des Kreises sitzt ein Kater mit einem Faden um den Hals und wartet.",
+    "used": [
+      "die weberin",
+      "der kater",
+      "der kettler",
+      "ambros fehling",
+      "agnet rauhsohl",
+      "wenke sparr",
+      "jorrit keil"
+    ],
+    "wuerze": []
+  },
+  "inventar": [],
+  "neglectN": 8,
+  "nextId": 20,
+  "npcs": [
+    {
+      "anwesend": true,
+      "basis": 1,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": 1,
+      "id": "n1",
+      "inventar": [],
+      "kurz": "Auftraggeberin, gesichtslose Frau aus Garn",
+      "name": "Die Weberin",
+      "ort": "Aschekreis",
+      "wunden": 12,
+      "zustand": []
+    },
+    {
+      "anwesend": true,
+      "basis": 2,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": true,
+      "haltung": 2,
+      "id": "n2",
+      "inventar": [],
+      "kurz": "sprechender Kater, Begleiter",
+      "name": "Der Kater",
+      "ort": "Aschekreis",
+      "wunden": 4,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": -2,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": -2,
+      "id": "n3",
+      "inventar": [],
+      "kurz": "Schicksalsbote, Mann mit Nähnadeln statt Fingern",
+      "name": "Der Kettler",
+      "ort": "Fadenbruch",
+      "wunden": 14,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": -1,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": -1,
+      "id": "n4",
+      "inventar": [],
+      "kurz": "Spindelmeister, müde und pedantisch",
+      "name": "Ambros Fehling",
+      "ort": "Spindelhaus",
+      "wunden": 6,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": 0,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": 0,
+      "id": "n5",
+      "inventar": [],
+      "kurz": "Vogtin von Krähenfurt, kühl und geschäftstüchtig",
+      "name": "Agnet Rauhsohl",
+      "ort": "Krähenfurt",
+      "wunden": 6,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": 2,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": 2,
+      "id": "n6",
+      "inventar": [],
+      "kurz": "Garnhändlerin, einst Dienerin der Weberin",
+      "name": "Wenke Sparr",
+      "ort": "Krähenfurt",
+      "wunden": 6,
+      "zustand": []
+    },
+    {
+      "anwesend": false,
+      "basis": -1,
+      "bekannt": [],
+      "fest": true,
+      "gmFigur": false,
+      "haltung": -1,
+      "id": "n7",
+      "inventar": [],
+      "kurz": "Schmuggler am Flusskanal",
+      "name": "Jorrit Keil",
+      "ort": "Krähenfurt",
+      "wunden": 6,
+      "zustand": []
+    }
+  ],
+  "ort": "Aschekreis",
+  "orte": {
+    "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden",
+    "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt",
+    "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen",
+    "Spindelhaus": "Turm im Flussbogen, in dem Fäden gesetzt werden; ein Kanal führt unter das Fundament"
+  },
+  "regeln": "schicksal",
+  "straenge": [
+    {
+      "hinweise": [],
+      "stand": "",
+      "stufe": "frage",
+      "titel": "Was ist die Nadel wirklich"
+    },
+    {
+      "hinweise": [],
+      "stand": "",
+      "stufe": "frage",
+      "titel": "Warum braucht die Weberin Fremde"
+    },
+    {
+      "hinweise": [],
+      "stand": "",
+      "stufe": "frage",
+      "titel": "Wem gehört Krähenfurt wirklich"
+    }
+  ],
+  "turn": 0,
+  "vorlage": "weberin",
+  "zustand": []
+}

@@ -41,6 +41,7 @@ public final class Runner {
   public var temp: Float = 0.7
   public var lastRng = "?"
   public var defaultRules: String?     // --rules schicksal
+  public var defaultVorlage: String?   // --welt weberin: prepared one-shot world (worlds/<id>/)
   public var rolls: [J] = []   // recent oracle results, newest last
 
   public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng; lm.notify = { [unowned self] s in self.sink(.info(s)) } }
@@ -76,6 +77,7 @@ public final class Runner {
     game = Game(eng: e, lm: lm, setting: self.setting); wire()
     if let r = defaultRules { game.world.regeln = r }
     if let n = neglect { game.world.neglectN = n }
+    if let v = defaultVorlage, setting == nil { try game.applyVorlage(v); self.setting = game.setting }
     session.log("# \(session.name)\n\nSetting: \(self.setting)\n")
     try game.syncCache()
     try session.save(game); refresh()
@@ -150,6 +152,11 @@ public final class Runner {
       switch a.split(separator: " ", maxSplits: 1).first.map(String.init) ?? "" {
       case "orakel": try game.genPrepare(mode: "orakel", text: ""); table()
       case "mix": try run { try game.genPrepare(mode: "mix", text: unq(String(a.dropFirst(3)))) }; table()
+      case "vorlage":
+        let id = String(a.dropFirst(7)).trimmingCharacters(in: .whitespaces)
+        guard game.msgs.isEmpty else { sink(.info("/welt vorlage nur am Anfang einer neuen Sitzung (vor dem ersten Zug).")); return }
+        try game.applyVorlage(id); setting = game.setting; try game.syncCache(); try session.save(game); refresh()
+        sink(.info("Vorlage \(id) geladen: \(game.vorlageInfo?.titel ?? id). Figuren mit /figur anlegen, Fremdkraft mit /merkmal +Fremdkraft: …"))
       case "regeln": let v = String(a.dropFirst(6)).trimmingCharacters(in: .whitespaces); if ["frei", "saeulen"].contains(v) { game.world.regeln = v; sink(.info("Regeln: \(regelwerk(v).titel)")) } else { sink(.info("/welt regeln frei|saeulen")) }
       case "slots": table()
       case "debug": sink(.info(debug ? game.hidden.debugTable() : "/welt debug nur mit --debug (zeigt Hinweisorte)"))   // tiers / Spur: not part of the player view
@@ -215,6 +222,10 @@ public final class Runner {
     case .regie(let a):      // hidden GM note for the next narration: never logged, never shown in the story
       if a.isEmpty { sink(.info("/regie <Text>  (versteckte Spielleiter-Notiz für die nächste Erzählung)")) } else { game.pendingRegie.append(clean(a, 300)); sink(.info("Regie-Notiz vorgemerkt (nur für die nächste Erzählung).")) }
     case .spannung(let a): _ = try spannung(a)
+    case .vertrauter(let a):
+      guard game.vorlageInfo != nil else { sink(.info("/vertrauter gibt es nur in einer Vorlage-Welt (--welt weberin).")); return true }
+      guard let r = game.vertrauterBlick(a) else { sink(.info("/vertrauter laut | eingriff   (GM: Blick des Schicksals +1 / +2 für den Kater)")); return true }
+      try session.save(game); refresh(); sink(.info("Vertrauter (\(r.what)): Blick des Schicksals \(r.before) → \(r.now)"))
     case .merkmal(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyMerkmal(i, args: a))); try session.save(game); refresh() } else { sink(.info("/merkmal: erst /figur Name: Geschichte")) }
     case .budget(let a):
@@ -270,7 +281,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), spannung(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), spannung(String), vertrauter(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -299,6 +310,7 @@ public enum Cmd: Equatable {
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
     if t == "/spannung" || t.hasPrefix("/spannung ") { return .spannung(arg(10)) }
+    if t == "/vertrauter" || t.hasPrefix("/vertrauter ") { return .vertrauter(arg(11)) }
     if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
     if t == "/rast" || t.hasPrefix("/rast ") { return .rast(arg(5)) }
     if t == "/wunden" || t.hasPrefix("/wunden ") { return .wunden(arg(7)) }

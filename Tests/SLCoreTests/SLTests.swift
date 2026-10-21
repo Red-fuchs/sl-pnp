@@ -1857,3 +1857,83 @@ final class FullStoryTests: XCTestCase {
     _ = SR.build(&pc, name: "M", story: story, traits: []); XCTAssertTrue(pc.hintergrund.contains("Laterne"))
   }
 }
+
+final class VorlageTests: XCTestCase {   // pnp-22d: prepared world "Die Weberin", Blick des Schicksals, Fremdkraft
+  let repo = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent().deletingLastPathComponent()
+  var roots: [URL] { [repo.appendingPathComponent("worlds")] }
+
+  func testShippedWorldLoads() throws {
+    let v = try XCTUnwrap(Vorlage.load("weberin", roots: roots))
+    XCTAssertEqual(v.stufen.count, 3); XCTAssertTrue(v.prompt.contains("Blick des Schicksals")); XCTAssertTrue(v.eingriff.contains("Kettler"))
+    let (w, h) = try Vorlage.worldData("weberin", roots: roots)
+    XCTAssertEqual(w.regeln, "schicksal"); XCTAssertEqual(w.vorlage, "weberin"); XCTAssertTrue(w.gen.ready); XCTAssertEqual(w.ort, "Aschekreis")
+    XCTAssertEqual(w.straenge.count, 3); XCTAssertEqual(h.clues.count, 9)
+    XCTAssertEqual(w.orte.count, 4)
+    let kater = try XCTUnwrap(w.npcs.first { $0.id == "n2" }); XCTAssertTrue(kater.gmFigur); XCTAssertTrue(w.card(kater).contains("Spielleitung"))
+    XCTAssertEqual(w.npcs.filter(\.gmFigur).count, 1)
+    for n in w.npcs { XCTAssertNotNil(h.npcs[n.name], "hidden entry for \(n.name)") }
+  }
+  func testSeedIsConsistentAndSafe() throws {
+    let (w, h) = try Vorlage.worldData("weberin", roots: roots)
+    let places = Set(w.gen.orte.keys)
+    XCTAssertTrue(h.threadWarnings(w, places: places).isEmpty, "\(h.threadWarnings(w, places: places))")   // 3 reachable clues per thread
+    for t in w.straenge { XCTAssertTrue(okThread(t.titel), t.titel); XCTAssertEqual(h.clues.filter { $0.thread == t.titel }.count, 3) }
+    for c in h.clues { XCTAssertTrue(places.contains { w.samePlace($0, c.at) } || w.npcs.contains { $0.name == c.at }, "clue place \(c.at)") }
+    let v = try XCTUnwrap(Vorlage.load("weberin", roots: roots))
+    var texts = [w.gen.praemisse, w.gen.szene, v.eingriff, v.auftakt, v.fremdCue] + v.stufen + w.npcs.map(\.kurz) + w.gen.orte.values + h.clues.map(\.text) + h.npcs.values.flatMap { [$0.geheimnis, $0.ziel] }
+    texts.append(contentsOf: w.orte.values)
+    for t in texts { XCTAssertFalse(minorHarm(t), "ContentRule: \(t)"); XCTAssertTrue(isCleanText(t), t) }
+    XCTAssertTrue(isCleanText(v.prompt))   // the prompt itself states the minors rule, so it is not run through the narration filter
+    for t in h.npcs.values { XCTAssertTrue(["ort_betreten", "zeit", "gegenstand", "npc_befragt", "orakel"].contains(t.typ)) }
+  }
+  func testWorldRoundTrip() throws {
+    let (w, _) = try Vorlage.worldData("weberin", roots: roots)
+    let d = try JSONEncoder().encode(w); let w2 = try JSONDecoder().decode(World.self, from: d)
+    XCTAssertEqual(w, w2); XCTAssertTrue(w2.npcs.contains { $0.gmFigur })
+    XCTAssertNil(Vorlage.load("../etc", roots: roots)); XCTAssertNil(Vorlage.load("nope", roots: roots))
+  }
+  func testBlickTiersAndEingriff() throws {
+    XCTAssertEqual((1...9).map(Blick.stufe), [0, 0, 0, 1, 1, 1, 2, 2, 3])
+    let v = try XCTUnwrap(Vorlage.load("weberin", roots: roots))
+    XCTAssertNil(Blick.note(v, from: 4, to: 6).cue)                       // same tier: silent
+    XCTAssertEqual(Blick.note(v, from: 3, to: 4).cue, v.stufen[1])
+    XCTAssertEqual(Blick.note(v, from: 6, to: 7).cue, v.stufen[2])
+    XCTAssertEqual(Blick.note(v, from: 5, to: 2).cue, v.stufen[0])        // falling into a lower tier is announced too
+    let n = Blick.note(v, from: 8, to: 9); XCTAssertTrue(n.eingriff); XCTAssertEqual(n.cue, v.eingriff)
+    XCTAssertFalse(Blick.note(v, from: 8, to: 8).eingriff)
+    for c in v.stufen + [v.eingriff, v.fremdCue] { XCTAssertFalse(c.contains(where: \.isNumber), "cue must not carry the number: \(c)") }
+  }
+  func testBlickRaiseOnEngine() throws {
+    let e = try Session.newEngine(rng: "seed:7")
+    _ = e.call("session", ["op": "set_tension", "s": 3])
+    var r = Blick.raise(e, by: 1); XCTAssertEqual(r.before, 3); XCTAssertEqual(r.now, 4); XCTAssertEqual(e.st.s, 4)
+    _ = e.call("session", ["op": "set_tension", "s": 9]); r = Blick.raise(e, by: 2); XCTAssertEqual(r.now, 9)   // clamp
+    Blick.reset(e, to: 5); XCTAssertEqual(e.st.s, 5)
+  }
+  func testFremdkraftTrait() {
+    var pc = Pc(speaker: "Mireth")
+    XCTAssertTrue(Trait(text: "Fremdkraft: Hexenblick", major: true, pos: true).fremd)
+    XCTAssertFalse(Trait(text: "Fremdkraft: Hexenblick", major: true, pos: false).fremd)
+    XCTAssertFalse(Trait(text: "Kräuterkunde", major: false, pos: true).fremd)
+    _ = SR.editTrait(&pc, args: "+Kräuterkunde")
+    let msg = SR.editTrait(&pc, args: "+Fremdkraft: Hexenblick")           // always major: 4 points
+    XCTAssertTrue(pc.traits.contains { $0.fremd && $0.major }, msg); XCTAssertEqual(SR.budgetLeft(pc.traits), 20 - 2 - 4)
+    XCTAssertTrue(SR.editTrait(&pc, args: "+Fremdkraft: Feuerhand").contains("nur eine Fremdkraft"))
+    XCTAssertEqual(pc.traits.filter(\.fremd).count, 1)
+    XCTAssertEqual(pc.traits.first { $0.fremd }.map { $0.json["fremd"] as? Bool }, true)
+    // a check whose text mentions the Fremdkraft counts as "used"; an unrelated one does not
+    let used = SR.fremdUsed(SR.fitting("Ich nutze den Hexenblick und prüfe, ob der Wirt lügt", pc.traits))
+    XCTAssertEqual(used?.text, "Fremdkraft: Hexenblick")
+    XCTAssertNil(SR.fremdUsed(SR.fitting("Ich zünde die Fackel an", pc.traits)))
+    XCTAssertEqual(SR.parseTraits("Merkmal: Fremdkraft: Netzgeist | minor", pos: true).first?.major, true)
+  }
+  func testVertrauterCommandParses() {
+    XCTAssertEqual(Cmd.parse("/vertrauter laut"), .vertrauter("laut")); XCTAssertEqual(Cmd.parse("/vertrauter"), .vertrauter(""))
+    XCTAssertEqual(Cmd.parse("/vertrauterx"), .unknown("/vertrauterx"))
+  }
+  func testWorldBackwardCompatible() throws {
+    let old = #"{"npcs":[{"id":"n1","name":"A","kurz":"x"}],"regeln":"frei"}"#
+    let w = try JSONDecoder().decode(World.self, from: Data(old.utf8))
+    XCTAssertNil(w.vorlage); XCTAssertEqual(w.eingriffe, 0); XCTAssertFalse(w.npcs[0].gmFigur)
+  }
+}
