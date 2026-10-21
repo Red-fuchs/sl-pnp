@@ -98,3 +98,5 @@ dl.faq { margin: 0; } dl.faq dt { font-weight: 700; margin-top: 2.4mm; } dl.faq 
 
 .sheet .cols > div:first-child { width: 36%; }
 .sheet td:first-child { white-space: nowrap; }
+
+.dense { font-size: 9pt; line-height: 1.36; } .dense h1 { font-size: 24pt; } .dense h2 { margin: 4mm 0 1.6mm; font-size: 12.5pt; } .dense .lead { font-size: 10.5pt; margin-bottom: 3mm; } .dense p { margin-bottom: 1.8mm; } .dense .box { margin: 2mm 0; padding: 2.2mm 3.4mm; } .dense table { margin: 1mm 0 2mm; font-size: 8.6pt; } .dense td { padding: 1mm 1.5mm; } .dense .card { padding: 2mm 3mm; }
