@@ -12,8 +12,8 @@
     "speak": "Euer Spielleiter ist eine KI namens Ess Ell."
    },
    {
-    "cap": "Sie erzählt die Welt in Foundry, und ich moderiere sie.",
-    "speak": "Sie erzählt die Welt in Foundry, und ich moderiere sie."
+    "cap": "Sie erzählt die Welt in Foundry, und ich moderiere die Runde.",
+    "speak": "Sie erzählt die Welt in Foundry, und ich moderiere die Runde."
    }
   ]
  },
@@ -48,8 +48,12 @@
     "speak": "Ihr schreibt eine Hintergrundgeschichte, drei bis acht Sätze."
    },
    {
-    "cap": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz entsteht ein Wort.",
-    "speak": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz entsteht ein Wort."
+    "cap": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz kann ein Wort entstehen.",
+    "speak": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz kann ein Wort entstehen."
+   },
+   {
+    "cap": "In Foundry schreibt ihr dafür /figur, euren Namen und die Geschichte.",
+    "speak": "In Foundry schreibt ihr dafür Schrägstrich figur, euren Namen und die Geschichte."
    }
   ]
  },
@@ -84,16 +88,20 @@
     "speak": "Was übrig bleibt, tauscht ihr ein."
    },
    {
-    "cap": "Ein Punkt sind zehn Taler Startgeld.",
-    "speak": "Ein Punkt sind zehn Taler Startgeld."
+    "cap": "Ein Punkt ergibt zehn Taler Startgeld.",
+    "speak": "Ein Punkt ergibt zehn Taler Startgeld."
    },
    {
-    "cap": "Zwei Punkte sind ein Startgegenstand.",
-    "speak": "Zwei Punkte sind ein Startgegenstand."
+    "cap": "Zwei Punkte ergeben einen Startgegenstand, normale Ausrüstung ohne Magie.",
+    "speak": "Zwei Punkte ergeben einen Startgegenstand, normale Ausrüstung ohne Magie."
    },
    {
-    "cap": "Drei Punkte sind ein zusätzlicher maximaler Schicksalspunkt.",
-    "speak": "Drei Punkte sind ein zusätzlicher maximaler Schicksalspunkt."
+    "cap": "Drei Punkte ergeben einen zusätzlichen maximalen Schicksalspunkt.",
+    "speak": "Drei Punkte ergeben einen zusätzlichen maximalen Schicksalspunkt."
+   },
+   {
+    "cap": "In Foundry verteilt ihr den Rest mit /budget, vor eurer ersten Probe.",
+    "speak": "In Foundry verteilt ihr den Rest mit Schrägstrich budget, vor eurer ersten Probe."
    }
   ]
  },
@@ -128,8 +136,8 @@
     "speak": "Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig."
    },
    {
-    "cap": "Drei davon werden ein sechster Schicksalspunkt, vier ein Armbrust und ein Lederwams, fünf werden fünfzig Taler.",
-    "speak": "Drei davon werden ein sechster Schicksalspunkt, vier ein Armbrust und ein Lederwams, fünf werden fünfzig Taler."
+    "cap": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler.",
+    "speak": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler."
    }
   ]
  },
@@ -150,8 +158,8 @@
     "speak": "Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus dreißig."
    },
    {
-    "cap": "Ihr wollt niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg.",
-    "speak": "Ihr wollt niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg."
+    "cap": "Ihr wollt möglichst niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg.",
+    "speak": "Ihr wollt möglichst niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg."
    }
   ]
  },
@@ -172,12 +180,12 @@
     "speak": "Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer."
    },
    {
-    "cap": "Ein Pasch wie elf oder dreiunddreißig ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.",
-    "speak": "Ein Pasch wie elf oder dreiunddreißig ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation."
+    "cap": "Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddreißig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.",
+    "speak": "Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddreißig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation."
    },
    {
-    "cap": "Gegen jemanden würfeln beide, und wer mehr Erfolgsgrade hat, gewinnt.",
-    "speak": "Gegen jemanden würfeln beide, und wer mehr Erfolgsgrade hat, gewinnt."
+    "cap": "Gegen jemanden würfeln beide. Ein Erfolg schlägt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat.",
+    "speak": "Gegen jemanden würfeln beide. Ein Erfolg schlägt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat."
    }
   ]
  },
@@ -190,16 +198,16 @@
     "speak": "Im Kampf ist der Angriff eine Kampfprobe."
    },
    {
-    "cap": "Der Schaden ist Waffe plus Erfolgsgrade minus Rüstung.",
-    "speak": "Der Schaden ist Waffe plus Erfolgsgrade minus Rüstung."
+    "cap": "Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null.",
+    "speak": "Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null."
    },
    {
-    "cap": "Jede Figur hat zehn Wunden. Bei drei oder weniger gibt es minus zehn auf alle Proben.",
-    "speak": "Jede Figur hat zehn Wunden. Bei drei oder weniger gibt es minus zehn auf alle Proben."
+    "cap": "Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben.",
+    "speak": "Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben."
    },
    {
-    "cap": "Bei null geht sie zu Boden, und nur ein Schicksalspunkt hält sie am Leben.",
-    "speak": "Bei null geht sie zu Boden, und nur ein Schicksalspunkt hält sie am Leben."
+    "cap": "Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.",
+    "speak": "Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod."
    }
   ]
  },
@@ -216,8 +224,8 @@
     "speak": "Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe."
    },
    {
-    "cap": "Ein Punkt verschiebt das Orakel um eine Stufe, zwei Punkte sind ein Neuwurf.",
-    "speak": "Ein Punkt verschiebt das Orakel um eine Stufe, zwei Punkte sind ein Neuwurf."
+    "cap": "Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf.",
+    "speak": "Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf."
    },
    {
     "cap": "Und ein Punkt rettet euch bei null Wunden.",
@@ -230,12 +238,12 @@
   "title": "Schwellen und Erholung",
   "lines": [
    {
-    "cap": "Vorsicht: Bei einem Punkt seid ihr schicksalsmüde, minus zehn auf alles.",
-    "speak": "Vorsicht: Bei einem Punkt seid ihr schicksalsmüde, minus zehn auf alles."
+    "cap": "Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsmüde, minus zehn auf alles.",
+    "speak": "Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsmüde, minus zehn auf alles."
    },
    {
-    "cap": "Bei null sind es minus zwanzig, und das Orakel wird schlechter.",
-    "speak": "Bei null sind es minus zwanzig, und das Orakel wird schlechter."
+    "cap": "Bei null sind es minus zwanzig, und Orakelfragen zu euren Gunsten gehen eine Stufe schlechter aus.",
+    "speak": "Bei null sind es minus zwanzig, und Orakelfragen zu euren Gunsten gehen eine Stufe schlechter aus."
    },
    {
     "cap": "Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei.",
@@ -256,8 +264,8 @@
     "speak": "Eine Ja-Nein-Frage, dazu die Chancen von fast unmöglich bis fast sicher."
    },
    {
-    "cap": "Die Antwort lautet Ja plus, Ja, Nein oder Nein plus.",
-    "speak": "Die Antwort lautet Ja plus, Ja, Nein oder Nein plus."
+    "cap": "Die Antwort lautet Ja plus, also Ja und sogar mehr, Ja, Nein, oder Nein plus: Nein, und es kommt schlimmer.",
+    "speak": "Die Antwort lautet Ja plus, also Ja und sogar mehr, Ja, Nein, oder Nein plus: Nein, und es kommt schlimmer."
    }
   ]
  },
@@ -284,8 +292,8 @@
     "speak": "Fällt die Technik aus, spielen wir mit dem PDF-Handout weiter."
    },
    {
-    "cap": "Alle Tabellen gehen mit zwei Zehnerwürfeln.",
-    "speak": "Alle Tabellen gehen mit zwei Zehnerwürfeln."
+    "cap": "Alle Tabellen gehen mit zwei zehnseitigen Würfeln: erst der Zehner, dann der Einer.",
+    "speak": "Alle Tabellen gehen mit zwei zehnseitigen Würfeln: erst der Zehner, dann der Einer."
    },
    {
     "cap": "Viel Spaß am Spieltisch!",

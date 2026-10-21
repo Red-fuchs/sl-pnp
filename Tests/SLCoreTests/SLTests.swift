@@ -1579,6 +1579,17 @@ final class BudgetTests: XCTestCase {
     XCTAssertEqual(r.taler, (4 + 14 - 11) * 10); XCTAssertEqual(r.sp, 1); XCTAssertEqual(r.items.count, 2)
     XCTAssertNil(SR.allocate(left: 5, talerPts: 0, items: ["a", "b", "c"], sp: 0)); XCTAssertNil(SR.allocate(left: 2, talerPts: 0, items: [], sp: 1)); XCTAssertEqual(Cmd.parse("/budget sp=1"), .budget("sp=1"))
   }
+  func testShortReason() {
+    XCTAssertEqual(SR.shortReason("Ich greife an"), "Ich greife an")
+    let r = SR.shortReason("Ich schleiche mit zitternder Hand an den Tresen und bettle den Wirt um einen Schlafplatz an"); XCTAssertTrue(r.hasSuffix(" …")); XCTAssertFalse(r.contains("bettle d "))
+    XCTAssertLessThanOrEqual(r.count, 62)
+  }
+  func testParseTraits() {
+    let p = SR.parseTraits("Merkmal: geübter Bogenschütze | major\nMerkmal: trinkfest | minor\nMerkmal: kaputt", pos: true)
+    XCTAssertEqual(p, [Trait(text: "geübter Bogenschütze", major: true, pos: true), Trait(text: "trinkfest", major: false, pos: true)])
+    XCTAssertEqual(SR.parseTraits("Schwäche: Spielsucht | major\nSchwäche: Schulden | minor", pos: false).map(\.pos), [false, false])
+    XCTAssertTrue(SR.parseTraits("Schwäche: -", pos: false).isEmpty)
+  }
   func testDroppedAndBudgetCmd() {
     var pc = Pc(speaker: "T")
     let t = (0..<8).map { Trait(text: "gut\($0)", major: true, pos: true) }

@@ -108,7 +108,7 @@ public extension Game {
     var pillar = "kampf", dif = 0
     if case .risky(let a) = cls { pillar = a == .sonst ? "kampf" : a.rawValue }
     if kill { dif = 10 * world.killOdds(player, target: target) }
-    let c = doCheck(speaker: speaker, pillar: pillar, difficulty: dif, reason: String(player.prefix(60)), context: player)
+    let c = doCheck(speaker: speaker, pillar: pillar, difficulty: dif, reason: SR.shortReason(player), context: player)
     var facts = [c.fact]
     if let t = target, kill || pillar == "kampf", cls != .risky(.sozial) {
       let name = world.npcs[t].name
@@ -138,19 +138,18 @@ public extension Game {
   func createCharacter(speaker: String?, name: String, story: String) -> [Trait] {
     let i = pcIndex(speaker)!
     var traits: [Trait] = []
-    let line = G.seq([.s("Merkmal: "), .re(Cls.rep(Cls.lineNoQ, 6)), .s("| "), GenGr.en(["minor", "major"]), .s(" | "), GenGr.en(["pos", "neg"])])
-    let opt = G.or([.s(""), .seq([.s("\n"), line])])
-    let gr = Grammar(.seq([line, .s("\n"), line, .s("\n"), line, opt, opt, opt]))
-    let sys = "Du extrahierst aus einer Hintergrundgeschichte Charaktermerkmale als kurze Wörter oder Wendungen (2 bis 5 Wörter). Format je Zeile: Merkmal: <Text> | minor oder major | pos oder neg. pos = Fertigkeit, Eigenschaft, Kontakt. neg = Schwäche, Schuld, Feind, Angst. major = prägend, minor = beiläufig. Nur Merkmale, die in der Geschichte stehen."
-    let ex = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nMerkmal: geübter Bogenschütze | major | pos\nMerkmal: trinkfest | minor | pos\nMerkmal: Schulden beim Wirt | minor | neg\nMerkmal: Spielsucht | major | neg"
-    if let (txt, _) = try? lm.aux(system: sys, user: "\(ex)\n\nGeschichte: \(clean(story, 700))\nAusgabe:", gr, temp: 0.3, maxTok: 220) {
-      traits = txt.split(separator: "\n").compactMap { l -> Trait? in
-        let f = l.dropFirst(9).split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
-        guard f.count == 3, !f[0].isEmpty else { return nil }
-        let t = clean(f[0], 40); if minorHarm(t) { return nil }
-        return Trait(text: t, major: f[1] == "major", pos: f[2] == "pos")
-      }
-    }
+    // two passes: a single pass made the model list only a few skills and skip flaws and debts
+    func line(_ key: String) -> G { G.seq([.s("\(key): "), .re(Cls.rep(Cls.lineNoQ, 6)), .s(" | "), GenGr.en(["minor", "major"])]) }
+    func opt(_ key: String) -> G { G.or([.s(""), .seq([.s("\n"), line(key)])]) }
+    let posG = Grammar(.seq([line("Merkmal"), .s("\n"), line("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal")]))
+    let negG = Grammar(.seq([.or([line("Schwäche"), .s("Schwäche: -")]), opt("Schwäche"), opt("Schwäche"), opt("Schwäche")]))
+    let posSys = "Du extrahierst aus einer Hintergrundgeschichte alle positiven Merkmale der Figur als kurze Wendungen (2 bis 5 Wörter): Fertigkeiten, Begabungen, Berufe, Kontakte, Freunde, Titel. Jede Fertigkeit und jeden Kontakt einzeln nennen. Format je Zeile: Merkmal: <Text> | minor oder major. major = prägend, minor = beiläufig. Nur Dinge, die in der Geschichte stehen."
+    let negSys = "Du extrahierst aus einer Hintergrundgeschichte alle Schwächen der Figur als kurze Wendungen (2 bis 5 Wörter): Fehler, Süchte, Schulden, Feinde, Ängste, Gebrechen, Verfolger. Format je Zeile: Schwäche: <Text> | minor oder major. Gibt es keine, antworte genau: Schwäche: -"
+    let st = clean(story, 700)
+    let posEx = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nMerkmal: geübter Bogenschütze | major\nMerkmal: Stadtwache gedient | minor"
+    let negEx = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nSchwäche: Spielsucht | major\nSchwäche: Schulden beim Wirt | minor\nSchwäche: trinkt zu viel | minor"
+    if let (txt, _) = try? lm.aux(system: posSys, user: "\(posEx)\n\nGeschichte: \(st)\nAusgabe:", posG, temp: 0.3, maxTok: 260) { traits += SR.parseTraits(txt, pos: true) }
+    if let (txt, _) = try? lm.aux(system: negSys, user: "\(negEx)\n\nGeschichte: \(st)\nAusgabe:", negG, temp: 0.3, maxTok: 200) { traits += SR.parseTraits(txt, pos: false) }
     return setTraits(i, name: name, story: story, traits: traits)
   }
   /// pure part (testable): budget fit, pillars, Taler

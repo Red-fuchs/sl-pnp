@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Schicksalsschlag Erklärvideo</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<style>
+@font-face{font-family:'Cinzel';font-weight:500;src:url(assets/fonts/Cinzel-500.woff2) format('woff2');}
+@font-face{font-family:'Cinzel';font-weight:700;src:url(assets/fonts/Cinzel-700.woff2) format('woff2');}
+@font-face{font-family:'Lora';font-weight:400;src:url(assets/fonts/Lora-400.woff2) format('woff2');}
+@font-face{font-family:'Lora';font-weight:600;src:url(assets/fonts/Lora-600.woff2) format('woff2');}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1920px;height:1080px;overflow:hidden;background:#0f0c0b}
+body{font-family:'Lora',Georgia,serif;color:#f1e7d6}
+#root{position:relative;width:100%;height:100%;overflow:hidden;background:radial-gradient(1400px 800px at 50% 30%,#2a1710 0%,#150f0c 55%,#0b0807 100%)}
+.scene{position:absolute;inset:0}
+.s{position:absolute;inset:0;opacity:0}
+.kick{position:absolute;left:192px;top:100px;font:700 30px 'Cinzel',serif;letter-spacing:.22em;color:#e3b858;text-transform:uppercase}
+.area{position:absolute;left:192px;top:170px;width:1536px;height:660px}
+.h1{font:700 64px/1.15 'Cinzel',serif;color:#f08a3c}
+.h2{font:700 44px/1.2 'Cinzel',serif;color:#f08a3c}
+.t{font:400 36px/1.4 'Lora',serif;color:#f1e7d6}
+.mute{color:#b9a98f}
+.b{font-weight:600}
+.gold{color:#e3b858}.ok{color:#6fc08a}.bad{color:#e5675a}.info{color:#6aa8d8}.ember{color:#f08a3c}
+.card{background:#1d1713;border:2px solid #3a2f27;border-radius:22px;padding:26px 30px}
+.abs{position:absolute}
+.chip{position:absolute;display:block;white-space:nowrap;font:600 32px 'Lora',serif;padding:10px 24px;border-radius:999px;border:2px solid #3a2f27;background:#241c17}
+.chip.pos{border-color:#e3b858}.chip.neg{border-color:#e5675a}
+.coin{position:absolute;width:62px;height:62px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffe59a,#e3b858 55%,#9a6c14);border:3px solid #7a520c;box-shadow:0 3px 8px rgba(0,0,0,.5);font:700 26px/56px 'Cinzel',serif;color:#5a3a06;text-align:center}
+.coin.neg{background:radial-gradient(circle at 35% 30%,#ffb08a,#e0562f 55%,#8c2b12);border-color:#6a1d0a;color:#4a1204}
+.node{position:absolute;display:block;border-radius:20px;border:3px solid #3a2f27;background:#1d1713;text-align:center;font:600 36px/1.2 'Lora',serif;padding:24px 10px}
+.cap{position:absolute;left:0;right:0;top:850px;display:flex;justify-content:center}
+.cap .in{max-width:1536px;text-align:center;font:600 46px/1.3 'Lora',serif;color:#fff;background:rgba(10,7,6,.72);padding:12px 34px;border-radius:16px;border:1px solid rgba(255,255,255,.08);opacity:0}
+.crop{position:absolute;overflow:hidden;border-radius:16px;border:3px solid #3a2f27;background:#000}
+.crop img{position:absolute;display:block}
+.mk{position:absolute;width:54px;height:54px;border-radius:50%;background:#f08a3c;color:#1a0f06;border:4px solid #fff;font:700 28px/46px 'Cinzel',serif;text-align:center;opacity:0}
+svg{overflow:visible}
+.bar{position:absolute;display:block;border-radius:8px}
+.mono{font-family:ui-monospace,Menlo,monospace}
+.pip{position:absolute;width:104px;height:104px;border-radius:50%;border:4px solid #3a2f27;font:700 44px/96px 'Cinzel',serif;text-align:center;color:#b9a98f}
+.sq{position:absolute;width:118px;height:84px;border-radius:14px;border:4px solid #3a2f27;font:700 38px/76px 'Cinzel',serif;text-align:center;color:#b9a98f}
+
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="234.278">
+<!-- S01 -->
+<section class="scene clip" id="s01" data-start="0.0" data-duration="9.963" data-track-index="1"><div class="s">
+  <div class="kick">Spielerhandbuch · Foundry</div>
+  <div class="abs" id="s01-title" style="left:192px;top:180px;font:700 132px/1.05 'Cinzel',serif;color:#f08a3c;white-space:nowrap;opacity:0">Schicksalsschlag</div>
+  <div class="abs t mute" id="s01-sub" style="left:196px;top:340px;font-size:40px;opacity:0">Dunkle Fantasy · W100 · ein KI-Spielleiter</div>
+  <div class="node" id="s01-n1" style="left:192px;top:480px;width:380px;opacity:0">Spieler<div class="mute" style="font-size:28px;font-weight:400">schreiben „/sl …“</div></div>
+  <div class="node" id="s01-n2" style="left:770px;top:480px;width:380px;opacity:0">Foundry-Chat<div class="mute" style="font-size:28px;font-weight:400">Würfel, Bögen, Karten</div></div>
+  <div class="node" id="s01-n3" style="left:1348px;top:480px;width:380px;border-color:#f08a3c;opacity:0">sl, die KI<div class="mute" style="font-size:28px;font-weight:400">erzählt die Welt</div></div>
+  <div class="node" id="s01-n4" style="left:770px;top:690px;width:380px;border-color:#6aa8d8;opacity:0;padding:16px 10px">Moderator (GM)<div class="mute" style="font-size:26px;font-weight:400">ich moderiere die Runde</div></div>
+  <svg class="abs" style="left:0;top:0" width="1920" height="1080" fill="none" stroke="#f08a3c" stroke-width="5" stroke-linecap="round">
+    <path id="s01-a1" d="M580 545 L750 545" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path id="s01-a1h" d="M740 528 L762 545 L740 562" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+    <path id="s01-a2" d="M1158 545 L1328 545" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/><path id="s01-a2h" d="M1318 528 L1340 545 L1318 562" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+    <path id="s01-a3" d="M960 685 L960 620" stroke="#6aa8d8" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+  </svg>
+</div></section>
+<!-- S02 -->
+<section class="scene clip" id="s02" data-start="9.963" data-duration="13.212" data-track-index="1"><div class="s">
+  <div class="kick">2 · Foundry und /sl</div>
+  <div class="crop" id="s02-crop" style="left:192px;top:170px;width:460px;height:581px;opacity:0"><img src="assets/img/e1-typing-player.png" style="width:1610px;left:-1150px;top:-455px"></div>
+  <div class="abs" id="s02-ring" style="left:312px;top:632px;width:335px;height:113px;border:5px solid #f08a3c;border-radius:12px;opacity:0"></div>
+  <div class="abs" id="s02-link" style="left:760px;top:190px;width:960px;opacity:0"><div class="h2">1 · Einladungslink öffnen</div><div class="t mute" style="margin-top:8px">Browser genügt, nichts installieren.</div></div>
+  <div class="card abs" id="s02-ok" style="left:760px;top:360px;width:968px;opacity:0"><div class="t mute" style="font-size:28px">2 · Alles, was deine Figur tut:</div><div class="mono ok" id="s02-code" style="font-size:52px;margin-top:10px"><span class="gold">/sl</span> Ich öffne die Tür.</div></div>
+  <div class="card abs" id="s02-no" style="left:760px;top:600px;width:968px;opacity:0"><div class="t mute" style="font-size:28px">Ohne /sl bleibt es Tischgespräch:</div><div class="mono mute" style="font-size:44px;margin-top:6px;text-decoration:line-through">Ich öffne die Tür.</div><div class="bad" style="font-size:28px;margin-top:4px">→ sl hört nicht zu</div></div>
+</div></section>
+<!-- S03 -->
+<section class="scene clip" id="s03" data-start="23.175" data-duration="12.416" data-track-index="1"><div class="s">
+  <div class="kick">3 · Figur: Hintergrundgeschichte</div>
+  <div class="card abs" id="s03-card" style="left:192px;top:170px;width:820px;opacity:0;font-size:29px;line-height:1.5">
+    <div class="gold" style="font:700 26px 'Cinzel';letter-spacing:.15em;margin-bottom:10px">MIRNE ASCHENBACH · 3 BIS 8 SÄTZE</div>
+    <i>Mirne wuchs als Tochter eines Salzsieders im Moor auf und lernte früh, mit der <span class="hl" id="s03-h1">Armbrust</span> Raben von den Salzpfannen zu verscheuchen. Mit neunzehn ging sie als Botin zum Zollhaus, sah dort Schmugglergold und schwieg. Seitdem schuldet ihr der Zöllner Ottokar einen Gefallen, und <span class="hl" id="s03-h3">die Schmuggler wollen sie tot sehen</span>. <span class="hl" id="s03-h2">Sie kann lesen und schreiben</span>, kennt die Heilkräuter des Moores und findet jeden Pfad dort im Nebel. Seit die Siederei brannte, <span class="hl" id="s03-h4">erstarrt sie vor Feuer</span>.</i>
+  </div>
+  <div class="chip pos" id="s03-c1" style="left:1090px;top:210px;width:638px;opacity:0">geübte Armbrustschützin <span class="gold" style="float:right">−4</span></div>
+  <div class="chip pos" id="s03-c2" style="left:1090px;top:340px;width:638px;opacity:0">kann lesen und schreiben <span class="gold" style="float:right">−2</span></div>
+  <div class="chip neg" id="s03-c3" style="left:1090px;top:470px;width:638px;opacity:0">Todfeind: Schmugglerbande <span class="bad" style="float:right">+4</span></div>
+  <div class="chip neg" id="s03-c4" style="left:1090px;top:600px;width:638px;opacity:0">Angst vor Feuer <span class="bad" style="float:right">+2</span></div>
+  <style>.hl{background:linear-gradient(#f08a3c66,#f08a3c66) no-repeat 0 100%/0% 100%;padding:0 2px;font-style:normal;font-weight:600}</style>
+</div></section>
+<!-- S04 -->
+<section class="scene clip" id="s04" data-start="35.591" data-duration="16.753" data-track-index="1"><div class="s">
+  <div class="kick">3 · Figur: Budget 20</div>
+  <div id="s04-coins"></div>
+  <div class="abs" style="left:1130px;top:170px;width:598px;text-align:center"><div id="s04-num" style="font:700 260px/1 'Cinzel',serif;color:#e3b858">20</div><div class="t mute" style="margin-top:-10px">Punkte Budget</div></div>
+  <div class="chip pos" id="s04-v1" style="left:192px;top:520px;opacity:0">Vorteil klein <span class="gold">−2</span></div>
+  <div class="chip pos" id="s04-v2" style="left:560px;top:520px;opacity:0">Vorteil groß <span class="gold">−4</span></div>
+  <div class="chip neg" id="s04-n1" style="left:192px;top:620px;opacity:0">Nachteil klein <span class="bad">+2</span></div>
+  <div class="chip neg" id="s04-n2" style="left:560px;top:620px;opacity:0">Nachteil groß <span class="bad">+4</span></div>
+  <div class="card abs" id="s04-warn" style="left:930px;top:560px;width:798px;border-color:#e5675a;opacity:0"><span class="bad b" style="font-size:40px">Budget unter 0 ✗</span><div class="t mute" style="font-size:30px">Ins Minus darf es nicht rutschen.</div></div>
+</div></section>
+<!-- S05 -->
+<section class="scene clip" id="s05" data-start="52.344" data-duration="13.02" data-track-index="1"><div class="s">
+  <div class="kick">3 · Figur: Rest tauschen</div>
+  <div id="s05-rows"></div>
+</div></section>
+<!-- S06 -->
+<section class="scene clip" id="s06" data-start="65.364" data-duration="9.464" data-track-index="1"><div class="s">
+  <div class="kick">3 · Figur: Drei Säulen</div>
+  <div id="s06-cols"></div>
+</div></section>
+<!-- S07 -->
+<section class="scene clip" id="s07" data-start="74.828" data-duration="21.004" data-track-index="1"><div class="s">
+  <div class="kick">3 · Beispielfigur Mirne</div>
+  <div class="card abs" id="s07-card" style="left:192px;top:170px;width:620px;height:650px;opacity:0">
+    <div class="h2" style="font-size:40px">Mirne Aschenbach</div>
+    <div class="t" style="font-size:34px;margin-top:14px;line-height:1.75">
+      <div id="s07-p">Kampf <b class="ember">40</b> · Sozial <b class="info">30</b> · Wissen <b class="ok">50</b></div>
+      <div id="s07-w">Wunden <b class="b">10</b></div>
+      <div id="s07-sp" style="opacity:0">SP <b class="gold">6 / 6</b></div>
+      <div id="s07-ta" style="opacity:0">Taler <b class="gold">50</b></div>
+      <div id="s07-it" style="opacity:0">Armbrust · Lederwams</div>
+    </div>
+  </div>
+  <div class="abs" id="s07-A" style="left:880px;top:180px;width:850px;opacity:0;font-size:31px;line-height:1.5">
+    <div class="gold b" style="font-size:34px">Vorteile <span class="mute">(−14)</span></div>
+    <div>−4 geübte Armbrustschützin · −2 lesen und schreiben · −2 Moorkräuter · −2 Pfad im Moor · −2 Ottokars Gefallen · −2 zäh wie Moorholz</div>
+    <div class="bad b" style="font-size:34px;margin-top:22px">Nachteile <span class="mute">(+6)</span></div>
+    <div>+4 Todfeind: Schmugglerbande · +2 Angst vor Feuer</div>
+  </div>
+  <div class="abs" id="s07-B" style="left:880px;top:220px;width:850px;opacity:0"><div style="font:700 96px/1 'Cinzel',serif;color:#f1e7d6">20 + 6 − 14</div><div style="font:700 150px/1.1 'Cinzel',serif;color:#6fc08a">= 12</div></div>
+  <div id="s07-split"></div>
+</div></section>
+<!-- S08 -->
+<section class="scene clip" id="s08" data-start="95.832" data-duration="19.513" data-track-index="1"><div class="s">
+  <div class="kick">4 · Die Probe: Zielzahl</div>
+  <div class="abs" id="s08-top" style="left:192px;top:150px;opacity:0"><span class="h1" style="font-size:80px">W100</span> <span class="t mute" style="font-size:40px">niedrig würfeln</span></div>
+  <div class="node" id="s08-f1" style="left:192px;top:290px;width:330px;opacity:0">Säule<div class="ember" style="font:700 54px 'Cinzel'">40</div></div>
+  <div class="abs t" id="s08-o1" style="left:540px;top:350px;font-size:60px;opacity:0">+</div>
+  <div class="node" id="s08-f2" style="left:594px;top:290px;width:330px;opacity:0">Eigenschaften<div class="gold" style="font:700 54px 'Cinzel'">+20</div></div>
+  <div class="abs t" id="s08-o2" style="left:942px;top:350px;font-size:60px;opacity:0">+</div>
+  <div class="node" id="s08-f3" style="left:996px;top:290px;width:330px;opacity:0">Schwierigkeit<div class="info" style="font:700 54px 'Cinzel'">±0</div></div>
+  <div class="abs t" id="s08-o3" style="left:1344px;top:350px;font-size:60px;opacity:0">=</div>
+  <div class="node" id="s08-f4" style="left:1398px;top:290px;width:330px;border-color:#6fc08a;opacity:0">Zielzahl<div class="ok" style="font:700 54px 'Cinzel'">60</div></div>
+  <div id="s08-diff"></div>
+  <div class="abs" id="s08-bar" style="left:192px;top:640px;width:1536px;height:60px;opacity:0">
+    <div class="bar" style="left:0;top:0;width:1536px;height:60px;background:#3a1d1a"></div>
+    <div class="bar" id="s08-zone" style="left:0;top:0;width:0;height:60px;background:#2f7a4a"></div>
+    <div class="abs b" style="left:20px;top:10px;font-size:32px;color:#fff;white-space:nowrap" id="s08-zl">Erfolg: Wurf ≤ Zielzahl</div>
+    <div class="abs mute" style="left:0;top:68px;font-size:26px">1</div><div class="abs mute" style="right:0;top:68px;font-size:26px">100</div>
+    <div class="abs gold b" id="s08-tl" style="left:906px;top:68px;font-size:30px;white-space:nowrap">Zielzahl 60</div>
+  </div>
+</div></section>
+<!-- S09 -->
+<section class="scene clip" id="s09" data-start="115.345" data-duration="31.433" data-track-index="1"><div class="s">
+  <div class="kick">4 · Erfolgsgrade und Pasch</div>
+  <div id="s09-g1" style="opacity:0">
+    <div class="abs t mute" id="s09-l0" style="left:192px;top:170px;font-size:38px">Pro zehn Punkte unter der Zielzahl ein Erfolgsgrad mehr</div>
+    <div class="abs" id="s09-bar" style="left:192px;top:360px;width:1536px;height:120px"></div>
+    <div class="abs" id="s09-res" style="left:192px;top:640px;width:1536px;text-align:center;font:700 80px 'Cinzel',serif;color:#6fc08a;opacity:0">Wurf 34 → 3 Erfolgsgrade</div>
+    <div class="abs ok b" id="s09-b1" style="left:192px;top:520px;font-size:30px;opacity:0">01–05: immer Erfolg</div>
+    <div class="abs bad b" id="s09-b2" style="right:192px;top:520px;font-size:30px;opacity:0">96–100: immer Misserfolg</div>
+  </div>
+  <div id="s09-g2" style="opacity:0">
+    <div class="abs h2" style="left:192px;top:170px">Pasch = kritisch</div>
+    <div id="s09-tiles"></div>
+    <div class="card abs" id="s09-ck" style="left:192px;top:520px;width:740px;border-color:#6fc08a"><div class="ok b" style="font-size:38px">Erfolg + Pasch</div><div class="t" style="font-size:32px">Wendung zu euren Gunsten</div></div>
+    <div class="card abs" id="s09-cf" style="left:988px;top:520px;width:740px;border-color:#e5675a"><div class="bad b" style="font-size:38px">Misserfolg + Pasch</div><div class="t" style="font-size:32px">Komplikation</div></div>
+  </div>
+  <div id="s09-g3" style="opacity:0">
+    <div class="abs h2" style="left:192px;top:170px">Gegen jemanden</div>
+    <div class="card abs" style="left:192px;top:290px;width:740px;height:300px;text-align:center"><div class="t mute">Mirne</div><div id="s09-m" style="font:700 150px 'Cinzel';color:#6fc08a">3</div><div class="t mute" style="font-size:30px">Erfolgsgrade</div></div>
+    <div class="abs t" style="left:932px;top:400px;width:56px;text-align:center;font-size:44px">vs</div>
+    <div class="card abs" style="left:988px;top:290px;width:740px;height:300px;text-align:center"><div class="t mute">Zollwächter</div><div id="s09-w" style="font:700 150px 'Cinzel';color:#e5675a">1</div><div class="t mute" style="font-size:30px">Erfolgsgrad</div></div>
+    <div class="abs ok b" id="s09-win" style="left:192px;top:660px;width:1536px;text-align:center;font-size:46px;opacity:0">Mehr Erfolgsgrade gewinnen</div>
+  </div>
+</div></section>
+<!-- S10 -->
+<section class="scene clip" id="s10" data-start="146.778" data-duration="17.666" data-track-index="1"><div class="s">
+  <div class="kick">5 · Kampf und Wunden</div>
+  <div class="card abs" id="s10-a" style="left:192px;top:170px;width:1536px;opacity:0;text-align:center"><span class="h1" style="font-size:56px">Angriff = Kampfprobe</span><div class="t mute" style="font-size:34px;margin-top:6px">Mirne: Kampf 40 + Armbrust 20 = 60 · Wurf 41 → 2 Erfolgsgrade</div></div>
+  <div class="abs" id="s10-eq" style="left:192px;top:300px;width:1536px;height:130px;opacity:0"></div>
+  <div class="abs" id="s10-wl" style="left:192px;top:470px;width:1536px;height:230px;opacity:0"></div>
+  <div class="abs b" id="s10-t1" style="left:192px;top:720px;width:1536px;text-align:center;font-size:38px;opacity:0"></div>
+</div></section>
+<!-- S11 -->
+<section class="scene clip" id="s11" data-start="164.444" data-duration="18.846" data-track-index="1"><div class="s">
+  <div class="kick">6 · Schicksalspunkte</div>
+  <div id="s11-pips"></div>
+  <div class="abs" id="s11-n" style="left:1160px;top:170px;font:700 150px/1 'Cinzel',serif;color:#e3b858;opacity:0">5/5</div>
+  <div id="s11-cards"></div>
+</div></section>
+<!-- S12 -->
+<section class="scene clip" id="s12" data-start="183.29" data-duration="17.547" data-track-index="1"><div class="s">
+  <div class="kick">6 · Schwellen und Erholung</div>
+  <div id="s12-pips"></div>
+  <div class="abs" id="s12-n" style="left:1160px;top:170px;font:700 150px/1 'Cinzel',serif;color:#e3b858">5/5</div>
+  <div class="card abs" id="s12-st" style="left:192px;top:400px;width:1536px;opacity:0;text-align:center"><span id="s12-st1" class="b" style="font-size:52px"></span></div>
+  <div id="s12-rec"></div>
+</div></section>
+<!-- S13 -->
+<section class="scene clip" id="s13" data-start="200.837" data-duration="13.304" data-track-index="1"><div class="s">
+  <div class="kick">7 · Orakel</div>
+  <div class="crop" id="s13-crop" style="left:192px;top:170px;width:880px;height:290px;opacity:0"><img src="assets/img/e3-card-gm.png" style="width:3080px;left:-2200px;top:-726px"></div>
+  <div class="abs" id="s13-lad" style="left:1160px;top:160px;width:568px;font-size:32px;line-height:1.48;opacity:0">
+    <div class="mute">fast unmöglich</div><div class="mute">sehr unwahrscheinlich</div><div class="mute">unwahrscheinlich</div><div class="gold b">offen</div><div class="mute">wahrscheinlich</div><div class="mute">sehr wahrscheinlich</div><div class="mute">fast sicher</div></div>
+  <div class="abs t" id="s13-q" style="left:192px;top:490px;font-size:36px;opacity:0">Frage + Chancen + Spannung → d100:</div>
+  <div class="abs" id="s13-bar" style="left:192px;top:570px;width:1536px;height:110px;opacity:0"></div>
+</div></section>
+<!-- S14 -->
+<section class="scene clip" id="s14" data-start="214.141" data-duration="9.358" data-track-index="1"><div class="s">
+  <div class="kick">8 · Etikette und Timing</div>
+  <div id="s14-tl"></div>
+  <div class="abs" id="s14-timer" style="left:192px;top:400px;width:1536px;text-align:center;font:700 150px/1 'Cinzel',serif;color:#f08a3c;opacity:0">0 s</div>
+  <div class="abs t mute" id="s14-dots" style="left:192px;top:570px;width:1536px;text-align:center;font-size:40px;opacity:0;font-style:italic">Spielleiter schreibt …</div>
+  <div class="card abs" id="s14-ok" style="left:192px;top:640px;width:760px;border-color:#6fc08a;opacity:0"><span class="ok b">✓ </span><span class="mono" style="font-size:30px">/sl Ich schleiche an der Wache vorbei.</span></div>
+  <div class="card abs" id="s14-no" style="left:968px;top:640px;width:760px;border-color:#e5675a;opacity:0"><span class="bad b">✗ </span><span class="mono mute" style="font-size:30px">Ich schleiche, öffne die Tür, rede mit dem Wirt …</span></div>
+</div></section>
+<!-- S15 -->
+<section class="scene clip" id="s15" data-start="223.499" data-duration="10.479" data-track-index="1"><div class="s">
+  <div class="kick">9 · Notfall: das Handout</div>
+  <div class="card abs" id="s15-doc" style="left:192px;top:170px;width:560px;height:650px;background:#f1e7d6;border-color:#b9a98f;color:#251c14;opacity:0">
+    <div style="font:700 38px 'Cinzel';color:#b8541a">Schicksalsschlag</div><div style="font:600 28px 'Lora';margin-bottom:12px">Handout (PDF)</div>
+    <div style="font-size:27px;line-height:1.55">1 Schnellstart<br>2 Figur erschaffen<br>3 Die Probe (d100)<br>4 Kampf<br>5 Schicksalspunkte<br>6 Das Orakel ohne KI<br>7 Einfalls-Werkzeugkasten<br>8 Notfall: Spielleitung von Hand<br>9 Charakterbogen<br>10 Spickzettel</div>
+  </div>
+  <div class="abs t" id="s15-t1" style="left:860px;top:200px;width:860px;font-size:40px;opacity:0">Alle Tabellen mit <b class="gold">zwei W10</b>:<br>erst der Zehner, dann der Einer.</div>
+  <div class="abs" id="s15-big" style="left:860px;top:470px;width:860px;font:700 100px/1.1 'Cinzel',serif;color:#f08a3c;opacity:0">Viel Spaß am Spieltisch!</div>
+</div></section>
+
+<div class="cap clip" data-start="0.8" data-duration="1.841" data-track-index="9"><div class="in" id="cap0">Willkommen bei Schicksalsschlag.</div></div>
+<div class="cap clip" data-start="2.741" data-duration="2.686" data-track-index="9"><div class="in" id="cap1">Euer Spielleiter ist eine KI namens sl.</div></div>
+<div class="cap clip" data-start="5.827" data-duration="3.236" data-track-index="9"><div class="in" id="cap2">Sie erzählt die Welt in Foundry, und ich moderiere die Runde.</div></div>
+<div class="cap clip" data-start="10.763" data-duration="2.893" data-track-index="9"><div class="in" id="cap3">Ihr tretet Foundry über den Einladungslink bei.</div></div>
+<div class="cap clip" data-start="13.956" data-duration="4.543" data-track-index="9"><div class="in" id="cap4">Alles, was eure Figur sagt oder tut, schreibt ihr mit /sl davor.</div></div>
+<div class="cap clip" data-start="18.899" data-duration="3.376" data-track-index="9"><div class="in" id="cap5">Ohne /sl hört der Spielleiter nicht zu.</div></div>
+<div class="cap clip" data-start="23.975" data-duration="2.185" data-track-index="9"><div class="in" id="cap6">Zuerst erschafft ihr eure Figur.</div></div>
+<div class="cap clip" data-start="26.46" data-duration="3.483" data-track-index="9"><div class="in" id="cap7">Ihr schreibt eine Hintergrundgeschichte, drei bis acht Sätze.</div></div>
+<div class="cap clip" data-start="30.243" data-duration="4.448" data-track-index="9"><div class="in" id="cap8">Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz kann ein Wort entstehen.</div></div>
+<div class="cap clip" data-start="36.391" data-duration="3.977" data-track-index="9"><div class="in" id="cap9">Diese Wörter sind eure Eigenschaften, und ihr habt zwanzig Punkte Budget.</div></div>
+<div class="cap clip" data-start="40.768" data-duration="4.209" data-track-index="9"><div class="in" id="cap10">Ein Vorteil kostet zwei Punkte, wenn er klein ist, und vier, wenn er groß ist.</div></div>
+<div class="cap clip" data-start="45.777" data-duration="2.799" data-track-index="9"><div class="in" id="cap11">Ein Nachteil gibt Punkte zurück: zwei oder vier.</div></div>
+<div class="cap clip" data-start="48.876" data-duration="2.568" data-track-index="9"><div class="in" id="cap12">Ins Minus darf das Budget nicht rutschen.</div></div>
+<div class="cap clip" data-start="53.144" data-duration="2.233" data-track-index="9"><div class="in" id="cap13">Was übrig bleibt, tauscht ihr ein.</div></div>
+<div class="cap clip" data-start="55.677" data-duration="2.346" data-track-index="9"><div class="in" id="cap14">Ein Punkt ergibt zehn Taler Startgeld.</div></div>
+<div class="cap clip" data-start="58.323" data-duration="2.41" data-track-index="9"><div class="in" id="cap15">Zwei Punkte ergeben einen Startgegenstand, normale Ausrüstung ohne Magie.</div></div>
+<div class="cap clip" data-start="61.033" data-duration="3.431" data-track-index="9"><div class="in" id="cap16">Drei Punkte ergeben einen zusätzlichen maximalen Schicksalspunkt.</div></div>
+<div class="cap clip" data-start="66.164" data-duration="4.309" data-track-index="9"><div class="in" id="cap17">Dann verteilt ihr dreißig, vierzig und fünfzig auf Kampf, Sozial und Wissen.</div></div>
+<div class="cap clip" data-start="70.773" data-duration="3.155" data-track-index="9"><div class="in" id="cap18">Die Reihenfolge ist frei. Das sind eure Grundwerte.</div></div>
+<div class="cap clip" data-start="75.628" data-duration="2.826" data-track-index="9"><div class="in" id="cap19">Ein Beispiel: Mirne, Tochter eines Salzsieders.</div></div>
+<div class="cap clip" data-start="78.854" data-duration="5.143" data-track-index="9"><div class="in" id="cap20">Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben.</div></div>
+<div class="cap clip" data-start="84.497" data-duration="3.7" data-track-index="9"><div class="in" id="cap21">Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig.</div></div>
+<div class="cap clip" data-start="88.597" data-duration="6.335" data-track-index="9"><div class="in" id="cap22">Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler.</div></div>
+<div class="cap clip" data-start="96.632" data-duration="4.158" data-track-index="9"><div class="in" id="cap23">Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert.</div></div>
+<div class="cap clip" data-start="101.19" data-duration="3.619" data-track-index="9"><div class="in" id="cap24">Die Zielzahl ist Säule plus Eigenschaften plus Schwierigkeit.</div></div>
+<div class="cap clip" data-start="105.309" data-duration="4.211" data-track-index="9"><div class="in" id="cap25">Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus dreißig.</div></div>
+<div class="cap clip" data-start="110.02" data-duration="4.425" data-track-index="9"><div class="in" id="cap26">Ihr wollt möglichst niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg.</div></div>
+<div class="cap clip" data-start="116.145" data-duration="4.977" data-track-index="9"><div class="in" id="cap27">Je weiter unter der Zielzahl, desto besser: Erfolgsgrade gibt es pro zehn Punkte Abstand.</div></div>
+<div class="cap clip" data-start="121.222" data-duration="5.14" data-track-index="9"><div class="in" id="cap28">Mirne schießt mit Zielzahl sechzig und würfelt vierunddreißig. Das sind drei Erfolgsgrade.</div></div>
+<div class="cap clip" data-start="127.262" data-duration="4.162" data-track-index="9"><div class="in" id="cap29">Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer.</div></div>
+<div class="cap clip" data-start="132.324" data-duration="7.099" data-track-index="9"><div class="in" id="cap30">Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddreißig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.</div></div>
+<div class="cap clip" data-start="141.723" data-duration="4.155" data-track-index="9"><div class="in" id="cap31">Gegen jemanden würfeln beide. Ein Erfolg schlägt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat.</div></div>
+<div class="cap clip" data-start="147.578" data-duration="2.521" data-track-index="9"><div class="in" id="cap32">Im Kampf ist der Angriff eine Kampfprobe.</div></div>
+<div class="cap clip" data-start="150.399" data-duration="3.265" data-track-index="9"><div class="in" id="cap33">Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null.</div></div>
+<div class="cap clip" data-start="154.164" data-duration="4.789" data-track-index="9"><div class="in" id="cap34">Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben.</div></div>
+<div class="cap clip" data-start="159.453" data-duration="4.091" data-track-index="9"><div class="in" id="cap35">Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.</div></div>
+<div class="cap clip" data-start="165.244" data-duration="2.376" data-track-index="9"><div class="in" id="cap36">Ihr startet mit fünf Schicksalspunkten.</div></div>
+<div class="cap clip" data-start="168.02" data-duration="5.833" data-track-index="9"><div class="in" id="cap37">Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe.</div></div>
+<div class="cap clip" data-start="174.553" data-duration="4.296" data-track-index="9"><div class="in" id="cap38">Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf.</div></div>
+<div class="cap clip" data-start="179.749" data-duration="2.641" data-track-index="9"><div class="in" id="cap39">Und ein Punkt rettet euch bei null Wunden.</div></div>
+<div class="cap clip" data-start="184.09" data-duration="4.158" data-track-index="9"><div class="in" id="cap40">Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsmüde, minus zehn auf alles.</div></div>
+<div class="cap clip" data-start="188.948" data-duration="3.49" data-track-index="9"><div class="in" id="cap41">Bei null sind es minus zwanzig, und Orakelfragen zu euren Gunsten gehen eine Stufe schlechter aus.</div></div>
+<div class="cap clip" data-start="193.138" data-duration="6.799" data-track-index="9"><div class="in" id="cap42">Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei.</div></div>
+<div class="cap clip" data-start="201.637" data-duration="3.443" data-track-index="9"><div class="in" id="cap43">Alles, was nicht von eurem Können abhängt, fragt ihr das Orakel.</div></div>
+<div class="cap clip" data-start="205.38" data-duration="4.105" data-track-index="9"><div class="in" id="cap44">Eine Ja-Nein-Frage, dazu die Chancen von fast unmöglich bis fast sicher.</div></div>
+<div class="cap clip" data-start="210.185" data-duration="3.056" data-track-index="9"><div class="in" id="cap45">Die Antwort lautet Ja plus, also Ja und sogar mehr, Ja, Nein, oder Nein plus: Nein, und es kommt schlimmer.</div></div>
+<div class="cap clip" data-start="214.941" data-duration="3.176" data-track-index="9"><div class="in" id="cap46">Die KI braucht vier bis zwölf Sekunden für eine Antwort.</div></div>
+<div class="cap clip" data-start="218.617" data-duration="3.982" data-track-index="9"><div class="in" id="cap47">Schreibt nur eine Handlung pro Nachricht und wartet auf die Erzählung.</div></div>
+<div class="cap clip" data-start="224.299" data-duration="3.601" data-track-index="9"><div class="in" id="cap48">Fällt die Technik aus, spielen wir mit dem PDF-Handout weiter.</div></div>
+<div class="cap clip" data-start="228.15" data-duration="2.667" data-track-index="9"><div class="in" id="cap49">Alle Tabellen gehen mit zwei zehnseitigen Würfeln: erst der Zehner, dann der Einer.</div></div>
+<div class="cap clip" data-start="231.067" data-duration="2.011" data-track-index="9"><div class="in" id="cap50">Viel Spaß am Spieltisch!</div></div>
+
+<audio id="narr" src="assets/narration.wav" data-start="0" data-duration="234.278" data-track-index="10" data-volume="1"></audio>
+</div>
+<script>
+const T={"S01": {"t0": 0.0, "t1": 9.963, "l": [0.8, 2.741, 5.827], "e": [2.141, 4.927, 8.463]}, "S02": {"t0": 9.963, "t1": 23.175, "l": [10.763, 13.956, 18.899], "e": [13.156, 17.999, 21.675]}, "S03": {"t0": 23.175, "t1": 35.591, "l": [23.975, 26.46, 30.243], "e": [25.66, 29.443, 34.091]}, "S04": {"t0": 35.591, "t1": 52.344, "l": [36.391, 40.768, 45.777, 48.876], "e": [39.868, 44.477, 48.076, 50.844]}, "S05": {"t0": 52.344, "t1": 65.364, "l": [53.144, 55.677, 58.323, 61.033], "e": [54.877, 57.523, 60.233, 63.864]}, "S06": {"t0": 65.364, "t1": 74.828, "l": [66.164, 70.773], "e": [69.973, 73.328]}, "S07": {"t0": 74.828, "t1": 95.832, "l": [75.628, 78.854, 84.497, 88.597], "e": [77.954, 83.497, 87.697, 94.332]}, "S08": {"t0": 95.832, "t1": 115.345, "l": [96.632, 101.19, 105.309, 110.02], "e": [100.29, 104.309, 109.02, 113.845]}, "S09": {"t0": 115.345, "t1": 146.778, "l": [116.145, 121.222, 127.262, 132.324, 141.723], "e": [120.622, 125.862, 130.924, 138.923, 145.278]}, "S10": {"t0": 146.778, "t1": 164.444, "l": [147.578, 150.399, 154.164, 159.453], "e": [149.599, 153.164, 158.453, 162.944]}, "S11": {"t0": 164.444, "t1": 183.29, "l": [165.244, 168.02, 174.553, 179.749], "e": [167.12, 173.353, 178.349, 181.79]}, "S12": {"t0": 183.29, "t1": 200.837, "l": [184.09, 188.948, 193.138], "e": [187.748, 191.938, 199.337]}, "S13": {"t0": 200.837, "t1": 214.141, "l": [201.637, 205.38, 210.185], "e": [204.58, 208.985, 212.641]}, "S14": {"t0": 214.141, "t1": 223.499, "l": [214.941, 218.617], "e": [217.617, 221.999]}, "S15": {"t0": 223.499, "t1": 233.978, "l": [224.299, 228.15, 231.067], "e": [227.4, 230.317, 232.478]}, "caps": [{"s": 0.8, "e": 2.641}, {"s": 2.741, "e": 5.427}, {"s": 5.827, "e": 9.063}, {"s": 10.763, "e": 13.656}, {"s": 13.956, "e": 18.499}, {"s": 18.899, "e": 22.275}, {"s": 23.975, "e": 26.16}, {"s": 26.46, "e": 29.943}, {"s": 30.243, "e": 34.691}, {"s": 36.391, "e": 40.368}, {"s": 40.768, "e": 44.977}, {"s": 45.777, "e": 48.576}, {"s": 48.876, "e": 51.444}, {"s": 53.144, "e": 55.377}, {"s": 55.677, "e": 58.023}, {"s": 58.323, "e": 60.733}, {"s": 61.033, "e": 64.464}, {"s": 66.164, "e": 70.473}, {"s": 70.773, "e": 73.928}, {"s": 75.628, "e": 78.454}, {"s": 78.854, "e": 83.997}, {"s": 84.497, "e": 88.197}, {"s": 88.597, "e": 94.932}, {"s": 96.632, "e": 100.79}, {"s": 101.19, "e": 104.809}, {"s": 105.309, "e": 109.52}, {"s": 110.02, "e": 114.445}, {"s": 116.145, "e": 121.122}, {"s": 121.222, "e": 126.362}, {"s": 127.262, "e": 131.424}, {"s": 132.324, "e": 139.423}, {"s": 141.723, "e": 145.878}, {"s": 147.578, "e": 150.099}, {"s": 150.399, "e": 153.664}, {"s": 154.164, "e": 158.953}, {"s": 159.453, "e": 163.544}, {"s": 165.244, "e": 167.62}, {"s": 168.02, "e": 173.853}, {"s": 174.553, "e": 178.849}, {"s": 179.749, "e": 182.39}, {"s": 184.09, "e": 188.248}, {"s": 188.948, "e": 192.438}, {"s": 193.138, "e": 199.937}, {"s": 201.637, "e": 205.08}, {"s": 205.38, "e": 209.485}, {"s": 210.185, "e": 213.241}, {"s": 214.941, "e": 218.117}, {"s": 218.617, "e": 222.599}, {"s": 224.299, "e": 227.9}, {"s": 228.15, "e": 230.817}, {"s": 231.067, "e": 233.078}]};
+const $=(s,r)=>(r||document).querySelector(s);
+const mk=(h,p)=>{const d=document.createElement('div');d.innerHTML=h;const e=d.firstElementChild;p.appendChild(e);return e};
+const tl=gsap.timeline({paused:true});
+const L=(s,k)=>T[s].l[k], E=(s,k)=>T[s].e[k];
+const FI=(sel,t,d=.55,y=28)=>tl.fromTo(sel,{opacity:0,y},{opacity:1,y:0,duration:d,ease:'power3.out'},t);
+const FO=(sel,t,d=.4)=>tl.to(sel,{opacity:0,duration:d,ease:'power2.in'},t);
+const DRAW=(sel,t,d=.6)=>tl.to(sel,{strokeDashoffset:0,duration:d,ease:'power2.out'},t);
+const CNT=(el,from,to,t,d,fmt)=>{const o={v:from};tl.fromTo(o,{v:from},{v:to,duration:d,ease:'none',onUpdate:()=>{el.textContent=fmt?fmt(o.v):Math.round(o.v)}},t)};
+
+// scene fades + captions
+for(const k of Object.keys(T)){
+  if(!/^S\d+$/.test(k))continue;
+  const id='#s'+k.slice(1)+' .s';
+  tl.fromTo(id,{opacity:0},{opacity:1,duration:.45,ease:'power2.out'},T[k].t0);
+  tl.to(id,{opacity:0,duration:.4,ease:'power2.in'},T[k].t1-.45);
+}
+T.caps.forEach((c,i)=>{
+  tl.fromTo('#cap'+i,{opacity:0,y:14},{opacity:1,y:0,duration:.2,ease:'power2.out'},c.s);
+  tl.to('#cap'+i,{opacity:0,duration:.15},c.e-.2);
+});
+
+/* S01 */
+{const s='S01';
+ tl.fromTo('#s01-title',{opacity:0,y:40,scale:.94},{opacity:1,y:0,scale:1,duration:1,ease:'power3.out'},L(s,0));
+ FI('#s01-sub',L(s,0)+.5);
+ FI('#s01-n3',L(s,1)); tl.fromTo('#s01-n3',{borderColor:'#3a2f27'},{borderColor:'#f08a3c',duration:.4},L(s,1)+.3);
+ FI('#s01-n2',L(s,2)-.2); FI('#s01-n1',L(s,2)+.2);
+ DRAW('#s01-a1,#s01-a1h',L(s,2)+.8,.7); DRAW('#s01-a2,#s01-a2h',L(s,2)+1.4,.7);
+ FI('#s01-n4',L(s,2)+1.9); DRAW('#s01-a3',L(s,2)+2.5,.5);
+}
+/* S02 */
+{const s='S02';
+ FI('#s02-link',L(s,0)); tl.fromTo('#s02-crop',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.8,ease:'power3.out'},L(s,0)+.3);
+ tl.fromTo('#s02-ring',{opacity:0,scale:1.15},{opacity:1,scale:1,duration:.5,ease:'back.out(2)'},L(s,1));
+ FI('#s02-ok',L(s,1)+.2);
+ const code=$('#s02-code'); const full='/sl Ich öffne die Tür.';
+ const o={n:0};tl.fromTo(o,{n:0},{n:full.length,duration:1.6,ease:'none',onUpdate:()=>{const n=Math.round(o.n);code.innerHTML='<span class="gold">'+full.slice(0,Math.min(3,n))+'</span>'+(n>3?full.slice(3,n):'')}},L(s,1)+.4);
+ FI('#s02-no',L(s,2)-.1);
+}
+/* S03 */
+{const s='S03';
+ FI('#s03-card',L(s,0)+.2);
+ [1,2,3,4].forEach((n,i)=>{const t=L(s,2)+.2+i*1.5; tl.to('#s03-h'+n,{backgroundSize:'100% 100%',duration:.7,ease:'power2.out'},t); tl.fromTo('#s03-c'+n,{opacity:0,x:80},{opacity:1,x:0,duration:.6,ease:'power3.out'},t+.5)});
+}
+/* S04 */
+{const s='S04'; const P=$('#s04-coins');
+ for(let i=0;i<20;i++){mk(`<div class="coin pos" id="s04-c${i}" style="left:${192+(i%10)*84}px;top:${200+Math.floor(i/10)*84}px;opacity:0">1</div>`,P)}
+ for(let i=0;i<6;i++){mk(`<div class="coin neg" id="s04-x${i}" style="left:${192+i*84}px;top:368px;opacity:0">+</div>`,P)}
+ tl.fromTo('#s04-coins .pos',{opacity:0,scale:.2,y:-40},{opacity:1,scale:1,y:0,duration:.35,ease:'back.out(2)',stagger:.045},L(s,0)+.2);
+ CNT($('#s04-num'),0,20,L(s,0)+.2,1.1);
+ FI('#s04-v1',L(s,1)+.1);FI('#s04-v2',L(s,1)+1.9);
+ tl.to('#s04-c19,#s04-c18',{opacity:.12,scale:.7,duration:.4,stagger:.15},L(s,1)+.9);CNT($('#s04-num'),20,18,L(s,1)+.9,.5);
+ tl.to('#s04-c17,#s04-c16,#s04-c15,#s04-c14',{opacity:.12,scale:.7,duration:.35,stagger:.12},L(s,1)+2.7);CNT($('#s04-num'),18,14,L(s,1)+2.7,.7);
+ FI('#s04-n1',L(s,2)+.2);FI('#s04-n2',L(s,2)+1.6);
+ tl.fromTo('#s04-x0,#s04-x1',{opacity:0,scale:.2,y:60},{opacity:1,scale:1,y:0,duration:.4,ease:'back.out(2)',stagger:.12},L(s,2)+1.0);CNT($('#s04-num'),14,16,L(s,2)+1.0,.4);
+ tl.fromTo('#s04-x2,#s04-x3,#s04-x4,#s04-x5',{opacity:0,scale:.2,y:60},{opacity:1,scale:1,y:0,duration:.4,ease:'back.out(2)',stagger:.1},L(s,2)+2.4);CNT($('#s04-num'),16,20,L(s,2)+2.4,.5);
+ FI('#s04-warn',L(s,3));tl.fromTo('#s04-warn',{x:0},{x:12,duration:.07,yoyo:true,repeat:5},L(s,3)+.5);
+}
+/* S05 */
+{const s='S05';const P=$('#s05-rows');
+ const rows=[[1,'10 Taler','Startgeld','#e3b858'],[2,'1 Startgegenstand','normale Ausrüstung, keine Magie','#6fc08a'],[3,'+1 maximaler Schicksalspunkt','mehr Schicksal in der Hinterhand','#6aa8d8']];
+ rows.forEach((r,i)=>{const y=190+i*215;let h=`<div id="s05-r${i}" style="opacity:0">`;
+  for(let c=0;c<r[0];c++)h+=`<div class="coin" style="left:${192+c*76}px;top:${y+30}px">1</div>`;
+  h+=`<div class="abs" style="left:480px;top:${y+22}px;font:700 64px 'Cinzel';color:#f08a3c">→</div><div class="card abs" style="left:620px;top:${y}px;width:1108px;height:130px;border-color:${r[3]}"><div class="b" style="font-size:44px;color:${r[3]}">${r[1]}</div><div class="t mute" style="font-size:30px">${r[2]}</div></div></div>`;
+  mk(h,P)});
+ FI('#s05-r0',L(s,1));FI('#s05-r1',L(s,2));FI('#s05-r2',L(s,3));
+}
+/* S06 */
+{const s='S06';const P=$('#s06-cols');
+ const cols=[['Kampf','#f08a3c','Nahkampf, Ausweichen, Schleichen',40],['Sozial','#6aa8d8','Überreden, Handeln, Auftreten',30],['Wissen','#6fc08a','Heilen, Lesen, Spuren deuten',50]];
+ cols.forEach((c,i)=>{const x=192+i*516;mk(`<div id="s06-k${i}" style="opacity:0"><div class="card abs" style="left:${x}px;top:190px;width:504px;height:470px;border-color:${c[1]}"><div class="h2" style="color:${c[1]}">${c[0]}</div><div class="t mute" style="font-size:28px">${c[2]}</div></div><div class="bar" id="s06-b${i}" style="left:${x+40}px;top:640px;width:424px;height:0;background:${c[1]};opacity:.55;transform-origin:50% 100%"></div></div>`,P);
+  mk(`<div id="s06-v${i}" class="abs" style="left:${x+152}px;top:560px;width:200px;height:200px;border-radius:50%;background:#2a1f18;border:5px solid ${c[1]};font:700 100px/190px 'Cinzel';text-align:center;color:#f1e7d6;opacity:0">${c[3]}</div>`,P)});
+ tl.fromTo('#s06-k0,#s06-k1,#s06-k2',{opacity:0,y:40},{opacity:1,y:0,duration:.6,stagger:.2,ease:'power3.out'},L(s,0)+.3);
+ const order=[1,0,2];
+ order.forEach((ci,k)=>{
+   tl.fromTo('#s06-v'+ci,{opacity:0,x:(k-ci)*516,y:130,scale:.5},{opacity:1,x:(k-ci)*516,y:130,scale:1,duration:.5,ease:'back.out(2)'},L(s,0)+1.3+k*.4);
+   tl.to('#s06-v'+ci,{x:0,y:-290,scale:.62,duration:.9,ease:'power3.inOut'},L(s,1)+.4+k*.35);
+   tl.to('#s06-b'+ci,{height:cols[ci][3]*5,duration:.8,ease:'power2.out'},L(s,1)+1.2+k*.35);
+ });
+}
+/* S07 */
+{const s='S07';
+ FI('#s07-card',L(s,0)+.2);
+ FI('#s07-A',L(s,1)+.2);
+ FO('#s07-A',L(s,2)-.1);tl.fromTo('#s07-B',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.7,ease:'back.out(1.6)'},L(s,2)+.3);
+ const P=$('#s07-split');const segs=[[3,'+1 SP','#6aa8d8'],[2,'Armbrust','#6fc08a'],[2,'Leder-wams','#6fc08a'],[5,'50 Taler','#e3b858']];let x=880;
+ segs.forEach((g,i)=>{const w=g[0]*66;mk(`<div id="s07-g${i}" class="bar" style="left:${x}px;top:610px;width:${w-6}px;height:120px;background:${g[2]};opacity:0;text-align:center;color:#101010;font:700 26px/1.2 'Lora';padding-top:18px">${g[1]}<div style="font-size:24px;font-weight:600;margin-top:6px">${g[0]} Pkt</div></div>`,P);x+=w});
+ tl.fromTo('#s07-g0,#s07-g1,#s07-g2,#s07-g3',{opacity:0,y:-60},{opacity:1,y:0,duration:.5,stagger:.35,ease:'back.out(1.8)'},L(s,3)+.2);
+ tl.to('#s07-sp',{opacity:1,duration:.4},L(s,3)+.6);tl.to('#s07-it',{opacity:1,duration:.4},L(s,3)+1.6);tl.to('#s07-ta',{opacity:1,duration:.4},L(s,3)+2.6);
+}
+/* S08 */
+{const s='S08';
+ FI('#s08-top',L(s,0)+.1);
+ FI('#s08-f1',L(s,1)+.1);FI('#s08-o1',L(s,1)+.7);FI('#s08-f2',L(s,1)+1.0);FI('#s08-o2',L(s,1)+1.5);FI('#s08-f3',L(s,1)+1.8);FI('#s08-o3',L(s,1)+2.3);
+ tl.fromTo('#s08-f4',{opacity:0,scale:.7},{opacity:1,scale:1,duration:.6,ease:'back.out(2)'},L(s,1)+2.8);
+ const P=$('#s08-diff');
+ [['leicht +20','#6fc08a'],['normal ±0','#6aa8d8'],['schwer −20','#f08a3c'],['sehr schwer −30','#e5675a']].forEach((d,i)=>{mk(`<div id="s08-d${i}" class="chip" style="left:${192+i*390}px;top:480px;border-color:${d[1]};opacity:0">${d[0]}</div>`,P)});
+ tl.fromTo('#s08-d0,#s08-d1,#s08-d2,#s08-d3',{opacity:0,y:30},{opacity:1,y:0,duration:.45,stagger:.5},L(s,2)+.1);
+ FI('#s08-bar',L(s,3)+.1);tl.fromTo('#s08-zone',{width:0},{width:922,duration:1.2,ease:'power2.out'},L(s,3)+.5);
+ tl.fromTo('#s08-tl',{opacity:0},{opacity:1,duration:.4},L(s,3)+1.4);
+}
+/* S09 */
+{const s='S09';
+ const bar=$('#s09-bar');let h='';const U=1536/100;
+ h+=`<div class="bar" style="left:0;top:0;width:1536px;height:120px;background:#3a1d1a"></div>`;
+ for(let k=0;k<6;k++){const hi=60-10*k,lo=hi-10;h+=`<div class="bar" id="s09-s${k}" style="left:${lo*U}px;top:0;width:${10*U-4}px;height:120px;background:#2f7a4a;opacity:0;text-align:center;font:700 44px/116px 'Cinzel';color:#fff;border:2px solid #6fc08a">${k+1}</div>`}
+ h+=`<div class="bar" id="s09-bo" style="left:0;top:-14px;width:${5*U}px;height:148px;border:4px solid #6fc08a;opacity:0"></div><div class="bar" id="s09-bx" style="left:${95*U}px;top:-14px;width:${5*U}px;height:148px;border:4px solid #e5675a;opacity:0"></div>`;
+ h+=`<div class="abs gold b" id="s09-tz" style="left:${60*U-120}px;top:128px;width:240px;text-align:center;font-size:30px;opacity:0">Zielzahl 60</div>`;
+ h+=`<div id="s09-ball" class="abs" style="left:${34*U-35}px;top:-80px;width:70px;height:70px;border-radius:50%;background:#f1e7d6;color:#151010;font:700 34px/70px 'Cinzel';text-align:center;opacity:0">34</div>`;
+ bar.innerHTML=h;
+ tl.to('#s09-g1',{opacity:1,duration:.5},L(s,0)+.1);
+ tl.fromTo('#s09-s5,#s09-s4,#s09-s3,#s09-s2,#s09-s1,#s09-s0',{opacity:0,y:30},{opacity:1,y:0,duration:.4,stagger:.35,ease:'power2.out'},L(s,0)+.5);
+ tl.to('#s09-tz',{opacity:1,duration:.4},L(s,0)+2.4);
+ tl.fromTo('#s09-ball',{opacity:0,y:-120},{opacity:1,y:0,duration:.7,ease:'bounce.out'},L(s,1)+.3);
+ tl.to('#s09-s2',{backgroundColor:'#f08a3c',duration:.3},L(s,1)+1.1);
+ tl.fromTo('#s09-res',{opacity:0,scale:.8},{opacity:1,scale:1,duration:.6,ease:'back.out(2)'},L(s,1)+1.6);
+ tl.to('#s09-res',{opacity:0,duration:.3},L(s,2)-.1);
+ tl.to('#s09-bo,#s09-b1',{opacity:1,duration:.4},L(s,2)+.1);tl.to('#s09-bx,#s09-b2',{opacity:1,duration:.4},L(s,2)+1.7);
+ tl.to('#s09-g1',{opacity:0,duration:.4},L(s,3)-.15);
+ const tiles=$('#s09-tiles');[11,22,33,44,55,66,77,88,99,100].forEach((n,i)=>mk(`<div id="s09-t${i}" class="sq" style="left:${192+i*154}px;top:300px;width:136px;opacity:0;border-color:#e3b858;color:#e3b858">${n}</div>`,tiles));
+ tl.to('#s09-g2',{opacity:1,duration:.4},L(s,3));
+ tl.fromTo('#s09-tiles .sq',{opacity:0,scale:.4},{opacity:1,scale:1,duration:.35,stagger:.14,ease:'back.out(2)'},L(s,3)+.4);
+ tl.fromTo('#s09-ck,#s09-cf',{opacity:0,y:40},{opacity:1,y:0,duration:.5,stagger:1.8,ease:'power3.out'},L(s,3)+3.2);
+ tl.to('#s09-g2',{opacity:0,duration:.4},L(s,4)-.15);
+ tl.to('#s09-g3',{opacity:1,duration:.4},L(s,4));
+ tl.fromTo('#s09-m',{scale:.3},{scale:1,duration:.6,ease:'back.out(2)'},L(s,4)+.5);tl.fromTo('#s09-w',{scale:.3},{scale:1,duration:.6,ease:'back.out(2)'},L(s,4)+1.2);
+ tl.fromTo('#s09-win',{opacity:0},{opacity:1,duration:.5},L(s,4)+2.6);
+}
+/* S10 */
+{const s='S10';
+ FI('#s10-a',L(s,0)+.2);
+ const eq=$('#s10-eq');
+ [['Waffe 3','#f1e7d6',0],['+',null,285],['DoS 2','#6fc08a',355],['−',null,625],['Rüstung 1','#6aa8d8',695],['=',null,1010],['Schaden 4','#f08a3c',1085]].forEach((e,i)=>{
+  mk(e[1]?`<div id="s10-e${i}" class="node" style="left:${e[2]}px;top:0;width:${i==6?360:(i==2?260:i==4?300:270)}px;font-size:38px;padding:30px 4px;border-color:${e[1]};color:${e[1]};opacity:0">${e[0]}</div>`:`<div id="s10-e${i}" class="abs t" style="left:${e[2]}px;top:26px;width:60px;text-align:center;font-size:64px;opacity:0">${e[0]}</div>`,eq)});
+ FO('#s10-a',L(s,1)-.1);
+ tl.set('#s10-eq',{opacity:1},L(s,1));
+ tl.fromTo('#s10-e0,#s10-e1,#s10-e2,#s10-e3,#s10-e4,#s10-e5,#s10-e6',{opacity:0,y:30},{opacity:1,y:0,duration:.45,stagger:.5,ease:'power3.out'},L(s,1)+.2);
+ const wl=$('#s10-wl');
+ for(let i=1;i<=10;i++)mk(`<div id="s10-w${i}" class="sq" style="left:${(i-1)*154}px;top:20px;width:136px;height:90px;border-color:${i<=3?'#f08a3c':'#6fc08a'};background:${i<=3?'#4a2a14':'#1f3a29'};color:#f1e7d6;line-height:82px">${i}</div>`,wl);
+ mk(`<div class="abs mute" style="left:0;top:130px;font-size:30px">Wunden</div>`,wl);
+ mk(`<div class="abs b" id="s10-th" style="left:0;top:170px;width:700px;font-size:32px;color:#f08a3c;opacity:0">1–3: −10 auf alle Proben</div>`,wl);
+ tl.fromTo('#s10-wl',{opacity:0,y:30},{opacity:1,y:0,duration:.5},L(s,2)+.1);
+ const D=(sel,t)=>tl.to(sel,{backgroundColor:'#201210',borderColor:'#3a2f27',color:'#5a4a3c',duration:.35,stagger:.2},t);
+ D('#s10-w10,#s10-w9,#s10-w8,#s10-w7,#s10-w6',L(s,2)+1.2);
+ tl.to('#s10-th',{opacity:1,duration:.4},L(s,2)+2.6);
+ D('#s10-w5,#s10-w4',L(s,3)-.4);
+ D('#s10-w3,#s10-w2,#s10-w1',L(s,3)+.3);
+ $('#s10-t1').innerHTML='<span class="bad">0 Wunden: zu Boden</span> · <span class="gold">1 SP: du lebst</span>';
+ tl.fromTo('#s10-t1',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L(s,3)+1.4);
+}
+function pips(P,id,x0,y,n){for(let i=0;i<n;i++)mk(`<div id="${id}${i+1}" class="pip" style="left:${x0+i*124}px;top:${y}px;border-color:#e3b858;background:#e3b858;color:#2a1c05;opacity:0">${i+1}</div>`,P)}
+const dim=(sel,t,d=.35)=>tl.to(sel,{backgroundColor:'#1d1713',borderColor:'#3a2f27',color:'#5a4a3c',duration:d},t);
+const lit=(sel,t,d=.35,c='#e3b858')=>tl.to(sel,{backgroundColor:c,borderColor:c,color:'#2a1c05',duration:d},t);
+/* S11 */
+{const s='S11';const P=$('#s11-pips');pips(P,'s11-p',192,190,5);
+ tl.fromTo('#s11-pips .pip',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.4,stagger:.15,ease:'back.out(2)'},L(s,0)+.2);FI('#s11-n',L(s,0)+.6);
+ const C=$('#s11-cards');
+ const cards=[['1 SP','±10 auf eine Probe','auch auf die eines Gegners · höchstens 3 SP je Probe','#6fc08a'],['1 SP','Orakel-Chancen','um eine Stufe verschieben','#6aa8d8'],['2 SP','Neuwurf','das zweite Ergebnis zählt','#f08a3c'],['1 SP','Überleben bei 0 Wunden','du bleibst am Boden, aber du lebst','#e5675a']];
+ cards.forEach((c,i)=>mk(`<div id="s11-c${i}" class="card abs" style="left:${192+(i%2)*780}px;top:${400+Math.floor(i/2)*200}px;width:756px;height:176px;border-color:${c[3]};opacity:0"><div class="b" style="font-size:44px;color:${c[3]}">${c[0]} · ${c[1]}</div><div class="t mute" style="font-size:28px;margin-top:6px">${c[2]}</div></div>`,C));
+ const tt=[L(s,1)+.3,L(s,2)+.2,L(s,2)+2.2,L(s,3)+.2];
+ tt.forEach((t,i)=>FI('#s11-c'+i,t));
+ tl.fromTo('#s11-p5',{scale:1},{scale:1.2,duration:.25,yoyo:true,repeat:1},tt[0]+.4);
+ tl.fromTo('#s11-p4',{scale:1},{scale:1.2,duration:.25,yoyo:true,repeat:1},tt[1]+.3);
+ tl.fromTo('#s11-p3,#s11-p2',{scale:1},{scale:1.2,duration:.25,yoyo:true,repeat:1,stagger:.15},tt[2]+.3);
+ tl.fromTo('#s11-p1',{scale:1},{scale:1.2,duration:.25,yoyo:true,repeat:1},tt[3]+.3);
+}
+/* S12 */
+{const s='S12';const P=$('#s12-pips');pips(P,'s12-p',192,190,5);const n=$('#s12-n');
+ tl.fromTo('#s12-pips .pip',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.4,stagger:.1},L(s,0)-.2);
+ dim('#s12-p5',L(s,0)+.5);dim('#s12-p4',L(s,0)+1.1);dim('#s12-p3',L(s,0)+1.7);dim('#s12-p2',L(s,0)+2.3);CNT(n,5,1,L(s,0)+.5,1.8);
+ const st=$('#s12-st1');
+ st.innerHTML='<span class="ember">1 SP: schicksalsmüde · −10 auf alle Proben</span>';
+ tl.fromTo('#s12-st',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L(s,0)+2.4);
+ dim('#s12-p1',L(s,1)+.2);CNT(n,1,0,L(s,1)+.2,.4);
+ tl.call(()=>{st.innerHTML='<span class="bad">0 SP: −20 · Orakel zu euren Gunsten eine Stufe schlechter</span>'},null,L(s,1)+.5);
+ tl.call(()=>{st.innerHTML='<span class="ember">1 SP: schicksalsmüde · −10 auf alle Proben</span>'},null,L(s,1)+.45);
+ tl.fromTo('#s12-n',{color:'#e3b858'},{color:'#e5675a',duration:.4},L(s,1)+.3);
+ const R=$('#s12-rec');[['Rast 1 Std. +1'],['Nacht +3'],['Fest +2'],['Strang +2']].forEach((r,i)=>mk(`<div id="s12-r${i}" class="chip pos" style="left:${192+i*385}px;top:600px;opacity:0;border-color:#6fc08a">${r[0]}</div>`,R));
+ tl.to('#s12-st',{opacity:0,duration:.3},L(s,2)-.2);
+ tl.fromTo('#s12-r0,#s12-r1,#s12-r2,#s12-r3',{opacity:0,y:30},{opacity:1,y:0,duration:.45,stagger:.9},L(s,2)+.1);
+ tl.fromTo('#s12-n',{color:'#e5675a'},{color:'#e3b858',duration:.4},L(s,2)+.6);
+ [1,2,3,4,5].forEach((k,i)=>lit('#s12-p'+k,L(s,2)+.8+i*.55));
+ CNT(n,0,5,L(s,2)+.8,2.4);
+}
+/* S13 */
+{const s='S13';
+ tl.fromTo('#s13-crop',{opacity:0,scale:.92},{opacity:1,scale:1,duration:.7,ease:'power3.out'},L(s,0)+.2);
+ FI('#s13-lad',L(s,1)+.2);FI('#s13-q',L(s,2)-.3);
+ const B=$('#s13-bar');const U=1536/100;
+ [[0,8,'JA+','#2f7a4a'],[8,50,'JA','#2a6b9c'],[50,92,'NEIN','#b8541a'],[92,100,'NEIN+','#a8302a']].forEach((g,i)=>mk(`<div id="s13-s${i}" class="bar" style="left:${g[0]*U}px;top:0;width:${(g[1]-g[0])*U-4}px;height:90px;background:${g[3]};color:#fff;font:700 38px/90px 'Cinzel';text-align:center;opacity:0">${g[2]}</div>`,B));
+ mk(`<div id="s13-ball" class="abs" style="left:${41*U-32}px;top:-76px;width:64px;height:64px;border-radius:50%;background:#f1e7d6;color:#151010;font:700 30px/64px 'Cinzel';text-align:center;opacity:0">41</div>`,B);
+ tl.fromTo('#s13-bar',{opacity:0},{opacity:1,duration:.3},L(s,2)+.2);
+ tl.fromTo('#s13-s0,#s13-s1,#s13-s2,#s13-s3',{opacity:0,scaleY:.2},{opacity:1,scaleY:1,duration:.4,stagger:.5,ease:'power2.out'},L(s,2)+.5);
+ tl.fromTo('#s13-ball',{opacity:0,y:-100},{opacity:1,y:0,duration:.7,ease:'bounce.out'},E(s,2)-.2);
+}
+/* S14 */
+{const s='S14';const P=$('#s14-tl');
+ [['Du schreibst','#3a2f27',0,380],['sl denkt: 4 bis 12 s','#f08a3c',390,640],['Erzählung','#6fc08a',1040,300],['Nächster Zug','#6aa8d8',1350,186]].forEach((g,i)=>mk(`<div id="s14-g${i}" class="bar" style="left:${192+g[2]}px;top:190px;width:${g[3]-8}px;height:110px;border:3px solid ${g[1]};background:#1d1713;text-align:center;font:600 30px/104px 'Lora';opacity:0">${g[0]}</div>`,P));
+ tl.fromTo('#s14-g0,#s14-g1,#s14-g2,#s14-g3',{opacity:0,y:30},{opacity:1,y:0,duration:.45,stagger:.35},L(s,0)+.2);
+ tl.fromTo('#s14-timer',{opacity:0},{opacity:1,duration:.4},L(s,0)+1.6);CNT($('#s14-timer'),0,12,L(s,0)+1.8,E(s,0)-L(s,0)-.4,v=>Math.round(v)+' s');
+ tl.fromTo('#s14-dots',{opacity:0},{opacity:1,duration:.4},L(s,0)+2.5);
+ FI('#s14-ok',L(s,1)+.2);FI('#s14-no',L(s,1)+1.8);
+}
+/* S15 */
+{const s='S15';
+ tl.fromTo('#s15-doc',{opacity:0,rotation:-4,y:40},{opacity:1,rotation:-2,y:0,duration:.8,ease:'power3.out'},L(s,0)+.2);
+ FI('#s15-t1',L(s,1)+.1);
+ tl.fromTo('#s15-big',{opacity:0,scale:.85},{opacity:1,scale:1,duration:.9,ease:'back.out(1.6)'},L(s,2)+.2);
+}
+window.__timelines["main"]=tl;
+
+</script>
+</body>
+</html>

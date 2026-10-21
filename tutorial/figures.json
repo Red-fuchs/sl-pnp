@@ -1,0 +1,407 @@
+{
+ "usercfg": {
+  "img": "r3-player-card",
+  "view": [
+   460,
+   560,
+   480,
+   260
+  ],
+  "cap": "Foundry, Benutzermenü: Der Moderator weist dir hier deine Figur zu (Feld Player Character).",
+  "marks": [
+   {
+    "n": 1,
+    "box": [
+     568,
+     632,
+     336,
+     36
+    ],
+    "cx": 920,
+    "cy": 620,
+    "t": "Hier wählt der Moderator deine Figur aus der Liste."
+   },
+   {
+    "n": 2,
+    "box": [
+     478,
+     760,
+     444,
+     40
+    ],
+    "cx": 500,
+    "cy": 742,
+    "t": "Speichern. Danach erscheinen Figur und Werte in deinem Charakterbogen."
+   }
+  ]
+ },
+ "chat": {
+  "img": "e1-typing-player",
+  "view": [
+   1000,
+   395,
+   400,
+   505
+  ],
+  "cap": "Der Foundry-Chat eines Spielers. Rechts unten schreibst du, mittendrin erzählt der Spielleiter.",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 1048,
+    "cy": 845,
+    "tx": 1103,
+    "ty": 845,
+    "t": "Eingabefeld: hier schreibst du <code>/sl Ich öffne die Tür.</code>"
+   },
+   {
+    "n": 2,
+    "cx": 1048,
+    "cy": 712,
+    "tx": 1160,
+    "ty": 708,
+    "t": "Grüne Lampe = sl ist verbunden. Daneben der Knopf <b>Probe</b>."
+   },
+   {
+    "n": 3,
+    "cx": 1348,
+    "cy": 772,
+    "tx": 1294,
+    "ty": 740,
+    "t": "&bdquo;Spielleiter schreibt &hellip;&ldquo;: sl denkt gerade. Abwarten."
+   },
+   {
+    "n": 4,
+    "cx": 1048,
+    "cy": 630,
+    "tx": 1103,
+    "ty": 630,
+    "t": "Die Erzählung von sl erscheint als Chat-Karte &bdquo;Spielleiter&ldquo;."
+   }
+  ]
+ },
+ "chargen": {
+  "img": "n04-budget",
+  "view": [
+   1000,
+   0,
+   600,
+   470
+  ],
+  "cap": "Im Foundry-Chat: Anna schreibt <code>/figur</code> mit ihrer Geschichte, sl antwortet mit der fertigen Figur. Danach verteilt sie den Rest mit <code>/budget</code>.",
+  "wide": false,
+  "marks": [
+   {
+    "n": 1,
+    "box": [
+     1046,
+     10,
+     548,
+     142
+    ],
+    "cx": 1022,
+    "cy": 80,
+    "tx": 1043,
+    "ty": 80,
+    "t": "<code>/figur Name: Geschichte</code>: deine Hintergrundgeschichte, 3 bis 8 Sätze."
+   },
+   {
+    "n": 2,
+    "box": [
+     1054,
+     217,
+     520,
+     52
+    ],
+    "cx": 1022,
+    "cy": 243,
+    "tx": 1051,
+    "ty": 243,
+    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, Wunden 10/10, die Wörter, Taler 100 und <b>Budget übrig 10</b>."
+   },
+   {
+    "n": 3,
+    "box": [
+     1054,
+     326,
+     190,
+     17
+    ],
+    "cx": 1022,
+    "cy": 335,
+    "tx": 1051,
+    "ty": 335,
+    "t": "<code>/budget taler=1 item=Seil sp=1</code>: den Rest verteilen."
+   },
+   {
+    "n": 4,
+    "box": [
+     1066,
+     418,
+     350,
+     17
+    ],
+    "cx": 1022,
+    "cy": 427,
+    "tx": 1051,
+    "ty": 427,
+    "t": "sl bestätigt: 50 Taler, 1 Seil, SP-Max 6. Nicht verteilte Punkte werden zu Taler."
+   }
+  ]
+ },
+ "dialog": {
+  "img": "e2-dialog",
+  "view": [
+   470,
+   240,
+   500,
+   440
+  ],
+  "cap": "Der Proben-Dialog in Foundry.",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 945,
+    "cy": 315,
+    "tx": 905,
+    "ty": 315,
+    "t": "<b>Säule</b>: Kampf, Sozial oder Wissen (hier Wissen 50)."
+   },
+   {
+    "n": 2,
+    "cx": 945,
+    "cy": 386,
+    "tx": 700,
+    "ty": 386,
+    "t": "<b>Eigenschaften</b>: Haken setzen bei allem, was zur Probe passt (+20, &minus;10 …)."
+   },
+   {
+    "n": 3,
+    "cx": 945,
+    "cy": 444,
+    "tx": 905,
+    "ty": 444,
+    "t": "<b>Schwierigkeit</b>: leicht +20 bis sehr schwer &minus;30."
+   },
+   {
+    "n": 4,
+    "cx": 945,
+    "cy": 492,
+    "tx": 905,
+    "ty": 492,
+    "t": "<b>SP einsetzen</b>: 0 bis 3 Schicksalspunkte, je +10."
+   },
+   {
+    "n": 5,
+    "cx": 945,
+    "cy": 575,
+    "tx": 900,
+    "ty": 575,
+    "t": "<b>Zielwert</b>: Der Dialog rechnet alles zusammen und zeigt die Rechnung."
+   },
+   {
+    "n": 6,
+    "cx": 945,
+    "cy": 634,
+    "tx": 906,
+    "ty": 634,
+    "t": "<b>Würfeln</b> (Foundry) oder <b>sl würfeln lassen</b> (Zufall von sl)."
+   }
+  ]
+ },
+ "card": {
+  "img": "e3-card-gm",
+  "view": [
+   1000,
+   520,
+   400,
+   190
+  ],
+  "cap": "Die Ergebniskarte im Chat (Beispiel: ein kritischer Patzer).",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 1058,
+    "cy": 598,
+    "tx": 1105,
+    "ty": 598,
+    "t": "<b>Wurf gegen Zielzahl</b>: hier 100 gegen 30."
+   },
+   {
+    "n": 2,
+    "cx": 1058,
+    "cy": 623,
+    "tx": 1105,
+    "ty": 621,
+    "t": "Das Ergebnis: <b>Kritischer Misserfolg</b> (Pasch, 8 Misserfolgsgrade)."
+   },
+   {
+    "n": 3,
+    "cx": 1058,
+    "cy": 646,
+    "tx": 1105,
+    "ty": 640,
+    "t": "<b>Rechnung</b> aufklappen: wie die Zielzahl entstanden ist."
+   },
+   {
+    "n": 4,
+    "cx": 1058,
+    "cy": 684,
+    "tx": 1118,
+    "ty": 667,
+    "t": "<b>SP +10 / SP &minus;10</b>: Schicksalspunkte einsetzen, bevor erzählt wird."
+   },
+   {
+    "n": 5,
+    "cx": 1348,
+    "cy": 700,
+    "tx": 1300,
+    "ty": 682,
+    "t": "<b>an sl senden</b>: Ergebnis geht an die KI, die es erzählt."
+   }
+  ]
+ },
+ "approve": {
+  "img": "e4-approve",
+  "view": [
+   440,
+   355,
+   500,
+   190
+  ],
+  "cap": "Setzt du SP auf die Probe eines anderen, fragt der Moderator per Dialog.",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 472,
+    "cy": 440,
+    "tx": 515,
+    "ty": 440,
+    "t": "Wer setzt wie viele SP wofür ein (hier: 1 SP, &minus;10 auf Annas Probe)."
+   },
+   {
+    "n": 2,
+    "cx": 472,
+    "cy": 503,
+    "tx": 516,
+    "ty": 503,
+    "t": "<b>Erlauben</b>: Der Einsatz gilt, die SP werden abgezogen."
+   },
+   {
+    "n": 3,
+    "cx": 925,
+    "cy": 503,
+    "tx": 886,
+    "ty": 503,
+    "t": "<b>Ablehnen</b>: Nichts passiert."
+   }
+  ]
+ },
+ "oracle": {
+  "img": "e3-card-gm",
+  "view": [
+   1000,
+   330,
+   400,
+   130
+  ],
+  "cap": "Eine Orakel-Antwort im Chat.",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 1058,
+    "cy": 372,
+    "tx": 1115,
+    "ty": 372,
+    "t": "Die <b>Frage</b>, die gestellt wurde."
+   },
+   {
+    "n": 2,
+    "cx": 1058,
+    "cy": 402,
+    "tx": 1115,
+    "ty": 402,
+    "t": "Die <b>Antwort</b>: JA+, JA, NEIN oder NEIN+."
+   },
+   {
+    "n": 3,
+    "cx": 1058,
+    "cy": 435,
+    "tx": 1126,
+    "ty": 422,
+    "t": "Chancen (wahrscheinlich), Prozentwert und Wurf."
+   }
+  ]
+ },
+ "paused": {
+  "img": "e6-paused",
+  "view": [
+   1000,
+   520,
+   400,
+   270
+  ],
+  "cap": "Pausiert: sl hört nicht mehr zu, die Spielleitung übernimmt von Hand.",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 1048,
+    "cy": 590,
+    "tx": 1104,
+    "ty": 590,
+    "t": "Meldung der Bridge: Die KI pausiert, die Spielleitung übernimmt (Orakel-Tabellen aus dem PDF)."
+   },
+   {
+    "n": 2,
+    "cx": 1050,
+    "cy": 762,
+    "tx": 1176,
+    "ty": 732,
+    "t": "Die Lampe ist <b>gelb</b>: pausiert. Grün = verbunden, rot = nicht erreichbar."
+   },
+   {
+    "n": 3,
+    "cx": 1330,
+    "cy": 768,
+    "tx": 1318,
+    "ty": 743,
+    "t": "<b>sl fortsetzen</b> (nur Moderator): zurück zur KI."
+   }
+  ]
+ },
+ "rechnung": {
+  "img": "n08-karte",
+  "view": [
+   1000,
+   620,
+   600,
+   190
+  ],
+  "cap": "Eine Proben-Karte mit aufgeklappter Rechnung (Beispiel: Wissen 50 + Kräuterkundige +20 + Schwierigkeit +20 = 90).",
+  "marks": [
+   {
+    "n": 1,
+    "cx": 1022,
+    "cy": 697,
+    "tx": 1062,
+    "ty": 697,
+    "t": "<b>Wurf gegen Zielzahl</b>: 34 gegen 90."
+   },
+   {
+    "n": 2,
+    "cx": 1022,
+    "cy": 720,
+    "tx": 1062,
+    "ty": 720,
+    "t": "Erfolg mit <b>6 Erfolgsgraden</b>: 1 + abgerundet((90 &minus; 34) &divide; 10)."
+   },
+   {
+    "n": 3,
+    "cx": 1022,
+    "cy": 774,
+    "tx": 1062,
+    "ty": 774,
+    "t": "Die <b>Rechnung</b>: Säule, passende Eigenschaft, Schwierigkeit."
+   }
+  ]
+ }
+}

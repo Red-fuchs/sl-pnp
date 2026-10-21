@@ -92,6 +92,22 @@ public enum SR {
     if used > left { return nil }
     return ((talerPts + left - used) * 10, items, sp)
   }
+  /// "Merkmal: text | major" / "Schwäche: text | minor" lines -> traits (harmful words dropped, "-" = none)
+  public static func parseTraits(_ txt: String, pos: Bool) -> [Trait] {
+    txt.split(separator: "\n").compactMap { l -> Trait? in
+      guard let c = l.firstIndex(of: ":") else { return nil }
+      let f = l[l.index(after: c)...].split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
+      guard f.count == 2, !f[0].isEmpty, f[0] != "-" else { return nil }
+      let t = clean(f[0], 40); if minorHarm(t) { return nil }
+      return Trait(text: t, major: f[1] == "major", pos: pos)
+    }
+  }
+  /// check reason for cards: cut at a word boundary, never mid-word
+  public static func shortReason(_ s: String, _ n: Int = 60) -> String {
+    let t = s.trimmingCharacters(in: .whitespacesAndNewlines); if t.count <= n { return t }
+    var c = String(t.prefix(n)); if let sp = c.lastIndex(of: " ") { c = String(c[..<sp]) }
+    return c.trimmingCharacters(in: CharacterSet(charactersIn: " ,.;:-")) + " …"
+  }
   /// traits fitted to the budget, pillars, leftover as Taler; returns the dropped traits
   public static func build(_ pc: inout Pc, name: String, story: String, traits: [Trait]) -> [Trait] {
     let fit = SR.fit(traits)

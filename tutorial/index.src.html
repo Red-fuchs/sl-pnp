@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Schicksalsschlag Tutorial</title>
+<meta name="description" content="Spielerhandbuch für Schicksalsschlag: Figur erschaffen, Proben mit dem W100, Kampf, Schicksalspunkte und Orakel, gespielt in Foundry mit KI-Spielleiter.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6efe2; --bg2:#eee3cc; --card:#fffaf0; --ink:#251c14; --mute:#6a5a48; --line:#d8c9ad;
+  --ember:#b8541a; --gold:#8f6a12; --ok:#2f7a4a; --bad:#b3382c; --info:#2a6b9c; --shadow:rgba(60,40,10,.14);
+  --mark:#b8541a; --marktext:#fff; --hero1:#f0dcc0; --hero2:#f6efe2;
+  --head:'Cinzel','Trajan Pro',Georgia,serif; --body:'Lora',Georgia,'Times New Roman',serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#100d0c; --bg2:#1a1512; --card:#211b17; --ink:#efe6d6; --mute:#b3a591; --line:#3a2f27;
+    --ember:#f08a3c; --gold:#e3b858; --ok:#6fc08a; --bad:#e5675a; --info:#6aa8d8; --shadow:rgba(0,0,0,.5);
+    --mark:#f08a3c; --marktext:#1a0f06; --hero1:#2a1710; --hero2:#100d0c;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#100d0c; --bg2:#1a1512; --card:#211b17; --ink:#efe6d6; --mute:#b3a591; --line:#3a2f27;
+  --ember:#f08a3c; --gold:#e3b858; --ok:#6fc08a; --bad:#e5675a; --info:#6aa8d8; --shadow:rgba(0,0,0,.5);
+  --mark:#f08a3c; --marktext:#1a0f06; --hero1:#2a1710; --hero2:#100d0c;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.65 var(--body);overflow-x:hidden;-webkit-text-size-adjust:100%}
+img,svg,video{max-width:100%}
+a{color:var(--ember)}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px}
+.wide{max-width:1080px;margin:0 auto;padding:0 16px}
+h1,h2,h3,h4{font-family:var(--head);line-height:1.2;letter-spacing:.02em;margin:0 0 .5em}
+h1{font-size:clamp(2rem,7vw,3.6rem);color:var(--ember)}
+h2{font-size:clamp(1.5rem,4.6vw,2.2rem);color:var(--ember);margin-top:0}
+h3{font-size:1.2rem;color:var(--gold);margin-top:1.8em}
+p{margin:0 0 1em}
+code,kbd,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;background:var(--bg2);border:1px solid var(--line);border-radius:5px;padding:.05em .35em}
+.top{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{display:flex;gap:10px;align-items:center;max-width:1080px;margin:0 auto;padding:8px 16px}
+.brand{font-family:var(--head);color:var(--ember);font-weight:700;white-space:nowrap;text-decoration:none}
+.toc{display:flex;gap:6px;overflow-x:auto;flex:1;scrollbar-width:none}
+.toc::-webkit-scrollbar{display:none}
+.toc a{white-space:nowrap;font:600 .78rem var(--head);text-decoration:none;color:var(--mute);padding:4px 9px;border:1px solid var(--line);border-radius:999px}
+.toc a:hover,.toc a.on{color:var(--ink);border-color:var(--ember)}
+#theme{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:4px 9px;font:inherit;cursor:pointer}
+#bar{position:fixed;left:0;top:0;height:3px;width:100%;background:var(--ember);transform:scaleX(0);transform-origin:0 50%;z-index:60}
+.hero{background:radial-gradient(900px 420px at 50% 0,var(--hero1),var(--hero2));padding:56px 0 40px;border-bottom:1px solid var(--line)}
+.hero p.lead{font-size:1.2rem;color:var(--mute);max-width:640px}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.chip{display:inline-block;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:2px 12px;font-size:.85rem;color:var(--mute)}
+section.chap{padding:56px 0 8px;border-bottom:1px solid var(--line)}
+.num{display:inline-block;font-family:var(--head);color:var(--gold);font-size:.95rem;letter-spacing:.25em;margin-bottom:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:18px 0;box-shadow:0 6px 18px var(--shadow)}
+.card>:last-child{margin-bottom:0}
+.note{border-left:4px solid var(--info);background:var(--bg2);padding:10px 14px;border-radius:0 10px 10px 0;margin:16px 0;font-size:.96rem}
+.note.warn{border-color:var(--ember)}
+.note.ausl{border-color:var(--gold)}
+.tag{display:inline-block;font:700 .68rem var(--head);letter-spacing:.08em;text-transform:uppercase;background:var(--gold);color:var(--bg);border-radius:4px;padding:1px 6px;margin-right:6px;vertical-align:.1em}
+.tag.emp{background:var(--info)}
+table{border-collapse:collapse;width:100%;font-size:.95rem;margin:12px 0}
+th,td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+th{font:600 .8rem var(--head);color:var(--gold);letter-spacing:.04em}
+.tw{overflow-x:auto}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:720px){.grid2,.grid3{grid-template-columns:1fr}body{font-size:17px}
+  .steps>li{padding-left:34px;margin-left:14px}.sc{overflow-x:auto;-webkit-overflow-scrolling:touch}.minw{min-width:600px}
+  figure.shot.wideimg .frame{overflow-x:auto}figure.shot.wideimg svg{min-width:640px}.brand{display:none}}
+.steps{counter-reset:s;list-style:none;padding:0;margin:20px 0}
+.steps>li{counter-increment:s;position:relative;padding:4px 0 18px 52px;border-left:2px solid var(--line);margin-left:18px}
+.steps>li::before{content:counter(s);position:absolute;left:-19px;top:0;width:36px;height:36px;border-radius:50%;background:var(--ember);color:var(--marktext);font:700 1rem/36px var(--head);text-align:center}
+.steps>li:last-child{border-color:transparent}
+.steps>li h3{margin:0 0 .3em;color:var(--ink)}
+figure.shot{margin:22px 0}
+figure.shot .frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#000;box-shadow:0 10px 26px var(--shadow)}
+figure.shot svg{display:block;width:100%;height:auto}
+figure.shot figcaption{font-size:.9rem;color:var(--mute);margin-top:8px}
+ol.legend{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:6px}
+ol.legend li{display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+ol.legend>li>b{flex:none;width:24px;height:24px;border-radius:50%;background:var(--mark);color:var(--marktext);font:700 .8rem/24px var(--head);text-align:center}
+.mk{fill:var(--mark);stroke:#fff;stroke-width:2.2}
+.mt{fill:var(--marktext);font:700 15px var(--head);text-anchor:middle;dominant-baseline:central}
+.ar{stroke:var(--mark);stroke-width:3.4;fill:none;stroke-linecap:round;filter:drop-shadow(0 0 2px rgba(0,0,0,.9))}
+.ah{fill:var(--mark);filter:drop-shadow(0 0 2px rgba(0,0,0,.9))}
+.bx{fill:none;stroke:var(--mark);stroke-width:3;rx:5;filter:drop-shadow(0 0 2px rgba(0,0,0,.9))}
+.ph{aspect-ratio:16/9;border:2px dashed var(--line);border-radius:12px;display:grid;place-items:center;color:var(--mute);text-align:center;padding:20px;background:var(--bg2)}
+/* diagrams */
+.diag{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 14px 10px;margin:20px 0;box-shadow:0 6px 18px var(--shadow)}
+.diag h4{font-size:1rem;color:var(--gold);margin:0 0 8px}
+.diag svg{width:100%;height:auto;display:block}
+.diag text{fill:var(--ink);font-family:var(--body)}
+.diag .m{fill:var(--mute)}
+.ctl{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.ctl label{display:flex;flex-direction:column;font-size:.82rem;color:var(--mute);gap:3px}
+.ctl select,.ctl input[type=number],.ctl input[type=range]{font:inherit;font-size:1rem;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px;width:100%}
+.ctl input[type=range]{accent-color:var(--ember);padding:0}
+.btn{font:600 .9rem var(--head);background:var(--ember);color:var(--marktext);border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.out{font-size:1.05rem;margin:8px 0 0}
+.out b.ok{color:var(--ok)}.out b.bad{color:var(--bad)}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:1.2rem;cursor:pointer}
+.stepper span{min-width:1.5em;text-align:center;font:700 1.2rem var(--head)}
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.pill{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:1px 10px;font-size:.85rem}
+.pill.neg{border-color:var(--bad)}.pill.big{font-weight:600;border-color:var(--gold)}
+details{margin:12px 0}
+summary{cursor:pointer;font-family:var(--head);color:var(--gold)}
+video{width:100%;border-radius:12px;border:1px solid var(--line);background:#000}
+.cheat{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.cheat .card{margin:0;padding:12px 14px;break-inside:avoid}
+.cheat h4{font-size:.95rem;color:var(--gold);margin-bottom:.4em}
+.cheat table{font-size:.88rem;margin:0}
+footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:8px 0}
+.reveal-ready [data-r]{opacity:0}
+@media (prefers-reduced-motion:reduce){.reveal-ready [data-r]{opacity:1}}
+@media print{
+  .top,#bar,.hero .meta,video,.noprint{display:none!important}
+  body{background:#fff;color:#000;font-size:11pt}
+  section.chap{page-break-inside:auto}
+  .reveal-ready [data-r]{opacity:1!important}
+  #cheat{page-break-before:always}
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+{{IMGDEFS}}
+</defs></svg>
+
+<header class="top"><div class="in">
+  <a class="brand" href="#top">Schicksalsschlag</a>
+  <nav class="toc" id="toc" aria-label="Kapitel">
+    <a href="#was">1 Was</a><a href="#foundry">2 Foundry</a><a href="#figur">3 Figur</a><a href="#probe">4 Probe</a><a href="#kampf">5 Kampf</a><a href="#sp">6 SP</a><a href="#orakel">7 Orakel</a><a href="#etikette">8 Etikette</a><a href="#notfall">9 Notfall</a><a href="#spickzettel">10 Spickzettel</a>
+  </nav>
+  <button id="theme" type="button" aria-label="Hell oder dunkel umschalten" title="Hell/Dunkel">&#9788;/&#9790;</button>
+</div></header>
+
+<div class="hero" id="top"><div class="wrap">
+  <div class="num" data-r>Spielerhandbuch &middot; Sitzung 22. Oktober 2026</div>
+  <h1 data-r>Schicksalsschlag</h1>
+  <p class="lead" data-r>Dunkle Fantasy, ein W100, ein Orakel für alles, was nicht in deiner Hand liegt, und ein Spielleiter, der eine KI ist. Dieses Heft bringt dich in etwa 20 Minuten Lesezeit an den Tisch, auch wenn du das System noch nie gesehen hast.</p>
+  <div class="meta" data-r><span class="chip">W100: niedrig würfeln</span><span class="chip">Budget 20 Punkte</span><span class="chip">Säulen 30 / 40 / 50</span><span class="chip">5 Schicksalspunkte</span><span class="chip">10 Wunden</span></div>
+  <div style="margin-top:26px" data-r>
+    <video id="vid" controls preload="none" playsinline poster="{{POSTER}}" aria-label="Erklärvideo Schicksalsschlag">
+      <source src="video/out/schicksalsschlag-web.mp4" type="video/mp4">
+    </video>
+    <p class="m" style="font-size:.9rem;color:var(--mute);margin-top:6px">Erklärvideo (ca. {{VIDMIN}} Minuten, mit Untertiteln). Wer lieber liest: einfach weiterscrollen.</p>
+  </div>
+</div></div>
+
+<main>
+
+<!-- 1 -->
+<section class="chap" id="was"><div class="wrap">
+  <div class="num" data-r>Kapitel 1</div>
+  <h2 data-r>Was ist das hier?</h2>
+  <p data-r><b>Schicksalsschlag</b> ist ein Fernrollenspiel in einer dunklen Fantasy-Welt. Ihr spielt Figuren, die in Foundry VTT zusammensitzen, jeder an seinem eigenen Rechner. Die Welt erzählt <b>sl</b>, ein lokaler <b>KI-Spielleiter</b>. Ein Mensch, der Moderator, sitzt als Spielleitung (GM) daneben: Er startet die Sitzung, kann sl pausieren, ihm verdeckte Regie-Notizen geben und übernimmt, wenn die Technik streikt.</p>
+
+  <div class="diag" data-r>
+    <h4>So hängt alles zusammen</h4>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 210" role="img" aria-label="Spieler schreiben im Foundry-Chat, der Moderator-Browser reicht /sl-Nachrichten an die KI sl weiter, sl erzählt zurück in den Chat.">
+      <defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ember)"/></marker></defs>
+      <g stroke="var(--line)" stroke-width="2" fill="var(--bg2)">
+        <rect x="10" y="60" width="170" height="90" rx="12"/><rect x="315" y="20" width="170" height="90" rx="12"/><rect x="315" y="125" width="170" height="70" rx="12"/><rect x="620" y="60" width="170" height="90" rx="12"/>
+      </g>
+      <g text-anchor="middle" font-size="17">
+        <text x="95" y="98" font-weight="700">Spieler</text><text x="95" y="122" class="m">schreiben &quot;/sl …&quot;</text>
+        <text x="400" y="58" font-weight="700">Foundry-Chat</text><text x="400" y="82" class="m">Würfel, Bögen, Karten</text>
+        <text x="400" y="154" font-weight="700">Moderator (GM)</text><text x="400" y="176" class="m">pausieren, /regie</text>
+        <text x="705" y="98" font-weight="700">sl, die KI</text><text x="705" y="122" class="m">erzählt die Welt</text>
+      </g>
+      <g stroke="var(--ember)" stroke-width="3" fill="none" marker-end="url(#ah1)">
+        <path d="M182 95 C 240 95 250 65 312 65" pathLength="1" class="dr"/>
+        <path d="M487 65 C 560 65 560 95 617 95" pathLength="1" class="dr"/>
+        <path d="M617 120 C 560 160 540 160 488 160" pathLength="1" class="dr" stroke-dasharray="6 5"/>
+        <path d="M312 160 C 250 160 240 130 182 120" pathLength="1" class="dr" stroke-dasharray="6 5"/>
+      </g>
+      <text x="245" y="30" font-size="13" class="m" text-anchor="middle">1 Nachricht</text>
+      <text x="555" y="40" font-size="13" class="m" text-anchor="middle">2 nur der GM-Browser spricht mit sl</text>
+      <text x="570" y="196" font-size="13" class="m" text-anchor="middle">3 Antwort kommt als Chat-Karte zurück</text>
+    </svg></div>
+    <p style="font-size:.9rem;color:var(--mute);margin:4px 0 0">Spieler brauchen nie direkten Zugriff auf sl. Alles läuft über den Foundry-Chat.</p>
+  </div>
+
+  <h3 data-r>Wann würfeln, wann fragen, wann einfach erzählen?</h3>
+  <div class="tw" data-r><table>
+    <tr><th>Situation</th><th>Werkzeug</th></tr>
+    <tr><td>&bdquo;Kann meine Figur das?&ldquo; (klettern, überreden, Schloss öffnen, kämpfen)</td><td><b>Probe</b> mit dem W100 (Kapitel 4 und 5)</td></tr>
+    <tr><td>&bdquo;Ist es so?&ldquo; (Ist der Wächter bestechlich? Ist die Tür verschlossen?)</td><td><b>Orakel</b> (Kapitel 7)</td></tr>
+    <tr><td>Alles klar oder ohne Risiko</td><td>Einfach erzählen. <b>Nicht würfeln, wenn nichts auf dem Spiel steht.</b></td></tr>
+  </table></div>
+  <div class="note warn" data-r><b>Inhaltsregel:</b> Minderjährige werden nie Opfer von Gewalt oder sexuellen Inhalten. Dunkle Themen unter Erwachsenen sind in Ordnung. Wer sich unwohl fühlt, sagt &bdquo;Pause&ldquo;; die Szene wird ohne Diskussion umgelenkt.</div>
+</div></section>
+
+<!-- 2 -->
+<section class="chap" id="foundry"><div class="wrap">
+  <div class="num" data-r>Kapitel 2</div>
+  <h2 data-r>Foundry beitreten und das Präfix <code>/sl</code></h2>
+  <ol class="steps">
+    <li data-r><h3>Einladungslink öffnen</h3><p>Du bekommst vom Moderator einen Link. Er öffnet Foundry im Browser; du wählst deinen Spielernamen. Du brauchst nichts zu installieren.</p></li>
+    <li data-r><h3>Figur zuordnen</h3><p>Sobald du den ersten Zug machst, legt sl deine Figur an. Der Moderator weist sie dir im Benutzermenü zu (Feld <i>Character</i>). Der Name der Figur in Foundry muss genau dem Namen in sl entsprechen.</p>
+      {{FIG:usercfg}}</li>
+    <li data-r><h3>Alles, was deine Figur tut, beginnt mit <code>/sl</code></h3><p><code>/sl Ich öffne vorsichtig die Tür.</code> Nur Nachrichten mit diesem Präfix gehen an den Spielleiter. Alles andere ist normaler Chat unter Menschen. So kannst du am Tisch quatschen, ohne dass sl antwortet.</p>
+      {{FIG:chat}}</li>
+    <li data-r><h3>Würfeln über den Knopf <b>Probe</b></h3><p>Proben würfelst du über den Knopf im Chat (oder mit <code>/probe</code>). Dazu mehr in Kapitel 4. Foundry würfelt 3D-Würfel mit. Die gelbe Einblendung &bdquo;Dice So Nice&ldquo; beim ersten Mal kannst du wegklicken.</p></li>
+  </ol>
+  <div class="tw" data-r><table>
+    <tr><th>Was</th><th>Wie</th></tr>
+    <tr><td>In der Rolle sprechen oder handeln</td><td><code>/sl Ich ziehe mein Schwert.</code></td></tr>
+    <tr><td>Figur erschaffen</td><td><code>/figur Name: Geschichte</code>, danach <code>/budget taler=N item=Name sp=N</code></td></tr>
+    <tr><td>Würfeln</td><td>Knopf <b>Probe</b> im Chat oder <code>/probe</code></td></tr>
+    <tr><td>Schicksalspunkte auf eine Probe</td><td>Im Dialog oder per Knopf <b>SP +10 / SP &minus;10</b> auf der Karte</td></tr>
+    <tr><td>Verdeckte Regie-Notiz <span class="chip">nur Moderator</span></td><td><code>/regie Die Wache ist bestechlich.</code></td></tr>
+    <tr><td>Lampe im Chat</td><td>grün: verbunden &middot; gelb: pausiert &middot; rot: sl nicht erreichbar</td></tr>
+  </table></div>
+</div></section>
+
+<!-- 3 -->
+<section class="chap" id="figur"><div class="wide">
+  <div class="wrap">
+  <div class="num" data-r>Kapitel 3</div>
+  <h2 data-r>Deine Figur erschaffen, Schritt für Schritt</h2>
+  <p data-r>Deine Figur entsteht aus einer <b>Hintergrundgeschichte</b>. Aus ihr ziehst du Eigenschaften als <b>Wörter</b>. Jedes Wort kostet oder bringt Punkte aus einem <b>Budget von 20</b>. Was übrig bleibt, wird zu Geld, Ausrüstung oder zusätzlichen Schicksalspunkten.</p>
+
+  <ol class="steps">
+    <li data-r><h3>Schreibe die Hintergrundgeschichte (3 bis 8 Sätze)</h3>
+      <p>Wer bist du? Woher kommst du? Was kannst du? Was holt dich ein? Gute Geschichten nennen <b>Können</b> (Vorteile) und <b>Last</b> (Nachteile). Jeder Satz kann ein Wort liefern. Bei sl zieht die KI die Wörter für dich heraus, am Tisch macht das die Spielleitung oder du selbst.</p>
+      <p><b>In Foundry:</b> <code>/figur Mara: Ich bin Mara, eine Kräuterkundige aus den Sümpfen &hellip;</code> (erst der Name, dann ein Doppelpunkt, dann die Geschichte).</p>
+      {{FIG:chargen}}</li>
+    <li data-r><h3>Wörter als Eigenschaften, Budget 20</h3>
+      <div class="tw"><table>
+        <tr><th>Art</th><th>Klein (minor)</th><th>Groß (major)</th><th>Wirkung bei passender Probe</th></tr>
+        <tr><td><b>Vorteil</b> (Können, Eigenschaft, Kontakt)</td><td>kostet <b>2</b></td><td>kostet <b>4</b></td><td>+10 / +20 auf die Zielzahl</td></tr>
+        <tr><td><b>Nachteil</b> (Makel, Schuld, Feind, Angst)</td><td>gibt <b>+2</b> zurück</td><td>gibt <b>+4</b> zurück</td><td>&minus;10 / &minus;20, wenn er ins Spiel kommt</td></tr>
+      </table></div>
+      <p>Beispiele: &bdquo;trinkfest&ldquo; (klein, 2), &bdquo;geübter Bogenschütze&ldquo; (groß, 4), &bdquo;Angst vor Feuer&ldquo; (Nachteil klein, +2), &bdquo;Todfeind: der Vogt&ldquo; (Nachteil groß, +4). Ein Wort gilt nur, wenn die Spielleitung findet, dass es zur Probe passt.</p>
+      <div class="note ausl"><span class="tag emp">Empfehlung</span> Höchstens zwei große Nachteile, und jedes Wort sollte in der Geschichte vorkommen. Die Spielleitung entscheidet, ob ein Wort klein oder groß ist, und sieht die Liste vor dem Spiel durch.</div>
+      <details><summary>Wörter-Vorschläge ansehen (nur Anregungen, eigene Wörter gehen auch)</summary>{{TRAITS}}</details>
+    </li>
+    <li data-r><h3>Rechne dein Budget</h3>
+      <p><b>Budget = 20 + Rückgaben der Nachteile &minus; Kosten der Vorteile.</b> Es darf 0 sein, aber nicht ins Minus gehen. Probier es aus:</p>
+      <div class="diag" id="budget">
+        <h4>Budget-Rechner</h4>
+        <div class="ctl" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+          <label>Vorteile klein (&minus;2 je)<div class="stepper"><button data-k="a" data-d="-1" aria-label="weniger">&minus;</button><span id="va">0</span><button data-k="a" data-d="1" aria-label="mehr">+</button></div></label>
+          <label>Vorteile groß (&minus;4 je)<div class="stepper"><button data-k="b" data-d="-1" aria-label="weniger">&minus;</button><span id="vb">0</span><button data-k="b" data-d="1" aria-label="mehr">+</button></div></label>
+          <label>Nachteile klein (+2 je)<div class="stepper"><button data-k="c" data-d="-1" aria-label="weniger">&minus;</button><span id="vc">0</span><button data-k="c" data-d="1" aria-label="mehr">+</button></div></label>
+          <label>Nachteile groß (+4 je)<div class="stepper"><button data-k="d" data-d="-1" aria-label="weniger">&minus;</button><span id="vd">0</span><button data-k="d" data-d="1" aria-label="mehr">+</button></div></label>
+        </div>
+        <svg id="bsvg" viewBox="0 0 800 120" role="img" aria-label="Budgetbalken"><g id="bg"></g></svg>
+        <p class="out" id="bout"></p>
+        <button class="btn ghost" id="bmirne" type="button">Beispiel Mirne laden</button>
+      </div>
+    </li>
+    <li data-r><h3>Tausche den Rest</h3>
+      <div class="tw"><table>
+        <tr><th>Rest</th><th>Tausch</th></tr>
+        <tr><td>1 Punkt</td><td><b>10 Taler</b> Startgeld</td></tr>
+        <tr><td>2 Punkte</td><td><b>1 Startgegenstand</b> (normale Ausrüstung, keine Magie)</td></tr>
+        <tr><td>3 Punkte</td><td><b>+1 maximaler Schicksalspunkt</b> (Start 5, mit diesem Tausch 6 usw.)</td></tr>
+      </table></div>
+      <p><b>In Foundry:</b> <code>/budget taler=1 item=Seil sp=1</code> (Punkte für Taler, Gegenstände, zusätzliche SP-Max; mehrere Gegenstände mit Komma: <code>item=Armbrust,Lederwams</code>). Was du nicht verteilst, wird zu Taler. Der Befehl geht nur <b>vor deiner ersten Probe</b>.</p>
+      <p>Mischen ist erlaubt. Alltagskleidung, Beutel und Proviant hat jede Figur gratis; Waffen und Rüstung kosten Punkte oder Taler.</p></li>
+    <li data-r><h3>Verteile die drei Säulen</h3>
+      <p>Verteile die Werte <b>30, 40 und 50</b> beliebig auf <b>Kampf</b>, <b>Sozial</b> und <b>Wissen</b>. Das sind deine Grundzielzahlen für den W100.</p>
+      <div class="grid3">
+        <div class="card"><h4 style="color:var(--bad)">Kampf</h4>Nahkampf, Fernkampf, Ausweichen, Schleichen und Klettern, alles Körperliche und Handfeste, Initiative.</div>
+        <div class="card"><h4 style="color:var(--info)">Sozial</h4>Überreden, Einschüchtern, Handeln, Lügen, Gespür für Menschen, Auftreten.</div>
+        <div class="card"><h4 style="color:var(--ok)">Wissen</h4>Heilen, Lesen, Handwerk, Magie- und Religionskunde, Spuren deuten, Wahrnehmung.</div>
+      </div></li>
+    <li data-r><h3>Notiere deinen Bogen</h3>
+      <p>Name, Kurzgeschichte, Wörter mit +/&minus;-Werten, Säulen, <b>Wunden 10</b>, <b>Schicksalspunkte</b> (Start = Maximum), Taler, Ausrüstung.</p></li>
+  </ol>
+  </div>
+
+  <div class="wrap">
+  <h3 data-r>Beispielfigur: Mirne Aschenbach</h3>
+  <div class="card" data-r>
+    <p><i>Mirne wuchs als Tochter eines Salzsieders im Moor auf und lernte früh, mit der Armbrust Raben von den Salzpfannen zu verscheuchen. Mit neunzehn ging sie als Botin zum Zollhaus, sah dort Schmugglergold und schwieg. Seitdem schuldet ihr der Zöllner Ottokar einen Gefallen, und die Schmuggler wollen sie tot sehen. Sie kann lesen und schreiben, kennt die Heilkräuter des Moores und findet jeden Pfad dort im Nebel. Seit die Siederei brannte, erstarrt sie vor Feuer.</i></p>
+    <div class="tw"><table>
+      <tr><th>Wort</th><th>Art</th><th>Punkte</th><th>Passt zu</th></tr>
+      <tr><td>geübte Armbrustschützin</td><td>Vorteil groß</td><td>&minus;4</td><td>Kampf (+20, nur Armbrust)</td></tr>
+      <tr><td>kann lesen und schreiben</td><td>Vorteil klein</td><td>&minus;2</td><td>Wissen (+10)</td></tr>
+      <tr><td>kennt Moorkräuter</td><td>Vorteil klein</td><td>&minus;2</td><td>Wissen (+10, Kräuter/Heilen)</td></tr>
+      <tr><td>findet jeden Pfad im Moor</td><td>Vorteil klein</td><td>&minus;2</td><td>Kampf (+10, Schleichen und Fortbewegen im Moor)</td></tr>
+      <tr><td>Ottokar schuldet ihr einen Gefallen</td><td>Vorteil klein</td><td>&minus;2</td><td>Sozial (+10 bei Zoll und Wache)</td></tr>
+      <tr><td>zäh wie Moorholz</td><td>Vorteil klein</td><td>&minus;2</td><td>Kampf (+10, Ausdauer, Gift, Kälte)</td></tr>
+      <tr><td>Todfeind: Schmugglerbande</td><td>Nachteil groß</td><td>+4</td><td>Sozial (&minus;20 bei Gesindel am Hafen)</td></tr>
+      <tr><td>Angst vor Feuer</td><td>Nachteil klein</td><td>+2</td><td>alle (&minus;10 in der Nähe von Feuer)</td></tr>
+    </table></div>
+    <div class="diag" style="box-shadow:none;margin:10px 0 0" id="mirnediag">
+      <h4>Mirnes Budget: 26 Punkte, davon 14 für Vorteile, 12 übrig</h4>
+      <div class="sc"><svg class="minw" viewBox="0 0 800 210" role="img" aria-label="Budgetbalken: 20 Startbudget plus 6 aus Nachteilen ergibt 26; 14 Punkte gehen an Vorteile, 12 Rest werden getauscht in 3 für einen SP, 2 für die Armbrust, 2 für ein Lederwams, 5 für 50 Taler.">
+        <g id="mseg"></g>
+      </svg></div>
+    </div>
+    <p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = <b>14</b>; Rest <b>12</b>: 3 Punkte &rarr; +1 max. SP (also 6), 2 Punkte &rarr; Armbrust, 2 Punkte &rarr; Lederwams, 5 Punkte &rarr; 50 Taler (3 + 2 + 2 + 5 = 12).</p>
+    <p><b>Säulen:</b> Kampf <b>40</b>, Sozial <b>30</b>, Wissen <b>50</b>. <b>Wunden 10</b>, <b>SP 6 von 6</b>.</p>
+  </div>
+  </div>
+</div></section>
+
+<!-- 4 -->
+<section class="chap" id="probe"><div class="wrap">
+  <div class="num" data-r>Kapitel 4</div>
+  <h2 data-r>Die Probe: W100, niedrig würfeln</h2>
+  <div class="card" data-r>
+    <p style="font-size:1.15rem;margin:0"><b>Zielzahl = Säule + Eigenschaften + Schwierigkeit</b> (± Zustände).<br>Würfle d100 (01 bis 100). <b>Wurf &le; Zielzahl = Erfolg.</b> Sonst Misserfolg.</p>
+  </div>
+  <p data-r>Am Tisch ohne Foundry: zwei W10, erst Zehner, dann Einer; 0 und 0 zählt als 100.</p>
+
+  <h3 data-r>Zielzahl bilden</h3>
+  <ol data-r>
+    <li><b>Säule:</b> Kampf, Sozial oder Wissen (30/40/50).</li>
+    <li><b>Passende Eigenschaft:</b> Vorteil klein +10, groß +20; Nachteil klein &minus;10, groß &minus;20. Es zählen alle Wörter, die die Spielleitung für passend hält.</li>
+    <li><b>Schwierigkeit:</b> leicht +20, normal ±0, schwer &minus;20, sehr schwer &minus;30.</li>
+    <li><b>Zustände:</b> Wunden &le; 3: &minus;10. Schicksalsmüde: SP 1 = &minus;10, SP 0 = &minus;20. Ausgegebene SP: ±10 je Punkt.</li>
+  </ol>
+  <div class="note ausl" data-r><span class="tag">Auslegung</span> Die beiden SP-Abzüge (SP 1 und SP 0) werden nicht addiert, es gilt der größere Abzug. Der Abzug gilt für den SP-Stand <i>vor</i> dem Einsatz.</div>
+  <div class="tw" data-r><table>
+    <tr><th>Schwierigkeit</th><th>Modifikator</th><th>Beispiel</th></tr>
+    <tr><td>leicht</td><td>+20</td><td>Ein unbewachtes Fass aufstemmen</td></tr>
+    <tr><td>normal</td><td>±0</td><td>Einen müden Wirt überreden</td></tr>
+    <tr><td>schwer</td><td>&minus;20</td><td>Ein Gift am Geruch erkennen</td></tr>
+    <tr><td>sehr schwer</td><td>&minus;30</td><td>Im Regen eine Mauer ohne Seil erklimmen</td></tr>
+  </table></div>
+
+  <h3 data-r>Der Wurf auf der Skala</h3>
+  <div class="diag" id="d100" data-r>
+    <h4>W100-Leiste: Zielzone, Erfolgsgrade, Sonderbereiche</h4>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 185" role="img" aria-label="Skala von 1 bis 100 mit Zielzone, Erfolgsgraden in Zehnerschritten, automatischem Erfolg 01 bis 05 und automatischem Misserfolg 96 bis 100.">
+      <g id="dbar"></g>
+    </svg></div>
+    <div class="ctl">
+      <label>Säule<select id="c-p"><option>30</option><option>40</option><option selected>50</option></select></label>
+      <label>Passende Eigenschaften<select id="c-t"><option value="-20">Nachteil groß &minus;20</option><option value="-10">Nachteil klein &minus;10</option><option value="0">keine ±0</option><option value="10" selected>Vorteil klein +10</option><option value="20">Vorteil groß +20</option></select></label>
+      <label>Schwierigkeit<select id="c-d"><option value="20">leicht +20</option><option value="0">normal ±0</option><option value="-20" selected>schwer &minus;20</option><option value="-30">sehr schwer &minus;30</option></select></label>
+      <label>SP-Stand vorher<select id="c-s"><option value="0">2 bis 5 (keine)</option><option value="-10">1 (&minus;10)</option><option value="-20">0 (&minus;20)</option></select></label>
+      <label>Wunden<select id="c-w"><option value="0">4 bis 10</option><option value="-10">3 oder weniger (&minus;10)</option></select></label>
+      <label>SP jetzt ausgeben (+10 je)<select id="c-x"><option>0</option><option>1</option><option>2</option><option>3</option></select></label>
+      <label>Wurf (1 bis 100)<input type="number" id="c-r" min="1" max="100" value="47"></label>
+    </div>
+    <button class="btn" id="c-roll" type="button">Würfeln</button>
+    <p class="out" id="c-out" aria-live="polite"></p>
+  </div>
+
+  <h3 data-r>Erfolgsgrade (DoS) und Misserfolgsgrade (DoF)</h3>
+  <div class="card" data-r>
+    <p><b>Erfolg:</b> DoS = 1 + abgerundet((Zielzahl &minus; Wurf) &divide; 10)<br><b>Misserfolg:</b> DoF = 1 + abgerundet((Wurf &minus; Zielzahl) &divide; 10)</p>
+    <p style="margin:0"><b>Wurf 01 bis 05 ist immer ein Erfolg</b> (mindestens 1 DoS), <b>96 bis 100 immer ein Misserfolg</b> (mindestens 1 DoF), auch wenn die Zielzahl etwas anderes sagt. <span class="tag">Auslegung</span> Höchstens 10 Grade.</p>
+  </div>
+  <div class="tw" data-r><table>
+    <tr><th>Grad</th><th>Erfolg (DoS): Ergebnis</th><th>Misserfolg (DoF): Folge</th></tr>
+    <tr><td>1</td><td>Gerade so geschafft, mit einem kleinen Haken</td><td>Knapp daneben, nichts Schlimmes, Versuch kostet Zeit</td></tr>
+    <tr><td>2</td><td>Solide gelungen</td><td>Daneben, ein kleiner Preis (Zeit, Lärm, Kratzer)</td></tr>
+    <tr><td>3</td><td>Gut gemacht, ein Bonus fällt ab</td><td>Klar misslungen, ein Problem entsteht</td></tr>
+    <tr><td>4</td><td>Sehr gut, mühelos</td><td>Deutlicher Fehlschlag, die Lage verschlechtert sich</td></tr>
+    <tr><td>5</td><td>Meisterlich, Eindruck hinterlassen</td><td>Schwerer Fehlschlag, Ausrüstung oder Ruf leidet</td></tr>
+  </table>
+  <details><summary>Grad 6 bis 10</summary><table>
+    <tr><td>6</td><td>Ausgezeichnet, mehr als verlangt</td><td>Peinlich oder gefährlich, jemand wird aufmerksam</td></tr>
+    <tr><td>7</td><td>Brillant, ein Vorteil bleibt bestehen</td><td>Fatal, ein Gegner bekommt einen Vorteil</td></tr>
+    <tr><td>8</td><td>Herausragend, andere staunen</td><td>Katastrophal, ein Gegenstand geht verloren oder kaputt</td></tr>
+    <tr><td>9</td><td>Legendär, wird erzählt</td><td>Verheerend, die Gruppe leidet mit</td></tr>
+    <tr><td>10</td><td>Perfekt, kaum zu übertreffen</td><td>Unglaubliches Unglück, die Szene kippt</td></tr>
+  </table></details></div>
+  <p data-r>Die Grade sind <b>Wirkungsstärke</b> (Wie gut?) und im Kampf Schaden. Die Spielleitung darf pro DoS eine kleine Zusatzwirkung erzählen.</p>
+
+  <h3 data-r>Kritisch: der Pasch</h3>
+  <p data-r>Ein Wurf mit zwei gleichen Ziffern ist <b>kritisch</b>: 11, 22, 33, 44, 55, 66, 77, 88, 99 und 100. Würfe unter 11 sind nie kritisch.</p>
+  <div class="grid2" data-r>
+    <div class="card" style="border-color:var(--ok)"><b style="color:var(--ok)">Kritischer Erfolg</b><br>Pasch und Wurf &le; Zielzahl: Die Spielleitung fügt eine <b>Wendung zu deinen Gunsten</b> hinzu.</div>
+    <div class="card" style="border-color:var(--bad)"><b style="color:var(--bad)">Kritischer Misserfolg</b><br>Pasch und Wurf &gt; Zielzahl: Eine <b>Komplikation</b> tritt ein. Die 100 ist immer ein kritischer Misserfolg.</div>
+  </div>
+  <p data-r>DoS und DoF zählen trotzdem. Im Foundry-Chat siehst du zum Beispiel: <i>&bdquo;Kritischer Misserfolg (8 Misserfolgsgrade)&ldquo;</i>.</p>
+
+  <h3 data-r>Vergleichende Probe (gegen jemanden)</h3>
+  <p data-r>Beide würfeln gegen ihre eigene Zielzahl. Ein Erfolg schlägt einen Misserfolg. Haben beide Erfolg, gewinnt, wer <b>mehr DoS</b> hat; bei Gleichstand die <b>höhere Zielzahl</b>.</p>
+  <div class="note ausl" data-r><span class="tag">Auslegung</span> Scheitern beide, ist es ein Patt: Nichts Entscheidendes geschieht, kritische Misserfolge gelten trotzdem.</div>
+  <div class="note" data-r><b>In Foundry (Stand pnp-22):</b> Vergleichende Proben und Initiative laufen halb von Hand. Beide Seiten würfeln mit dem Knopf <b>Probe</b>, der Moderator vergleicht die Karten.</div>
+
+  <h3 data-r>Vier Beispiele mit Mirne</h3>
+  <div class="card" data-r>
+    <p><b>1. Armbrustschuss.</b> Mirne schießt auf eine Brieftaube. Kampf 40 + geübte Armbrustschützin 20 = <b>60</b>, normal. Wurf <b>34</b>: Erfolg, DoS = 1 + abgerundet((60 &minus; 34) &divide; 10) = 1 + 2 = <b>3</b>. Die Taube fällt, der Brief ist unversehrt.</p>
+    <p><b>2. Verschmierter Brief, mit Schicksalspunkt.</b> Wissen 50 + lesen 10 &minus; schwer 20 = <b>40</b>. Wurf <b>47</b>: Misserfolg, DoF 1. Mirne gibt 1 SP aus: +10 auf die Zielzahl (50). 47 &le; 50, Erfolg mit DoS 1. Sie entziffert nur das Wesentliche.</p>
+    <p><b>3. Vergleichende Probe.</b> Mirne will an einem Zollwächter vorbei (Ottokars Gefallen). Sozial 30 + 10 = 40, Wurf 17 &rarr; DoS 1 + abgerundet(23 &divide; 10) = <b>3</b>. Der Wächter (Sozial 40) würfelt 31 &rarr; DoS 1 + abgerundet(9 &divide; 10) = <b>1</b>. 3 gegen 1: Mirne gewinnt und wird durchgewunken.</p>
+    <p style="margin:0"><b>4. Kritisch.</b> Wie Beispiel 1, Wurf <b>33</b>: Pasch und &le; 60, also kritischer Erfolg mit DoS 3. Die Spielleitung fügt eine Wendung hinzu (zum Beispiel hängt am Bein der Taube ein zweites Papier).</p>
+  </div>
+
+  <h3 data-r>So sieht eine Probe in Foundry aus</h3>
+  <p data-r>Du klickst auf <b>Probe</b>, wählst Säule, passende Eigenschaften, Schwierigkeit und wie viele SP du vorab einsetzt. Der Dialog rechnet die Zielzahl und zeigt die Rechnung.</p>
+  {{FIG:dialog}}
+  <p data-r>Dann kommt das Ergebnis als Karte in den Chat. Die Karte bleibt kurz offen (Standard: 8 Sekunden), damit ihr noch Schicksalspunkte einsetzen könnt, bevor das Ergebnis an sl geht und erzählt wird.</p>
+  {{FIG:card}}
+  {{FIG:rechnung}}
+</div></section>
+
+<!-- 5 -->
+<section class="chap" id="kampf"><div class="wrap">
+  <div class="num" data-r>Kapitel 5</div>
+  <h2 data-r>Kampf und Wunden</h2>
+  <p data-r>Kampf ist ein Probenspiel auf der Säule <b>Kampf</b>. Es gibt keine Pflicht-Rundenzahl: Flieht oder ergibt sich eine Seite, ist er vorbei.</p>
+  <ol class="steps">
+    <li data-r><h3>Initiative</h3><p>Alle würfeln d100 gegen ihren Kampfwert. Mehr DoS handelt zuerst. <b>Einfacher:</b> Spieler zuerst, dann Gegner. <span class="tag">Auslegung</span> Misserfolge handeln zuletzt, weniger DoF zuerst.</p></li>
+    <li data-r><h3>Angriff</h3><p>Der Handelnde würfelt eine Kampfprobe. Gegen einen wehrlosen oder ahnungslosen Gegner reicht <b>mindestens 1 DoS</b>.</p></li>
+    <li data-r><h3>Verteidigung</h3><p>Wer sich wehren kann, würfelt eine <b>vergleichende</b> Kampfprobe (parieren oder ausweichen). Gewinnt der Angreifer, trifft er. Gewinnt der Verteidiger, wehrt er ab. Verteidigen kostet keine Handlung. Scheitert der Angreifer, trifft er nicht. <span class="tag">Auslegung</span> Bei kritischem Erfolg des Verteidigers ist ein Gegenangriff möglich.</p></li>
+    <li data-r><h3>Schaden</h3><p><b>Schaden = Waffe + DoS (Angreifer) &minus; Rüstung</b>, nicht unter 0 <span class="tag">Auslegung</span>. Der Verteidiger zieht die Zahl von seinen <b>Wunden</b> ab.</p></li>
+  </ol>
+  <div class="grid2" data-r>
+    <div class="tw"><table><tr><th>Waffe</th><th>Schaden</th></tr><tr><td>Faust, Ringen</td><td>1</td></tr><tr><td>Messer, Knüppel</td><td>2</td></tr><tr><td>Schwert, Axt</td><td>3</td></tr><tr><td>Bogen, Armbrust</td><td>3</td></tr><tr><td>Feuerwaffe</td><td>4</td></tr></table></div>
+    <div class="tw"><table><tr><th>Rüstung</th><th>Abzug</th></tr><tr><td>Stoff, Lumpen</td><td>0</td></tr><tr><td>Leder</td><td>1</td></tr><tr><td>Kettenhemd</td><td>2</td></tr><tr><td>Plattenpanzer</td><td>3</td></tr></table></div>
+  </div>
+
+  <div class="diag" id="dmg" data-r>
+    <h4>Schadensrechner und Wunden</h4>
+    <div class="ctl">
+      <label>Waffe<select id="m-w"><option value="1">Faust 1</option><option value="2">Messer, Knüppel 2</option><option value="3" selected>Schwert, Armbrust 3</option><option value="4">Feuerwaffe 4</option></select></label>
+      <label>DoS des Angreifers<input type="number" id="m-d" min="1" max="10" value="2"></label>
+      <label>Rüstung<select id="m-a"><option value="0">Stoff 0</option><option value="1" selected>Leder 1</option><option value="2">Kette 2</option><option value="3">Platte 3</option></select></label>
+      <label>Wunden vorher<input type="number" id="m-h" min="-5" max="10" value="10"></label>
+    </div>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 110" role="img" aria-label="Wundenleiste mit zehn Feldern"><g id="mw"></g></svg></div>
+    <p class="out" id="m-out" aria-live="polite"></p>
+  </div>
+
+  <h3 data-r>Wunden</h3>
+  <ul data-r>
+    <li>Jede Spielerfigur hat <b>10 Wunden</b>. Schaden wird abgezogen.</li>
+    <li>Bei <b>3 oder weniger</b>: <b>&minus;10</b> auf alle Proben.</li>
+    <li>Bei <b>0 oder weniger</b>: Die Figur geht zu Boden. Mit <b>1 SP</b> bleibt sie am Leben (bewusstlos oder kampfunfähig). Ohne SP droht der Tod; die Spielleitung entscheidet im Sinn der Szene.</li>
+  </ul>
+
+  <h3 data-r>Beispielrunde: Mirne gegen einen Schmuggler</h3>
+  <div class="card" data-r>
+    <p>Mirne: Kampf 40, Armbrust +20 (nur beim Schießen), Wunden 10, Lederwams (1). Schmuggler: Kampf 40, Schwert (3), Wunden 8, Leder (1).</p>
+    <ol style="margin:0">
+      <li><b>Initiative:</b> Mirne würfelt 28 (Ziel 40): DoS 2. Der Schmuggler würfelt 35: DoS 1. Mirne zuerst.</li>
+      <li><b>Mirne schießt:</b> Ziel 60, Wurf 41: DoS 2. Der Schmuggler weicht aus: Ziel 40, Wurf 52, Misserfolg (DoF 2). Mirne trifft. Schaden 3 (Armbrust) + 2 &minus; 1 (Leder) = <b>4</b>. Schmuggler: 8 &rarr; 4 Wunden.</li>
+      <li><b>Schmuggler greift an:</b> Ziel 40, Wurf 19: DoS 3. Mirne pariert mit Kampf 40 (kein Armbrustbonus im Nahkampf), Wurf 38: DoS 1. 3 gegen 1: Der Schmuggler trifft. Schaden 3 + 3 &minus; 1 = <b>5</b>. Mirne: 10 &rarr; 5 Wunden.</li>
+    </ol>
+    <p style="margin:8px 0 0">Mirne hat noch 5 Wunden, also über der 3er-Schwelle (kein Abzug).</p>
+  </div>
+</div></section>
+
+<!-- 6 -->
+<section class="chap" id="sp"><div class="wrap">
+  <div class="num" data-r>Kapitel 6</div>
+  <h2 data-r>Schicksalspunkte (SP)</h2>
+  <p data-r>SP sind eine Art Mana des Schicksals: Du verbiegst damit den Zufall, deinen eigenen <b>und den der anderen</b>. Du beginnst mit <b>5</b> (Maximum 5, mehr nur über das Budget bei der Figurenerschaffung). Du gibst SP aus <b>vor dem Wurf oder direkt danach</b>, bevor das Ergebnis erzählt wird.</p>
+
+  <h3 data-r>Wofür du SP ausgibst</h3>
+  <div class="tw" data-r><table>
+    <tr><th>Kosten</th><th>Wirkung</th></tr>
+    <tr><td><b>1 SP</b></td><td><b>±10</b> auf die Zielzahl einer Probe, deiner oder der eines anderen (Gegner, NSC). Höchstens <b>3 SP pro Probe</b>.</td></tr>
+    <tr><td><b>1 SP</b></td><td>Die <b>Chancen des Orakels</b> um eine Stufe verschieben (z. B. offen &rarr; wahrscheinlich; bei Gegnern gegen sie).</td></tr>
+    <tr><td><b>2 SP</b></td><td><b>Neu würfeln.</b> Das zweite Ergebnis zählt.</td></tr>
+    <tr><td><b>1 SP</b></td><td>Bei <b>0 Wunden überleben</b> (du bleibst am Boden, aber lebst).</td></tr>
+  </table></div>
+  <p data-r>±10 auf die Zielzahl entspricht &#8723;10 auf den Wurf: Die Erfolgsgrade ändern sich nach der Formel, der Pasch bleibt Pasch.</p>
+
+  <h3 data-r>Schwellen und Erholung</h3>
+  <div class="diag" id="spg" data-r>
+    <h4>SP-Anzeige: spiel mit den Knöpfen</h4>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 190" role="img" aria-label="Fünf SP-Felder. Bei 1 SP schicksalsmüde minus 10, bei 0 SP minus 20 und das Orakel wird schlechter."><g id="spgauge"></g></svg></div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">
+      <button class="btn ghost" data-sp="-1" type="button">1 SP ausgeben</button>
+      <button class="btn ghost" data-sp="-2" type="button">Neuwurf (2 SP)</button>
+      <button class="btn ghost" data-sp="1" type="button">Rast 1 Std. (+1)</button>
+      <button class="btn ghost" data-sp="2" type="button">Fest (+2)</button>
+      <button class="btn ghost" data-sp="3" type="button">Nachtruhe (+3)</button>
+      <button class="btn ghost" data-sp="reset" type="button">Zurück auf 5</button>
+    </div>
+    <p class="out" id="sp-out" aria-live="polite"></p>
+  </div>
+  <div class="grid2" data-r>
+    <div class="tw"><table><tr><th>SP</th><th>Folge</th></tr>
+      <tr><td>5 bis 2</td><td>keine</td></tr>
+      <tr><td>1</td><td>&bdquo;schicksalsmüde&ldquo;: <b>&minus;10</b> auf alle Proben</td></tr>
+      <tr><td>0</td><td><b>&minus;20</b> auf alle Proben (statt &minus;10), und Orakelfragen zu deinen Gunsten gehen eine Stufe schlechter aus</td></tr></table></div>
+    <div class="tw"><table><tr><th>Erholung</th><th>SP</th></tr>
+      <tr><td>Kurze Rast (etwa eine Stunde)</td><td>+1</td></tr>
+      <tr><td>Nachtruhe oder sicherer Ort</td><td>+3</td></tr>
+      <tr><td>Einen deiner Nachteile so ausspielen, dass es dich etwas kostet (Entscheidung der Spielleitung)</td><td>+1</td></tr>
+      <tr><td>Fest, Feier, Tempel</td><td>+2</td></tr>
+      <tr><td>Einen Handlungsstrang abschließen</td><td>+2</td></tr></table></div>
+  </div>
+  <p data-r>Das Maximum bleibt die Obergrenze.</p>
+
+  <h3 data-r>In Foundry</h3>
+  <p data-r>Auf jeder Proben-Karte stehen die Knöpfe <b>SP +10</b> und <b>SP &minus;10</b>. Setzt du sie bei einer <b>fremden</b> Probe ein, fragt der Moderator per Dialog nach, ob er es erlaubt. Maximal 3 SP pro Probe. Deinen SP-Stand siehst du oben rechts auf dem Charakterbogen als <i>Wert/Max</i>.</p>
+  {{FIG:approve}}
+
+  <h3 data-r>Drei Beispiele</h3>
+  <div class="card" data-r>
+    <p><b>A. Einen NSC-Wurf verbiegen.</b> Der Schmuggler greift Mirne mit Ziel 40 an und würfelt 19 (DoS 3). Mirne gibt 2 SP aus: &minus;20 auf die Zielzahl des Schmugglers (Ziel 20). 19 &le; 20 ist noch ein Treffer, aber nur DoS 1 + abgerundet(1 &divide; 10) = <b>1</b>. Statt 5 bekommt Mirne nur 3 + 1 &minus; 1 = <b>3</b> Schaden. Mit einem dritten SP (Ziel 10) wäre 19 ein Misserfolg gewesen. Mirne hat jetzt 4 von 6 SP.</p>
+    <p><b>B. Orakel-Chancen verschieben.</b> Frage: &bdquo;Ist die Hintertür unverschlossen?&ldquo; Spannung 5, Chancen <i>offen</i>: JA+ &le; 8, JA &le; 50, NEIN &le; 92, darüber NEIN+. Mirne gibt 1 SP aus und verschiebt auf <i>wahrscheinlich</i>: JA+ &le; 11, JA &le; 71, NEIN &le; 96. Die Chance auf JA oder JA+ steigt von 50 % auf 71 %.</p>
+    <p style="margin:0"><b>C. Rettung und Neuwurf.</b> Mirne hat 4 SP und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3, dazu ein Pasch über der Zielzahl, also ein kritischer Misserfolg). Sie zahlt 2 SP für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (&minus;10 auf alle Proben).</p>
+  </div>
+</div></section>
+
+<!-- 7 -->
+<section class="chap" id="orakel"><div class="wrap">
+  <div class="num" data-r>Kapitel 7</div>
+  <h2 data-r>Das Orakel: Fragen an die Welt</h2>
+  <p data-r>Das Orakel beantwortet alles, was <b>nicht von deinem Können abhängt</b>. Es ist dasselbe Verfahren, das der KI-Spielleiter benutzt, hier zum Nachwürfeln am Tisch.</p>
+  <ol class="steps">
+    <li data-r><h3>Stelle eine Ja/Nein-Frage</h3><p>Formuliere so, dass &bdquo;Ja&ldquo; eine klare Aussage ist: &bdquo;Ist die Tür verschlossen?&ldquo; Höchstens 6 Fragen pro Szene.</p></li>
+    <li data-r><h3>Schätze die Chancen (7 Stufen)</h3><p>fast unmöglich &middot; sehr unwahrscheinlich &middot; unwahrscheinlich &middot; <b>offen</b> (Vorgabe, wenn du unsicher bist) &middot; wahrscheinlich &middot; sehr wahrscheinlich &middot; fast sicher. SP verschieben um eine Stufe.</p></li>
+    <li data-r><h3>Kenne die Spannung (1 bis 9)</h3><p>Sie misst, wie angespannt die Geschichte ist. Start: <b>5</b>. Hatten die Spieler die Szene unter Kontrolle, sinkt sie am Szenenende um 1, sonst steigt sie um 1 (bewegt sie sich dabei weg von 5, nur bei d6 = 1 bis 4). Grenzen: 1 und 9.</p></li>
+    <li data-r><h3>Würfle d100</h3><p>Die Tabelle gibt drei Zahlen a / b / c. Wurf &le; a: <b>JA+</b> (Ja, und sogar mehr). &le; b: <b>JA</b>. &le; c: <b>NEIN</b>. Darüber: <b>NEIN+</b> (Nein, und es kommt schlimmer).</p></li>
+    <li data-r><h3>Pasch prüfen</h3><p>Ist der Wurf ein Pasch (11, 22 &hellip; 99) und die Ziffer &le; Spannung, tritt <b>zusätzlich ein Zufallsereignis</b> ein. Die Antwort gilt trotzdem.</p></li>
+  </ol>
+  <div class="diag" id="orc" data-r>
+    <h4>Orakel-Leiste: Chancen mal Spannung</h4>
+    <div class="ctl">
+      <label>Chancen<select id="o-c"></select></label>
+      <label>Spannung (1 bis 9)<input type="range" id="o-s" min="1" max="9" value="5"></label>
+    </div>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 130" role="img" aria-label="d100-Leiste mit den Bereichen JA+, JA, NEIN, NEIN+"><g id="obar"></g></svg></div>
+    <p class="out" id="o-out" aria-live="polite"></p>
+    <p style="font-size:.88rem;color:var(--mute);margin:6px 0 0">Beispiel aus dem Handout: offen, Spannung 5 &rarr; 8 / 50 / 92: Wurf 1 bis 8 JA+, 9 bis 50 JA, 51 bis 92 NEIN, 93 bis 100 NEIN+.</p>
+  </div>
+  <p data-r>In Foundry fragst du das Orakel einfach als Frage an sl. Die Antwort kommt als grüne <b>Orakel-Karte</b> mit Frage, Antwort, Chancen, Prozentwert und Wurf:</p>
+  {{FIG:oracle}}
+  <div class="note" data-r>Die vollständige Schicksalstabelle (alle 7 &times; 9 Zellen) steht im Handout-PDF (Abschnitt „Das Orakel ohne KI“).</div>
+</div></section>
+
+<!-- 8 -->
+<section class="chap" id="etikette"><div class="wrap">
+  <div class="num" data-r>Kapitel 8</div>
+  <h2 data-r>Etikette und Timing</h2>
+  <div class="grid2">
+    <div class="card" data-r><h4 style="color:var(--gold)">Gib der KI 4 bis 12 Sekunden</h4>
+      <p>Eine Antwort von sl dauert meist <b>vier bis zwölf Sekunden</b>, bei langen Szenen auch etwas mehr. Über dem Chatfeld steht <i>&bdquo;Spielleiter schreibt &hellip;&ldquo;</i>, solange sl erzählt. Warte, bis die Erzählung da ist.</p></div>
+    <div class="card" data-r><h4 style="color:var(--gold)">Eine Handlung pro Nachricht</h4>
+      <p>Schreibe <b>eine Aktion pro Nachricht</b>, kurz und konkret: <code>/sl Ich schleiche an der Wache vorbei.</code> Nicht fünf Dinge auf einmal.</p></div>
+  </div>
+  <div class="diag" data-r>
+    <h4>So läuft ein Zug</h4>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 120" role="img" aria-label="Zeitleiste: Spieler schreibt, sl denkt 4 bis 12 Sekunden, Erzählung, dann der nächste Spieler.">
+      <rect x="20" y="40" width="130" height="44" rx="8" fill="var(--bg2)" stroke="var(--line)"/><text x="85" y="67" text-anchor="middle" font-size="15">Du schreibst</text>
+      <rect x="165" y="40" width="300" height="44" rx="8" fill="var(--bg2)" stroke="var(--ember)" stroke-dasharray="6 5"/><text x="315" y="67" text-anchor="middle" font-size="15">sl denkt: 4 bis 12 s</text>
+      <rect x="480" y="40" width="150" height="44" rx="8" fill="var(--bg2)" stroke="var(--ok)"/><text x="555" y="67" text-anchor="middle" font-size="15">Erzählung</text>
+      <rect x="645" y="40" width="135" height="44" rx="8" fill="var(--bg2)" stroke="var(--line)"/><text x="712" y="67" text-anchor="middle" font-size="15">Nächster Zug</text>
+      <text x="315" y="105" text-anchor="middle" font-size="13" class="m">Nicht drängeln, nicht nachschieben</text>
+    </svg></div>
+  </div>
+  <ul data-r>
+    <li>Wird gerade erzählt (&bdquo;SL denkt noch&ldquo;), hält die Bridge weitere Nachrichten zurück und schickt sie gesammelt nach.</li>
+    <li>Proben: Setzt SP <b>vor</b> dem Wurf oder in der kurzen Nachfrist nach der Karte ein, nicht erst, wenn die Erzählung schon läuft.</li>
+    <li>Gespräch unter Menschen (Absprachen, Fragen an den Moderator) ohne <code>/sl</code> schreiben.</li>
+    <li>Unwohl? Sag &bdquo;Pause&ldquo;. Das gilt immer.</li>
+  </ul>
+</div></section>
+
+<!-- 9 -->
+<section class="chap" id="notfall"><div class="wrap">
+  <div class="num" data-r>Kapitel 9</div>
+  <h2 data-r>Wenn die Technik hakt: das PDF-Handout</h2>
+  <p data-r>Fällt sl aus, wird die Lampe im Chat <b>rot</b> oder sl antwortet nicht mehr, drückt der Moderator den Knopf <b>„sl pausieren“</b> (Lampe gelb). Dann geht nichts mehr an die KI, und die Spielleitung übernimmt von Hand. Würfeln und Charakterbögen funktionieren in Foundry weiter.</p>
+  {{FIG:paused}}
+  <div class="card" data-r>
+    <h4 style="color:var(--gold)">Das Handout</h4>
+    <p>Das <b>Handout-PDF</b> ist der Notfallplan: Regeln, Orakel-Tabellen, Improvisationshilfen und Bögen. Alle Tabellen sind mit zwei W10 oder einem Online-Würfler spielbar.</p>
+    <p style="margin:0"><a class="btn" style="text-decoration:none;display:inline-block" href="Schicksalsschlag-Handout.pdf">Handout-PDF öffnen</a></p>
+    <ol style="columns:2;margin-top:12px;font-size:.95rem">
+      <li>Schnellstart</li><li>Figur erschaffen</li><li>Die Probe (d100)</li><li>Kampf</li><li>Schicksalspunkte</li><li>Das Orakel ohne KI</li><li>Einfalls-Werkzeugkasten</li><li>Notfall: Spielleitung von Hand</li><li>Charakterbogen</li><li>Spickzettel aller Modifikatoren</li>
+    </ol>
+  </div>
+  <div class="note" data-r>Nachrichten, die während eines Ausfalls geschrieben werden, bleiben in einer Warteschlange (maximal 20) und gehen raus, sobald sl wieder da ist. Beim <b>Fortsetzen</b> lädt die Bridge den Stand aus sl neu: Was in der Pause an SP oder Wunden in Foundry geändert wurde, wird dabei überschrieben und muss nachgetragen werden.</div>
+</div></section>
+
+<!-- 10 -->
+<section class="chap" id="spickzettel"><div class="wide">
+  <div class="num" data-r>Kapitel 10</div>
+  <h2 data-r>Spickzettel</h2>
+  <p data-r class="noprint" style="color:var(--mute)">Zum Drucken: Strg/Cmd+P. Die Seite hat ein Druck-Layout.</p>
+  <div class="cheat" id="cheat">
+    <div class="card" data-r><h4>Zielzahl</h4><p style="margin:0"><b>Säule + Eigenschaften + Schwierigkeit + Zustände.</b><br>W100 &le; Zielzahl = Erfolg. 01 bis 05 immer Erfolg, 96 bis 100 immer Misserfolg.<br><b>DoS</b> = 1 + abgerundet((Ziel &minus; Wurf) &divide; 10), <b>DoF</b> = 1 + abgerundet((Wurf &minus; Ziel) &divide; 10), höchstens 10. Pasch (11 &hellip; 99, 100) = kritisch.</p></div>
+    <div class="card" data-r><h4>Modifikatoren</h4><table>
+      <tr><td>Vorteil klein / groß</td><td>+10 / +20</td></tr><tr><td>Nachteil klein / groß</td><td>&minus;10 / &minus;20</td></tr>
+      <tr><td>leicht / normal</td><td>+20 / ±0</td></tr><tr><td>schwer / sehr schwer</td><td>&minus;20 / &minus;30</td></tr>
+      <tr><td>Wunden &le; 3</td><td>&minus;10</td></tr><tr><td>SP = 1</td><td>&minus;10</td></tr><tr><td>SP = 0</td><td>&minus;20 (nicht addiert)</td></tr>
+      <tr><td>1 SP ausgegeben (max. 3 je Probe)</td><td>±10 je SP, auch bei anderen</td></tr></table></div>
+    <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2 Punkte = 1 Gegenstand &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. Wunden 10, SP 5.</p></div>
+    <div class="card" data-r><h4>Kampf</h4><p><b>Schaden = Waffe + DoS &minus; Rüstung</b> (min. 0).</p><table>
+      <tr><td>Faust 1 &middot; Messer, Knüppel 2</td><td>Stoff 0 &middot; Leder 1</td></tr><tr><td>Schwert, Axt, Bogen, Armbrust 3 &middot; Feuerwaffe 4</td><td>Kette 2 &middot; Platte 3</td></tr></table>
+      <p style="margin:6px 0 0">Vergleichende Probe: Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt. Initiative: d100 &le; Kampf, mehr DoS zuerst (oder Spieler zuerst).</p></div>
+    <div class="card" data-r><h4>SP-Kosten</h4><table>
+      <tr><td>1</td><td>±10 auf eine Probe</td></tr><tr><td>1</td><td>Orakel um 1 Stufe</td></tr><tr><td>2</td><td>Neuwurf</td></tr><tr><td>1</td><td>Überleben bei 0 Wunden</td></tr></table></div>
+    <div class="card" data-r><h4>SP-Erholung</h4><table>
+      <tr><td>Rast 1 Stunde</td><td>+1</td></tr><tr><td>Nacht / sicher</td><td>+3</td></tr><tr><td>Nachteil ausgespielt</td><td>+1</td></tr><tr><td>Fest / Tempel</td><td>+2</td></tr><tr><td>Strang abgeschlossen</td><td>+2</td></tr></table></div>
+    <div class="card" data-r><h4>Orakel</h4><p style="margin:0">Chancen &times; Spannung &rarr; a / b / c. d100 &le; a <b>JA+</b> &middot; &le; b <b>JA</b> &middot; &le; c <b>NEIN</b> &middot; darüber <b>NEIN+</b>. Pasch mit Ziffer &le; Spannung = Zufallsereignis. Szenentest: d100 &le; 5 &times; Spannung &rarr; Szene verändert sich.</p></div>
+    <div class="card" data-r><h4>Foundry</h4><p style="margin:0"><code>/sl Text</code> für In-Character &middot; Knopf <b>Probe</b> zum Würfeln &middot; <b>SP +10 / &minus;10</b> auf der Karte &middot; Lampe grün/gelb/rot &middot; eine Handlung pro Nachricht &middot; 4 bis 12 Sekunden warten &middot; Notfall: Handout-PDF.</p></div>
+  </div>
+</div></section>
+
+</main>
+<footer><div class="wrap">Schicksalsschlag-Tutorial, Stand 2026-10-21. Regeln: Schicksalsschlag v0.1. Quelle der Zahlen: Regelwerk und Handout. Mit <span class="tag">Auslegung</span> markierte Stellen sind im Handout ausdrücklich als Auslegung gekennzeichnet.</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/motion@14.0.0/dist/motion.js"></script>
+<script>
+(function(){
+  'use strict';
+  var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var NS='http://www.w3.org/2000/svg';
+  function el(n,a,p,t){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(t!=null)e.textContent=t;if(p)p.appendChild(e);return e}
+  var ORACLE={{ORACLE_JSON}};
+  var ODDS=Object.keys(ORACLE);
+
+  /* theme toggle */
+  var root=document.documentElement;
+  try{var th=localStorage.getItem('sl-theme');if(th)root.setAttribute('data-theme',th)}catch(e){}
+  $('#theme').addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    var nx=cur==='dark'?'light':'dark';root.setAttribute('data-theme',nx);
+    try{localStorage.setItem('sl-theme',nx)}catch(e){}
+  });
+
+  /* ---------- budget calculator + Mirne ---------- */
+  var B={a:0,b:0,c:0,d:0};
+  function budget(){return 20-2*B.a-4*B.b+2*B.c+4*B.d}
+  function drawBudget(){
+    var g=$('#bg');g.textContent='';
+    var total=20+2*B.c+4*B.d, spent=2*B.a+4*B.b, rest=total-spent;
+    var W=760,u=W/Math.max(26,total,spent);
+    var x=20;
+    el('text',{x:20,y:18,'font-size':14,class:'m'},g,'Verfügbar: 20 Start + '+(2*B.c+4*B.d)+' aus Nachteilen = '+total);
+    var items=[];
+    for(var i=0;i<B.b;i++)items.push([4,'var(--ember)','−4']);
+    for(i=0;i<B.a;i++)items.push([2,'var(--gold)','−2']);
+    items.forEach(function(it){var w=it[0]*u;el('rect',{x:x,y:30,width:w-3,height:34,rx:6,fill:it[1]},g);el('text',{x:x+w/2-1.5,y:48,'text-anchor':'middle','dominant-baseline':'central','font-size':14,fill:'#1a0f06'},g,it[2]);x+=w});
+    if(rest>0){el('rect',{x:x,y:30,width:rest*u-3,height:34,rx:6,fill:'var(--ok)',opacity:.85},g);el('text',{x:x+rest*u/2,y:48,'text-anchor':'middle','dominant-baseline':'central','font-size':14,fill:'#06180d'},g,'Rest '+rest)}
+    else if(rest<0){el('rect',{x:x,y:30,width:-rest*u,height:34,rx:6,fill:'var(--bad)'},g);el('text',{x:x-rest*u/2,y:48,'text-anchor':'middle','dominant-baseline':'central','font-size':14,fill:'#fff'},g,'Minus '+(-rest))}
+    el('line',{x1:20+total*u-3,x2:20+total*u-3,y1:24,y2:72,stroke:'var(--ink)','stroke-width':2,'stroke-dasharray':'4 3'},g);
+    var o=$('#bout');
+    if(rest<0)o.innerHTML='<b class="bad">Budget im Minus ('+rest+'). Streiche einen Vorteil oder nimm einen Nachteil.</b>';
+    else o.innerHTML='Rest: <b class="ok">'+rest+'</b> Punkte. Zum Beispiel '+rest+' &times; 1 = <b>'+(rest*10)+' Taler</b>, oder '+Math.floor(rest/2)+' Gegenstand/-stände'+(rest%2?' + 1 Punkt übrig':'')+', oder +'+Math.floor(rest/3)+' max. SP'+(rest%3?' (Rest '+rest%3+')':'')+'.';
+    ['a','b','c','d'].forEach(function(k){$('#v'+k).textContent=B[k]});
+  }
+  $$('#budget .stepper button').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.k;B[k]=Math.max(0,Math.min(12,B[k]+ +b.dataset.d));drawBudget()})});
+  $('#bmirne').addEventListener('click',function(){B={a:5,b:1,c:1,d:1};drawBudget()});
+  drawBudget();
+
+  function drawMirne(){
+    var g=$('#mseg');g.textContent='';
+    var u=30, x0=20;
+    var segs=[[4,'Armbrust-Wort','var(--ember)'],[2,'lesen','var(--gold)'],[2,'Kräuter','var(--gold)'],[2,'Pfad','var(--gold)'],[2,'Ottokar','var(--gold)'],[2,'zäh','var(--gold)']];
+    el('text',{x:x0,y:20,'font-size':14,class:'m'},g,'20 Start + 4 (Todfeind) + 2 (Angst vor Feuer) = 26');
+    var x=x0;
+    segs.forEach(function(s,i){var w=s[0]*u;var r=el('rect',{x:x,y:34,width:w-3,height:40,rx:6,fill:s[2],class:'mr'},g);el('text',{x:x+w/2-1.5,y:54,'text-anchor':'middle','dominant-baseline':'central','font-size':13,fill:'#1a0f06'},g,'−'+s[0]);x+=w});
+    el('text',{x:x0,y:92,'font-size':13,class:'m'},g,'14 für sechs Vorteile');
+    var rs=[[3,'+1 SP','var(--info)'],[2,'Armbrust','var(--ok)'],[2,'Lederwams','var(--ok)'],[5,'50 Taler','var(--gold)']];
+    el('text',{x:x0,y:126,'font-size':14,class:'m'},g,'12 Rest werden getauscht:');
+    var xx=x0;
+    rs.forEach(function(s){var w=s[0]*u;el('rect',{x:xx,y:136,width:w-3,height:40,rx:6,fill:s[2],class:'mr2'},g);el('text',{x:xx+w/2-1.5,y:150,'text-anchor':'middle','dominant-baseline':'central','font-size':11,fill:'#0d0d0d'},g,s[1]);el('text',{x:xx+w/2-1.5,y:166,'text-anchor':'middle','dominant-baseline':'central','font-size':12,fill:'#0d0d0d'},g,s[0]+' Pkt');xx+=w});
+  }
+  drawMirne();
+
+  /* ---------- d100 bar + roll calculator ---------- */
+  function d100(target,roll){
+    var succ,auto='';
+    if(roll<=5){succ=true;auto=roll>target?'auto':''}
+    else if(roll>=96){succ=false;auto=roll<=target?'auto':''}
+    else succ=roll<=target;
+    var dos=0,dof=0;
+    if(succ){dos=Math.min(10,Math.max(1,1+Math.floor((target-roll)/10)))}
+    else{dof=Math.min(10,Math.max(1,1+Math.floor((roll-target)/10)))}
+    var dbl=(roll===100)||(roll>=11&&roll<=99&&roll%11===0);
+    return {succ:succ,dos:dos,dof:dof,crit:dbl?(succ?'s':'f'):null,auto:auto};
+  }
+  function drawBar(target,roll){
+    var g=$('#dbar');g.textContent='';
+    var X0=20,W=760,u=W/100,Y=70,H=46;
+    function x(n){return X0+(n-1)*u}
+    var t=Math.max(0,Math.min(100,target));
+    /* success zone */
+    if(t>0)el('rect',{x:X0,y:Y,width:t*u,height:H,fill:'var(--ok)',opacity:.30},g);
+    if(t<100)el('rect',{x:X0+t*u,y:Y,width:(100-t)*u,height:H,fill:'var(--bad)',opacity:.22},g);
+    /* DoS steps */
+    for(var k=0;k<10;k++){
+      var hi=t-10*k, lo=Math.max(0,t-10*(k+1));
+      if(hi<=0)break;
+      var xs=X0+lo*u,w=(hi-lo)*u;
+      el('rect',{x:xs,y:Y,width:w,height:H,fill:'none',stroke:'var(--ok)','stroke-width':1.2,opacity:.7},g);
+      el('text',{x:xs+w/2,y:Y+H/2,'text-anchor':'middle','dominant-baseline':'central','font-size':w>38?15:11,'font-weight':700,fill:'var(--ink)'},g,(k+1)+(w>38?' DoS':''));
+    }
+    /* special bands */
+    el('rect',{x:X0,y:Y-30,width:5*u,height:22,rx:4,fill:'var(--ok)'},g);
+    el('text',{x:X0+5*u+6,y:Y-18,'dominant-baseline':'central','font-size':13,class:'m'},g,'01 bis 05 immer Erfolg');
+    el('rect',{x:X0+95*u,y:Y-30,width:5*u,height:22,rx:4,fill:'var(--bad)'},g);
+    el('text',{x:X0+95*u-6,y:Y-18,'text-anchor':'end','dominant-baseline':'central','font-size':13,class:'m'},g,'96 bis 100 immer Misserfolg');
+    /* ticks */
+    [1,10,20,30,40,50,60,70,80,90,100].forEach(function(n){el('line',{x1:x(n)+(n===1?0:u),x2:x(n)+(n===1?0:u),y1:Y+H,y2:Y+H+7,stroke:'var(--mute)'},g);el('text',{x:x(n)+(n===1?0:u)-(n===100?0:0),y:Y+H+22,'text-anchor':'middle','font-size':12,class:'m'},g,n)});
+    /* target marker */
+    var tx=X0+t*u;
+    el('path',{d:'M'+tx+' '+(Y+H+2)+' l-7 14 h14 z',fill:'var(--gold)'},g);
+    el('text',{x:Math.min(740,Math.max(60,tx)),y:Y+H+50,'text-anchor':'middle','font-size':15,'font-weight':700,fill:'var(--gold)'},g,'Zielzahl '+target);
+    /* roll marker */
+    if(roll){
+      var rx=X0+(roll-0.5)*u;
+      var r=d100(target,roll);
+      el('line',{x1:rx,x2:rx,y1:Y-6,y2:Y+H+4,stroke:'var(--ink)','stroke-width':3},g);
+      el('circle',{cx:rx,cy:Y-8,r:11,fill:r.succ?'var(--ok)':'var(--bad)',stroke:'var(--ink)','stroke-width':2,class:'rollball'},g);
+      el('text',{x:rx,y:Y-8,'text-anchor':'middle','dominant-baseline':'central','font-size':11,'font-weight':700,fill:'#fff'},g,roll);
+    }
+  }
+  function calc(){
+    var p=+$('#c-p').value,tr=+$('#c-t').value,df=+$('#c-d').value,sp=+$('#c-s').value,w=+$('#c-w').value,x=+$('#c-x').value,roll=Math.max(1,Math.min(100,+$('#c-r').value||1));
+    var target=p+tr+df+sp+w+10*x;
+    var r=d100(target,roll);
+    drawBar(target,roll);
+    var s='Zielzahl = '+p+(tr?(tr>0?' + ':' − ')+Math.abs(tr):'')+(df?(df>0?' + ':' − ')+Math.abs(df):'')+(sp?' − '+Math.abs(sp)+' (SP-müde)':'')+(w?' − 10 (Wunden)':'')+(x?' + '+10*x+' (SP)':'')+' = <b>'+target+'</b>. Wurf <b>'+roll+'</b>: ';
+    if(r.succ)s+='<b class="ok">Erfolg, '+r.dos+' Erfolgsgrad'+(r.dos>1?'e':'')+'</b>'+(r.auto?' (01 bis 05 gelingt immer)':'');
+    else s+='<b class="bad">Misserfolg, '+r.dof+' Misserfolgsgrad'+(r.dof>1?'e':'')+'</b>'+(r.auto?' (96 bis 100 misslingt immer)':'');
+    if(r.crit==='s')s+=' &middot; <b class="ok">Pasch: kritischer Erfolg, eine Wendung zu deinen Gunsten</b>';
+    if(r.crit==='f')s+=' &middot; <b class="bad">Pasch: kritischer Misserfolg, eine Komplikation</b>';
+    $('#c-out').innerHTML=s;
+  }
+  ['c-p','c-t','c-d','c-s','c-w','c-x','c-r'].forEach(function(i){$('#'+i).addEventListener('input',calc)});
+  $('#c-roll').addEventListener('click',function(){$('#c-r').value=1+Math.floor(Math.random()*100);calc();
+    if(window.Motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var b=$('.rollball');if(b)Motion.animate(b,{transform:['translateY(-24px) scale(.4)','translateY(0) scale(1)']},{duration:.5,type:'spring',bounce:.4})}});
+  calc();
+
+  /* ---------- damage ---------- */
+  function dmg(){
+    var w=+$('#m-w').value,d=Math.max(1,+$('#m-d').value||1),a=+$('#m-a').value,h=Math.min(10,+$('#m-h').value);
+    var s=Math.max(0,w+d-a),n=h-s;
+    var g=$('#mw');g.textContent='';
+    for(var i=1;i<=10;i++){
+      var alive=i<=n, was=i<=h;
+      var low=i<=3;
+      var f=alive?(low?'var(--ember)':'var(--ok)'):(was?'var(--bad)':'none');
+      el('rect',{x:20+(i-1)*76,y:20,width:68,height:46,rx:8,fill:f,stroke:was?'none':'var(--line)','stroke-width':2,opacity:alive?1:(was?.55:1)},g);
+      el('text',{x:20+(i-1)*76+34,y:43,'text-anchor':'middle','dominant-baseline':'central','font-size':16,'font-weight':700,fill:alive||was?'#101010':'var(--mute)'},g,i);
+    }
+    el('text',{x:20,y:92,'font-size':13,class:'m'},g,'orange = 3 oder weniger: −10 auf alle Proben');
+    $('#m-out').innerHTML='Schaden = '+w+' + '+d+' − '+a+' = <b>'+s+'</b>. Wunden: '+h+' &rarr; <b>'+n+'</b>.'+(n<=0?' <b class="bad">Zu Boden. Ohne 1 SP droht der Tod.</b>':(n<=3?' <b class="bad">3 oder weniger: −10 auf alles.</b>':''));
+  }
+  ['m-w','m-d','m-a','m-h'].forEach(function(i){$('#'+i).addEventListener('input',dmg)});dmg();
+
+  /* ---------- SP gauge ---------- */
+  var SP=5,SPM=5;
+  function drawSP(){
+    var g=$('#spgauge');g.textContent='';
+    for(var i=1;i<=SPM;i++){
+      var on=i<=SP;
+      var c=on?(SP<=1?'var(--bad)':'var(--gold)'):'none';
+      el('circle',{cx:70+(i-1)*95,cy:70,r:34,fill:c,stroke:on?'none':'var(--line)','stroke-width':3,class:'spc'},g);
+      el('text',{x:70+(i-1)*95,y:70,'text-anchor':'middle','dominant-baseline':'central','font-size':22,'font-weight':700,fill:on?'#1a0f06':'var(--mute)'},g,i);
+    }
+    el('text',{x:560,y:60,'font-size':44,'font-weight':700,fill:'var(--gold)',style:'font-family:var(--head)'},g,SP+'/'+SPM);
+    var zones=[[0,'0 SP','−20, Orakel schlechter','var(--bad)'],[1,'1 SP','schicksalsmüde −10','var(--ember)'],[2,'2 bis 5','keine Folge','var(--ok)']];
+    zones.forEach(function(z,i){
+      var act=(i===0&&SP===0)||(i===1&&SP===1)||(i===2&&SP>=2);
+      el('rect',{x:20+i*252,y:128,width:240,height:44,rx:8,fill:'none',stroke:z[3],'stroke-width':act?4:1.5,opacity:act?1:.55},g);
+      el('text',{x:20+i*252+120,y:144,'text-anchor':'middle','font-size':14,'font-weight':700,fill:z[3]},g,z[1]);
+      el('text',{x:20+i*252+120,y:162,'text-anchor':'middle','font-size':13},g,z[2]);
+    });
+    var m=SP===0?'<b class="bad">SP 0: −20 auf alle Proben, und Orakelfragen zu deinen Gunsten gehen eine Stufe schlechter aus.</b>':SP===1?'<b class="bad">Schicksalsmüde: −10 auf alle Proben.</b>':'Keine Abzüge. Du kannst bis zu 3 SP pro Probe ausgeben.';
+    $('#sp-out').innerHTML=m;
+  }
+  $$('#spg [data-sp]').forEach(function(b){b.addEventListener('click',function(){
+    var v=b.dataset.sp;
+    if(v==='reset')SP=SPM;else{var n=+v;if(n<0&&SP+n<0){return}SP=Math.max(0,Math.min(SPM,SP+n))}
+    drawSP();
+    if(window.Motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches)Motion.animate('#spgauge .spc',{scale:[.85,1]},{duration:.35,delay:Motion.stagger(.04)});
+  })});
+  drawSP();
+
+  /* ---------- oracle ---------- */
+  var oc=$('#o-c');ODDS.forEach(function(o,i){var op=document.createElement('option');op.value=o;op.textContent=o+' ('+(i-3>0?'+':'')+(i-3)+')';if(o==='offen')op.selected=true;oc.appendChild(op)});
+  function orc(){
+    var o=oc.value,s=+$('#o-s').value,t=ORACLE[o][s-1];
+    var a=t[0],b=t[1],c=t[2];
+    var g=$('#obar');g.textContent='';
+    var X0=20,u=7.6,Y=30,H=50;
+    var segs=[[0,a,'JA+','var(--ok)'],[a,b,'JA','var(--info)'],[b,c,'NEIN','var(--ember)'],[c,100,'NEIN+','var(--bad)']];
+    segs.forEach(function(sg){var w=(sg[1]-sg[0])*u;if(w<=0)return;el('rect',{x:X0+sg[0]*u,y:Y,width:w,height:H,fill:sg[3],opacity:.85},g);
+      if(w>34)el('text',{x:X0+sg[0]*u+w/2,y:Y+H/2,'text-anchor':'middle','dominant-baseline':'central','font-size':15,'font-weight':700,fill:'#0b0b0b'},g,sg[2])});
+    [[a,'bis '+a],[b,'bis '+b],[c,'bis '+c]].forEach(function(p,i){if(p[0]>0)el('text',{x:X0+p[0]*u,y:Y+H+20,'text-anchor':'middle','font-size':12,class:'m'},g,p[1])});
+    $('#o-out').innerHTML='Chancen <b>'+o+'</b>, Spannung <b>'+s+'</b>: a / b / c = <b>'+(a?a:'–')+' / '+b+' / '+c+'</b>. Wurf '+(a?'1 bis '+a+' JA+, ':'')+(a+1)+' bis '+b+' JA, '+(b+1)+' bis '+c+' NEIN, '+(c+1)+' bis 100 NEIN+. Zufallsereignis bei Pasch mit Ziffer &le; '+s+'.';
+  }
+  oc.addEventListener('input',orc);$('#o-s').addEventListener('input',orc);orc();
+
+  /* ---------- Motion: scroll reveals, markers, arrows ---------- */
+  var M=window.Motion,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(M&&!reduce){
+    root.classList.add('reveal-ready');
+    M.scroll(M.animate('#bar',{transform:['scaleX(0)','scaleX(1)']},{ease:'linear'}));
+    M.inView('[data-r]',function(t){
+      M.animate(t,{opacity:[0,1],transform:['translateY(26px)','translateY(0)']},{duration:.7,ease:[.22,1,.36,1]});
+    },{margin:'0px 0px -12% 0px'});
+    $$('figure.shot').forEach(function(f){
+      M.inView(f,function(){
+        var ars=$$('.ar',f),mk=$$('.mk,.mt,.ah,.bx',f);
+        $$('.ar',f).forEach(function(a){a.style.strokeDasharray='1';a.style.strokeDashoffset='1'});
+        M.animate($$('.mkg',f),{opacity:[0,1],transform:['scale(.2)','scale(1)']},{duration:.45,delay:M.stagger(.18),type:'spring',bounce:.45});
+        M.animate(ars,{strokeDashoffset:[1,0]},{duration:.6,delay:M.stagger(.18,{startDelay:.2}),ease:'easeOut'});
+        M.animate($$('.ah',f),{opacity:[0,1]},{duration:.2,delay:M.stagger(.18,{startDelay:.7})});
+        M.animate($$('.bx',f),{opacity:[0,1]},{duration:.4,delay:M.stagger(.18)});
+      },{amount:.5});
+    });
+    $$('.dr').forEach(function(p){p.style.strokeDasharray='1';p.style.strokeDashoffset='1'});
+    var fl=$('.diag svg .dr');
+    if(fl)M.inView(fl.ownerSVGElement,function(){M.animate($$('.dr',fl.ownerSVGElement),{strokeDashoffset:[1,0]},{duration:.7,delay:M.stagger(.3)})},{amount:.5});
+    M.inView('#mirnediag',function(){
+      M.animate('#mirnediag .mr',{transform:['translateY(-40px)','translateY(0)'],opacity:[0,1]},{duration:.5,delay:M.stagger(.12),type:'spring',bounce:.35});
+      M.animate('#mirnediag .mr2',{transform:['translateY(-40px)','translateY(0)'],opacity:[0,1]},{duration:.5,delay:M.stagger(.15,{startDelay:.9}),type:'spring',bounce:.35});
+    },{amount:.6});
+    M.inView('#d100',function(){M.animate('#dbar .rollball',{transform:['translateY(-60px)','translateY(0)']},{duration:.7,type:'spring',bounce:.5})},{amount:.5});
+  }
+  /* toc highlight */
+  var links=$$('#toc a'),io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){links.forEach(function(l){l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id)});var a=links.filter(function(l){return l.classList.contains('on')})[0];if(a&&a.scrollIntoView)try{a.parentNode.scrollTo({left:a.offsetLeft-60,behavior:'smooth'})}catch(x){}}})},{rootMargin:'-30% 0px -60% 0px'});
+  $$('section.chap').forEach(function(s){io.observe(s)});
+})();
+</script>
+</body>
+</html>
