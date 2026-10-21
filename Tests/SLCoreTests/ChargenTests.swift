@@ -57,6 +57,12 @@ final class ChargenTests: XCTestCase {
     _ = SR.build(&pc, name: "S", story: "x", traits: [])
     let m = SR.budget(&pc, args: "item=Seil"); XCTAssertEqual(pc.taler, 60); XCTAssertTrue(m.contains("verfallen"))
   }
+  func testBudgetArgsAllowSpaces() {
+    XCTAssertEqual(SR.budgetPairs("taler=3 item=Kurzes Messer,Seil sp=1"), [["taler", "3"], ["item", "Kurzes Messer,Seil"], ["sp", "1"]])
+    XCTAssertEqual(SR.budgetPairs("quatsch"), [["?"]]); XCTAssertEqual(SR.budgetPairs(""), [])
+    var pc = Pc(speaker: "S"); _ = SR.build(&pc, name: "S", story: "x", traits: [])
+    _ = SR.budget(&pc, args: "item=Kurzes Messer,Seil sp=1"); XCTAssertEqual(pc.inventar, ["Kurzes Messer", "Seil"]); XCTAssertEqual(pc.spMax, 6)
+  }
   func testPriceLookup() {
     XCTAssertEqual(Shop.priceT("Langschwert").taler, 40); XCTAssertEqual(Shop.priceT("Kettenhemd").taler, 40); XCTAssertEqual(Shop.priceT("Plattenpanzer").taler, 60)
     XCTAssertEqual(Shop.priceT("Blubbdings").taler, 20); XCTAssertFalse(Shop.priceT("Blubbdings").listed)

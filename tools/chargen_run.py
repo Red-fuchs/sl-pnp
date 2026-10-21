@@ -51,7 +51,7 @@ def sheet(speaker):
         if p.get("speaker") == speaker: return p
     return None
 
-def mk(items): return ",".join(i.replace(" ", "-") for i in items)
+def mk(items): return ",".join(items)
 
 for f in sorted(glob.glob(f"{pdir}/p[0-9][0-9].json")):
     P = json.load(open(f)); pid = P["id"]; W = P["wishes"]

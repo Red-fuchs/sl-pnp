@@ -10,7 +10,7 @@ public struct Trait: Codable, Equatable {
   public var cost: Int { let b = major ? 4 : 2; return pos ? (teurer ? b * 3 / 2 : b) : (farbe ? 0 : b) }
   /// check modifier when it fits the action
   public var bonus: Int { (major ? 20 : 10) * (pos ? 1 : -1) }
-  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos] }
+  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos, "farbe": farbe, "teurer": teurer, "cost": cost] }
 }
 
 public struct Check: Codable, Equatable {
@@ -260,8 +260,7 @@ public enum SR {
   public static func budget(_ pc: inout Pc, args: String) -> String {
     if pc.cgB { return budgetB(&pc, args: args) }
     var tal = 0, items: [String] = [], sp = 0
-    for kv in args.split(separator: " ") {
-      let x = kv.split(separator: "=", maxSplits: 1).map(String.init)
+    for x in budgetPairs(args) {
       guard x.count == 2 else { return "/budget taler=N item=Name,Name sp=N  (Taler: 1 Punkt = 10, Gegenstand 2/4/6 je nach Stufe, +1 SP-Max 3)" }
       switch x[0].lowercased() {
       case "taler": tal = Int(x[1]) ?? -1

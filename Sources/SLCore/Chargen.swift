@@ -52,10 +52,21 @@ public extension SR {
     let top = fit.sorted { abs($0.bonus) > abs($1.bonus) }.prefix(2)
     return max(-30, min(30, top.reduce(0) { $0 + $1.bonus }))
   }
+  /// "taler=3 item=Kurzes Messer,Seil sp=1" -> [[key, value]]; item names may contain spaces. Garbage -> [["?"]]
+  static func budgetPairs(_ args: String) -> [[String]] {
+    let a = args.trimmingCharacters(in: .whitespaces); if a.isEmpty { return [] }
+    guard let re = try? NSRegularExpression(pattern: #"(?:^|\s)(taler|item|gegenstand|sp)="#, options: .caseInsensitive) else { return [["?"]] }
+    let ns = a as NSString, ms = re.matches(in: a, range: NSRange(location: 0, length: ns.length))
+    guard let f = ms.first, f.range.location == 0 || ns.substring(to: f.range.location).trimmingCharacters(in: .whitespaces).isEmpty else { return [["?"]] }
+    return ms.enumerated().map { k, m in
+      let end = k + 1 < ms.count ? ms[k + 1].range.location : ns.length
+      let key = ns.substring(with: m.range(at: 1)), v = ns.substring(with: NSRange(location: m.range.location + m.range.length, length: end - m.range.location - m.range.length))
+      return [key, v.trimmingCharacters(in: .whitespaces)]
+    }
+  }
   static func budgetB(_ pc: inout Pc, args: String) -> String {
     var tal = 0, items: [String] = [], sp = 0
-    for kv in args.split(separator: " ") {
-      let x = kv.split(separator: "=", maxSplits: 1).map(String.init)
+    for x in budgetPairs(args) {
       guard x.count == 2 else { return "/budget taler=N item=Name,Name sp=N  (alles in Taler: Gegenstand nach Preisliste, höchstens 100; +1 SP-Max 30, höchstens +2; Rest bis 60 Taler bleibt als Bargeld)" }
       switch x[0].lowercased() {
       case "taler": tal = Int(x[1]) ?? -1
