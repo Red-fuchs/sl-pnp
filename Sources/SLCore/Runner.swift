@@ -41,6 +41,7 @@ public final class Runner {
   public var temp: Float = 0.7
   public var lastRng = "?"
   public var defaultRules: String?     // --rules schicksal
+  public var chargen = "a"             // --chargen a|b|c|bc
   public var rolls: [J] = []   // recent oracle results, newest last
 
   public init(lm: LM, session: Session, rng: String = "mic") { self.lm = lm; self.session = session; self.rng = rng; lm.notify = { [unowned self] s in self.sink(.info(s)) } }
@@ -49,7 +50,7 @@ public final class Runner {
   public func idleUnload() { guard lm.loaded else { return }; lm.unloadModel(); sink(.info("Modell entladen (Leerlauf) – der nächste Zug wartet auf die GPU und lädt neu.")) }
 
   func wire() {
-    game.debug = debug; game.temp = temp
+    game.debug = debug; game.temp = temp; game.chargen = chargen
     game.out = { [unowned self] o in
       switch o {
       case .delta(let d): narr += d
@@ -185,7 +186,7 @@ public final class Runner {
         if let i = game.pcIndex(speaker, create: false) {
           let pc = game.partyStore.all[i]
           if game.figur == nil { game.figur = f; game.world.setFigur(f); game.world.syncLists(game.eng); try game.syncCache() }
-          sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.budgetLeft(pc.traits)) (verteilen mit /budget taler=N item=Name sp=N)"))
+          sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.leftLabel(pc)) (\(game.cgArb ? "weiter mit /wunsch und /pruefen" : "verteilen mit /budget taler=N item=Name sp=N"))"))
           if !dropped.isEmpty { sink(.info("Über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))) }
         }
         try session.save(game); refresh(); return true
@@ -210,6 +211,12 @@ public final class Runner {
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyMerkmal(i, args: a))); try session.save(game); refresh() } else { sink(.info("/merkmal: erst /figur Name: Geschichte")) }
     case .budget(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
+    case .wunsch(let a):
+      if let i = game.pcIndex(speaker, create: false) { sink(.info(game.wunsch(i, args: a))) } else { sink(.info("/wunsch: erst /figur Name: Geschichte")) }
+    case .pruefen(let a):
+      if let i = game.pcIndex(speaker, create: false) { sink(.info(game.pruefen(i, einwand: a))); try session.save(game); refresh() } else { sink(.info("/pruefen: erst /figur Name: Geschichte")) }
+    case .annehmen(let a):
+      if let i = game.pcIndex(speaker, create: false) { sink(.info(game.annehmen(i, arg: a))); try session.save(game); refresh() } else { sink(.info("/annehmen: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
     case .szene:
       if game.isSchicksal { game.newScene(); sink(.info("Neue Szene: Schicksalsergeben ist für alle Figuren wieder verfügbar.")); try session.save(game); refresh() } else { sink(.info("/szene gibt es nur unter --rules schicksal")) }
@@ -260,7 +267,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case szene, merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case wunsch(String), pruefen(String), annehmen(String), szene, merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -282,6 +289,9 @@ public enum Cmd: Equatable {
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
     if t == "/szene" { return .szene }
+    if t == "/wunsch" || t.hasPrefix("/wunsch ") { return .wunsch(arg(7)) }
+    if t == "/pruefen" || t.hasPrefix("/pruefen ") { return .pruefen(arg(8)) }
+    if t == "/annehmen" || t.hasPrefix("/annehmen ") { return .annehmen(arg(9)) }
     if t == "/merkmal" || t.hasPrefix("/merkmal ") { return .merkmal(arg(8)) }
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }

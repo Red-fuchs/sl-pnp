@@ -177,6 +177,7 @@ public extension Game {
   @discardableResult
   func createCharacter(speaker: String?, name: String, story: String) -> [Trait] {
     let i = pcIndex(speaker)!
+    partyStore.with { $0[i].cg = chargen }
     var traits: [Trait] = []
     // two passes: a single pass made the model list only a few skills and skip flaws and debts
     func line(_ key: String) -> G { G.seq([.s("\(key): "), .re(Cls.rep(Cls.lineNoQ, 6)), .s("| "), GenGr.en(["minor", "major"])]) }
@@ -190,7 +191,9 @@ public extension Game {
     let negEx = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nSchwäche: Spielsucht | major\nSchwäche: Schulden beim Wirt | minor\nSchwäche: trinkt zu viel | minor"
     do { let (txt, _) = try lm.aux(system: posSys, user: "\(posEx)\n\nGeschichte: \(st)\nAusgabe:", posG, temp: 0.3, maxTok: 450); traits += SR.parseTraits(txt, pos: true) } catch { out(.info("Merkmal-Extraktion (Stärken) fehlgeschlagen: \(error) \((error as? TruncatedError)?.partial.prefix(300) ?? "")")) }
     do { let (txt, _) = try lm.aux(system: negSys, user: "\(negEx)\n\nGeschichte: \(st)\nAusgabe:", negG, temp: 0.3, maxTok: 300); traits += SR.parseTraits(txt, pos: false) } catch { out(.info("Merkmal-Extraktion (Schwächen) fehlgeschlagen: \(error)")) }
-    return setTraits(i, name: name, story: story, traits: SR.dedupe(traits))
+    let ded = SR.dedupe(traits)
+    if cgArb { var st = cg[cgKey(i)] ?? CgState(); st.proposals = ded; st.pending = false; cg[cgKey(i)] = st }
+    return setTraits(i, name: name, story: story, traits: ded)
   }
   /// pure part (testable): budget fit, pillars, Taler
   @discardableResult

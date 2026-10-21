@@ -91,6 +91,8 @@ public final class Game {
   nonisolated(unsafe) public static var probeDefault: Double = 90
   public var probeWait: Double?
   var pendingFacts: [String] = []
+  public var chargen = "a"              // --chargen a|b|c|bc (notes/CHARGEN-v2.md)
+  public var cg: [String: CgState] = [:]
   public var pendingRegie: [String] = []
   var npcMods: [String: Int] = [:]
   public var speaker: String?

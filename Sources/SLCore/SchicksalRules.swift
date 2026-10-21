@@ -3,8 +3,11 @@ import Foundation
 /// Schicksalsschlag rules v0.1 (notes/RULES-schicksalsschlag.md): d100 roll-under with degrees, word-budget characters, Schicksalspunkte, LP (Lebenspunkte; code name wunden).
 public struct Trait: Codable, Equatable {
   public var text: String, major: Bool, pos: Bool
+  var _farbe: Bool?, _teurer: Bool?       // chargen: flaw that refunds nothing ("Farbe" / trade-off); arbiter price x1.5 (optional: older saves)
+  public var farbe: Bool { get { _farbe ?? false } set { _farbe = newValue ? true : nil } }
+  public var teurer: Bool { get { _teurer ?? false } set { _teurer = newValue ? true : nil } }
   public init(text: String, major: Bool, pos: Bool) { self.text = text; self.major = major; self.pos = pos }
-  public var cost: Int { major ? 4 : 2 }
+  public var cost: Int { let b = major ? 4 : 2; return pos ? (teurer ? b * 3 / 2 : b) : (farbe ? 0 : b) }
   /// check modifier when it fits the action
   public var bonus: Int { (major ? 20 : 10) * (pos ? 1 : -1) }
   public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos] }
@@ -61,11 +64,14 @@ public struct Pc: Codable, Equatable {
   public var mod = 0                // +-10 steps put on this character by others (applies to the next check)
   var _ergebenUsed: Bool?           // Schicksalsergeben already used in this scene (optional: older saves)
   public var ergebenUsed: Bool { get { _ergebenUsed ?? false } set { _ergebenUsed = newValue } }
+  var _cg: String?                  // chargen mode this sheet was built with (a|b|c|bc; nil = a)
+  public var cg: String { get { _cg ?? "a" } set { _cg = newValue == "a" ? nil : newValue } }
+  public var cgB: Bool { cg == "b" || cg == "bc" }
   var _items: [StoryItem]?
   public var items: [StoryItem] { get { _items ?? [] } set { _items = newValue.isEmpty ? nil : newValue } }
   public var lastCheck: Check?
   public init(speaker: String, name: String? = nil) { self.speaker = speaker; self.name = name ?? speaker }
-  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "lp": wunden, "lpMax": wundenMax, "inventar": inventar, "taler": taler, "items": items.map(\.json)] }
+  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "lp": wunden, "lpMax": wundenMax, "inventar": inventar, "taler": taler, "items": items.map(\.json), "cg": cg, "power": SR.power(self)] }
   public var line: String { "\(name) (Kampf \(pillars["kampf"] ?? 0) · Sozial \(pillars["sozial"] ?? 0) · Wissen \(pillars["wissen"] ?? 0); SP \(sp)/\(spMax); LP \(wunden)/\(wundenMax)\(traits.isEmpty ? "" : "; " + traits.map { ($0.pos ? "+" : "−") + $0.text }.joined(separator: ", ")))" }
 }
 
@@ -85,7 +91,7 @@ public enum SR {
     return traits.filter { t in !Set(contentWords(t.text).map(lemma)).isDisjoint(with: w) }
   }
   public static func target(_ pc: Pc, pillar: String, fit: [Trait], difficulty: Int, spBonus: Int = 0) -> Int {
-    (pc.pillars[pillar] ?? 40) + fit.reduce(0) { $0 + $1.bonus } + difficulty + penalty(pc) + spBonus + pc.mod
+    (pc.pillars[pillar] ?? 40) + (pc.cgB ? clampB(fit) : fit.reduce(0) { $0 + $1.bonus }) + difficulty + penalty(pc) + spBonus + pc.mod
   }
   /// Schicksalsergeben refusals (nil = allowed): 400 = not combinable / leicht / used, 409 = pending SP or mod on the sheet
   public static func ergebenRefusal(_ pc: Pc, difficulty: Int, spUse: Int) -> (code: Int, msg: String)? {
@@ -230,10 +236,10 @@ public enum SR {
       let t = Trait(text: txt, major: major, pos: f == "+")
       pc.traits = dedupe(pc.traits + [t]); if !pc.traits.contains(t) { return "/merkmal: '\(txt)' gibt es schon (ähnliches Merkmal)." }
     } else { return usage }
-    let all = pc.traits; pc.traits = fit(all)
-    let dropped = all.filter { !pc.traits.contains($0) }
-    pc.taler = max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.items = []; pc.spMax = 5; pc.sp = 5
-    return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(budgetLeft(pc.traits)) · Taler \(pc.taler)" + (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))
+    let all = pc.traits; pc.traits = pc.cgB ? fitB(all).kept : fit(all)
+    let dropped = all.filter { t in !pc.traits.contains { $0.text == t.text } }
+    pc.taler = pc.cgB ? min(cashCap, max(0, leftT(pc.traits))) : max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.items = []; pc.spMax = 5; pc.sp = 5
+    return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(leftLabel(pc)) · Taler \(pc.taler)" + (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))
   }
   /// check reason for cards: cut at a word boundary, never mid-word
   public static func shortReason(_ s: String, _ n: Int = 60) -> String {
@@ -243,14 +249,16 @@ public enum SR {
   }
   /// traits fitted to the budget, pillars, leftover as Taler; returns the dropped traits
   public static func build(_ pc: inout Pc, name: String, story: String, traits: [Trait]) -> [Trait] {
-    let fit = SR.fit(traits)
+    var fit = SR.fit(traits), notes: [Trait] = []
+    if pc.cgB { let b = fitB(traits); fit = b.kept; notes = traits.filter { t in !b.kept.contains { $0.text == t.text } } }
     if !name.isEmpty { pc.name = name }
     pc.hintergrund = clean(story, 400); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
-    pc.taler = max(0, budgetLeft(fit)) * 10
-    return traits.filter { !fit.contains($0) }
+    pc.taler = pc.cgB ? min(cashCap, max(0, leftT(fit))) : max(0, budgetLeft(fit)) * 10
+    return pc.cgB ? notes : traits.filter { !fit.contains($0) }
   }
   /// /budget taler=N item=A,B sp=N (only before the first check)
   public static func budget(_ pc: inout Pc, args: String) -> String {
+    if pc.cgB { return budgetB(&pc, args: args) }
     var tal = 0, items: [String] = [], sp = 0
     for kv in args.split(separator: " ") {
       let x = kv.split(separator: "=", maxSplits: 1).map(String.init)

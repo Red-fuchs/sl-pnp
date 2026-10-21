@@ -22,7 +22,7 @@ while i < args.count {
 }
 if opt["help"] != nil {
   print("""
-  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--probe-timeout 90] [--rules frei|saeulen|schicksal] [--debug] [--input FILE|/dev/tty]
+  sl [--resume [name]] [--name n] [--setting text] [--model dir|lfm] [--rng mic|jitter|seed:N] [--temp 0.7] [--grammar xg|llg] [--idle 300] [--lease] [--neglect 8] [--probe-timeout 90] [--rules frei|saeulen|schicksal] [--chargen a|b|c|bc] [--debug] [--input FILE|/dev/tty]
   sl web [--port 8787] [--idle 300] [--lease] [--neglect 8] [same options]
   Befehle: /ende /figur [Name:] <Beschreibung> /welt /gespraech <Figur> [Thema] /geloest <Faden> /welt orakel|\"text\"|mix \"text\"|slot|start /status /frage[+N|-N] <text> /neu [setting] /quit   (Ctrl-D beendet)
   Modell läuft über die GPU-Queue: ./play.sh [args] (gpu-run -n sl --ram 10 ...)
@@ -89,6 +89,7 @@ func show(_ o: Out) {
 runner.sink = show
 runner.debug = opt["debug"] != nil
 runner.defaultRules = opt["rules"]
+if let c = opt["chargen"] { guard chargenModes.contains(c) else { die("--chargen a|b|c|bc") }; runner.chargen = c }
 if let t = opt["probe-timeout"].flatMap({ Double($0) }) { Game.probeDefault = max(0, t) }
 runner.neglect = opt["neglect"].flatMap { Int($0) }
 if let t = opt["temp"], let v = Float(t) { runner.temp = v }
