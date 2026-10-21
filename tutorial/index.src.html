@@ -147,7 +147,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   <div class="num" data-r>Spielerhandbuch &middot; Sitzung 22. Oktober 2026</div>
   <h1 data-r>Schicksalsschlag</h1>
   <p class="lead" data-r>Dunkle Fantasy, ein W100, ein Orakel für alles, was nicht in deiner Hand liegt, und ein Spielleiter, der eine KI ist. Dieses Heft bringt dich in etwa 20 Minuten Lesezeit an den Tisch, auch wenn du das System noch nie gesehen hast.</p>
-  <div class="meta" data-r><span class="chip">W100: niedrig würfeln</span><span class="chip">Budget 20 Punkte</span><span class="chip">Säulen 30 / 40 / 50</span><span class="chip">5 Schicksalspunkte</span><span class="chip">10 Wunden</span></div>
+  <div class="meta" data-r><span class="chip">W100: niedrig würfeln</span><span class="chip">Budget 20 Punkte</span><span class="chip">Säulen 30 / 40 / 50</span><span class="chip">5 Schicksalspunkte</span><span class="chip">10 LP</span></div>
   <div style="margin-top:26px" data-r>
     <video id="vid" controls preload="none" playsinline poster="{{POSTER}}" aria-label="Erklärvideo Schicksalsschlag">
       <source src="video/out/schicksalsschlag-web.mp4" type="video/mp4">
@@ -291,7 +291,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
         <div class="card"><h4 style="color:var(--ok)">Wissen</h4>Heilen, Lesen, Handwerk, Magie- und Religionskunde, Spuren deuten, Wahrnehmung.</div>
       </div></li>
     <li data-r><h3>Notiere deinen Bogen</h3>
-      <p>Name, Kurzgeschichte, Wörter mit +/&minus;-Werten, Säulen, <b>Wunden 10</b>, <b>Schicksalspunkte</b> (Start = Maximum), Taler, Ausrüstung.</p></li>
+      <p>Name, Kurzgeschichte, Wörter mit +/&minus;-Werten, Säulen, <b>LP 10</b>, <b>Schicksalspunkte</b> (Start = Maximum), Taler, Ausrüstung.</p></li>
   </ol>
   </div>
 
@@ -317,7 +317,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       </svg></div>
     </div>
     <p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = <b>14</b>; Rest <b>12</b>: 3 Punkte &rarr; +1 max. SP (also 6), 4 Punkte &rarr; Armbrust, 2 Punkte &rarr; Lederwams, 3 Punkte &rarr; 30 Taler (3 + 4 + 2 + 3 = 12).</p>
-    <p><b>Säulen:</b> Kampf <b>40</b>, Sozial <b>30</b>, Wissen <b>50</b>. <b>Wunden 10</b>, <b>SP 6 von 6</b>.</p>
+    <p><b>Säulen:</b> Kampf <b>40</b>, Sozial <b>30</b>, Wissen <b>50</b>. <b>LP 10</b>, <b>SP 6 von 6</b>.</p>
   </div>
 
   <h3 data-r>Beispiel Paladin: starke Ausrüstung braucht Nachteile <span class="tag emp">Vorschlag</span></h3>
@@ -333,7 +333,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     </table></div>
     <p><b>Budget:</b> Vorteile 4 + 4 = 8, Nachteile 4 + 2 + 2 = 8, also 20 &minus; 8 + 8 = <b>20</b>.</p>
     <p><code>/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer <b>6</b> + Schwert <b>4</b> + Schild <b>4</b> = 14 Punkte (140 Taler Gegenwert), +1 max. SP = <b>3</b>, Taler <b>3</b> (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig.</p>
-    <p style="margin:0">Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 Wunde.</p>
+    <p style="margin:0">Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 LP.</p>
   </div>
   </div>
 </div></section>
@@ -352,7 +352,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <li><b>Säule:</b> Kampf, Sozial oder Wissen (30/40/50).</li>
     <li><b>Passende Eigenschaft:</b> Vorteil klein +10, groß +20; Nachteil klein &minus;10, groß &minus;20. Es zählen alle Wörter, die die Spielleitung für passend hält.</li>
     <li><b>Schwierigkeit:</b> leicht +20, normal ±0, schwer &minus;20, sehr schwer &minus;30.</li>
-    <li><b>Zustände:</b> Wunden &le; 3: &minus;10. Schicksalsmüde: SP 1 = &minus;10, SP 0 = &minus;20. Ausgegebene SP: ±10 je Punkt.</li>
+    <li><b>Zustände:</b> LP &le; 3: &minus;10. Schicksalsmüde: SP 1 = &minus;10, SP 0 = &minus;20. Ausgegebene SP: ±10 je Punkt.</li>
   </ol>
   <div class="note ausl" data-r><span class="tag">Auslegung</span> Die beiden SP-Abzüge (SP 1 und SP 0) werden nicht addiert, es gilt der größere Abzug. Der Abzug gilt für den SP-Stand <i>vor</i> dem Einsatz.</div>
   <div class="tw" data-r><table>
@@ -374,7 +374,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <label>Passende Eigenschaften<select id="c-t"><option value="-20">Nachteil groß &minus;20</option><option value="-10">Nachteil klein &minus;10</option><option value="0">keine ±0</option><option value="10" selected>Vorteil klein +10</option><option value="20">Vorteil groß +20</option></select></label>
       <label>Schwierigkeit<select id="c-d"><option value="20">leicht +20</option><option value="0">normal ±0</option><option value="-20" selected>schwer &minus;20</option><option value="-30">sehr schwer &minus;30</option></select></label>
       <label>SP-Stand vorher<select id="c-s"><option value="0">2 bis 5 (keine)</option><option value="-10">1 (&minus;10)</option><option value="-20">0 (&minus;20)</option></select></label>
-      <label>Wunden<select id="c-w"><option value="0">4 bis 10</option><option value="-10">3 oder weniger (&minus;10)</option></select></label>
+      <label>LP<select id="c-w"><option value="0">4 bis 10</option><option value="-10">3 oder weniger (&minus;10)</option></select></label>
       <label>SP jetzt ausgeben (+10 je)<select id="c-x"><option>0</option><option>1</option><option>2</option><option>3</option></select></label>
       <label>Schicksalsergeben (&minus;10)<select id="c-e"><option value="0">nein</option><option value="1">ja</option></select></label>
       <label>Wurf (1 bis 100)<input type="number" id="c-r" min="1" max="100" value="47"></label>
@@ -442,13 +442,13 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
 <!-- 5 -->
 <section class="chap" id="kampf"><div class="wrap">
   <div class="num" data-r>Kapitel 5</div>
-  <h2 data-r>Kampf und Wunden</h2>
+  <h2 data-r>Kampf und LP</h2>
   <p data-r>Kampf ist ein Probenspiel auf der Säule <b>Kampf</b>. Es gibt keine Pflicht-Rundenzahl: Flieht oder ergibt sich eine Seite, ist er vorbei.</p>
   <ol class="steps">
     <li data-r><h3>Initiative</h3><p>Alle würfeln d100 gegen ihren Kampfwert. Mehr DoS handelt zuerst. <b>Einfacher:</b> Spieler zuerst, dann Gegner. <span class="tag">Auslegung</span> Misserfolge handeln zuletzt, weniger DoF zuerst.</p></li>
     <li data-r><h3>Angriff</h3><p>Der Handelnde würfelt eine Kampfprobe. Gegen einen wehrlosen oder ahnungslosen Gegner reicht <b>mindestens 1 DoS</b>.</p></li>
     <li data-r><h3>Verteidigung</h3><p>Wer sich wehren kann, würfelt eine <b>vergleichende</b> Kampfprobe (parieren oder ausweichen). Gewinnt der Angreifer, trifft er. Gewinnt der Verteidiger, wehrt er ab. Verteidigen kostet keine Handlung. Scheitert der Angreifer, trifft er nicht. <span class="tag">Auslegung</span> Bei kritischem Erfolg des Verteidigers ist ein Gegenangriff möglich.</p></li>
-    <li data-r><h3>Schaden</h3><p><b>Schaden = Waffe + DoS (Angreifer) &minus; Rüstung</b>, nicht unter 0 <span class="tag">Auslegung</span>. Der Verteidiger zieht die Zahl von seinen <b>Wunden</b> ab.</p></li>
+    <li data-r><h3>Schaden</h3><p><b>Schaden = Waffe + DoS (Angreifer) &minus; Rüstung</b>, nicht unter 0 <span class="tag">Auslegung</span>. Der Verteidiger zieht die Zahl von seinen <b>LP</b> ab.</p></li>
   </ol>
   <div class="grid2" data-r>
     <div class="tw"><table><tr><th>Waffe</th><th>Schaden</th></tr><tr><td>Faust, Ringen</td><td>1</td></tr><tr><td>Messer, Knüppel</td><td>2</td></tr><tr><td>Schwert, Axt</td><td>3</td></tr><tr><td>Bogen, Armbrust</td><td>3</td></tr><tr><td>Feuerwaffe</td><td>4</td></tr></table></div>
@@ -456,33 +456,33 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   </div>
 
   <div class="diag" id="dmg" data-r>
-    <h4>Schadensrechner und Wunden</h4>
+    <h4>Schadensrechner und LP</h4>
     <div class="ctl">
       <label>Waffe<select id="m-w"><option value="1">Faust 1</option><option value="2">Messer, Knüppel 2</option><option value="3" selected>Schwert, Armbrust 3</option><option value="4">Feuerwaffe 4</option></select></label>
       <label>DoS des Angreifers<input type="number" id="m-d" min="1" max="10" value="2"></label>
       <label>Rüstung<select id="m-a"><option value="0">Stoff 0</option><option value="1" selected>Leder 1</option><option value="2">Kette 2</option><option value="3">Platte 3</option></select></label>
-      <label>Wunden vorher<input type="number" id="m-h" min="-5" max="10" value="10"></label>
+      <label>LP vorher<input type="number" id="m-h" min="-5" max="10" value="10"></label>
     </div>
-    <div class="sc"><svg class="minw" viewBox="0 0 800 110" role="img" aria-label="Wundenleiste mit zehn Feldern"><g id="mw"></g></svg></div>
+    <div class="sc"><svg class="minw" viewBox="0 0 800 110" role="img" aria-label="LP-Leiste mit zehn Feldern"><g id="mw"></g></svg></div>
     <p class="out" id="m-out" aria-live="polite"></p>
   </div>
 
-  <h3 data-r>Wunden</h3>
+  <h3 data-r>LP (Lebenspunkte)</h3>
   <ul data-r>
-    <li>Jede Spielerfigur hat <b>10 Wunden</b>. Schaden wird abgezogen.</li>
+    <li>Jede Spielerfigur hat <b>10 LP</b> (Lebenspunkte: verbleibende Gesundheit, sie zählen herunter). Schaden wird abgezogen.</li>
     <li>Bei <b>3 oder weniger</b>: <b>&minus;10</b> auf alle Proben.</li>
     <li>Bei <b>0 oder weniger</b>: Die Figur geht zu Boden. Mit <b>1 SP</b> bleibt sie am Leben (bewusstlos oder kampfunfähig). Ohne SP droht der Tod; die Spielleitung entscheidet im Sinn der Szene.</li>
   </ul>
 
   <h3 data-r>Beispielrunde: Mirne gegen einen Schmuggler</h3>
   <div class="card" data-r>
-    <p>Mirne: Kampf 40, Armbrust +20 (nur beim Schießen), Wunden 10, Lederwams (1). Schmuggler: Kampf 40, Schwert (3), Wunden 8, Leder (1).</p>
+    <p>Mirne: Kampf 40, Armbrust +20 (nur beim Schießen), LP 10, Lederwams (1). Schmuggler: Kampf 40, Schwert (3), LP 8, Leder (1).</p>
     <ol style="margin:0">
       <li><b>Initiative:</b> Mirne würfelt 28 (Ziel 40): DoS 2. Der Schmuggler würfelt 35: DoS 1. Mirne zuerst.</li>
-      <li><b>Mirne schießt:</b> Ziel 60, Wurf 41: DoS 2. Der Schmuggler weicht aus: Ziel 40, Wurf 52, Misserfolg (DoF 2). Mirne trifft. Schaden 3 (Armbrust) + 2 &minus; 1 (Leder) = <b>4</b>. Schmuggler: 8 &rarr; 4 Wunden.</li>
-      <li><b>Schmuggler greift an:</b> Ziel 40, Wurf 19: DoS 3. Mirne pariert mit Kampf 40 (kein Armbrustbonus im Nahkampf), Wurf 38: DoS 1. 3 gegen 1: Der Schmuggler trifft. Schaden 3 + 3 &minus; 1 = <b>5</b>. Mirne: 10 &rarr; 5 Wunden.</li>
+      <li><b>Mirne schießt:</b> Ziel 60, Wurf 41: DoS 2. Der Schmuggler weicht aus: Ziel 40, Wurf 52, Misserfolg (DoF 2). Mirne trifft. Schaden 3 (Armbrust) + 2 &minus; 1 (Leder) = <b>4</b>. Schmuggler: 8 &rarr; 4 LP.</li>
+      <li><b>Schmuggler greift an:</b> Ziel 40, Wurf 19: DoS 3. Mirne pariert mit Kampf 40 (kein Armbrustbonus im Nahkampf), Wurf 38: DoS 1. 3 gegen 1: Der Schmuggler trifft. Schaden 3 + 3 &minus; 1 = <b>5</b>. Mirne: 10 &rarr; 5 LP.</li>
     </ol>
-    <p style="margin:8px 0 0">Mirne hat noch 5 Wunden, also über der 3er-Schwelle (kein Abzug).</p>
+    <p style="margin:8px 0 0">Mirne hat noch 5 LP, also über der 3er-Schwelle (kein Abzug).</p>
   </div>
 </div></section>
 
@@ -498,7 +498,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <tr><td><b>1 SP</b></td><td><b>±10</b> auf die Zielzahl einer Probe, deiner oder der eines anderen (Gegner, NSC). Höchstens <b>3 SP pro Probe</b>.</td></tr>
     <tr><td><b>1 SP</b></td><td>Die <b>Chancen des Orakels</b> um eine Stufe verschieben (z. B. offen &rarr; wahrscheinlich; bei Gegnern gegen sie).</td></tr>
     <tr><td><b>2 SP</b></td><td><b>Neu würfeln.</b> Das zweite Ergebnis zählt.</td></tr>
-    <tr><td><b>1 SP</b></td><td>Bei <b>0 Wunden überleben</b> (du bleibst am Boden, aber lebst).</td></tr>
+    <tr><td><b>1 SP</b></td><td>Bei <b>0 LP überleben</b> (du bleibst am Boden, aber lebst).</td></tr>
   </table></div>
   <p data-r>±10 auf die Zielzahl entspricht &#8723;10 auf den Wurf: Die Erfolgsgrade ändern sich nach der Formel, der Pasch bleibt Pasch.</p>
 
@@ -545,7 +545,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   <div class="card" data-r>
     <p><b>A. Einen NSC-Wurf verbiegen.</b> Der Schmuggler greift Mirne mit Ziel 40 an und würfelt 19 (DoS 3). Mirne gibt 2 SP aus: &minus;20 auf die Zielzahl des Schmugglers (Ziel 20). 19 &le; 20 ist noch ein Treffer, aber nur DoS 1 + abgerundet(1 &divide; 10) = <b>1</b>. Statt 5 bekommt Mirne nur 3 + 1 &minus; 1 = <b>3</b> Schaden. Mit einem dritten SP (Ziel 10) wäre 19 ein Misserfolg gewesen. Mirne hat jetzt 4 von 6 SP.</p>
     <p><b>B. Orakel-Chancen verschieben.</b> Frage: &bdquo;Ist die Hintertür unverschlossen?&ldquo; Spannung 5, Chancen <i>offen</i>: JA+ &le; 8, JA &le; 50, NEIN &le; 92, darüber NEIN+. Mirne gibt 1 SP aus und verschiebt auf <i>wahrscheinlich</i>: JA+ &le; 11, JA &le; 71, NEIN &le; 96. Die Chance auf JA oder JA+ steigt von 50 % auf 71 %.</p>
-    <p><b>C. Rettung und Neuwurf.</b> Mirne hat 4 SP und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3, dazu ein Pasch über der Zielzahl, also ein kritischer Misserfolg). Sie zahlt 2 SP für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (&minus;10 auf alle Proben).</p>
+    <p><b>C. Rettung und Neuwurf.</b> Mirne hat 4 SP und sinkt auf 0 LP. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3, dazu ein Pasch über der Zielzahl, also ein kritischer Misserfolg). Sie zahlt 2 SP für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (&minus;10 auf alle Proben).</p>
     <p style="margin:0"><b>D. Schicksalsergeben.</b> Mirne (Kampf 50, keine Mods) wagt den Sprung über die Zugbrücke und ergibt sich dem Schicksal: Ziel <b>40</b>. Wurf <b>30</b>: DoS 2, also <b>+1 SP</b> zurück. Bei Wurf 35 wäre es DoS 1 und kein SP. Bei Wurf <b>45</b>: DoF 1 + 1 = <b>2</b>, ein Schicksalsschlag: die Brücke bricht unter ihr weg.</p>
   </div>
 </div></section>
@@ -622,7 +622,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <li>Schnellstart</li><li>Figur erschaffen</li><li>Die Probe (d100)</li><li>Kampf</li><li>Schicksalspunkte</li><li>Das Orakel ohne KI</li><li>Einfalls-Werkzeugkasten</li><li>Notfall: Spielleitung von Hand</li><li>Charakterbogen</li><li>Spickzettel aller Modifikatoren</li><li>Gegenstände und Händler (Vorschlag: Seltenheit, Prägung, Preise in Taler/Schilling/Heller)</li>
     </ol>
   </div>
-  <div class="note" data-r>Nachrichten, die während eines Ausfalls geschrieben werden, bleiben in einer Warteschlange (maximal 20) und gehen raus, sobald sl wieder da ist. Beim <b>Fortsetzen</b> lädt die Bridge den Stand aus sl neu: Was in der Pause an SP oder Wunden in Foundry geändert wurde, wird dabei überschrieben und muss nachgetragen werden.</div>
+  <div class="note" data-r>Nachrichten, die während eines Ausfalls geschrieben werden, bleiben in einer Warteschlange (maximal 20) und gehen raus, sobald sl wieder da ist. Beim <b>Fortsetzen</b> lädt die Bridge den Stand aus sl neu: Was in der Pause an SP oder LP in Foundry geändert wurde, wird dabei überschrieben und muss nachgetragen werden.</div>
 </div></section>
 
 <!-- 10 -->
@@ -635,15 +635,15 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <div class="card" data-r><h4>Modifikatoren</h4><table>
       <tr><td>Vorteil klein / groß</td><td>+10 / +20</td></tr><tr><td>Nachteil klein / groß</td><td>&minus;10 / &minus;20</td></tr>
       <tr><td>leicht / normal</td><td>+20 / ±0</td></tr><tr><td>schwer / sehr schwer</td><td>&minus;20 / &minus;30</td></tr>
-      <tr><td>Wunden &le; 3</td><td>&minus;10</td></tr><tr><td>SP = 1</td><td>&minus;10</td></tr><tr><td>SP = 0</td><td>&minus;20 (nicht addiert)</td></tr>
+      <tr><td>LP &le; 3</td><td>&minus;10</td></tr><tr><td>SP = 1</td><td>&minus;10</td></tr><tr><td>SP = 0</td><td>&minus;20 (nicht addiert)</td></tr>
       <tr><td>1 SP ausgegeben (max. 3 je Probe)</td><td>±10 je SP, auch bei anderen</td></tr><tr><td>Schicksalsergeben (1× je Szene)</td><td>&minus;10, ohne SP</td></tr></table></div>
-    <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2/4/6 Punkte = Gegenstand (Vorschlag) &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. Wunden 10, SP 5.</p></div>
+    <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2/4/6 Punkte = Gegenstand (Vorschlag) &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. LP 10, SP 5.</p></div>
     <div class="card" data-r><h4>Kampf</h4><p><b>Schaden = Waffe + DoS &minus; Rüstung</b> (min. 0).</p><table>
       <tr><td>Faust 1 &middot; Messer, Knüppel 2</td><td>Stoff 0 &middot; Leder 1</td></tr><tr><td>Schwert, Axt, Bogen, Armbrust 3 &middot; Feuerwaffe 4</td><td>Kette 2 &middot; Platte 3</td></tr></table>
       <p style="margin:6px 0 0">Vergleichende Probe: Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt. Initiative: d100 &le; Kampf, mehr DoS zuerst (oder Spieler zuerst).</p>
       <p style="margin:6px 0 0"><b>Schicksalsergeben:</b> vor dem Wurf &minus;10; &ge; 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</p></div>
     <div class="card" data-r><h4>SP-Kosten</h4><table>
-      <tr><td>1</td><td>±10 auf eine Probe</td></tr><tr><td>1</td><td>Orakel um 1 Stufe</td></tr><tr><td>2</td><td>Neuwurf</td></tr><tr><td>1</td><td>Überleben bei 0 Wunden</td></tr><tr><td>+1</td><td>Ergeben: &ge; 2 DoS (Wurf &le; Ziel &minus; 20)</td></tr></table></div>
+      <tr><td>1</td><td>±10 auf eine Probe</td></tr><tr><td>1</td><td>Orakel um 1 Stufe</td></tr><tr><td>2</td><td>Neuwurf</td></tr><tr><td>1</td><td>Überleben bei 0 LP</td></tr><tr><td>+1</td><td>Ergeben: &ge; 2 DoS (Wurf &le; Ziel &minus; 20)</td></tr></table></div>
     <div class="card" data-r><h4>SP-Erholung</h4><table>
       <tr><td>Rast 1 Stunde</td><td>+1</td></tr><tr><td>Nacht / sicher</td><td>+3</td></tr><tr><td>Nachteil ausgespielt</td><td>+1</td></tr><tr><td>Fest / Tempel</td><td>+2</td></tr><tr><td>Strang abgeschlossen</td><td>+2</td></tr></table></div>
     <div class="card" data-r><h4>Orakel</h4><p style="margin:0">Chancen &times; Spannung &rarr; a / b / c. d100 &le; a <b>JA+</b> &middot; &le; b <b>JA</b> &middot; &le; c <b>NEIN</b> &middot; darüber <b>NEIN+</b>. Pasch mit Ziffer &le; Spannung = Zufallsereignis. Szenentest: d100 &le; 5 &times; Spannung &rarr; Szene verändert sich.</p></div>
@@ -767,7 +767,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     var target=p+tr+df+sp+w+10*x+(erg?-10:0);
     var r=d100(target,roll); if(erg&&!r.succ)r.dof=Math.min(10,r.dof+1);
     drawBar(target,roll);
-    var s='Zielzahl = '+p+(tr?(tr>0?' + ':' − ')+Math.abs(tr):'')+(df?(df>0?' + ':' − ')+Math.abs(df):'')+(sp?' − '+Math.abs(sp)+' (SP-müde)':'')+(w?' − 10 (Wunden)':'')+(x?' + '+10*x+' (SP)':'')+(erg?' − 10 (Schicksalsergeben)':'')+' = <b>'+target+'</b>. Wurf <b>'+roll+'</b>: ';
+    var s='Zielzahl = '+p+(tr?(tr>0?' + ':' − ')+Math.abs(tr):'')+(df?(df>0?' + ':' − ')+Math.abs(df):'')+(sp?' − '+Math.abs(sp)+' (SP-müde)':'')+(w?' − 10 (LP)':'')+(x?' + '+10*x+' (SP)':'')+(erg?' − 10 (Schicksalsergeben)':'')+' = <b>'+target+'</b>. Wurf <b>'+roll+'</b>: ';
     if(r.succ)s+='<b class="ok">Erfolg, '+r.dos+' Erfolgsgrad'+(r.dos>1?'e':'')+'</b>'+(r.auto?' (01 bis 05 gelingt immer)':'');
     else s+='<b class="bad">Misserfolg, '+r.dof+' Misserfolgsgrad'+(r.dof>1?'e':'')+'</b>'+(r.auto?' (96 bis 100 misslingt immer)':'');
     if(r.crit==='s')s+=' &middot; <b class="ok">Pasch: kritischer Erfolg, eine Wendung zu deinen Gunsten</b>';
@@ -793,7 +793,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       el('text',{x:20+(i-1)*76+34,y:43,'text-anchor':'middle','dominant-baseline':'central','font-size':16,'font-weight':700,fill:alive||was?'#101010':'var(--mute)'},g,i);
     }
     el('text',{x:20,y:92,'font-size':13,class:'m'},g,'orange = 3 oder weniger: −10 auf alle Proben');
-    $('#m-out').innerHTML='Schaden = '+w+' + '+d+' − '+a+' = <b>'+s+'</b>. Wunden: '+h+' &rarr; <b>'+n+'</b>.'+(n<=0?' <b class="bad">Zu Boden. Ohne 1 SP droht der Tod.</b>':(n<=3?' <b class="bad">3 oder weniger: −10 auf alles.</b>':''));
+    $('#m-out').innerHTML='Schaden = '+w+' + '+d+' − '+a+' = <b>'+s+'</b>. LP: '+h+' &rarr; <b>'+n+'</b>.'+(n<=0?' <b class="bad">Zu Boden. Ohne 1 SP droht der Tod.</b>':(n<=3?' <b class="bad">3 oder weniger: −10 auf alles.</b>':''));
   }
   ['m-w','m-d','m-a','m-h'].forEach(function(i){$('#'+i).addEventListener('input',dmg)});dmg();
 

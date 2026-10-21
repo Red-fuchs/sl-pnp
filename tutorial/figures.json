@@ -119,7 +119,7 @@
    },
    {
     "n": 2,
-    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, Wunden 10/10, die Wörter, Taler 120 und <b>Budget übrig 12</b>.",
+    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, LP 10/10, die Wörter, Taler 120 und <b>Budget übrig 12</b>.",
     "box": [
      1056,
      216,
@@ -475,7 +475,7 @@
   "marks": [
    {
     "n": 1,
-    "t": "<b>Wunden</b> (links, aktuell/Maximum): hier 10 von 10.",
+    "t": "<b>LP</b> (links, aktuell/Maximum): hier 10 von 10. Auf dem Bild steht noch das alte Wort „LP“.",
     "box": [
      168,
      184,
@@ -499,7 +499,7 @@
    },
    {
     "n": 3,
-    "t": "Säulen, Wunden und Taler.",
+    "t": "Säulen, LP und Taler.",
     "box": [
      44,
      320,

@@ -106,7 +106,7 @@ add(f'''<h3>Schritt 3: Was übrig bleibt</h3>
 <p>Verteile die Werte <b>30, 40 und 50</b> beliebig auf <b>Kampf</b>, <b>Sozial</b> und <b>Wissen</b>. Sie sind deine Grundzielzahlen für den d100.</p>
 {table(['Säule','Umfasst'],[['<b>Kampf</b>','Nahkampf, Fernkampf, Ausweichen, Schleichen und Klettern, alles Körperliche und Handfeste, Initiative'],['<b>Sozial</b>','Überreden, Einschüchtern, Handeln, Lügen, Gespür für Menschen, Auftreten'],['<b>Wissen</b>','Heilen, Lesen, Handwerk, Magie- und Religionskunde, Spuren deuten, Wahrnehmung']],'')}
 <h3>Schritt 5: Notieren</h3>
-<p>Auf den Charakterbogen (Kap. 9): Name, Geschichte (Kurzform), Wörter mit +/− Werten, Säulen, Wunden 10, Schicksalspunkte (Start = Maximum), Taler, Ausrüstung.</p>
+<p>Auf den Charakterbogen (Kap. 9): Name, Geschichte (Kurzform), Wörter mit +/− Werten, Säulen, LP 10, Schicksalspunkte (Start = Maximum), Taler, Ausrüstung.</p>
 <div class="box ex"><b class="t">Beispielfigur: Mirne Aschenbach</b>
 <p><i>Geschichte:</i> Mirne wuchs als Tochter eines Salzsieders im Moor auf und lernte früh, mit der Armbrust Raben von den Salzpfannen zu verscheuchen. Mit neunzehn ging sie als Botin zum Zollhaus, sah dort Schmugglergold und schwieg. Seitdem schuldet ihr der Zöllner Ottokar einen Gefallen, und die Schmuggler wollen sie tot sehen. Sie kann lesen und schreiben, kennt die Heilkräuter des Moores und findet jeden Pfad dort im Nebel. Seit die Siederei brannte, erstarrt sie vor Feuer.</p>
 {table(['Wort','Art','Punkte','Passt zu (Beispiele)'],[
@@ -118,11 +118,11 @@ add(f'''<h3>Schritt 3: Was übrig bleibt</h3>
 ['zäh wie Moorholz','Vorteil klein','−2','Kampf (+10, Ausdauer, Gift, Kälte)'],
 ['Todfeind: Schmugglerbande','Nachteil groß','+4','Sozial (−20 bei Gesindel am Hafen)'],
 ['Angst vor Feuer','Nachteil klein','+2','alle (−10 in der Nähe von Feuer)']],'')}
-<p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = 14; <b>Rest 12</b>: 3 Punkte → +1 max. SP (also 6), 4 Punkte → Armbrust, 2 Punkte → Lederwams, 3 Punkte → 30 Taler (3 + 4 + 2 + 3 = 12). <b>Säulen:</b> Kampf 40, Sozial 30, Wissen 50. <b>Wunden</b> 10, <b>SP</b> 6 von 6.</p></div>
+<p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = 14; <b>Rest 12</b>: 3 Punkte → +1 max. SP (also 6), 4 Punkte → Armbrust, 2 Punkte → Lederwams, 3 Punkte → 30 Taler (3 + 4 + 2 + 3 = 12). <b>Säulen:</b> Kampf 40, Sozial 30, Wissen 50. <b>LP</b> 10, <b>SP</b> 6 von 6.</p></div>
 <div class="box ex"><b class="t">Beispiel Paladin (Vorschlag): starke Ausrüstung muss durch Nachteile bezahlt werden.</b>
 <p><i>Geschichte:</i> geschworener Ritter eines Tempelordens, vom Kult gejagt, mittellos.</p>
 {table(['Wort','Art','Punkte'],[['Geweihter Streiter','Vorteil groß','−4'],['Handauflegen','Vorteil groß','−4'],['Heiliger Schwur (darf nicht lügen/fliehen)','Nachteil groß','+4'],['Fanatischer Feind: Kult X','Nachteil klein','+2'],['Arm wie eine Kirchenmaus','Nachteil klein','+2']],'small')}
-<p><b>Rechnung:</b> Vorteile 4 + 4 = 8; Nachteile 4 + 2 + 2 = 8; Budget 20 − 8 + 8 = <b>20</b>. Verteilt mit <code>/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer 6 + Schwert 4 + Schild 4 = 14 Punkte (140 Taler Gegenwert), +1 max. SP = 3 Punkte, Taler 3 Punkte (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig. Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung der Figur (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 Wunde.</p></div>''')
+<p><b>Rechnung:</b> Vorteile 4 + 4 = 8; Nachteile 4 + 2 + 2 = 8; Budget 20 − 8 + 8 = <b>20</b>. Verteilt mit <code>/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer 6 + Schwert 4 + Schild 4 = 14 Punkte (140 Taler Gegenwert), +1 max. SP = 3 Punkte, Taler 3 Punkte (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig. Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung der Figur (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 LP.</p></div>''')
 
 # ================= 3 PROBE =================
 add(f'''<h1>3 Die Probe (d100)</h1>
@@ -131,7 +131,7 @@ add(f'''<h1>3 Die Probe (d100)</h1>
 <ul><li><b>Säule:</b> Kampf, Sozial oder Wissen (30/40/50).</li>
 <li><b>Passende Eigenschaft:</b> Vorteil klein +10, groß +20. Nachteil klein −10, groß −20. Pro Probe zählen alle Wörter, die die Spielleitung für passend hält.</li>
 <li><b>Schwierigkeit:</b> siehe Tabelle.</li>
-<li><b>Zustände:</b> Wunden ≤ 3: −10. Schicksalsmüde: SP 1 = −10, SP 0 = −20 (nicht addieren, es gilt der größere Abzug; Auslegung der Regel). Ausgegebene SP: ±10 je Punkt.</li></ul>
+<li><b>Zustände:</b> LP ≤ 3: −10. Schicksalsmüde: SP 1 = −10, SP 0 = −20 (nicht addieren, es gilt der größere Abzug; Auslegung der Regel). Ausgegebene SP: ±10 je Punkt.</li></ul>
 {table(['Schwierigkeit','Modifikator','Beispiel'],[['leicht','+20','Ein unbewachtes Fass aufstemmen'],['normal','±0','Einen müden Wirt überreden'],['schwer','−20','Ein Gift am Geruch erkennen'],['sehr schwer','−30','Im Regen eine Mauer ohne Seil erklimmen']],'small')}
 <h3>Erfolgsgrade (DoS) und Misserfolgsgrade (DoF)</h3>
 <div class="box"><b>Erfolg:</b> DoS = 1 + abgerundet((Zielzahl − Wurf) ÷ 10) &nbsp;&nbsp; <b>Misserfolg:</b> DoF = 1 + abgerundet((Wurf − Zielzahl) ÷ 10)<br><span class="note">Abrunden. Höchstens 10 (Auslegung). Wurf 01–05 ist immer ein Erfolg (mindestens 1 DoS), Wurf 96–100 immer ein Misserfolg (mindestens 1 DoF), auch wenn die Zielzahl etwas anderes sagt.</span></div>
@@ -167,23 +167,23 @@ add(f'''<h1>4 Kampf</h1>
 <ol><li><b>Initiative:</b> Alle würfeln d100 gegen ihren Kampfwert (Zielzahl wie oben). Mehr DoS handelt zuerst; Misserfolge handeln zuletzt (Auslegung: weniger DoF zuerst). <i>Einfacher:</i> Spieler zuerst, dann Gegner.</li>
 <li><b>Angriff:</b> Der Handelnde würfelt eine Kampf-Probe. Gegen einen wehrlosen oder ahnungslosen Gegner reicht <b>mindestens 1 DoS</b>.</li>
 <li><b>Verteidigung:</b> Wer sich wehren kann, würfelt eine vergleichende Kampf-Probe (parieren/ausweichen). Gewinnt der Angreifer, trifft er. Gewinnt der Verteidiger, wehrt er ab (Auslegung: bei kritischem Erfolg ist ein Gegenangriff möglich). Verteidigen kostet keine Handlung. Scheitert der Angreifer, trifft er nicht.</li>
-<li><b>Schaden:</b> Waffe + DoS des Angreifers − Rüstung, mindestens 0 (Auslegung). Der Verteidiger streicht diese Zahl von seinen <b>Wunden</b> ab.</li></ol>
+<li><b>Schaden:</b> Waffe + DoS des Angreifers − Rüstung, mindestens 0 (Auslegung). Der Verteidiger streicht diese Zahl von seinen <b>LP</b> ab.</li></ol>
 <div class="box"><b class="t">Schaden = Waffe + DoS (Angreifer) − Rüstung</b> (nicht unter 0)</div>
 <div class="grid"><div>{table(['Waffe','Schaden'],[['Faust, Ringen','1'],['Messer, Knüppel','2'],['Schwert, Axt','3'],['Bogen, Armbrust','3'],['Feuerwaffe','4']],'')}</div>
 <div>{table(['Rüstung','Abzug'],[['Stoff, Lumpen','0'],['Leder','1'],['Kettenhemd','2'],['Plattenpanzer','3']],'')}</div></div>
-<h3>Wunden</h3>
-<ul><li>Jede Figur der Spieler hat <b>10 Wunden</b>. Schaden wird abgezogen.</li>
-<li><b>Bei 3 oder weniger Wunden:</b> −10 auf alle Proben.</li>
+<h3>LP (Lebenspunkte)</h3>
+<ul><li>Jede Figur der Spieler hat <b>10 LP</b> (Lebenspunkte: verbleibende Gesundheit, sie zählen herunter). Schaden wird abgezogen.</li>
+<li><b>Bei 3 oder weniger LP:</b> −10 auf alle Proben.</li>
 <li><b>Bei 0 oder weniger:</b> Die Figur geht zu Boden. Mit <b>1 SP</b> bleibt sie am Leben (bewusstlos oder kampfunfähig). Ohne SP droht der Tod, die Spielleitung entscheidet im Sinn der Szene.</li>
-<li><i>Vorschlag (nicht im Kernwerk):</i> Wunden heilen: Nachtruhe +2, Kräuterprobe (Wissen) mit DoS ≥ 2 zusätzlich +DoS.</li></ul>
+<li><i>Vorschlag (nicht im Kernwerk):</i> LP heilen: Nachtruhe +2, Kräuterprobe (Wissen) mit DoS ≥ 2 zusätzlich +DoS.</li></ul>
 <h3>Gegner (Vorschläge, wenn die KI ausfällt)</h3>
-{table(['Typ','Kampf','Wunden','Waffe / Rüstung'],[['Handlanger, Räuber','30','4','Knüppel 2 / Stoff 0'],['Söldner, Wache','40','8','Schwert 3 / Leder 1'],['Veteran, Meuchler','50','10','Schwert 3 / Kette 2'],['Elite, Ritter, Ungeheuer','60','12','Schwert 3 oder Klauen 4 / Platte 3']],'')}
+{table(['Typ','Kampf','LP','Waffe / Rüstung'],[['Handlanger, Räuber','30','4','Knüppel 2 / Stoff 0'],['Söldner, Wache','40','8','Schwert 3 / Leder 1'],['Veteran, Meuchler','50','10','Schwert 3 / Kette 2'],['Elite, Ritter, Ungeheuer','60','12','Schwert 3 oder Klauen 4 / Platte 3']],'')}
 <div class="box ex"><b class="t">Beispielrunde: Mirne gegen einen Schmuggler</b><br>
-Mirne: Kampf 40, Armbrust +20 (nur beim Schießen), Wunden 10, Lederwams (1). Schmuggler: Kampf 40, Schwert (3), Wunden 8, Leder (1).<br>
+Mirne: Kampf 40, Armbrust +20 (nur beim Schießen), LP 10, Lederwams (1). Schmuggler: Kampf 40, Schwert (3), LP 8, Leder (1).<br>
 <b>Initiative:</b> Mirne würfelt 28 (Ziel 40): DoS 2. Der Schmuggler würfelt 35: DoS 1. Mirne zuerst.<br>
-<b>Mirne schießt:</b> Ziel 60, Wurf 41: DoS 2. <b>Schmuggler weicht aus:</b> Ziel 40, Wurf 52: Misserfolg (DoF 2). Mirne trifft. Schaden 3 (Armbrust) + 2 − 1 (Leder) = <b>4</b>. Schmuggler: 8 → 4 Wunden.<br>
-<b>Schmuggler greift an:</b> Ziel 40, Wurf 19: DoS 3. <b>Mirne pariert</b> mit Kampf 40 (kein Armbrustbonus im Nahkampf), Wurf 38: DoS 1. 3 gegen 1: der Schmuggler trifft. Schaden 3 + 3 − 1 (Leder) = <b>5</b>. Mirne: 10 → 5 Wunden.<br>
-Mirne hat noch 5 Wunden, also über der 3er-Schwelle (kein Abzug). Nächste Runde: Initiative neu oder „Spieler zuerst“.</div>''')
+<b>Mirne schießt:</b> Ziel 60, Wurf 41: DoS 2. <b>Schmuggler weicht aus:</b> Ziel 40, Wurf 52: Misserfolg (DoF 2). Mirne trifft. Schaden 3 (Armbrust) + 2 − 1 (Leder) = <b>4</b>. Schmuggler: 8 → 4 LP.<br>
+<b>Schmuggler greift an:</b> Ziel 40, Wurf 19: DoS 3. <b>Mirne pariert</b> mit Kampf 40 (kein Armbrustbonus im Nahkampf), Wurf 38: DoS 1. 3 gegen 1: der Schmuggler trifft. Schaden 3 + 3 − 1 (Leder) = <b>5</b>. Mirne: 10 → 5 LP.<br>
+Mirne hat noch 5 LP, also über der 3er-Schwelle (kein Abzug). Nächste Runde: Initiative neu oder „Spieler zuerst“.</div>''')
 
 # ================= 5 SP =================
 add(f'''<h1>5 Schicksalspunkte (SP)</h1>
@@ -193,7 +193,7 @@ add(f'''<h1>5 Schicksalspunkte (SP)</h1>
 ['<b>1 SP</b>','<b>±10</b> auf die Zielzahl einer Probe, deiner oder der eines anderen (Gegner, NSC). Höchstens <b>3 SP</b> pro Probe.'],
 ['<b>1 SP</b>','Chancen des Orakels um <b>eine Stufe</b> verschieben (z. B. offen → wahrscheinlich; bei Gegnern gegen sie).'],
 ['<b>2 SP</b>','<b>Neu würfeln.</b> Das zweite Ergebnis zählt.'],
-['<b>1 SP</b>','Bei 0 Wunden <b>überleben</b> (du bleibst am Boden, aber lebst).']])}
+['<b>1 SP</b>','Bei 0 LP <b>überleben</b> (du bleibst am Boden, aber lebst).']])}
 <div class="box"><b class="t">Schicksalsergeben.</b> Vor dem Wurf, bei einer Probe mit echtem Einsatz (die Spielleitung entscheidet; nie bei leichten Proben, Initiative oder reinen Übungen), kannst du dich dem Schicksal ergeben: <b>−10</b> auf die Probe. Gelingt sie trotzdem mit mindestens <b>2 Erfolgsgraden</b>, erhältst du <b>1 SP</b> zurück (nicht über dein Maximum). Scheitert sie, ist es ein <b>Schicksalsschlag</b>: der Misserfolg zählt <b>einen Fehlergrad mehr</b> und wird härter erzählt.<br>
 <b>Einmal pro Szene und Figur.</b> Nicht kombinierbar mit SP auf derselben Probe, weder eigenen noch fremden. Ein Neuwurf (2 SP) bleibt erlaubt, das zweite Ergebnis zählt.</div>
 <p class="note">±10 auf die Zielzahl entspricht ∓10 auf den Wurf: Erfolgsgrade ändern sich nach der Formel, der Pasch bleibt Pasch.</p>
@@ -204,7 +204,7 @@ add(f'''<h1>5 Schicksalspunkte (SP)</h1>
 <p>Das Maximum bleibt die Obergrenze.</p>
 <div class="box ex"><b class="t">Beispiel A: Einen NSC-Wurf verbiegen.</b> Der Schmuggler greift Mirne mit Ziel 40 an und würfelt 19 (DoS 3). Mirne gibt <b>2 SP</b> aus: −20 auf die Zielzahl des Schmugglers (Ziel 20). 19 ≤ 20 ist noch ein Treffer, aber nur DoS 1 + abgerundet(1 ÷ 10) = <b>1</b>. Statt 5 bekommt Mirne nur 3 + 1 − 1 = <b>3</b> Schaden. Mit einem dritten SP (Ziel 10) wäre 19 ein Misserfolg gewesen. Mirne hat jetzt 4 von 6 SP.</div>
 <div class="box ex"><b class="t">Beispiel B: Orakel-Chancen verschieben.</b> Frage: „Ist die Hintertür unverschlossen?“ Spannung 5, Chancen <b>offen</b>: JA+ ≤ {A[0]}, JA ≤ {A[1]}, NEIN ≤ {A[2]}, darüber NEIN+. Mirne gibt <b>1 SP</b> aus und verschiebt auf <b>wahrscheinlich</b>: JA+ ≤ {B[0]}, JA ≤ {B[1]}, NEIN ≤ {B[2]}. Die Chance auf JA oder JA+ steigt von {A[1]} % auf {B[1]} %. Würde ein Gegner das Orakel verbiegen, verschiebt er die Chancen entsprechend in die andere Richtung.</div>
-<div class="box ex"><b class="t">Beispiel C: Rettung und Neuwurf.</b> Mirne hat 4 SP (Stand nach Beispiel A) und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3). Sie zahlt <b>2 SP</b> für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (−10 auf alle Proben).</div>
+<div class="box ex"><b class="t">Beispiel C: Rettung und Neuwurf.</b> Mirne hat 4 SP (Stand nach Beispiel A) und sinkt auf 0 LP. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3). Sie zahlt <b>2 SP</b> für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (−10 auf alle Proben).</div>
 <div class="box ex"><b class="t">Beispiel D: Schicksalsergeben.</b> Kampf 50, Ziel mit Ergeben <b>40</b>. Wurf <b>30</b>: DoS 2, <b>+1 SP</b> (Wurf 35: DoS 1, kein SP). Wurf <b>45</b>: DoF 1 + 1 = <b>2</b>, Schicksalsschlag. Gewinn gibt es bei Wurf ≤ Ziel − 20; jeder Misserfolg bekommt +1 DoF.</div>''')
 
 # ================= 6 ORAKEL =================
@@ -296,14 +296,14 @@ add(f'''<h1 class="pb">8 Notfall: Spielleitung von Hand</h1>
 <ol>
 <li><b>Pause ausrufen</b> („Pause, wir spielen von Hand weiter“). Kurz sagen, warum, damit alle Bescheid wissen.</li>
 <li><b>Spielleiter bestimmen:</b> Eine Person erzählt, würfelt für alle NSC und führt den Spielstandzettel (unten). Ist keine da, wechselt ihr reihum pro Szene.</li>
-<li><b>Stand sichern.</b> Notiere: aktuelle Szene (ein Satz), Ort, anwesende NSC, Spannung, SP und Wunden jeder Figur, offene Akteure und Stränge. Wenn sl noch erreichbar ist: <code>/status</code> und <code>/welt</code> zeigen den Zustand.</li>
+<li><b>Stand sichern.</b> Notiere: aktuelle Szene (ein Satz), Ort, anwesende NSC, Spannung, SP und LP jeder Figur, offene Akteure und Stränge. Wenn sl noch erreichbar ist: <code>/status</code> und <code>/welt</code> zeigen den Zustand.</li>
 <li><b>Weiterspielen:</b> Szene beschreiben → Spieler handeln → Probe (Kap. 3) oder Orakel (Kap. 6) oder erzählen. Szenenbeginn: Erwartung prüfen. Bei Pasch ≤ Spannung: Ereignis. Namen, Orte, Beute aus Kap. 7. Notfalls: Komplikation würfeln.</li>
 <li><b>NSC</b> bekommen Haltung (d10), ein Wesenswort und ein Motiv. Kampfwerte aus Kap. 4.</li>
 <li><b>Szenenende:</b> Spannung anpassen, Stränge und Akteure notieren, SP-Erholung nach Tabelle.</li>
-<li><b>Rückkehr zu sl:</b> Schreibe eine Kurzfassung (5–10 Sätze: was geschah, wer lebt, wer will was, wo seid ihr) und gib sie als Regieanweisung mit <code>/regie</code> an sl. Setze Spannung, SP und Wunden wie notiert. Erst dann normal weiterspielen. Beim ersten Zug danach: Szenenbeginn neu prüfen.</li></ol>
+<li><b>Rückkehr zu sl:</b> Schreibe eine Kurzfassung (5–10 Sätze: was geschah, wer lebt, wer will was, wo seid ihr) und gib sie als Regieanweisung mit <code>/regie</code> an sl. Setze Spannung, SP und LP wie notiert. Erst dann normal weiterspielen. Beim ersten Zug danach: Szenenbeginn neu prüfen.</li></ol>
 <div class="box"><b class="t">Faustregel für schnelles Improvisieren:</b> Erst fragen „Was ist am wahrscheinlichsten?“ → Orakel mit passenden Chancen. Bei Unsicherheit: <b>offen</b>. Wenn die Antwort langweilig ist, erlaube ein Ereignis. Wenn es zu viel wird, senke die Spannung.</div>
 <h3>Spielstandzettel</h3>
-{table(['Feld','Eintrag'],[['Szene Nr. / Ort',''],['Spannung (1–9)','&nbsp;'],['Fragen in dieser Szene (max. 6)','☐ ☐ ☐ ☐ ☐ ☐'],['Akteure (NSC, Gruppen)','&nbsp;<br>&nbsp;'],['Offene Stränge','&nbsp;<br>&nbsp;'],['Wunden / SP je Figur','&nbsp;<br>&nbsp;']],'blank')}''')
+{table(['Feld','Eintrag'],[['Szene Nr. / Ort',''],['Spannung (1–9)','&nbsp;'],['Fragen in dieser Szene (max. 6)','☐ ☐ ☐ ☐ ☐ ☐'],['Akteure (NSC, Gruppen)','&nbsp;<br>&nbsp;'],['Offene Stränge','&nbsp;<br>&nbsp;'],['LP / SP je Figur','&nbsp;<br>&nbsp;']],'blank')}''')
 
 # ================= 9 SHEET =================
 fld = lambda w='30mm': f'<span class="fld" style="min-width:{w}"></span>'
@@ -316,7 +316,7 @@ add(f'''<div class="sheet"><h1>9 Charakterbogen</h1>
 <h3>Eigenschaften (Wörter)</h3>
 <table class="blank"><thead><tr><th style="width:42%">Wort</th><th>Klein/Groß</th><th>Punkte (−2/−4 · +2/+4)</th><th>Säule</th><th>Wirkung</th></tr></thead><tbody>{'<tr><td></td><td></td><td></td><td></td><td></td></tr>'*9}</tbody></table>
 <div class="grid">
-<div><h3>Wunden (10)</h3><p>{''.join('<span class="cb"></span>' for _ in range(10))}<br><span class="note">Bei ≤ 3: −10 auf alles. Bei 0: nur mit 1 SP am Leben.</span></p>
+<div><h3>LP (10)</h3><p>{''.join('<span class="cb"></span>' for _ in range(10))}<br><span class="note">Bei ≤ 3: −10 auf alles. Bei 0: nur mit 1 SP am Leben.</span></p>
 <h3>Schicksalspunkte (Max ____)</h3><p>{''.join('<span class="cb"></span>' for _ in range(8))}<br><span class="note">SP 1: −10. SP 0: −20 und Orakel schlechter.</span></p></div>
 <div><h3>Waffen und Rüstung</h3><table class="blank"><thead><tr><th>Name</th><th>Schaden / Abzug</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table></div></div>
 <div class="grid"><div style="width:50%"><h3>Ausrüstung</h3>{'<div class="line"></div>'*5}</div><div><h3>Taler</h3><div class="line"></div><h3>Notizen (Kontakte, Schulden, Feinde)</h3>{'<div class="line"></div>'*3}</div></div>
@@ -327,16 +327,16 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 <div class="box"><b class="t">Zielzahl = Säule + Eigenschaften + Schwierigkeit + Zustände.</b> &nbsp; Würfle d100, <b>Wurf ≤ Zielzahl = Erfolg</b>. Wurf 01–05 immer Erfolg, 96–100 immer Misserfolg.<br>
 <b>DoS</b> = 1 + abgerundet((Ziel − Wurf) ÷ 10) &nbsp;·&nbsp; <b>DoF</b> = 1 + abgerundet((Wurf − Ziel) ÷ 10) &nbsp;·&nbsp; max 10 &nbsp;·&nbsp; <b>Pasch</b> (11 … 99, 100) = kritisch.</div>
 <div class="grid"><div>
-{table(['Quelle','Mod.'],[['Vorteil klein / groß','+10 / +20'],['Nachteil klein / groß','−10 / −20'],['Schwierigkeit leicht','+20'],['normal','±0'],['schwer','−20'],['sehr schwer','−30'],['Wunden ≤ 3','−10'],['SP = 1','−10'],['SP = 0','−20 (nicht addiert)'],['1 SP ausgegeben (max. 3 je Probe)','±10 pro SP, auch bei anderen'],['Schicksalsergeben (1× je Szene)','−10, ohne SP']],'')}</div>
+{table(['Quelle','Mod.'],[['Vorteil klein / groß','+10 / +20'],['Nachteil klein / groß','−10 / −20'],['Schwierigkeit leicht','+20'],['normal','±0'],['schwer','−20'],['sehr schwer','−30'],['LP ≤ 3','−10'],['SP = 1','−10'],['SP = 0','−20 (nicht addiert)'],['1 SP ausgegeben (max. 3 je Probe)','±10 pro SP, auch bei anderen'],['Schicksalsergeben (1× je Szene)','−10, ohne SP']],'')}</div>
 <div>
 {table(['Säule','Grundwert'],[['Kampf, Sozial, Wissen','30 / 40 / 50 (frei verteilt)']],'')}
 {table(['Waffe','Sch.'],[['Faust','1'],['Messer, Knüppel','2'],['Schwert, Axt, Bogen, Armbrust','3'],['Feuerwaffe','4']],'')}
 {table(['Rüstung','Abzug'],[['Stoff','0'],['Leder','1'],['Kette','2'],['Platte','3']],'')}</div>
 <div>
-{table(['SP-Kosten','Wirkung'],[['1','±10 auf eine Probe'],['1','Orakel um 1 Stufe'],['2','Neuwurf'],['1','Überleben bei 0 Wunden'],['+1','Ergeben: ≥ 2 DoS, Wurf ≤ Ziel − 20']],'')}
+{table(['SP-Kosten','Wirkung'],[['1','±10 auf eine Probe'],['1','Orakel um 1 Stufe'],['2','Neuwurf'],['1','Überleben bei 0 LP'],['+1','Ergeben: ≥ 2 DoS, Wurf ≤ Ziel − 20']],'')}
 {table(['SP-Erholung','+'],[['Rast 1 h','1'],['Nacht / sicher','3'],['Nachteil ausgespielt','1'],['Fest / Tempel','2'],['Strang abgeschlossen','2']],'')}</div></div>
 <div class="grid"><div>
-<b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). Wunden 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
+<b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). LP 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
 <div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2/4/6 Punkte = Gegenstand (Vorschlag, Stufen in Kap. 2) · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
 <h3>Preise (Vorschlag, Kap. 11)</h3>
 <p style="margin-bottom:0">1 Taler = 2 Schilling = 4 Heller. Messer, Knüppel, Lederrüstung 20 T · Schwert, Axt, Bogen, Kette, Schild 40 T · Platte, Feuerwaffe 60 T. Mahlzeit 2 H, Tagelohn 1 T. 10 Taler = 1 Budgetpunkt.</p></div>''')
