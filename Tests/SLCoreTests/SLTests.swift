@@ -1411,6 +1411,18 @@ final class CmdMessageTests: XCTestCase {   // P7
 }
 
 final class PlaceDedupeTests: XCTestCase {   // P8
+  func testMerkmal() {
+    var pc = Pc(speaker: "M"); _ = SR.build(&pc, name: "Mara", story: "x", traits: [Trait(text: "Kräuterkundige", major: true, pos: true)])
+    XCTAssertEqual(pc.taler, 160)
+    XCTAssertTrue(SR.editTrait(&pc, args: "-Angst vor offenem Wasser").contains("Budget übrig 18")); XCTAssertEqual(pc.taler, 180)
+    _ = SR.editTrait(&pc, args: "+Fährtenlesen major"); XCTAssertEqual(pc.traits.count, 3); XCTAssertEqual(pc.taler, 140)
+    XCTAssertTrue(SR.editTrait(&pc, args: "x Wasser").contains("Fährtenlesen")); XCTAssertEqual(pc.traits.count, 2)
+    XCTAssertTrue(SR.editTrait(&pc, args: "x gibtsnicht").contains("kein Merkmal")); XCTAssertTrue(SR.editTrait(&pc, args: "quatsch").hasPrefix("/merkmal +"))
+    _ = SR.editTrait(&pc, args: "-Pech major"); for i in 0..<6 { _ = SR.editTrait(&pc, args: "+Fertigkeit\(["Alpha", "Beta", "Gamma", "Delta", "Epsilon", "Zeta"][i]) major") }
+    XCTAssertGreaterThanOrEqual(SR.budgetLeft(pc.traits), 0)
+    pc.lastCheck = Check(); XCTAssertTrue(SR.editTrait(&pc, args: "+x").contains("nur vor"))
+    XCTAssertEqual(Cmd.parse("/merkmal -Angst"), .merkmal("-Angst"))
+  }
   func testDedupe() {
     var w = World(); w.orte = ["Krypta der Grenzsteine": "kalt", "Die Krypta der Grenzsteine": "kalt und feucht, Wasser tropft"]; w.npcs = [Npc(id: "n1", name: "A", kurz: "", ort: "Die Krypta der Grenzsteine")]
     w.dedupePlaces(); XCTAssertEqual(w.orte.count, 1); XCTAssertEqual(w.npcs[0].ort, w.orte.keys.first)

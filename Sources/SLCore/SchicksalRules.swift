@@ -112,6 +112,28 @@ public enum SR {
     }
     return traits.filter { out.contains($0) }
   }
+  /// /merkmal +Text [major] | /merkmal -Text [major] (flaw) | /merkmal x Text (remove): fix the extraction by hand, before the first check.
+  /// Re-fits the budget and resets the leftover to Taler (a /budget has to be repeated).
+  public static func editTrait(_ pc: inout Pc, args: String) -> String {
+    let usage = "/merkmal +Stärke [major] | /merkmal -Schwäche [major] | /merkmal x Text (streichen)"
+    if pc.lastCheck != nil { return "/merkmal geht nur vor der ersten Probe." }
+    var a = args.trimmingCharacters(in: .whitespaces); guard let f = a.first else { return usage }
+    if f == "x" || f == "X" {
+      a = String(a.dropFirst()).trimmingCharacters(in: .whitespaces); let n = pc.traits.count
+      pc.traits.removeAll { norm($0.text).contains(norm(a)) && !a.isEmpty }
+      if pc.traits.count == n { return "/merkmal: kein Merkmal '\(a)'" }
+    } else if f == "+" || f == "-" {
+      a = String(a.dropFirst()).trimmingCharacters(in: .whitespaces)
+      var major = false; if a.hasSuffix(" major") { major = true; a = String(a.dropLast(6)) }
+      let txt = clean(a, 40); if txt.isEmpty || minorHarm(txt) { return usage }
+      let t = Trait(text: txt, major: major, pos: f == "+")
+      pc.traits = dedupe(pc.traits + [t]); if !pc.traits.contains(t) { return "/merkmal: '\(txt)' gibt es schon (ähnliches Merkmal)." }
+    } else { return usage }
+    let all = pc.traits; pc.traits = fit(all)
+    let dropped = all.filter { !pc.traits.contains($0) }
+    pc.taler = max(0, budgetLeft(pc.traits)) * 10; pc.inventar = []; pc.spMax = 5; pc.sp = 5
+    return "Merkmale: " + (pc.traits.isEmpty ? "-" : pc.traits.map { ($0.pos ? "+" : "−") + $0.text + ($0.major ? " (major)" : "") }.joined(separator: ", ")) + " · Budget übrig \(budgetLeft(pc.traits)) · Taler \(pc.taler)" + (dropped.isEmpty ? "" : " · über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))
+  }
   /// check reason for cards: cut at a word boundary, never mid-word
   public static func shortReason(_ s: String, _ n: Int = 60) -> String {
     let t = s.trimmingCharacters(in: .whitespacesAndNewlines); if t.count <= n { return t }

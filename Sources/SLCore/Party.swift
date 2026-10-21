@@ -158,6 +158,10 @@ public extension Game {
     let d = partyStore.with { p in SR.build(&p[i], name: name, story: story, traits: traits) }
     announceSheet(); return d
   }
+  func applyMerkmal(_ i: Int, args: String) -> String {
+    let m = partyStore.with { p in SR.editTrait(&p[i], args: args) }
+    announceSheet(); return m
+  }
   func applyBudget(_ i: Int, args: String) -> String {
     let m = partyStore.with { p in SR.budget(&p[i], args: args) }
     announceSheet(); return m

@@ -206,6 +206,8 @@ public final class Runner {
       else if ["frei", "saeulen", "schicksal"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen | schicksal")) }
     case .regie(let a):      // hidden GM note for the next narration: never logged, never shown in the story
       if a.isEmpty { sink(.info("/regie <Text>  (versteckte Spielleiter-Notiz für die nächste Erzählung)")) } else { game.pendingRegie.append(clean(a, 300)); sink(.info("Regie-Notiz vorgemerkt (nur für die nächste Erzählung).")) }
+    case .merkmal(let a):
+      if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyMerkmal(i, args: a))); try session.save(game); refresh() } else { sink(.info("/merkmal: erst /figur Name: Geschichte")) }
     case .budget(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
@@ -256,7 +258,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -277,6 +279,7 @@ public enum Cmd: Equatable {
     if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
+    if t == "/merkmal" || t.hasPrefix("/merkmal ") { return .merkmal(arg(8)) }
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
     if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
