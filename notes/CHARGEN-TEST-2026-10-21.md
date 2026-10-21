@@ -87,3 +87,43 @@ Leak check (grep over all 48 transcripts and sheets for `[Fakt`, `[Orakel`, `Reg
 
 ## Limits of this test
 n = 1 run per cell; Gemma 4B is not deterministic; the 12 players are Haiku-written scripts with one fixed answer to a contested verdict, not interactive players; analysts are Haiku (noisy, strict); judgement scores are rough; exploit success is judged on what is on the sheet, the narrator was not run, so a smuggled power that is still in the stored backstory text could still be honoured in play (not measured). `editTrait` defuses tag colons in all modes including A, so A is slightly hardened compared with main.
+
+## Fable's verdict (final review, [review])
+**A:** unfit as a rules engine, fine as a GM-assisted draft. P mean 235 / max 300, 7 magic traits, injected tag text stored as trait names, 11 silent drops; the GM is the only guard.
+**B (Taler + caps):** the only system that measurably works: exploit 2.58 -> 1.17, P max 300 -> 240, refund farming and major stacking dead, best injection resistance (2.5), 6 s, deterministic. Corrections to this note's own numbers:
+- "magic traits 0" is partly tautological (the metric uses the same keyword list as the filter); analysts found flight (strength) and mind control (refunding flaw) on p07's B and BC sheets. Real count >= 2 in both. `best_all` 148 -> 80 is arithmetic (50 + clamp 30), not a measurement.
+- The gap -19 is real; it comes from the refund cap and the major demotion (p06 300 -> 240, p09 290 -> 240). The 18 false refusals are **not inherent to the caps**: the root cause is that `/figur` extraction fills the 5 slots before the player's own wishes (p02 keeps "Hund Bello", strikes all four real wishes) and the `> 3 content words` rule kills legitimate "Echolot-Gehör, Räume per Schall erfassen" (p05). Both are ordering/threshold bugs fixable without loosening a cap.
+**C (points + arbiter):** a dead end as designed (two currencies): exploit 1.58, 2 magic traits on sheets, P 280 max, injection resistance worst (1.5), 40 s.
+**B+C:** adds nothing measurable over B (exploit 1.17 = 1.17, false refusals 20 vs 18, injection 2.0 < 2.5, time x8) and brings four new bug classes: card != sheet; oracle/verdict fishing by repeated `/pruefen`; contradictory magic trade offers that are then struck at `/annehmen`; the p12 "Ring der Ahnen" loss (root cause found: `SR.dedupe` runs flaws first, the trade-off flaw "Schuld der Ahnen" shares the lemma with the accepted strength and kills it). The structural hardening (grammar, floors, backstops) works 100%; the 4B judge does not (reasons contradict verdicts, trade-offs cosmetic 1.7/3). At a table sl is single-threaded: 6 players x 2 `/pruefen` x ~18 s = 3-4 min of queue. **Not worth it now.** What C contributes that caps cannot (story fit for traits with no word match) already exists as a deterministic floor (`supported() == 0 -> fraglich -> oracle`): a "C-lite" without a model call keeps the Schicksal flavour at 0 s and is the follow-up instead of the Gemma judge.
+
+### Recommendation
+- **Nothing from chargen-v2 goes to main for the session** (6 commits behind main: Heller purse, /kauf, item restructure; conflicts in `SchicksalRules.swift`, `Runner.swift`, `main.swift`; `gen_itemprices.py` reads the moved `items.json`; no bridge whitelist; no test gate tonight).
+- **Ship tonight only the 140-char fix** (3 lines: `parseFigur` limit 700 in Runner and in the no-name fallback, `hintergrund` 700). Gate: `swift test` + one `/figur` with the handout's Mirne example showing >= 5 traits incl. "erstarre vor Feuer".
+- B caps tomorrow as **table rules on paper** for the GM (max 5 strengths, 2 major, 3 refunding flaws, no supernatural, gear only via `/budget`; enforce with `/merkmal x`).
+- After the session: merge B (fixes 1, 2, 7, 8) and make it default under `--rules schicksal`; C/BC stay behind the flag until fixes 3-6 and a 12-persona re-run, or get replaced by C-lite.
+
+### Top fixes before any merge (ranked)
+1. Wishes before proposals in the caps: `Trait._wish`, set in `/merkmal` and `/wunsch`, `fitB` counts wishes first (~6 lines).
+2. "zu breit" only for lists: `contentWords > 5 || commas >= 2` instead of `> 3`.
+3. Card = sheet in bc: run `fitB` on the would-be-accepted traits inside `pruefen` and mark lines "(fällt unter das Limit)"; pre-refuse magic traits like `gearTrait`.
+4. Dedupe must skip trade-off flaws in `annehmen` (dedupe base traits, then append `of != nil` flaws).
+5. No fishing: oracle cache key without the `T` suffix; one objection per character.
+6. `fraglich -> NEIN` with a trade-off is also `teurer` (the flaw is no cost without Schwächenwurf).
+7. One money line: print only "Bargeld N Taler"; convert leftover to cash automatically (<= 60) with the "verfallen" note.
+8. `parseFigur` no-name fallback still cuts at 140 in b/c/bc; trim the story-strike list to real power words (drop "drache", "heilig", "verflucht", "legendär": "Drachenfels" and a dream sentence were struck). Also remove `power` from `Pc.json` (it goes to every Foundry client).
+
+### Merge plan (after the session)
+1. `git tag pre-chargen-b` on main; rebase `chargen-v2` onto main; resolve `Pc.json` (keep `heller`/`geld`, add `cg`, no `power`), `Cmd` enum, `main.swift` flags/help; chargen writes `taler` directly (matches the Heller contract of `Pc.taler.didSet`).
+2. Re-point `tools/gen_itemprices.py` to `handout/items/data/kategorien.json` (same keys), regenerate `ItemPrices.swift`; creation shop uses the base (gewöhnlich) price only. Test: Schwert 40, Plattenpanzer 60, unknown 20.
+3. Apply fixes 1, 2, 7, 8 with unit tests in `ChargenTests`.
+4. Gates: `swift test` green; A regression with the r2 harness mode `a` on 3 personas (sheets identical to metrics-r2 except `hintergrund` length); B on 12 personas: false refusals <= 7 (A's level), exploit <= 1.2, zero silent drops; BC only after fixes 3-6 plus an automatic check that every "angenommen" in the last card is on the sheet or in the "Angepasst" line.
+5. `--chargen b` default under `--rules schicksal`, `a` stays selectable, `c|bc` flag only.
+6. Bridge (sl-foundry): `playerSlashAllowed` += `/wunsch /pruefen /annehmen` only when bc ships; update `rules.test.mjs`; new sheet keys are ignored by the bridge.
+7. Items: creation prices in whole Taler, play prices in Heller via `/kauf`; one source, generated at build.
+8. Rollback: revert the merge commit or check out the tag; saves are compatible both ways (all new fields optional).
+
+### The 140-character cut on main today
+The handout asks for 3-8 sentences; its own Mirne example (~430 chars) is cut after the first sentence by `World.parseFigur` before extraction: the favour, the enemies, skills and the fear of fire never reach Gemma, so the sheet gets 1-3 traits and usually no flaw (the earlier CHARTEST remark "negatives are still missed" matches the cut, not the model). Pillars are seeded from the first sentence and `storyMatch` finds almost no story items. At the same time `game.figur = f` puts the FULL text into the narrator's system prompt, so the narrator honours everything in the story, powers included, that the sheet never costed: that asymmetry is why smuggling is free on main and why beginners get thin sheets. The fix (limit 700) makes extraction return 5-9 traits (r2-A), hence more "über dem Budget gestrichen" lines in A and pillar seeding by keywords anywhere in the text (more stuffable, p10): acceptable with a GM present, and the precondition for B's caps to mean anything.
+
+## What it takes to merge into main after the session
+See Fable's merge plan above. Gates reached in the branch: `swift test` 207 tests green (183 baseline + 24 new in `ChargenTests`), schicksal package 41 green (unchanged), `./build.sh` ok.

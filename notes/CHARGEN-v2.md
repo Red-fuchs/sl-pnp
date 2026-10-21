@@ -49,3 +49,6 @@ See `chargenArbiterSystem` in Chargen.swift (Fable's 212-word text).
 
 ## Adversarial tests (SLTests, mock LM)
 format injection, fake tags, prompt exfil, hidden-secret probe, flaw farming, max traits no gear, all SP / cash clamp, word-stuffed trait, lenient mock, harsh mock, oracle cache.
+
+## Later review (Fable, after the test, 2026-10-21)
+Full verdict, recommendation and merge plan: `notes/CHARGEN-TEST-2026-10-21.md`. Short form: B (Taler + caps) works and is the merge candidate after fixes 1, 2, 7, 8; the Gemma arbiter (C, B+C) hardens structure (grammar, floors) perfectly but the 4B judge is below usable and costs 40 s; replace by a deterministic "C-lite" (story-support floor -> fate roll, no model call). Design deviations in the build: fixed 200 T only (no Herkunft roll), no Schwächenwurf, item oracle `NEIN` drops the item, arbiter runs in chunks of 6 traits, gear/wealth dressed as trait is stopped deterministically (not in the original design), supernatural story sentences are struck at `/figur`, `--fullstory` and the 700-char story limit for b/c/bc.
