@@ -166,6 +166,15 @@ public enum SR {
     c.spLeft = pc.sp; pc.lastCheck = c
     return c
   }
+  /// Neuwurf: 2 SP rerolls the last check against the same target, the second result counts (ergeben effects re-settled). Once per check. Returns the new check or a German refusal.
+  public static func reroll(_ pc: inout Pc, d100 r: Int) -> (Check?, String?) {
+    guard var last = pc.lastCheck else { return (nil, "Neuwurf braucht 2 SP und eine vorherige Probe") }
+    if last.reason.hasSuffix("(Neuwurf)") { return (nil, "Nur ein Neuwurf pro Probe.") }
+    guard pc.sp >= 2 else { return (nil, "Neuwurf braucht 2 SP und eine vorherige Probe") }
+    pc.sp -= 2; last.roll = r; (last.success, last.dos, last.dof, last.crit) = degrees(target: last.target, roll: r)
+    settleErgeben(&pc, &last); last.spLeft = pc.sp; last.reason += " (Neuwurf)"; last.source = "neuwurf"; pc.lastCheck = last
+    return (last, nil)
+  }
   // MARK: character creation
   public static func budgetLeft(_ traits: [Trait]) -> Int { 20 - traits.filter(\.pos).reduce(0) { $0 + $1.cost } + traits.filter { !$0.pos }.reduce(0) { $0 + $1.cost } }
   /// drop the last positive traits until the budget is not overdrawn

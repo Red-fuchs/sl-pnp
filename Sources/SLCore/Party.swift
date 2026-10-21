@@ -68,7 +68,7 @@ public extension Game {
     (c.success, c.dos, c.dof, c.crit) = SR.degrees(target: target, roll: roll)
     if let i {
       c.speaker = partyStore.with { $0[i].name }; c.spLeft = partyStore.with { $0[i].sp }
-      if ergeben { partyStore.with { p in var pc = p[i]; pc.ergebenUsed = true; SR.settleErgeben(&pc, &c); pc.lastCheck = c; p[i] = pc } }
+      partyStore.with { p in var pc = p[i]; if ergeben { pc.ergebenUsed = true; SR.settleErgeben(&pc, &c) }; pc.lastCheck = c; p[i] = pc }   // lastCheck: Neuwurf (2 SP) rerolls this one
     }
     if !c.success { sceneFails += 1 }
     if c.error == nil, let i, let t = SR.fremdUsed(SR.fitting(label, partyStore.with { $0[i].traits })) { fremdkraftUsed(c.speaker, t) }
@@ -94,7 +94,7 @@ public extension Game {
       case "survive":
         if pc.sp >= 1 && pc.wunden <= 0 { pc.sp -= 1; pc.wunden = 0 } else { err = "überleben braucht 1 SP und 0 LP" }
       case "reroll":
-        if pc.sp >= 2, var last = pc.lastCheck { pc.sp -= 2; let r = d100(); last.roll = r; (last.success, last.dos, last.dof, last.crit) = SR.degrees(target: last.target, roll: r); SR.settleErgeben(&pc, &last); last.spLeft = pc.sp; last.reason += " (Neuwurf)"; pc.lastCheck = last; pendingFacts.append(last.fact); self.out(.roll(last)) } else { err = "Neuwurf braucht 2 SP und eine vorherige Probe" }
+        let (nc, e) = SR.reroll(&pc, d100: d100()); if let nc { pendingFacts.append(nc.fact); self.out(.roll(nc)) } else { err = e }
       default:
         if let t = target, !t.isEmpty {       // spend SP on someone else's next check: 1 SP = +-10
           let n = min(abs(delta), pc.sp); pc.sp -= n

@@ -1638,6 +1638,14 @@ final class SchicksalRulesTests: XCTestCase {
     p = pc50(); c = go(&p, 30); XCTAssertEqual(p.sp, 4)
     c.roll = 70; (c.success, c.dos, c.dof, c.crit) = SR.degrees(target: c.target, roll: 70); SR.settleErgeben(&p, &c)
     XCTAssertEqual(p.sp, 3); XCTAssertEqual(c.spGained, 0); XCTAssertEqual(c.dof, 1 + 30 / 10 + 1)
+    // SR.reroll: 2 SP, same target, once per check, refused below 2 SP
+    p = pc50(sp: 3); c = SR.check(&p, pillar: "kampf", traits: [], difficulty: 0, spUse: 0, reason: "x", d100: 80); XCTAssertFalse(c.success)
+    var (rc, re) = SR.reroll(&p, d100: 20); XCTAssertNil(re); XCTAssertEqual(p.sp, 1); XCTAssertEqual(rc!.target, 50); XCTAssertEqual(rc!.roll, 20); XCTAssertTrue(rc!.success)
+    XCTAssertTrue(rc!.reason.hasSuffix("(Neuwurf)")); XCTAssertEqual(rc!.source, "neuwurf"); XCTAssertEqual(rc!.spLeft, 1)
+    (rc, re) = SR.reroll(&p, d100: 10); XCTAssertNil(rc); XCTAssertTrue(re!.contains("ein Neuwurf")); XCTAssertEqual(p.sp, 1)
+    p = pc50(sp: 1); _ = SR.check(&p, pillar: "kampf", traits: [], difficulty: 0, spUse: 0, reason: "x", d100: 80)
+    (rc, re) = SR.reroll(&p, d100: 20); XCTAssertNil(rc); XCTAssertNotNil(re); XCTAssertEqual(p.sp, 1)
+    var q = Pc(speaker: "n"); XCTAssertNil(SR.reroll(&q, d100: 5).0)
     // without ergeben nothing changes
     p = pc50(); c = SR.check(&p, pillar: "kampf", traits: [], difficulty: 0, spUse: 0, reason: "x", d100: 30); XCTAssertEqual(c.target, 50); XCTAssertEqual(c.spGained, 0); XCTAssertFalse(c.ergeben); XCTAssertFalse(p.ergebenUsed)
     // old saves without the keys still decode

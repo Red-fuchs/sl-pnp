@@ -86,3 +86,6 @@ Typed events (`t`): `narr` {d: chunk, speaker?}, `narr_end`, `roll` {speaker, pi
 
 ## Errors
 `400 {"error": "..."}` bad JSON / missing field; `404` unknown speaker for /sp; `409 {"error":"busy"}` only for /say while a turn runs.
+
+## Neuwurf via POST /sp (mode reroll)
+`{speaker, delta: 2, mode: "reroll"}` rerolls the speaker's last check (also one made in Foundry via /rollresult, which now stores `lastCheck`): -2 SP, same target, the second result counts (ergeben effects re-settled). `200` + SSE `roll` with `source:"neuwurf"` and `reason` ending in " (Neuwurf)", then `sheet`. `409 {error}` when SP < 2, no earlier check, or the last check already was a Neuwurf (once per check).

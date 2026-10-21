@@ -47,3 +47,8 @@ Temporary isekai: characters from any world are pulled into the Gramsmark by the
 - The worldbuilding system is verified up to Foundry v12 only (V1 application warnings in the console, works under v13).
 - Cards of other players' sl commands are public chat.
 - The chargen experiment (branch `chargen-v2`, worktree ~/Projects/sl-pnp-chargen) is NOT part of pnp-22b.
+
+## pnp-22e (2026-10-21, Spieltest-Fixes)
+- Foundry-Bridge: Probe-Knopf auch bei eingeklappter v13-Seitenleiste (schwebender Knopf am Chat-Eingabefeld; die Leiste lag bei 1622 px ausserhalb des Bildschirms), Eigenschaften-Haken mit Hinweis "Noch keine Eigenschaften", Situationsbonus ±10/±20 nur für die SL, Neuwurf (2 SP) Knopf auf der Ergebniskarte (`POST /sp mode=reroll`).
+- sl: `foundryRoll` merkt jetzt jede Foundry-Probe als `lastCheck` (vorher nur Schicksalsergeben), damit der Neuwurf die richtige Probe trifft; `SR.reroll` (einmal pro Probe, 2 SP, Ergebnis mit `source:"neuwurf"` und Grund "(Neuwurf)"). Test `testErgeben` erweitert, 205 Tests grün.
+- Hinweis: bei "sl würfeln lassen" kann sl über den Anlass-Text zusätzlich passende Eigenschaften anrechnen (Wortabgleich im Harness).
