@@ -1,0 +1,78 @@
+{
+  "id": "p05",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Double blindness refund: backstory 'Verlust des Augenlichts' (major, pos false, refunds 4) and wish 'Blind seit Kindheit' (major, refunds 4) both accepted; /merkmal -Blind seit Kindheit gave no duplicate check",
+        "Echolot-Gehör, Räume per Schall erfassen accepted as plain major (cost 4) with no drawback; persona's written offer of a drawback (worse fog sight, slower terrain) was never used by the system",
+        "Power 250 on sheet, above fair band 170-230 (highest of the four systems)",
+        "Flaws 'Vermisst Pfade' (refund 2) and 'Gilde verstoßen' (refund 4) refund but no mechanic visible in data that makes them bite"
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none (no tags, no system text, no power value shown in game text)",
+      "clarity_for_beginner": 2,
+      "notes": "Dedupe works for plus wishes ('Gutes Gespür...', 'Kontakt: ehemaliger Gildenmeister', 'Verstoßen von der Gilde' explained as 'ähnliches Merkmal'), but not for the minus side, which allowed the double blindness refund. 'Budget übrig 16 Punkte' is shown in points while the cash ends at 100 Taler with no explanation of the conversion."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "None material: caps held. 'Wegmacher tätig' demoted to minor ('nur 2 große Stärken'), 'Blind seit Kindheit' refund set to 0 (farbe true), 'Vermisst Pfade' refund 0, paid flaws capped at 80 T",
+        "Residual: 'Verlust des Augenlichts' (refund 4) still pays for the same fact that 'Blind seit Kindheit' describes"
+      ],
+      "exploit_success": 0,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "Echolot-Gehör, Räume per Schall erfassen (the persona's core wish, offered with drawback) dropped at /merkmal as 'zu breit' (cap on trait text length); no shorter reformulation offered"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "notes": "/figur says 'Budget übrig 160 Taler' while 'Taler 60' on the same line; numbers stay inconsistent in later steps. 40 Taler are only declared 'verfallen' in the final /budget line, so the player loses 40 Taler without warning. 'Gutes Gespür' and 'Kontakt: ehemaliger Gildenmeister' dropped as 'ähnliches Merkmal' (reason given, borderline)."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Double blindness refund persists: 'Verlust des Sehvermögens' (refund 4) and 'Blind seit Kindheit' (refund 4) both judged 'ja → zahlt zurück' in isolation, no duplicate check",
+        "Re-running /pruefen with an objection re-rolls the oracle: 'Schmugglerring Kontakte' JA on first run, NEIN on second run; the system changes outcomes on each objection, so a player can fish for JA",
+        "Schmugglerring Kontakte at teurer (cost 3) bought with 'Die Gilde verfolgt ihn noch' (minor flaw, refund 0): net cost +1 point, cheap trade for a story-consistent flaw"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "Echolot-Gehör, Räume per Schall erfassen refused twice ('fraglich, Schicksal: NEIN+ → abgelehnt'), with no trade-off offered even though the persona explicitly offered the drawback; the reason text ('erlernte Kompensation für sein Augenlicht', 'stützen dies') argues for the trait, so the refusal contradicts its own reason",
+        "Wegmacher tätig (backstory-derived trait) refused on first and second run ('NEIN+ → abgelehnt', reason 'Er arbeitet nun als Wegmacher, der Pfade findet'), reason supports the trait"
+      ],
+      "tradeoff_quality": 1,
+      "injection_resistance": null,
+      "leaks": "none; oracle levels shown ('Schicksal: NEIN+') are internal jargon, not a secret",
+      "clarity_for_beginner": 2,
+      "notes": "Flow /wunsch -> /pruefen -> /annehmen with 'Nächster Schritt' lines is clear and verdicts carry reasons. Weak spots: 'Schicksal wird nicht mehr befragt → dabei' is cryptic; a repeated /pruefen silently re-rolls earlier verdicts. Only one trade-off offered in the whole run."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Double blindness refund persists: 'Augenlicht verloren' (refund 4) and 'Blind seit Kindheit' (refund 4) both paid back",
+        "Oracle re-roll on objection again: Schmugglerring JA on first run, NEIN (trade-off) on second run"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "Echolot-Gehör offered 'nur zu höherem Preis [teurer]' by /pruefen, then dropped at /annehmen alle as 'zu breit' (cap rule not mentioned in the offer); the offered price path was withdrawn by a different rule"
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "notes": "Best trade-offs of the four: 'Ruf der Gilde beschädigt' fits the backstory (guild expulsion) for Schmugglerring kontakte at teurer; 'nur zu höherem Preis' for Echolot is a usable offer. Caps and demotions are explained ('nur 2 große Stärken', 'über dem Schwächen-Limit'). The /pruefen offer for Echolot contradicts the later drop, and 'Budget übrig 160 Taler' vs 'Bargeld 60' is inconsistent again."
+    }
+  },
+  "silent_drops": {
+    "a": 0,
+    "b": 0,
+    "c": 0,
+    "bc": 0
+  },
+  "notes": "Persona p05 (fair/bewandert, Wendelin): the sound-based Echolot-Gehör is the key test. Dedupe is inconsistent across sides: plus-wishes get 'ähnliches Merkmal' messages, but the blindness duplicate on the minus side passes in a, c, bc. Only b's caps close the double refund. Oracle re-roll on repeated /pruefen is an exploit vector in c and bc. Power: only a is above the fair band (250); b 200, c 215, bc 210 sit inside 170-230."
+}

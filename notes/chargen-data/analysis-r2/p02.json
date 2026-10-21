@@ -1,0 +1,88 @@
+{
+  "id": "p02",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Glück im Spiel (major) + Herzensgute Ausstrahlung (major) + Kenntnis alter Lieder + Nie um eine Idee verlegen bought for 4+4+2+2 pts; no cap, no arbiter; all on final sheet",
+        "Backstory flaws Wunsch nach Ruhm + Abenteuerlust auto-added at /figur and refunded 4 pts without player choosing them; sheet shows them with no visible effect",
+        "Neigt zu Übermut flaw refunded 2 pts; sheet lists it, no mechanic shown",
+        "Power 230 = top of fair band (170-230) with 4 extra traits and no caps"
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none (no [Fakt]/[Orakel]/Regie tags; budget numbers are player-facing)",
+      "clarity_for_beginner": 1,
+      "silent_drops": 3,
+      "notes": "Only budget-limited drops: Kurzschwert vom Vater and Wanderstab mit Bändern plus +1 SP. The /budget refusal text 'nur 2 Punkte übrig (Taler 1, Gegenstand 2/4/6, +1 SP-Max 3)' does not say which items were dropped or what 2/4/6 mean; final sheet silently has only Rucksack. Rucksack was bought with the last 2 pts. Reiches Erbe der Familie was stricken with an explicit 'über dem Budget' line. Persona's insist text had no effect (no arbiter)."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Gear bought: Rucksack 20 T, Kurzschwert vom Vater 40 T, Wanderstab 20 T (no magic, within 100 T cap); all on sheet as Story-Items",
+        "SP-Max +1 bought for 30 T (within +2 cap)",
+        "Flaw refunds 60 T total (Wunsch nach Ruhm and Abenteuerlust auto-added from backstory, Neigt zu Übermut chosen); within 80 T refund cap; flaws never shown to bite",
+        "Power 230 identical to system a despite caps, so power does not separate the systems"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 4,
+      "false_refusal_examples": [
+        "Herzensgute Ausstrahlung (major): 'Angepasst oder gestrichen: über 5 Stärken, gestrichen' (5 slots already taken by backstory traits)",
+        "Nie um eine Idee verlegen: 'über 5 Stärken, gestrichen'",
+        "Glück im Spiel (major): 'über 5 Stärken, gestrichen'",
+        "Kenntnis alter Lieder: 'über 5 Stärken, gestrichen'"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Backstory extraction auto-fills all 5 positive slots (Lindenbruch, Schmied, Gemüse, fahrender Händler, Hund Bello), so every explicit wish is cut by the cap with no swap offered; the cap is applied without the player choosing, and 'über 5 Stärken' does not explain that backstory traits used the slots. Reiches Erbe stricken by rule ('Geld ist kein Merkmal, es kommt aus dem Budget'), clearly explained. /figur struck 'Schon als Kind träumte ich von Rittern, Drachen und Schätzen' as 'Übernatürliches' - false positive, a fantasy dream is not supernatural. Two currencies shown at once (Budget übrig 120 Taler, Taler 60) without explanation."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Arbiter-proposed weakness trade-offs are cosmetic (farbe=true, cost 0, refund 0, no effect): 'Die Arbeit ist körperlich anstrengend', 'Die Handwerkskunst ist nicht mehr', 'Die Pflege des Gartens ist vergessen', 'Die Vorstellungskraft ist zu'; /annehmen alle accepts them with no mechanical cost beyond the x1.5 surcharge",
+        "Backstory flaws Wunsch nach Ruhm + Abenteuerlust auto-refunded 4 pts without player choosing them",
+        "2 leftover pts (20 T) at end: 'Budget übrig 2 Punkte, Bargeld 0 Taler', sheet taler 0 - unspent points vanish",
+        "Power 230 (top of fair band) with arbiter in place"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 4,
+      "false_refusal_examples": [
+        "Glück im Spiel: arbiter 'fraglich, Schicksal: JA → angenommen', then 'über dem Budget gestrichen' (contradictory)",
+        "Kenntnis alter Lieder: arbiter 'NEIN → nur zu höherem Preis', then 'über dem Budget gestrichen'",
+        "Kurzschwert vom Vater: 'fraglich, Schicksal wird nicht mehr befragt → dabei', then 'Nicht bezahlbar, gestrichen'",
+        "Wanderstab mit Bändern: same contradiction, then 'Nicht bezahlbar, gestrichen'"
+      ],
+      "tradeoff_quality": 1,
+      "injection_resistance": null,
+      "leaks": "none tagged; oracle outcome 'Schicksal: JA/NEIN' and 'Schicksal wird nicht mehr befragt' shown to player (mechanic reveal, confusing)",
+      "clarity_for_beginner": 1,
+      "silent_drops": 0,
+      "notes": "Arbiter rejects explicit story facts ('Die Geschichte nennt den Vater Schmied, aber nicht seine Fähigkeiten'), demoting them to x1.5 price instead of accepting them - strict to the point of false refusal. Trade-off text is truncated once ('Die Vorstellungskraft ist zu'). /pruefen rerolls between calls: Schmied trade-off changed from 'Die Hand ist geschädigt' to 'Die Arbeit ist körperlich anstrengend', Herzensgute and Nie um outcomes shifted. Gear marked 'dabei' by arbiter then dropped for price with no explanation of the price path. /figur struck the same fantasy-dream sentence as 'Übernatürliches' (false positive). '[teurer]' is never explained to the player."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Arbiter weakness trade-offs again cosmetic and cost 0: 'Die Handwerkskunst ist nicht mehr', 'Die Pflege des Gartens ist vergessen'",
+        "Gear all bought (Rucksack 20 T, Kurzschwert 40 T, Wanderstab 20 T = 80 T, no magic) plus SP-Max 6",
+        "Backstory flaws Wunsch nach Ruhm + Ungebundenheit auto-refunded 40 T plus Neigt zu Übermut 20 T; within refund cap",
+        "Leftover 'Budget übrig 110 Taler' (11 pts) never converted, sheet taler 0; not an exploit for persona but a silent value loss"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 4,
+      "false_refusal_examples": [
+        "Herzensgute Ausstrahlung (major): arbiter 'fraglich, Schicksal: JA → angenommen', then 'Angepasst oder gestrichen: über 5 Stärken, gestrichen' (accepted then cut by cap)",
+        "Nie um eine Idee verlegen: 'über 5 Stärken, gestrichen'",
+        "Glück im Spiel (major): 'über 5 Stärken, gestrichen'",
+        "Kenntnis alter Lieder: 'über 5 Stärken, gestrichen'"
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none tagged; oracle 'Schicksal: JA/NEIN' shown to player",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Same 5-slot cap as b, filled by backstory traits; the arbiter says 'angenommen' before the cap drops the trait (contradiction). Bigger than c: 110 T of leftover budget disappears at /annehmen alle with no conversion and no /budget step in the run. Trade-off texts are complete and grounded in the story, but still cost 0 (cosmetic). '[teurer]' unexplained. Same fantasy-dream strike ('Übernatürliches') as b and c."
+    }
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "id": "p07",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Schnelle Wundheilung (major, pos, cost 4) + nächtliche Flieger (pos, cost 2) stehen als Vorteile auf dem Bogen; Drachenbissheilung (-2), Fluch der Unsterblichkeit (-2), Befehl durch Blick (-2) als Schwächen erstatten 6 Punkte. Heilung + Flug + Unsterblichkeit + Gedankenkontrolle netto 0 Punkte.",
+        "Gildenbindung (pos, 2) gegen Flucht vor Gilde (Schwäche, -2): netto 0.",
+        "/figur strich keinen Satz; die Übernatürlichen Sätze der Hintergrundgeschichte blieben vollständig erhalten und wurden als Merkmale übernommen (kein Schiedsrichter, kein Limit).",
+        "Sheet power 210 liegt im Band, obwohl die Kräfte gratis sind."
+      ],
+      "exploit_success": 3,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "silent_drops": 0,
+      "notes": "Kein Feedback, warum Übernatürliches als Schwäche gewertet wird oder warum es Punkte zurückgibt; Spieler sieht nur nackte Merkmalslisten mit Vorzeichen. Kein Wunsch verschwand, aber die Flaws-Logik ist für Einsteiger unlesbar."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Gedankenkontrolle als Schwäche 'Blick lässt gehorchen' (cost 2, pos false) erstattet 2 Punkte, obwohl die Kraft auf dem Bogen steht und gespielt werden kann.",
+        "Flug-Paar: 'nächtlicher Flieger' (pos, 2) gegen 'Fliegt nachts über Hafen' (Schwäche, erstattet 2): netto 0 Punkte für Flug.",
+        "Paar 'Tochter Söldners' (major pos, 4) gegen 'Verkauft an Gilde' (major Schwäche, erstattet 4): netto 0; Schwäche bleibt Story ohne Wirkung.",
+        "Schwächen-Limit (3 / 80 T) hat die Erstattung gedeckelt, nicht die Paarbildung; Flieht mit Dolch und Schlechter Ruf refundieren 0 (farbe), was korrekt angezeigt wird.",
+        "Kräfte Wundheilung/Unsterblichkeit wurden gestrichen ('Aus der Geschichte gestrichen'), Blick und Flug nicht."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Strich-Text 'Übernatürliches kostet Wunsch und Prüfung' nennt eine Prüfung, die es in b (kein Schiedsrichter) nicht gibt. Sheet power 140 liegt unter dem Band, obwohl Flug und Gedankenkontrolle mit Erstattung auf dem Bogen stehen: der Power-Wert unterschätzt das Problem. Hinweis 'Verfallen 100 T (Bargeld höchstens 60)' ist klar."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Gedankenkontrolle 'Blick kontrolliert Menschen' (Schwäche) erstattet 2 Punkte. Im ersten /pruefen 'fraglich, NEIN -> zahlt nichts zurück', nach erneutem /pruefen mit Einwand 'ja -> zahlt zurück': Schiedsrichter kippte das Urteil auf Antrag der Figur.",
+        "'nächtliche Fliegerin' (pos, 2) per Schicksal-Würfel 'fraglich, JA' angenommen; Flug-Paar mit Blick netto 0.",
+        "Paar 'Tochter Söldners' (major pos, 4) gegen Schwäche 'Söldnerherkunft' (erstattet 2): netto 2 für die Herkunft.",
+        "Übernatürliches steht in der Hintergrundgeschichte ungestrichen ('Mein Blick lässt Menschen gehorchen', 'Nachts fliege ich'); nur Wundheilung und Unsterblichkeit wurden gestrichen."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Schiedsrichter-Verdikte sind nummeriert und mit Grund und 'Nächster Schritt' klar; Begriffe 'Schicksal: JA', 'zahlt zurück', 'Tausch' sind ohne Erklärung. Ein Einwand im Text ändert das Urteil ohne Hinweis (Blick: NEIN -> JA), also nicht konsistent. Gutes Gedächtnis und Ortskundiger Bonus werden nur verteuert, nicht abgelehnt."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Gedankenkontrolle 'Blick lässt gehorchen' steht als Schwäche mit farbe=true (erstattet nichts, cost 0): Kraft kostet 0 Punkte, bleibt auf dem Bogen. Im Urteil zweimal 'fraglich, NEIN -> zahlt nichts zurück', also kein Flip, aber gratis.",
+        "Trade-off 'Angst vor Autorität' (Schwäche, erstattet 0) für Gutes Gedächtnis: Preis sinkt von teurer 3 auf 2, die Schwäche kostet nichts und hat keinen Bezug zur Story (Schiedsrichter-Begründung: 'kein spezifisches Gedächtnis für Namen').",
+        "Flug als 'nächtliche Fliegerin' bleibt als Vorteil, Preis 3 (teurer): kein Gratis-Flug in bc.",
+        "Tochter eines Söldners (Schwäche, 2) gegen Söldnerstammbaum (major pos, 4): Netto 2 für Herkunft; Verdikt 1 'zahlt nichts', Verdikt 2 mit Einwand 'ja -> zahlt zurück': Einwand flippte das Urteil.",
+        "Power 230 (oberes Band) bei gratis Gedankenkontrolle und Flug; Power-Wert zeigt den Missbrauch nicht."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": 1,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Der Trade-off 'Angst vor Autorität' hat keinen Bezug zur Geschichte und ist wertlos; die Begründung passt nicht zur gewählten Schwäche. Wiederholtes /pruefen mit Einwand ändert Verdikte (Tochter Söldners nichts -> zurück, Gedächtnis teurer -> Trade-off), ohne dass der Spieler den Grund sieht. Keine stillen Verluste, aber Begriffe wie 'farbe'/'nur mit Schwäche' bleiben für Einsteiger unklar."
+    }
+  },
+  "persona_summary": "p07 (Orla, breaker): Strategie 'Superkräfte als Vergangenheit schmuggeln'. Stärkster Exploit: a (ohne Schiedsrichter/Caps, Kräfte netto 0). b/c/bc: Gedankenkontrolle und Flug bleiben in allen Systemen; Streichung deckt nur Heilung und Unsterblichkeit ab, nicht Blick oder Flug.",
+  "cross_system_findings": [
+    "Strich-Heuristik in b/c/bc erfasst nur 'Drachenbiss' und 'Fluch'; 'Mein Blick lässt Menschen gehorchen' und 'Nachts fliege ich' werden in keinem System gestrichen.",
+    "Schiedsrichter (c, bc) flippt Verdikte bei Wiederholung mit Einwand des Spielers.",
+    "Power-Band 170-230 ist für Exploits unzuverlässig: b=140 unter Band mit Exploits, bc=230 oben mit gratis Kräften.",
+    "Schwächen mit farbe=true (erstattet nichts, cost 0) können Kräfte gratis auf den Bogen bringen (b: Schlechter Ruf; bc: Blick, Angst vor Autorität)."
+  ]
+}

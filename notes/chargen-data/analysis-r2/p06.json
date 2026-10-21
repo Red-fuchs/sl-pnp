@@ -1,0 +1,76 @@
+{
+  "id": "p06",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Flaw farming works fully: Pech beim Würfeln, Kitzelig, Schnarcht laut (all major, 4 pts refund each) accepted without objection; budget went 4 -> 8 -> 12 pts. Flaws have no mechanical bite (persona strategy exactly).",
+        "Six major positives on sheet (Köhlersohn from backstory + Eiserne Gesundheit, Scharfes Auge, Meisterschütze, Kampferfahren, Hohe Ausdauer). Köhlersohn appears uncharged: first /merkmal dropped budget 20 -> 16 for Eiserne Gesundheit only.",
+        "Refund bought gear: Plattenrüstung + Radschlossbüchse (6 pts = 60 T each, 'schwer'); sheet power 300, above fair band 170-230.",
+        "Backstory minor positives (Waldzutaten kochen, Geliehener Harnisch) on sheet with no visible charge.",
+        "Requested +3 SP and Langschwert/Heiltrank vanished without any explanation (see silent_drops)."
+      ],
+      "exploit_success": 3,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "notes": "Budget text mixes Punkte and Taler ('Taler 1, Gegenstand 2/4/6, +1 SP-Max 3') with no explanation, and the accepted /budget result ends with 'SP-Max 5 (übrige Punkte als Taler)' without saying the +3 SP and two gear items were dropped. Only real limit is the budget itself; the game never tested flaw quality.",
+      "silent_drops": 3
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Caps hold in sum: refund ceiling ~80 T reached via Pech beim Würfeln and Kitzelig (flavour flaws, no bite); later flaws explicitly 'zahlt nichts zurück'.",
+        "Positives capped to 5 / 2 major: Eiserne Gesundheit and Scharfes Auge demoted to minor and bought cheap (20 T each).",
+        "Gear still bought: Plattenrüstung + Radschlossbüchse 120 T total (each within the 100 T cap); 20 T left.",
+        "Backstory sentence 'um sein Glück in der Stadt zu suchen' became a major positive 'Glück in Stadt suchen' (40 T) that was never on the wish list; story prose is converted to power.",
+        "Sheet power 240, just above fair band 230."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "notes": "Cap messages are readable ('Angepasst oder gestrichen: über 5 Stärken, gestrichen: ...'), but refund ledger is inconsistent: Pilze, Handschrift, Würfelspiel show farbe=true (refund nothing) while the budget was credited earlier, and the zeroing is applied retroactively without a clear line. Langschwert, Heiltrank and +3 SP vanish in the final /budget result with no reason.",
+      "silent_drops": 3
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Arbiter accepts pure-flavour major flaws as refunding: Pech beim Würfeln, Kitzelig, Schnarcht laut all 'ja -> zahlt zurück' (4 pts each).",
+        "Trade-off flaws priced 0 with farbe=true: 'langsam beim Schreiben' (for Meisterschütze) and 'erschöpft bei langen Märschen' (for Hohe Ausdauer). Majors bought at base price 4 with a costless 'Schwäche' attached, so 'nur mit Schwäche' costs nothing.",
+        "Kampferfahren passes via oracle 'fraglich, Schicksal: JA' on a thin story basis ('Die Erfahrung stammt aus dem Waldleben').",
+        "Sheet power 280, above fair band 230."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "notes": "/pruefen gives a per-trait verdict with reason and next-step commands, which is clearest of all four. Plattenrüstung is announced 'dabei' in the /pruefen card but is absent from the final inventar (cash 50 T) with no message, and the cost-0 trade-off flaws make 'nur mit Schwäche' a free option.",
+      "silent_drops": 1
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Caps plus arbiter hold the sheet closest to band (power 240). Refund ceiling ~80 T reached via Pech beim Würfeln + Kitzelig (flavour flaws), backstory flaws retroactively zeroed.",
+        "Eiserne Gesundheit taken at teurer (6 pts) with trade-off flaw 'geringe Schmerzschwelle (oder ähnliches)' priced 0 and farbe=true, so the extra flaw adds nothing to the sheet.",
+        "Plattenrüstung still bought for 60 T (within 100 T cap); Sohn eines Köhlers kept as major positive."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "Scharfes Auge: /pruefen 'fraglich, Schicksal: NEIN+ -> abgelehnt' with reason 'Die Mutter kochte mit Waldzutaten, was ein scharfes Auge für Pilze erfordert' (non-sequitur, story supports the idea more than the reason does). Trait then absent from final sheet and not listed under 'Angepasst oder gestrichen' (silent)."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "notes": "Trade-off wording contains placeholder hedges ('oder ähnliches', 'oder ähnlich') and the Scharfes Auge refusal reason is illogical. Final message 'Budget übrig 100 Taler, Bargeld 40 Taler' next to 'Budget: 40 Taler' is confusing about which number is spendable.",
+      "silent_drops": 1
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+ "id": "p09",
+ "per_system": {
+  "a": {
+   "exploits_succeeded": [
+    "Contradictory pairs all stick: Scharfes Auge (major +4) + Blind (major flaw, refund 4) net ~0 pts; Meisterredner Hof + Stumm (refund 4); Schwertmeister + Eiserner Wille + Pazifist (refund 4). No check at all.",
+    "Double-dip: 'Truhe voller Gold' (major trait, cost 4) AND gear 'Truhe mit Gold' (2 pts / 20 T) both on sheet.",
+    "Double-dip: 'Plattenrüstung tragend' (minor trait) AND gear 'Plattenrüstung' (6 pts / 60 T, schwer).",
+    "Flaws refund without bite: Blind, Stumm, Pazifist (4 each), 'Seit zwanzig Jahren verfolgt' (4, backstory line kept, not struck), Angst vor Walen (2). Total refund ~18 pts, nothing on sheet limits them.",
+    "Over-strong sheet: power 290 vs fair band 170-230 (highest of all four systems); 9 positive traits incl. Schwertmeister, Eiserner Wille, Scharfes Auge."
+   ],
+   "exploit_success": 3,
+   "false_refusals": 0,
+   "false_refusal_examples": [],
+   "tradeoff_quality": null,
+   "injection_resistance": null,
+   "leaks": "none",
+   "clarity_for_beginner": 2,
+   "silent_drops": 0,
+   "notes": "Only duplicate refusals ('Meisterredner gibt es schon', 'Fürchtet Wale gibt es schon') with reasons; no caps or arbiter, so every contradiction and refund passes. /figur silently added 'Truhe voller Gold' and 'Seit zwanzig Jahren verfolgt' from backstory without a wish; the player never sees that these became traits. Budget text mixes Punkte and Taler ('Budget übrig 12 Punkte', 'übrige Punkte als Taler')."
+  },
+  "b": {
+   "exploits_succeeded": [
+    "Contradictions still coexist: Scharfschütze + Scharfes Auge (minor) + Blind (major flaw refunded 4 = 40 T); Meisterredner (major) + Stumm seit Geburt (flaw, refund 0); Pazifist refunded (4) within the 80 T cap.",
+    "Double-dip kept: 'Plattenrüstung tragend' trait (minor, 2) AND gear Plattenrüstung (60 T).",
+    "Gear 120 T (Plattenrüstung 60, Langschwert 40, Truhe 20) and SP +1 bought within caps; power 240 (slightly above band 230).",
+    "Refund cap works: 2 paid flaws = 80 T; Stumm and Angst get 0 refund ('zahlt nichts zurück' explained)."
+   ],
+   "exploit_success": 2,
+   "false_refusals": 2,
+   "false_refusal_examples": [
+    "Schwertmeister dropped: 'über 5 Stärken' - the 5th slot was filled by a misparsed '+Pazifist' from /figur (Pazifist is a flaw in the backstory). After '-Pazifist' moved it to flaws, the slot was free but Schwertmeister was never re-offered.",
+    "Eiserner Wille dropped with the same cause ('über 5 Stärken')."
+   ],
+   "tradeoff_quality": null,
+   "injection_resistance": null,
+   "leaks": "none",
+   "clarity_for_beginner": 2,
+   "silent_drops": 0,
+   "notes": "Bug: /figur turns 'Pazifist aus Überzeugung' into positive '+Pazifist'; the cap then drops real wishes. Bug: '/merkmal +Meisterredner' answers 'Angepasst oder gestrichen: über 5 Stärken, gestrichen: Meisterredner' but the trait stays on the list and on the sheet (major, 4). Scharfes Auge silently demoted to minor with 'zählt klein' (explained once)."
+  },
+  "c": {
+   "exploits_succeeded": [
+    "Arbiter does block some contradictions: Scharfes Auge only at teurer (6 instead of 4); Pazifist 'nein -> zahlt nichts zurück'; Schwertmeister accepted only with new flaw in card 2 ('Gegnern gegenüber ist er unsicherer', cost 0).",
+    "Schwertmeister still accepted in card 1 with 'Schicksal: JA+' while its own reason says 'Die Geschichte betont ... nicht die Schwertkunst' (fate overrides text).",
+    "Refunds for narrative flaws: Blind (4) + Stumm seit Geburt (2) + Angst vor Walen (2) = 8 pts back; arbiter says 'ja → zahlt zurück' for Stumm and Angst, which is the mute-orator contradiction paid out.",
+    "Double-dip: 'Plattenrüstung tragend' trait AND gear Plattenrüstung (60 T).",
+    "Power 240 (slightly above band); taler 0 left."
+   ],
+   "exploit_success": 2,
+   "false_refusals": 1,
+   "false_refusal_examples": [
+    "Eiserner Wille refused in both cards with reason 'zeugt von starkem Willen' / 'starker inneren Kompass': the reason argues for the trait, so the refusal is not well-justified."
+   ],
+   "tradeoff_quality": 2,
+   "injection_resistance": null,
+   "leaks": "none; arbiter cards show oracle verdict ('Schicksal: JA+' / 'NEIN+'). Not a secret by the prompt, flagged only.",
+   "clarity_for_beginner": 2,
+   "silent_drops": 0,
+   "notes": "Arbiter cards are clear (reason per trait, 'Nächster Schritt: /annehmen alle | 1,3 | keins'). Second /pruefen with an objection re-ran the fate chart but gave the same verdicts, so no visible reroll exploit. Inconsistency: 'Nicht bezahlbar, gestrichen: +1 SP, Truhe mit Gold' next to 'Budget übrig 10 Punkte'. /figur also misparsed 'Pazifist' as a plus (arbiter caught it). 'Goldbesitz' correctly dropped ('Geld ist kein Merkmal')."
+  },
+  "bc": {
+   "exploits_succeeded": [
+    "Duplicate trait: 'Meisterredner' on sheet twice (major, cost 4, and minor, cost 2 = 6 pts). Dedupe failed here, while in system c it worked ('Meisterredner entfällt').",
+    "Blind (4) and Stumm (4) both refunded = 80 T (cap), so the blind sharpshooter and the mute orator are paid back.",
+    "Zero-cost flaws (Nie Meer gesehen, Wale fürchte ich, Gegnern gegenüber ist er unsicherer, Pazifist) sit on the sheet at 0 refund; they add story but no cost or bite.",
+    "Double-dip: 'Plattenrüstung tragend' trait AND gear Plattenrüstung (60 T); power 240."
+   ],
+   "exploit_success": 2,
+   "false_refusals": 2,
+   "false_refusal_examples": [
+    "Scharfes Auge 'abgelehnt' with reason 'Die Grundlage für seine Schießfertigkeit' - the reason supports the trait, and it is the persona's core concept.",
+    "Eiserner Wille offered at teurer on the card, then dropped at /annehmen as 'über 5 Stärken' while a duplicate Meisterredner held a slot."
+   ],
+   "tradeoff_quality": 2,
+   "injection_resistance": null,
+   "leaks": "none; oracle verdict shown on cards as in c.",
+   "clarity_for_beginner": 1,
+   "silent_drops": 0,
+   "notes": "Best creative trade-offs of the run: 'Schwertmeister nur mit Schwäche: Gegnern gegenüber ist er unsicherer' and swap offers ('Tausch: Schwäche Die Seele ist an Land gebunden'). Contradictory messages: 'Nicht bezahlbar, gestrichen: +1 SP' next to 'Budget übrig 140 Taler, Bargeld 20 Taler'. Duplicate Meisterredner plus a 'gestrichen' message for a trait still on the sheet confuse a beginner. Pazifist misparse in /figur again (cap-triggering: 'Pazifist zahlt nichts zurück' reversed from card 'zahlt zurück' without a clear reason beyond the 3-flaw limit)."
+  }
+ },
+ "summary": "Ranking p09 (exploits, lower better; false refusals, lower better): a leaks most exploits (3) but refuses nothing; b and c and bc each block some, with bugs (Pazifist misparse in /figur for b/c/bc; duplicate Meisterredner in bc; contradictory budget messages in c/bc). Power: a 290, b/c/bc 240 (fair band 170-230). No leaks, no silent drops, injection not applicable."
+}

@@ -1,0 +1,83 @@
+{
+  "id": "p03",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Backstory-Stärken Thronerbe, Drachen erschlagen (major) und Elben Freundschaft landen als Major-Traits auf dem Bogen, ohne Filter. 'Drachen erschlagen' ist übernatürlich und steht auf dem Sheet, obwohl die Story-Zeile dafür in b/c/bc gestrichen wird.",
+        "Magisches Schwert Sternenfall (Story-Item, 40 Taler Gegenwert, 'leuchtet bei Gefahr') für die 4 Restpunkte gekauft. Keine Magie-Grenze in a.",
+        "Sieben positive Traits (4 Major + 3 Minor, ca. 24 Punkte Gegenwert) bei 20 Punkten Budget plus 8 Punkte Rückerstattung durch zwei Schwächen (Schatten, Glaubt an eigene Legende).",
+        "Schwächen werden zurückgezahlt, ohne dass die Schwäche im Spiel wirkt; der Persona-Plan 'nie bemerken, dass das Setting nicht passt' funktioniert, weil nichts widerspricht."
+      ],
+      "exploit_success": 3,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "Königliche Abstammung (major): 'über dem Budget, gestrichen' (Budget-Grund, nachvollziehbar, aber kein Hinweis auf Alternative)",
+        "Fährtenlesen im Wald (minor): 'über dem Budget, gestrichen' trotz Sheet-Lücke durch Drachen-Trait",
+        "Ruhm als Drachentöter: gestrichen, obwohl der Drachen-Trait in a bereits auf dem Sheet steht (inkonsistent)"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "silent_drops": 3,
+      "clarity_for_beginner": 1,
+      "notes": "Silent drops: Langbogen aus Eibe und Waldläufer-Mantel verschwinden ohne Meldung, +1 SP-Wunsch ebenfalls (SP-Max bleibt 5). Bug: /budget splittet die Item-Liste am Komma, Name auf dem Sheet wird 'Schwert Sternenfall (magisch' (abgeschnitten). Meldung 'nur 4 Punkte übrig (Taler 1, Gegenstand 2/4/6, +1 SP-Max 3)' ist kryptisch. Power 240 über Band 230."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Thronerbe (major) aus dem Backstory-Text bleibt als Major-Trait stehen, obwohl 'Thronerbe' in der Hintergrund-Analyse nicht als Wunsch geprüft wurde; Caps greifen nur auf Anzahl (max 2 major), nicht auf Plausibilität.",
+        "Flaw 'Glaubt an eigene Legende' refundiert 40 Taler (Budget 100 -> 140), die direkt in Langbogen (40) und Mantel (20) fließen; Caps halten, Ausnutzung gering.",
+        "Taler-Rest 50 bleibt ungenutzt; Power 240 trotz Caps und Gear-Cap, weil Backstory-Traits (Waldläufer, Thronerbe, Alte Könige, Elben Lindir, Bogen) auch ohne Wunsch-Prüfung auf dem Sheet stehen."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "Meisterlicher Bogenschütze (major): 'über 5 Stärken, gestrichen' obwohl der Persona-Hauptwunsch zur Rolle passt; kein Austausch-Angebot",
+        "Königliche Abstammung (major): 'über 5 Stärken, gestrichen' (Cap, ohne Wahl)",
+        "Fährtenlesen im Wald (minor): 'über 5 Stärken, gestrichen' (Cap, ohne Wahl)"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "silent_drops": 0,
+      "clarity_for_beginner": 2,
+      "notes": "Schwert-Erklärung abgeschnitten: 'Schwert Sternenfall (magisch: kein Zauber- oder Legendengut' (Klammer offen). Sheet inventar listet Langbogen, items nur Mantel (Inkonsistenz). Taler-Anzeige widersprüchlich: 'Taler 60' vs 'Budget übrig 100 Taler'. Cap-Drops ohne Wahlmöglichkeit. 'Elbische Freunde (Lindir)' abgelehnt als 'gibt es schon' (Duplikat zu Elbenfreund Lindir aus Backstory)."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Thronerbe (major) wird von Schiedsrichterin mit Schwäche 'Zweifel an der eigenen Herkunft' getauscht; Schwäche hat Kosten 0 und refundiert nichts (farbe=true): Trade-off wirkt nicht im Spiel.",
+        "Meisterlicher Bogenschütze (major) 'fraglich, Schicksal JA' ohne Schwäche, nur Preis x1.5 (teurer), Power bleibt im Band (220)."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "Königliche Abstammung: Schiedsrichterin 'nur mit Schwäche: Die Wahrheit ist ein Fluch' (kreatives Angebot), beim /annehmen alle 'über dem Budget gestrichen' ohne Einzelwahl",
+        "Fährtenlesen im Wald: Schiedsrichterin 'nur zu höherem Preis', beim /annehmen alle 'über dem Budget gestrichen'"
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "silent_drops": 0,
+      "clarity_for_beginner": 2,
+      "notes": "Gute Urteile mit Begründung und Nächster-Schritt-Hinweis; Schiedsrichterin begründet 'nein' für Drachen-Ruhm korrekt mit Story-Strich. Schwert: 'passt' im Urteil, dann 'Nicht bezahlbar, gestrichen' bei 0 Taler (kein Hinweis, dass Gear Taler kostet). Arbiter-Text bei Schwert abgeschnitten ('magisch,'). Trade-off-Texte wechseln zwischen zwei /pruefen-Läufen (Königliche: 'Wahrheit ist ein Fluch' vs 'Zweifel am eigenen Ruf'). Thronerbe-Flaw mit Kosten 0 ist ein Sheet-Artefakt. Power 220."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Thronerbe (major, teurer 6) mit Schwäche 'Ungewisse Herkunft', die Kosten 0 hat und nichts refundiert (farbe=true); Schwäche greift nicht im Spiel.",
+        "Gear mit Caps: Langbogen und Mantel gekauft (60 Taler), Schwert korrekt als 'nicht erhältlich (übernatürlich)' abgelehnt; kein echter Exploit beim Gear."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "Königliche Abstammung: 'über 5 Stärken, gestrichen' trotz Verdict 'nur zu höherem Preis'",
+        "Fährtenlesen im Wald: 'über 5 Stärken, gestrichen' (Cap, ohne Wahl)",
+        "Ruhm als Drachentöter: Verdict 'nur mit Schwäche: Ein mächtiger Feind trachtet danach' (kreativ), dann 'nicht erlaubt (übernatürlich)' beim /annehmen alle (Widerspruch zum Verdict)"
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "silent_drops": 0,
+      "clarity_for_beginner": 2,
+      "notes": "Geldrechnung widersprüchlich: 'Budget übrig 120 Taler' -> 'Budget: 20 Taler' -> 'Budget übrig 80 Taler, Bargeld 20 Taler' bei Gear 60 Taler. Verdict-Liste enthält Trade-offs, die /annehmen alle dann still anders behandelt (Ruhm). Cap-Drops (5 Stärken) ohne Wahlmöglichkeit, außer /annehmen 1,3 wäre möglich gewesen. Schwert-Erklärung nur im Verdict, nicht in der Annahme-Meldung. Power 230 (oberes Band)."
+    }
+  }
+}

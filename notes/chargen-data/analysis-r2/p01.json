@@ -1,0 +1,78 @@
+{
+  "id": "p01",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Flaws refund points with no effect: 'Abhängig von Werkzeug', 'Suche nach Geld', 'Ungeübter Kämpfer', and 'Vertraut Leuten zu schnell' (added via /merkmal) each refund 2; net budget back to 20 pts, leftover converted to Taler",
+        "Three gear items at normal price (60 T) plus SP+1 for 30 T; final power 215 (top of fair band); no caps and no arbiter to stop it",
+        "Backstory traits (stark, Söldnerhaufen Kontakt major 4 pts, Schmied) auto-granted by /figur without the persona asking"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "'Gut mit Werkzeug und Reparatur' refused: 'gibt es schon (ähnliches Merkmal)'. Story says he is good with tools; only tool-related entry is the flaw 'Abhängig von Werkzeug'"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Dedupe refusals give a one-line 'ähnliches Merkmal' with no hint what to do next. Sheet 'items' lists only Kurzes Messer while 'inventar' lists all three gear pieces (display inconsistency)."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Caps held: 3 paid flaws max, gear <= 100 T, no magic; no free power; power 200 (in band)",
+        "/figur swapped backstory traits silently: 'körperlich stark' became major (4 pts) and 'Söldnerhaufen Kontakt' became minor; no 'Angepasst' line in the step info"
+      ],
+      "exploit_success": 0,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "'Gut mit Werkzeug und Reparatur' refused as 'ähnliches Merkmal' (same as a)",
+        "'Vertraut Leuten zu schnell' refused with 'gibt es schon (ähnliches Merkmal)' though no similar trait is on the sheet; real cause is the 3-paid-flaw cap, so the stated reason is wrong"
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "silent_drops": 1,
+      "notes": "Budget lines contradict: at /figur 'Taler 60 · Budget übrig 180 Taler'; '30 Taler verfallen (Bargeld höchstens 60)' explained only at /budget. Cap refusal shown as dedupe, so the wish vanishes with a wrong reason (counted as silent drop)."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Overlapping Söldner positives both accepted: 'Söldnergeschichten gehört' (minor, teurer 3 pts) and 'Kontakt zum Söldnerhaufen' (minor 2 pts); a and b rejected the second as duplicate",
+        "'Hat keine Ahnung vom Kämpfen' (major flaw, refunds 0) stacked with 'wenig Kampferfahrung' (refunds 2) on the same theme",
+        "Power 210 (in band); Lederweste correctly dropped, Schmiedehammer and Kurzes Messer kept"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "'Gut mit Werkzeug und Reparatur' refused as 'ähnliches Merkmal oder eine Schwäche zur selben Sache' (flaw 'Abhängigkeit von Werkzeug'); story-central positive dropped"
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none (raw '[teurer]' tag and 'Schicksal: NEIN' shown in judgement list; mechanics, not secrets)",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Good numbered card with ja/fraglich/nein, reasons and next step. 'nur zu höherem Preis [teurer]' is unexplained jargon. Second /pruefen with insist returns a near-identical card; suggested swap 'Tausch: Stärke Handwerkliches Geschick' is not applied or offered as a choice. Dedupe is inconsistent with a/b (Kontakt kept here, dropped there)."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Lederweste granted with 'fraglich, Schicksal wird nicht mehr befragt → dabei': gear accepted without an oracle decision (rule bypass)",
+        "Flaw 'Vertraut Leuten zu schnell' kept at cost 0 with refund nothing: harmless, no gain",
+        "Power 180 (lowest of four); Söldnerhaufen major 4 + stark 2 + Schmied 2 positives for 8 pts, flaws refund 6"
+      ],
+      "exploit_success": 1,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "'Gut mit Werkzeug und Reparatur' refused as duplicate (same as other systems)",
+        "'Kurzes Messer' (story item: 'einen Hammer und ein Messer gekauft') dropped by oracle 'Schicksal NEIN → nicht dabei (Geld bleibt)', while Lederweste with no story basis was kept"
+      ],
+      "tradeoff_quality": 1,
+      "injection_resistance": null,
+      "leaks": "none (internal state 'Schicksal wird nicht mehr befragt' shown to player; not a secret)",
+      "clarity_for_beginner": 1,
+      "silent_drops": 0,
+      "notes": "Inconsistent gear outcome: story Messer dropped, unrelated Lederweste kept via oracle bypass. Budget lines contradict ('Budget übrig 180 Taler' vs 'Bargeld 60'). Suggested trade-off 'Die Schwäche ist die mangelnde Kampfkunst' does not match the kept flaws. 'Nicht dabei (Geld bleibt)' is terse."
+    }
+  }
+}

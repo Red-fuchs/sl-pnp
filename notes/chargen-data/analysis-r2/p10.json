@@ -1,0 +1,83 @@
+{
+  "id": "p10",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Pillar seeding: Kampf 50 / Sozial 40 / Wissen 30 derived from backstory keywords at /figur, no cost, no check.",
+        "Smuggled supernatural: 'Nebenbei Heiler, Kräuter-Sammler, Schreiber ... ein Mönch lehrte ihn Magie und die Grundlagen des Alchemist' stays in the story (no strike line in a), no sheet trait, no price.",
+        "Refunded cosmetic flaws: '−Leicht vergesslich' and '−Spricht im Schlaf' refunded 2 pts each (budget 0 -> 4), used to buy 'Kräuterbeutel' and 'Dietrich aus Messing' (2 pts each). Flaws never bite on the sheet.",
+        "Word stuffing NOT achieved: 'Meister aller Künste' refused ('ähnliches Merkmal'), 'Allround' and 'Erfahrung' struck 'über dem Budget'. Blocked by budget, not by a rule."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 0,
+      "false_refusal_examples": [],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "/budget refusals ('nur 4 Punkte übrig (Taler 1, Gegenstand 2/4/6, +1 SP-Max 3)') are terse; SP +2 wish refused twice and final sheet keeps SP 5 with 'übrige Punkte als Taler' although Taler is 0. Sheet power 230 is at the top of the band, but the exploit came from unpriced backstory and refunded flaws, not from the power value."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Pillar seeding still free: Kampf 50 / Sozial 40 / Wissen 30 at /figur.",
+        "Cosmetic flaws still refund: '−Leicht vergesslich' Budget übrig 80 -> 100 T, '−Spricht im Schlaf' -> 120 T. Refund pool 'Budget übrig 120 Taler' never appears on the final sheet and is never spent, so the refund does nothing visible; but it is a free refund in the rules.",
+        "SP +2 apparently unpriced: Taler 60 before /budget, gear 2 x 20 = 40 T, sheet taler 20 = 60 - 40 exactly, SP-Max 5 -> 7. No SP charge visible. Verify in code.",
+        "Caps held against stuffing: 'Allround' -> 'zu breit', 'Erfahrung' -> 'über 5 Stärken', 'Meister' refused as duplicate. Supernatural strike worked: 'Aus der Geschichte gestrichen (Übernatürliches kostet Wunsch und Prüfung)'."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "Diplomat des Adels diente (legit backstory trait) cut at /figur: 'über 5 Stärken, gestrichen: Diener eines Diplomaten'. No trade-off, no choice offered.",
+        "Schwertkunde (legit backstory: 'kannte Schwert, Bogen, Messer und Axt') cut at /figur: 'über 5 Stärken, gestrichen: Kenntnis Schwert'.",
+        "Also: Händler (legit major) silently demoted to minor by cap ('nur 2 große Stärken: Händler zählt klein'), no offer to choose which two majors to keep."
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "silent_drops": 0,
+      "notes": "Three money pools with no explanation: 'Taler 60', 'Budget übrig 80/100/120 Taler', 'Budget: 20 Taler' after 40 T spend. The refund lands in budget übrig and never reaches the sheet. Caps are applied at /figur before the player sees a choice, so the 5-trait cap is a silent-ish auto-cut."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Pillar seeding still free: Kampf 50 / Sozial 40 / Wissen 30 unchanged after the supernatural strike (check whether pillars read the struck text).",
+        "Cosmetic flaws no longer refund: sheet 'Leicht vergesslich' and 'Spricht im Schlaf' farbe=true, cost 0. Exploit closed. 'Lügnerische Natur' still refunds 2 pts (real flaw, arbiter 'ja -> zahlt zurück').",
+        "Supernatural closed: 'Aus der Geschichte gestrichen (Übernatürliches kostet Wunsch und Prüfung)'. No magic or healing on sheet.",
+        "Stuffing not achieved: arbiter 'nein' for Allround and Erfahrung, both dropped at /annehmen 'über dem Budget'. Gear and +2 SP dropped 'Nicht bezahlbar'."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "Schwertkunde: verdict 'fraglich, Schicksal: NEIN -> nur zu höherem Preis [teurer]' with reason 'Die Geschichte nennt ihn Kämpfer und erfahren in Waffen', i.e. the reason supports the trait; then dropped at /annehmen 'über dem Budget gestrichen'."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Verdict/reason mismatch: Erfahrung 'NEIN' with reason 'Die Erfahrung ... deckt die Wahrnehmung und Verhandlungsfähigkeit ab'. Re-running /pruefen on the same wish list rerolls verdicts: Diplomat run1 'Schicksal: JA -> angenommen [teurer]', run2 'Schicksal: NEIN -> nur zu höherem Preis'. Trait text truncated with double comma: 'Allround: stehen, gehen, sehen, werfen,,'. Flaw swaps ('Tausch: Schwäche Angst vor Autorität') are good trade-offs."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Pillar seeding still free: Kampf 50 / Sozial 40 / Wissen 30 (shared with all systems).",
+        "Cosmetic flaws refund nothing (farbe=true, cost 0). 'Lügnerische Natur' refunds 2 pts (taler 60 -> 80 before gear). Minor.",
+        "Caps held: '+2 SP' struck 'Nicht bezahlbar', 'Allround' cut 'zu breit', Diplomat and Schwertkunde cut 'über 5 Stärken'. Supernatural struck at /figur.",
+        "Gear bought at normal price 40 T (legit, no magic)."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "Diplomat des Adels diente: legit backstory trait, verdict NEIN -> nur zu höherem Preis in both runs, then cut at /annehmen 'über 5 Stärken, gestrichen'.",
+        "Schwertkunde: legit backstory trait, cut at /annehmen 'über 5 Stärken, gestrichen'. Player had said 'alle'; choice of which 5 to keep was not offered."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 1,
+      "silent_drops": 0,
+      "notes": "Approve-then-cut: Allround 'fraglich, Schicksal: JA -> angenommen [teurer]' in both /pruefen runs, then /annehmen alle cuts it as 'zu breit: Allround: stehen, gehen, sehen, werfen,'. Single /annehmen line lists 6 separate cuts and 3 money pools ('Budget: 40 Taler', 'Budget übrig 80 Taler', 'Bargeld 40 Taler'). Pillars still uncapped after supernatural strike."
+    }
+  },
+  "persona_note": "p10 (breaker, Varnhelm): strategy = verb-stuffed traits plus pillar keyword seeding. Pillar seeding (Kampf 50) is the only exploit that survived in all four systems. Power values: a 230, b 230, c 210, bc 210 (all in the 170-230 band; a and b at the top edge)."
+}

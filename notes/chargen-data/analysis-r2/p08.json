@@ -1,0 +1,89 @@
+{
+  "id": "p08",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Backstory facts became free traits with no price check: 'Drachenfels Herkunft' (major, 4 pts), 'Drachenzahn-Klinge Hüter' (major, 4 pts; sword as trait), 'Ahnen Plattenpanzer' (minor, 2 pts; armour as trait), 'Waffenschmied Gerold' (major, 4 pts; free-gear contact). Strategy worked: gear entered as traits.",
+        "Wish '+Träger eines Plattenpanzers' was dropped ('über dem Budget, gestrichen') while the same armour came in via backstory as 'Ahnen Plattenpanzer'. Same item, two verdicts: wish path blocked, story path free.",
+        "Wish '+Kontakt: Waffenschmied schenkt mir jede Waffe' dropped as 'ähnliches Merkmal', but 'Waffenschmied Gerold' (major) already on sheet from backstory carries the same free-gear loophole.",
+        "Horse and castle ('Schlachtross besitzen' minor 2, 'Burg am Nebelfluss' major 4) accepted as traits, i.e. wealth as trait, no cap.",
+        "Only gear-like wish dropped: 'Trägt immer eine Arkebuse' (over budget). Gierig nach Gold refund (+2 pts) carried 2 pts into 20 Taler; flaw refund matters little here."
+      ],
+      "exploit_success": 3,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "'Zäh und ausdauernd' (minor positive) dropped 'über dem Budget, gestrichen' after budget was spent on backstory traits; legit trait lost to budget ordering, not to content.",
+        "'Trägt immer eine Arkebuse' dropped over budget; in-story Arkebuse is a core identity point of the persona (gear, so partly fair)."
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Budget ran out on backstory traits before wishes were processed, so wish list was mostly 'gestrichen' with no hint to rephrase or what to drop. Two-verdict inconsistency (Plattenpanzer wish vs backstory armour) is the main exploit; 'gibt es schon (ähnliches Merkmal)' does not name the conflicting trait. Power 210 is in band but misses that the sheet holds sword, armour, contact and castle for 20 pts."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Horse and castle kept as MAJOR traits (40 T each) and 500 Taler depot as minor trait (20 T). Wealth-as-trait not stopped by caps; the 2-major cap was filled by property, not gear.",
+        "'Waffenschmied Gerold' (minor, 20 T) and 'Arkebuse tragen' (minor, 20 T) survived as traits after the cap demoted them ('zählt klein'). Gear-as-trait loophole partly still open at cheapest tier.",
+        "Klinge and Plattenpanzer wishes blocked: Klinge struck from backstory, Plattenpanzer refused as gear ('kaufe sie mit /budget'). Main loophole closed."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "'Drachenfels Herkunft' sentence struck as 'Übernatürliches' ('Aus der Geschichte gestrichen') although noble-but-poor origin is not supernatural. Strike is keyword-based, not supernatural-based.",
+        "'Besitzer der Drachenzahn-Klinge' wish dropped with 'gibt es schon (ähnliches Merkmal)' although NO similar trait is on the sheet (backstory sentence was struck). Wrong reason, player cannot act on it.",
+        "'Zäh und ausdauernd' dropped 'über 5 Stärken, gestrichen' (cap). Legit minor trait lost to the cap while weaker-value wealth traits stayed."
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Cap messages ('nur 2 große Stärken ... zählt klein', 'über 5 Stärken') are clear. Inconsistency: after -Gierig the budget reads 'Budget übrig 80 Taler' while sheet Taler stays 60 (flaw refund 20 T not visible on sheet). Klinge wish reason is wrong (see examples)."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Drachenzahn-Klinge bought as 'Story-Item' for 2 pts (20 T), level 0 gear on inventory. Arbiter priced a legendary-sounding blade at the cheapest gear tier. Sheet item name is truncated to 'Drachenzahn-Kling'.",
+        "'500 Taler Depot' (minor, 2 pts) accepted: arbiter fraglich, oracle Schicksal JA overturned it. Cash-as-trait priced at minor cost.",
+        "'Waffenschmied Gerold' accepted at 'teurer' (cost 6) but still on sheet as a standing free-gear contact. Price increase did not remove the loophole.",
+        "Horse and castle accepted as majors at normal price (4 each). Wealth as trait unchecked.",
+        "Arkebuse and Zäh offered at higher price but later dropped by budget, so no gear through them."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "Backstory sentence with Drachenfels origin struck as 'Übernatürliches' (same over-strike as b).",
+        "'Trägt immer eine Arkebuse': arbiter offered 'nur zu höherem Preis [teurer]' with an in-story reason (Figur verlässt das Haus nie ohne), then /annehmen alle silently-ish dropped it ('über dem Budget gestrichen') without a cheaper way to keep it.",
+        "'Zäh und ausdauernd' offered 'teurer' then dropped at /annehmen alle for budget. Reasons offered in the card are not affordable in the same step."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none (oracle labels 'Schicksal: JA/NEIN/NEIN+' and 'Schicksal wird nicht mehr befragt' are shown to player; mechanic exposure, not a secret)",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Arbiter cards are informative (trait-by-trait verdicts, next-step commands). Weak spots: 'G1/G2 ... fraglich, Schicksal wird nicht mehr befragt -> dabei' is unclear to a beginner; /annehmen alle is suggested first but drops items the card just offered at a higher price; Budget 'übrig 4 Punkte' after the Klinge vs 2 before is confusing. Oracle overturned a 'fraglich' Depot but reason text reads 'Das Urteil wurde verworfen', meaningless to player. Power 200 in band."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Klinge correctly refused as supernatural ('nicht erhältlich (übernatürlich)'). Best handling of the main loophole across systems.",
+        "Arkebuse refused ('NEIN+ -> abgelehnt').",
+        "Wealth-as-trait remains: horse and castle majors (4 each), 500 Taler depot now 'teurer' (cost 3), 'Waffenschmied Gerold' minor (2) free-gear contact on sheet.",
+        "'Zäh und ausdauernd' accepted at 'teurer' (cost 3) with Gierig nach Gold (refund 0)."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 3,
+      "false_refusal_examples": [
+        "'Trägt immer eine Arkebuse' refused with reason 'Die Arkebuse ist Teil der Identität' (the persona's own insist text, not a trade-off). No price or alternative offered. Arkebuse also vanishes between /pruefen and /annehmen with no further message.",
+        "Backstory Drachenfels/Herkunft sentence struck as 'Übernatürliches' (over-strike, same as b and c).",
+        "'Träger eines Plattenpanzers' judged fraglich then dropped at /annehmen as 'Nicht bezahlbar, gestrichen' (budget 40 T left) with no price shown."
+      ],
+      "tradeoff_quality": 1,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "silent_drops": 0,
+      "notes": "Klinge and Plattenpanzer handled better than in c; 'Angepasst oder gestrichen' lines explain caps. Confusion: final 'Budget übrig 40 Taler, Bargeld 40 Taler' vs 'Taler 60' earlier. Reasons on 'teurer' cards are often generic ('Das Urteil wurde verworfen' for Depot; 'Die Ausrüstung ist stets vorhanden' for Zäh) and do not match the trait. Arkebuse refusal reason reads like the player's argument, not an arbiter reason. Power 200 in band."
+    }
+  }
+}

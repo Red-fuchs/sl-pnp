@@ -1,0 +1,86 @@
+{
+  "id": "p04",
+  "per_system": {
+    "a": {
+      "exploits_succeeded": [
+        "Duplicate flaws refund on top of /figur flaws: '-Schulden beim Wucherer Rabe' duplicates 'Oswin hält Schuldschein' (refund 4), '-Verfolgt von der Tuchgilde' duplicates 'Gilde jagt ihn' (refund 4), '-Trinksucht bei langer Nacht' duplicates 'trinkt zu viel Branntwein' (refund 2). No cap, no objection.",
+        "Duplicate positive accepted: '+Ortskenntnis Unterstadt' next to '+jede Gasse bekannt' (both on sheet, 2 + 2).",
+        "Net gain: positives cost ~12 pts, flaw refunds ~22 pts; budget 20 -> 30 pts. Spent on Tintenfass + Kurzer Dolch (20 T each), leaves Taler 260. Power 210 (inside band, but only because duplicates were not caught).",
+        "Schreiber Tuchgilde disappears from the trait list on '/merkmal -Verfolgt' with no message; budget jumps 22 -> 30 pts."
+      ],
+      "exploit_success": 3,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "'Schreiber Tuchgilde' (core backstory trait) silently dropped on last /merkmal call, no explanation (silent drop)."
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "none",
+      "clarity_for_beginner": 2,
+      "notes": "Duplicate flaw/positive pairs are never flagged; no arbiter, no caps, so the strategy 'every strength carries a cost' turns into a net budget gain. Refusals 'Lesen, Schreiben, Buchführung' and 'Gewandt im Lügen' carry an explicit 'ähnliches Merkmal' reason, so they are not silent."
+    },
+    "b": {
+      "exploits_succeeded": [
+        "Flaw caps block the duplicate-refund exploit: only 'Gilde jagt ihn' and 'Oswin hält Schuldschein' pay (4 + 4 = 80 T cap); the other flaws show 'zahlt nichts zurück' (farbe, cost 0).",
+        "Duplicate positive still passes: 'jede Gasse kennt' (major) plus 'Ortskenntnis Unterstadt' (minor) both on sheet.",
+        "Cash cap (60 T) forfeits 80 T, shown as '80 Taler verfallen (Bargeld höchstens 60)'. No free power from this route."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 1,
+      "false_refusal_examples": [
+        "'Schreiber Tuchgilde' (core backstory trait) silently dropped on '/merkmal -Verfolgt' (Merkmal list loses it, budget jumps 140 -> 180 T) with no message (silent drop)."
+      ],
+      "tradeoff_quality": null,
+      "injection_resistance": null,
+      "leaks": "borderline: internal cap values shown to player in messages, e.g. 'Schwächen-Limit (3 / 80 T)'. Not a secret, but jargon.",
+      "clarity_for_beginner": 1,
+      "notes": "Caps work, but power ends at 160 (below band 170-230) with 60 Taler left; the reasons ('Schwächen-Limit', 'verfallen', 'Bargeld höchstens 60', 'zählt klein') are hard for a beginner to act on. Kontakt was silently downgraded to minor 'zählt klein' only at the explanation line, and the Schreiber drop is unexplained."
+    },
+    "c": {
+      "exploits_succeeded": [
+        "Arbiter accepted duplicate flaws without noticing: 'Gilde jagt ihn' + 'Verfolgt von der Tuchgilde', 'Oswin hält Schuldschein' + 'Schulden beim Wucherer Rabe', 'Trinkt zu viel' + 'Trinksucht bei langer Nacht' (all 'ja → zahlt zurück'). Refunds ~22 vs positive costs ~16.",
+        "Duplicate positive accepted: 'jede Gasse kennt' + 'Ortskenntnis Unterstadt'.",
+        "Persona overturned 'Lesen, Rechnen, Lügen' NEIN by repeating /pruefen with a reasoned objection; accepted at teurer (cost 6 vs 4). This is the intended trade-off, not an exploit.",
+        "'Kontakt: Schmuggler Hanno' (not in story) accepted after '/annehmen alle' at teurer 6 without the offered Schwäche ('nur mit Schwäche: ... Informant') being added to the sheet.",
+        "Power 230, top of band, driven by the duplicate refunds."
+      ],
+      "exploit_success": 2,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "'Lesen, Rechnen, Lügen' first ruled 'fraglich, Schicksal NEIN → nur zu höherem Preis' with 'Das Urteil wurde verworfen.' Accepted only after persona repeated /pruefen with a reasoned objection (borderline, arbiter did recover).",
+        "'Schreiber Tuchgilde' dropped with generic reason 'ein ähnliches Merkmal oder eine Schwäche zur selben Sache gibt es schon' (borderline: the guild flaws are about the guild, not the same trait)."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "none. 'Schicksal JA/NEIN' oracle result shown is by design.",
+      "clarity_for_beginner": 2,
+      "notes": "Clear next-step line ('/annehmen alle | /annehmen 1,3 | /annehmen keins'), and the arbiter reasons are readable. Confusing: 'Das Urteil wurde verworfen.' after a NEIN, and the trade-off 'nur mit Schwäche' is not applied when /annehmen alle is used (only the price applies). Duplicate flaws are not caught."
+    },
+    "bc": {
+      "exploits_succeeded": [
+        "Caps block duplicate flaw refunds: 'Gilde jagt ihn' and 'Oswin hält Schuldschein' paid (80 T cap); other flaws 'zahlt nichts zurück'.",
+        "Kontakt 'Schmuggler Hanno' added at teurer 6 on the second /pruefen. The arbiter offered 'nur mit Schwäche: Ruf der Gilde ist beschädigt [teurer]'; /annehmen alle took the price but did not add the Schwäche to the sheet (free-ish contact).",
+        "Duplicate positive accepted: 'jede Gasse bekannt' + 'Ortskenntnis Unterstadt'.",
+        "Power 200, inside band."
+      ],
+      "exploit_success": 1,
+      "false_refusals": 2,
+      "false_refusal_examples": [
+        "'Kurzer Dolch' (gear) ruled 'fraglich, Schicksal NEIN → nicht dabei (Geld bleibt)' on both passes. Reason is weak: the 60 T cash cap, not the item, decided it.",
+        "'Schreiber Tuchgilde' dropped with generic 'ähnliches Merkmal' reason (borderline, as in c)."
+      ],
+      "tradeoff_quality": 2,
+      "injection_resistance": null,
+      "leaks": "borderline: cap numbers ('3 / 80 T', 'Bargeld höchstens 60') shown to player.",
+      "clarity_for_beginner": 1,
+      "notes": "Persona's insist ('nehme die Trinksucht als Preis') was ignored; arbiter picked a different trade-off ('Ruf der Gilde') which was then silently dropped on /annehmen alle. Cash cap silently forfeits 40 T ('40 Taler verfallen'), plus two /pruefen rounds with mixed verdicts for the same trait make it hard to follow."
+    }
+  },
+  "silent_drops": {
+    "a": 1,
+    "b": 1,
+    "c": 0,
+    "bc": 0
+  },
+  "notes_overall": "p04 (Kassian, bewandert): duplicate flaw/positive pairs (Gilde jagt ihn / Verfolgt, Oswin / Schulden, Trinkt / Trinksucht, jede Gasse / Ortskenntnis) are the main exploit. Only b and bc caps block the flaw-refund part. In a and b 'Schreiber Tuchgilde' vanishes silently; in c and bc it is dropped with a generic reason."
+}
