@@ -6,7 +6,7 @@ H = os.path.dirname(os.path.abspath(__file__))
 SC = json.load(open(f'{H}/script.json'))
 MAN = json.load(open(f'{H}/build/tts-manifest.json'))
 P = MAN['paragraphs']
-GAIN = 10 ** (MAN.get('parts_gain_db', 0) / 20)
+GAIN = 1.0  # stimmwerk parts are already at mix level; parts_gain_db is informational (applying it again clipped)
 LEAD, TAIL, GAP = 0.8, 1.5, 0.75
 GAPS = {'S04': [0.9, 1.3, 0.8], 'S09': [0.6, 1.4, 1.4, 2.8], 'S10': [0.8, 1.0, 1.0], 'S11': [0.9, 1.2, 1.4], 'S12': [1.2, 1.2], 'S07': [0.9, 1.0, 0.9],
         'S03': [0.8, 0.8], 'S08': [0.9, 1.0, 1.0], 'S05': [0.8, 0.8, 0.8], 'S06': [0.8], 'S13': [0.8, 1.2], 'S14': [1.0], 'S01': [0.6, 0.9], 'S02': [0.8, 0.9]}
@@ -37,7 +37,7 @@ for st, fn in placed:
 buf = np.clip(buf, -1, 1)
 tmp = f'{H}/build/narr-raw.wav'
 w = wave.open(tmp, 'wb'); w.setnchannels(1); w.setsampwidth(2); w.setframerate(SR); w.writeframes((buf * 32767).astype('<i2').tobytes()); w.close()
-subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-af', 'loudnorm=I=-14:TP=-1.5:LRA=7', '-ar', '48000', '-ac', '1', f'{H}/assets/narration.wav'], check=True)
+subprocess.run(['ffmpeg', '-y', '-v', 'error', '-i', tmp, '-ar', '48000', '-ac', '1', f'{H}/assets/narration.wav'], check=True)
 json.dump(T, open(f'{H}/build/times.json', 'w'), indent=1)
 open(f'{H}/build/vidmin.txt', 'w').write(str(round(total / 60)))
 fonts = open(f'{H}/assets/fonts/fonts.css').read()
