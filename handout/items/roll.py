@@ -28,13 +28,15 @@ def fmt(h):
     t, rest = divmod(h, 4); s, hh = divmod(rest, 2)
     return ' '.join(x for x in (f'{t} T' if t else '', f'{s} S' if s else '', f'{hh} H' if hh else '') if x) or '0 H'
 def punkte(h): return 0 if h < PPT else -(-h // PPT)
-def preis(basis, sel, pr, verbrauch=False):
-    if verbrauch and pr in MAGIC: p = basis * (2 if pr == 'verflucht' else 5)
+def preis(basis, sel, pr, verbrauch=False, skaliert=False):
+    """Preis steigt mit der Seltenheit: Nichtmagisches Basis x Praegung x preis_mult, Magie Stufenpreis + Basis x preis_mult,
+    magische Verbrauchsgueter Basis x trank_mult (verflucht die Haelfte). skaliert: Preis folgt schon einer eigenen Staffel (Heiltrank)."""
+    S = SBY[sel]; R = 1 if skaliert else S['preis_mult']
+    if verbrauch and pr in MAGIC: p = basis * S['trank_mult'] / (2 if pr == 'verflucht' else 1)
     elif pr in MAGIC:
-        p = SBY[sel]['magie_h'] + basis
+        p = S['magie_h'] + basis * R
         if pr == 'verflucht': p //= 2
-    elif pr == 'wendung': p = basis * SBY[sel]['mult']
-    else: p = basis * PR[pr]['mult']
+    else: p = basis * PR[pr]['mult'] * R
     return max(1, int(round(p)) if p < 40 else (int(p) + 10) // 20 * 20)
 
 # ---- Orakel: dieselbe Fate-Chart wie Handout und sl ----
@@ -71,13 +73,19 @@ def roll_praegung(sel, r):
 def roll_posten(k, r):
     x = d(100, r); return next(i for i in k['items'] if i['von'] <= x <= i['bis'])
 
-def roll_merkmale(kat, sel, pr, r):
-    M = D['merkmale']; g = M['material_gruppe'].get(kat); out = []
-    if g: out.append(('Material', r.choice(M['material'][g])))
-    if pr == 'plunder': out.append(('Zustand', M['zustand'][d(30, r) - 1]))
-    elif pr == 'gut': out.append(('Machart', M['machart'][d(100, r) - 1]))
-    elif sel == 'gewoehnlich': c = r.choice(['herkunft', 'besonderheit', 'zustand']); out.append((c.capitalize(), M[c][d(100, r) - 1]))
-    else: out += [('Machart', M['machart'][d(100, r) - 1]), ('Besonderheit', M['besonderheit'][d(100, r) - 1])]
+def pool(lst, gr):
+    """Eintraege, die zu mindestens einer erlaubten Materialgruppe passen (leere gruppen = universell)."""
+    return [x for x in lst if not x['gruppen'] or set(x['gruppen']) & set(gr)]
+def roll_merkmale(it, sel, pr, r):
+    M = D['merkmale']; gr = it['mat']; out = []
+    mats = [m for g in gr for m in M['material'][g]]
+    out.append(('Material' if gr != ['zutat'] else 'Zutat', r.choice(mats)))
+    z = pool(M['zustand'], gr); ma = pool(M['machart'], gr); be = pool(M['besonderheit'], gr)
+    if pr == 'plunder': out.append(('Zustand', r.choice(z[:max(3, len(z) * 3 // 10)])['text']))
+    elif pr == 'gut': out.append(('Machart', r.choice(ma)['text']))
+    elif sel == 'gewoehnlich':
+        c = r.choice(['herkunft', 'besonderheit', 'zustand']); out.append((c.capitalize(), r.choice(M['herkunft']) if c == 'herkunft' else r.choice(be if c == 'besonderheit' else z)['text']))
+    else: out += [('Machart', r.choice(ma)['text']), ('Besonderheit', r.choice(be)['text'])]
     return out
 
 def artikel(g): return {'m': 'Der', 'f': 'Die', 'n': 'Das'}[g]
@@ -97,17 +105,18 @@ def roll_item(r, sel=None, kat=None, pr=None, name=False):
     if 'heilung_lp' in it:  # Heiltrank: Heilung (und Preis) folgen der Seltenheit; 4 LP nur ab sehr selten
         lp = it['heilung_lp'][SID.index(sel)]; it['effekt'] = f'heilt {lp} LP sofort, auch im Kampf'; it['preis_h'] = it['preis_h'] * lp // 2
     if k['verbrauch'] and pr == 'wendung': pr = 'gut'
+    if it.get('schaedlich') and pr in MAGIC: pr = 'gut'  # Gifte und Reizstoffe sind nie magisch/gesegnet/verflucht
     out = {'kat': kat, 'name': it['name'], 'seltenheit': sel, 'praegung': pr, 'basis_h': it['preis_h'],
            'schaden': it.get('schaden'), 'ruestung': it.get('ruestung'), 'effekt': it.get('effekt'), 'gm': [], 'merkmale': [], 'kp': 0}
-    out['preis_h'] = preis(it['preis_h'], sel, pr, k['verbrauch']); out['punkte'] = punkte(out['preis_h'])
-    if pr in ('normal', 'gut', 'plunder') or (pr == 'wendung'): out['merkmale'] = roll_merkmale(kat, sel, pr, r)
+    out['preis_h'] = preis(it['preis_h'], sel, pr, k['verbrauch'], 'heilung_lp' in it); out['punkte'] = punkte(out['preis_h'])
+    if pr in ('normal', 'gut', 'plunder') or (pr == 'wendung'): out['merkmale'] = roll_merkmale(it, sel, pr, r)
     if pr in MAGIC:
         tab = 'segen' if pr == 'gesegnet' else 'wirkungen'
         if k['verbrauch']: out['wirkung'] = 'Wirkung doppelt' if pr != 'verflucht' else 'Wirkung + Nebenwirkung (Fluch) bis zur Nachtruhe'
         else:
             es = roll_fenster(tab, sel, r, kat); out['wirkung'] = ' + '.join(e['text'] for e in es); out['kp'] = sum(e['kp'] for e in es)
             out['mech'] = [(e['typ'], e['takt'], e['kp']) for e in es]
-        out['merkmale'] = roll_merkmale(kat, sel, 'normal', r)[:1]
+        out['merkmale'] = roll_merkmale(it, sel, 'normal', r)[:1]
         if pr == 'verflucht' and k['verbrauch']: out['gm'].append('Nebenwirkung: vergiftet bis zur Nachtruhe (kein Fluchwurf)')
         elif pr == 'verflucht':
             f = roll_fenster('flueche', sel, r)[0]; out['gm'].append(f"Fluch (Stufe {f['stufe']}): {f['text']} | Haken: {f['haken']}"); out['fluch_stufe'] = f['stufe']
@@ -175,13 +184,53 @@ def lint():
             if i.get('schaden', 0) > 5 or i.get('ruestung', 0) > 3 and k['id'] != 'x': bad.append(f'{k["id"]} {i["name"]}: Deckel')
             if not i.get('genus'): bad.append(f'{k["id"]} {i["name"]}: genus fehlt')
         if acc != 100: bad.append(f'{k["id"]} endet bei {acc}')
-    for g, l in D['merkmale']['material'].items():
-        if len(l) != 20: bad.append(f'material {g}: {len(l)}')
-    for c in ('machart', 'zustand', 'herkunft', 'besonderheit'):
-        if len(D['merkmale'][c]) != 100: bad.append(f'{c}: {len(D["merkmale"][c])}')
+    M = D['merkmale']; GR = list(M['material'])
+    seen = {}
+    for g, l in M['material'].items():
+        if len(l) < 6: bad.append(f'material {g}: nur {len(l)}')
+        for m in l:
+            if m in seen: bad.append(f'Material {m!r} in {seen[m]} und {g}')
+            seen[m] = g
+    for c in ('machart', 'zustand', 'besonderheit'):
+        for x in M[c]:
+            if set(x['gruppen']) - set(GR): bad.append(f'{c}: unbekannte Gruppe {x}')
+    if len(M['herkunft']) != 100: bad.append('herkunft != 100')
+    # kein Gegenstand kann ein unmögliches Material oder Merkmal würfeln: jede Gruppe existiert, Pools sind nicht dünn
+    for k in D['kategorien']:
+        for i in k['items']:
+            gr = i.get('mat')
+            if not gr or set(gr) - set(GR): bad.append(f'{k["id"]} {i["name"]}: mat {gr}'); continue
+            if k['verbrauch'] and gr != ['zutat']: bad.append(f'{i["name"]}: Trank braucht mat [zutat]')
+            if not k['verbrauch'] and 'zutat' in gr and k['id'] not in ('kuriosum', 'schmuck'): bad.append(f'{i["name"]}: zutat nur bei Tränken')
+            if 'tier' in gr and k['id'] not in ('transport', 'kuriosum'): bad.append(f'{i["name"]}: tier nur bei Transport/Kuriosum')
+            for c in ('machart', 'zustand', 'besonderheit'):
+                if len(pool(M[c], gr)) < 8: bad.append(f'{i["name"]}: zu wenige {c} für {gr}')
     for c in ('epitheton', 'bezug'):
         if len(D['namen'][c]) != 100: bad.append(f'namen {c}')
+    for k in D['kategorien']:
+        for i in k['items']:
+            ver = k['verbrauch']; sk = 'heilung_lp' in i
+            for pr in ('plunder', 'normal', 'gut', 'wendung', 'magisch', 'gesegnet', 'verflucht'):
+                if i.get('schaedlich') and pr in MAGIC: continue
+                ids = SID[1:] if pr in MAGIC else SID
+                ps = [preis(i['preis_h'] * ((i['heilung_lp'][SID.index(x)] // 1) / 2 if sk else 1), x, pr, ver, sk) for x in ids]
+                if ps != sorted(ps): bad.append(f'Preis nicht monoton: {k["id"]} {i["name"]} {pr} {ps}')
+            for x in SID[1:]:
+                b0 = i['preis_h'] * ((i['heilung_lp'][SID.index(x)]) / 2 if sk else 1)
+                if not i.get('schaedlich') and preis(b0, x, 'verflucht', ver, sk) > preis(b0, x, 'magisch', ver, sk): bad.append(f'verflucht teurer als magisch: {i["name"]} {x}')
+                if preis(b0, x, 'magisch', ver, sk) < preis(b0, x, 'normal', ver, sk): bad.append(f'magisch billiger als normal: {i["name"]} {x}')
+            if i.get('schaedlich') and any(preis(i['preis_h'], x, 'gut', ver) > preis(i['preis_h'], x, 'gut', ver) for x in SID): pass
     print('\n'.join(bad) or 'lint ok'); return not bad
+
+def preise_stats():
+    print('Ø Preis (T) je Kategorie x Seltenheit; Prägung normal | magisch (Heiltrank/Verbrauch eingerechnet)')
+    for k in D['kategorien']:
+        row = []
+        for x in SID:
+            ns = [preis(i['preis_h'] * (i['heilung_lp'][SID.index(x)] / 2 if 'heilung_lp' in i else 1), x, 'normal', k['verbrauch'], 'heilung_lp' in i) for i in k['items']]
+            ms = [preis(i['preis_h'] * (i['heilung_lp'][SID.index(x)] / 2 if 'heilung_lp' in i else 1), x, 'magisch', k['verbrauch'], 'heilung_lp' in i) for i in k['items'] if not i.get('schaedlich')] if x != 'gewoehnlich' else []
+            row.append(f"{sum(ns)/len(ns)/4:7.1f}|{(sum(ms)/len(ms)/4 if ms else 0):7.0f}")
+        print(f"  {k['id']:10}", ' '.join(row))
 
 def stats(n, r):
     for sel in SID[1:]:
@@ -234,5 +283,6 @@ if __name__ == '__main__':
     elif o.cmd == 'hat':
         res = hat(r, int(o.args[0]), o.args[1], bool(o.spez), o.kontext, o.spannung, o.sp); print(json.dumps(res, ensure_ascii=False))
     elif o.cmd == 'frage': print(json.dumps(orakel(r, o.args[0], o.spannung, o.sp), ensure_ascii=False))
+    elif o.cmd == 'preise': preise_stats()
     elif o.cmd == 'stats': stats(o.n or 2000, r)
     elif o.cmd == 'lint': sys.exit(0 if lint() else 1)

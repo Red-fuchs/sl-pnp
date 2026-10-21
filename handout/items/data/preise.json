@@ -108,7 +108,7 @@
    "id": "wendung",
    "name": "Wendung",
    "mult": 1,
-   "text": "trägt ein verborgenes Geheimnis (Tabelle Wendung, nur Spielleitung); Preis wie die angebotene Seltenheit (Basis × Seltenheit)."
+   "text": "trägt ein verborgenes Geheimnis (Tabelle Wendung, nur Spielleitung); Preis wie ein normales Stück derselben Seltenheit."
   }
  ],
  "praegung_d20": {
@@ -175,7 +175,7 @@
   "kleinkram": "Posten unter 10 T kosten 0 Budgetpunkte, werden aber in Taler bezahlt."
  },
  "doc": "notes/RULES-gegenstaende.md. Einzige Quelle für Handout (items/pages.py), items/roll.py und die Engine (/item, /haendler). Preise als ganze Heller (preis_h). 1 Taler = 2 Schilling = 4 Heller; 10 Taler = 1 Budgetpunkt.",
- "preis_regel": "Gewöhnliche, gut gearbeitete und Plunder-Stücke: preis_h = basis_h * mult(praegung) (Plunder 0,25; normal 1; gut 1,5), Seltenheit zählt nicht. Wendung: preis_h = basis_h * mult(seltenheit) (so angeboten). Magisch/gesegnet: preis_h = seltenheit.magie_h + basis_h; verflucht: die Hälfte davon. Ab 40 H (10 T) auf 20 H (5 T) runden ((p+10)//20*20), darunter ganze Heller, mindestens 1 H. Budgetpunkte: unter 40 H = 0 (Kleinkram, in Taler zahlen), sonst aufgerundet (preis_h / 40). Tränke und andere Verbrauchsgüter: magisch/gesegnet = Basis × 5, verflucht = Basis × 2 (Nebenwirkung: vergiftet bis zur Nachtruhe, kein Fluchwurf); der Stufenpreis gilt nur für dauerhafte Gegenstände.",
+ "preis_regel": "Der Preis steigt mit der Seltenheit. Nichtmagisch (normal, gut, Plunder, Wendung): Basis × Prägung × Seltenheitsfaktor (gewöhnlich 1, ungewöhnlich 1,5, selten 2, sehr selten 3, legendär 4). Magisch/gesegnet: Stufenpreis + Basis × Seltenheitsfaktor; verflucht die Hälfte davon. Magische Tränke/Verbrauchsgüter: Basis × (ungewöhnlich 3, selten 5, sehr selten 8, legendär 12); verflucht die Hälfte. Gifte und Reizstoffe sind nie magisch (sie zählen als gut gearbeitet); der Heiltrank folgt seiner eigenen Staffel (Basis × LP/2). Verflucht ist nie teurer als magisch. Ab 40 H auf 20 H (5 T) runden, darunter ganze Heller, mindestens 1 H. Budgetpunkte: unter 40 H = 0, sonst aufgerundet (preis_h / 40).",
  "seltenheit": [
   {
    "id": "gewoehnlich",
@@ -186,7 +186,9 @@
    ],
    "mult": 1,
    "orakel": 2,
-   "deckel": 3
+   "deckel": 3,
+   "preis_mult": 1,
+   "trank_mult": 2
   },
   {
    "id": "ungewoehnlich",
@@ -198,7 +200,9 @@
    "mult": 2,
    "magie_h": 1000,
    "orakel": 1,
-   "deckel": 3
+   "deckel": 3,
+   "preis_mult": 1.5,
+   "trank_mult": 3
   },
   {
    "id": "selten",
@@ -210,7 +214,9 @@
    "mult": 5,
    "magie_h": 2000,
    "orakel": -1,
-   "deckel": 1
+   "deckel": 1,
+   "preis_mult": 2,
+   "trank_mult": 5
   },
   {
    "id": "sehr_selten",
@@ -222,7 +228,9 @@
    "mult": 10,
    "magie_h": 4000,
    "orakel": -2,
-   "deckel": 0
+   "deckel": 0,
+   "preis_mult": 3,
+   "trank_mult": 8
   },
   {
    "id": "legendaer",
@@ -234,7 +242,9 @@
    "mult": 20,
    "magie_h": 8000,
    "orakel": -3,
-   "deckel": -1
+   "deckel": -1,
+   "preis_mult": 4,
+   "trank_mult": 12
   }
  ]
 }

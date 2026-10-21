@@ -17,7 +17,7 @@ GM = '<span class="gm">Nur Spielleitung</span>'
 def praegung_rows():
     ids = D['praegung_d20']['reihenfolge']; rows = []
     for i, pid in enumerate(ids):
-        lab = {'magisch': '+ Stufenpreis', 'gesegnet': '+ Stufenpreis', 'verflucht': '+ ½ Stufenpreis', 'wendung': '× Seltenheit'}.get(pid) or f'×{PR[pid]["mult"]:g}'.replace('.', ',')
+        lab = {'magisch': '+ Stufenpreis', 'gesegnet': '+ Stufenpreis', 'verflucht': '+ ½ Stufenpreis', 'wendung': '× 1'}.get(pid) or f'×{PR[pid]["mult"]:g}'.replace('.', ',')
         row = [f'<b>{e(PR[pid]["name"])}</b> ({lab})']
         for s in SEL:
             acc = sum(D['praegung_d20']['anzahl'][s['id']][:i]); n = D['praegung_d20']['anzahl'][s['id']][i]
@@ -25,6 +25,7 @@ def praegung_rows():
         rows.append(row)
     return rows
 
+AB = {'metall': 'Me', 'holz': 'Ho', 'leder': 'Le', 'textil': 'Te', 'stein_glas': 'St', 'organisch': 'Or', 'papier': 'Pa', 'tier': 'Ti', 'zutat': 'Zu'}
 def entry(t, fields=()):
     txt = t['text']; head, sep, rest = txt.partition(': ')
     s = (f'<u>{e(head)}</u>{e(sep)}{e(rest)}' if sep and len(head) < 32 else e(txt))
@@ -42,7 +43,7 @@ def cat_list(k):
     for it in k['items']:
         v = f'Sch. {it["schaden"]}' if 'schaden' in it else (f'Rü. {it["ruestung"]}' if 'ruestung' in it else '')
         extra = ' · '.join(y for y in [v, e(it.get('effekt', ''))] if y)
-        li += f'<li><b>{rng(it["von"], it["bis"])}</b> {e(it["name"])} <i>{fmt(it["preis_h"])}</i>{" · " + extra if extra else ""}</li>'
+        li += f'<li><b>{rng(it["von"], it["bis"])}</b> {e(it["name"])} <span class=g>{"·".join(AB[g] for g in it["mat"])}</span> <i>{fmt(it["preis_h"])}</i>{" · " + extra if extra else ""}</li>'
     return wl(f'{e(k["name"])} (d20 {d20r(*k["d20"])}), Gegenstand d100', li, 2, 6.6)
 
 def stufe_table():
@@ -62,7 +63,7 @@ def example_orakel():
     assert T.thr(0, 5)[1] < 63 <= T.thr(0, 5)[2] and a1[1] < 63 <= a1[2] and a4[0] < 41 <= a4[1], (a1, a4)
     return f'''<div class="box ex"><b class="t">Beispiel 1: ein seltener Trank, zwei Händler.</b> Die Gruppe sucht einen <b>seltenen Trank</b>. Frage ans Orakel: „Hat der Händler einen seltenen Trank?“ Start-Chancen für selten: <b>unwahrscheinlich</b>. Spannung 5.<br>
 <b>Straßenbrauer</b> (Stufe 1: −1, Spezialgebiet Tränke: +1, zusammen ±0 → <b>unwahrscheinlich</b>): JA+ ≤ {a1[0]}, JA ≤ {a1[1]}, NEIN ≤ {a1[2]}. d100 = <b>63</b>: <b>NEIN</b>. Die Gruppe gibt 1 SP und verschiebt auf offen ({T.thr(0, 5)[1]} %): 63 reicht trotzdem nicht. „Hab nur Gebräu für Mutige.“ Er hat dann etwas anderes: Art-Wurf Trank, d100 = 24 Stärkungstrank (30 T), Seltenheit gewöhnlich, Prägung d20 = 2 <b>Plunder</b>: {fmt(30)} (30 T × ¼), wirkt nur halb.<br>
-<b>Meisteralchemist</b> (Stufe 4: +1, Spezialgebiet: +1 → +2 Schritte von unwahrscheinlich = <b>wahrscheinlich</b>): JA+ ≤ {a4[0]}, JA ≤ {a4[1]}, NEIN ≤ {a4[2]}. d100 = <b>41</b>: <b>JA</b>. Prägung d20 in der Spalte selten = 11 → <b>magisch</b>. Trank: Wirkung doppelt, also <b>+20 auf Kampf eine Szene</b>. Preis: Trank, also Basis × 5 = <b>150 T</b> (15 Budgetpunkte: nur als Beute oder Belohnung). Ein dauerhafter seltener Gegenstand kostet dagegen Stufenpreis 500 T + Basis. Wäre der Wurf 08 gewesen (≤ {a4[0]}, JA+), kennt der Händler außerdem die Herkunft des Tranks (ein Wortpaar und eine Frage gratis).</div>'''
+<b>Meisteralchemist</b> (Stufe 4: +1, Spezialgebiet: +1 → +2 Schritte von unwahrscheinlich = <b>wahrscheinlich</b>): JA+ ≤ {a4[0]}, JA ≤ {a4[1]}, NEIN ≤ {a4[2]}. d100 = <b>41</b>: <b>JA</b>. Prägung d20 in der Spalte selten = 11 → <b>magisch</b>. Trank: Wirkung doppelt, also <b>+20 auf Kampf eine Szene</b>. Preis: magischer Trank selten, also Basis × 5 = <b>150 T</b> (15 Budgetpunkte: nur als Beute oder Belohnung). Ein dauerhafter seltener Gegenstand kostet dagegen Stufenpreis 500 T + Basis. Wäre der Wurf 08 gewesen (≤ {a4[0]}, JA+), kennt der Händler außerdem die Herkunft des Tranks (ein Wortpaar und eine Frage gratis).</div>'''
 
 def example_magie():
     w = D['wirkungen']['tabelle']; ent = w[28]; assert ent['text'].startswith('Zunftkrug'), ent['text']
@@ -81,14 +82,14 @@ def pages():
     selt = table(['d100', 'Seltenheit', 'Magie ab', 'Fenster'], [[rng(*s['d100']), f'<b>{e(s["name"])}</b>', f'{s["magie_h"]//4} T' if s.get('magie_h') else '–',
                  rng(*D['wirkungen']['fenster'][s['id']]) if s['id'] in D['wirkungen']['fenster'] else '–'] for s in SEL], 'small nw')
     pr = table(['Prägung (Preis ×)'] + [e(s['name']) for s in SEL], praegung_rows(), '')
-    css = '<style>.it .wl.rl ul{font-size:7.2pt;line-height:1.12} .it table{font-size:8pt;margin-bottom:1.5mm} .it h3{margin:1.5mm 0 .6mm} .it td{padding:.4mm 1.4mm} .it .nw td:first-child{white-space:nowrap} .it .wl.big{break-inside:auto;page-break-inside:auto} .it .gm{border:1pt solid #000;padding:0 2mm;font:bold 8pt Georgia,serif;margin-left:3mm;background:#fff;color:#000;letter-spacing:.4pt} .it h1 .gm{font-size:9pt;vertical-align:middle}</style>'
+    css = '<style>.it .wl.rl ul{font-size:7.2pt;line-height:1.12} .it table{font-size:8pt;margin-bottom:1.5mm} .it h3{margin:1.5mm 0 .6mm} .it td{padding:.4mm 1.4mm} .it .nw td:first-child{white-space:nowrap} .it span.g{font-size:5.6pt;color:#555;border:.3pt solid #999;padding:0 .6mm;border-radius:.6mm} .it .wl.big{break-inside:auto;page-break-inside:auto} .it .gm{border:1pt solid #000;padding:0 2mm;font:bold 8pt Georgia,serif;margin-left:3mm;background:#fff;color:#000;letter-spacing:.4pt} .it h1 .gm{font-size:9pt;vertical-align:middle}</style>'
     p1 = f'''{css}<h1 class="pb">11 Gegenstände und Händler <span class="note">(Vorschlag)</span></h1>
 <div class="grid"><div style="width:44%"><div class="box"><b class="t">Münzen</b><br>1 Taler (T) = 2 Schilling (S) = 4 Heller (H). „3 T 1 S 1 H“ = 3¾ Taler.<br><b>10 Taler = 1 Budgetpunkt</b> (Figurenerschaffung). Posten unter 10 T zahlst du in Taler.</div></div>
 <div><b>Würfe für einen Gegenstand:</b><ol style="margin-bottom:0"><li><b>Art:</b> d20 → Kategorie, dann d100 → Gegenstand (Listen am Ende dieses Kapitels; 01–60 gängig, 61–80 spezialisiert, 81–00 exotisch).</li>
 <li><b>Seltenheit:</b> d100 (oder von der Spielleitung gesetzt).</li>
 <li><b>Prägung:</b> d20 in der Spalte der Seltenheit.</li>
 <li><b>Eigenschaften:</b> ohne Magie 1–2 Merkmale (Seite Merkmale); mit Magie ein Rahmen aus der Wirkungstabelle, ab selten dazu ein Wortpaar und bis zu zwei Orakelfragen.</li></ol></div></div>
-<p><b>Preis:</b> gewöhnlich, gut, Plunder = <b>Basis × Prägung</b> (Plunder ×¼, normal ×1, gut ×1½); die Seltenheit macht sie nur schwerer zu finden. <b>Magisch/gesegnet = Basis + Stufenpreis</b> (ungewöhnlich 250 T · selten 500 T · sehr selten 1000 T · legendär 2000 T), verflucht die Hälfte davon. Wendung: Basis × Seltenheit. Tränke und andere Verbrauchsgüter: magisch/gesegnet Basis × 5, verflucht Basis × 2. Ab 10 T auf 5 T runden. <b>Budgetpunkte</b> = Preis ÷ 10 T, aufgerundet. Mit 200 T (20 Punkte) ist Magie nie zu bezahlen. Startausrüstung: höchstens Tarif 60 T (6 Punkte) je Stück; exotische Waffen und Rüstungen der Liste darüber sind Beute oder Kauf im Spiel.</p>
+<p><b>Preis (steigt mit der Seltenheit):</b> nichtmagisch (Plunder ×¼, normal ×1, gut ×1½, Wendung wie normal) = <b>Basis × Prägung × Seltenheitsfaktor</b> (gewöhnlich 1 · ungewöhnlich 1,5 · selten 2 · sehr selten 3 · legendär 4). <b>Magisch/gesegnet = Basis × Faktor + Stufenpreis</b> (ungewöhnlich 250 T · selten 500 T · sehr selten 1000 T · legendär 2000 T), verflucht die Hälfte davon (nie teurer als magisch). <b>Magische Tränke:</b> Basis × 3 / 5 / 8 / 12 (ungewöhnlich bis legendär), verflucht die Hälfte. Gifte und Reizstoffe sind nie magisch. Der Heiltrank folgt seiner Staffel (Basis × LP/2). Ab 10 T auf 5 T runden. <b>Budgetpunkte</b> = Preis ÷ 10 T, aufgerundet. Mit 200 T (20 Punkte) ist Magie nie zu bezahlen. Startausrüstung: höchstens Tarif 60 T (6 Punkte) je Stück; exotische Waffen und Rüstungen der Liste darüber sind Beute oder Kauf im Spiel.</p>
 <div class="grid"><div style="width:36%"><h3>Art (d20)</h3>{arts}</div><div style="width:40%"><h3>Seltenheit (d100)</h3>{selt}<p class="note">Fenster: Welcher Teil der Wirkungstabellen gilt (Seite Magie). Normale Ausrüstung bleibt auf den Tarifen 20 T (2 P) · 40 T (4 P) · 60 T (6 P).</p></div>
 <div><h3>Wirkung begrenzt</h3><p class="note">Je seltener, desto weiter hinten in der d100-Tabelle: Seltenheit schiebt ein Fenster. Grenzen: Schaden 5, Rüstung 3 (auch mit Magie); +1 Schaden/Rüstung nur bei Waffe und Rüstung.</p></div></div>
 <h3>Prägung (d20, Spalte = Seltenheit)</h3>{pr}
@@ -129,17 +130,21 @@ def pages():
 {wl("Fluch (Haken = Aufhänger für die Spielleitung)", band_li(fl, [("haken", "Haken")]), 2, 6.5, True)}'''
     p7 = f'''<h1 class="pb">11 Wendung (d100) {GM}</h1><p class="note">Für Gegenstände mit Prägung Wendung (und NEIN+ beim Händler). Fenster nach Seltenheit; Stücke deutet die Spielleitung passend zum Gegenstand. Die Enthüllung steht kursiv; sie gibt es nur, wenn die Gruppe das Geheimnis aufdeckt. Fragen dazu: <i>Ist es echt?</i> (unwahrscheinlich), <i>Weiß der Verkäufer es?</i> (offen).</p>
 {wl("Wendung (verborgene Wahrheit)", band_li(wd, [("enthuellung", "Enthüllung")]), 2, 6.5, True)}'''
-    M = D['merkmale']; g = {'hart': 'hart: Waffe, Rüstung, Werkzeug', 'stoff': 'Stoff: Kleidung', 'zier': 'Zier: Schmuck, Kuriosum', 'papier': 'Papier: Schrift', 'tier': 'Tier und Gefährt: Transport'}
-    mats = ''.join(wl(f'Material ({g[k]}), d20', str_li(M['material'][k]), 1, 7) for k in g)
+    M = D['merkmale']
+    GN = {'metall': 'Metall (Me)', 'holz': 'Holz (Ho)', 'leder': 'Leder und Fell (Le)', 'textil': 'Textil (Te)', 'stein_glas': 'Stein, Glas (St)', 'organisch': 'Bein, Horn (Or)', 'papier': 'Papier, Wachs (Pa)', 'tier': 'Tier (Ti)', 'zutat': 'Zutat, Trank (Zu)'}
+    mats = ''.join(wl(f'Material {GN[k]}', str_li(M['material'][k]), 1, 6.9) for k in GN)
+    def tagli(lst, lo, hi):
+        return ''.join(f'<li><b>{i + 1:02d}</b> {e(x["text"])}{(" <span class=g>" + "·".join(AB[g] for g in x["gruppen"]) + "</span>") if x["gruppen"] else ""}</li>' for i, x in enumerate(lst[lo:hi], lo))
     p8 = f'''<h1 class="pb">11 Merkmale gewöhnlicher Gegenstände</h1>
-<p><b>Wie viele?</b> Plunder: <i>Zustand</i> (d100, 01–30). Gut gearbeitet: <i>Machart</i>. Gewöhnlich: Material und ein Merkmal nach Wahl (Herkunft, Besonderheit oder Zustand). Ungewöhnlich und Wendung: Material, Machart und Besonderheit. Alle fünf nur für Gegenstände mit Geschichte. Merkmale ändern den Preis nicht; die kleinen Boni (+10 einmal pro Szene, −10 in einer Lage) sind Besonderheiten. Material, Machart und Zustand deutet die Spielleitung passend zum Gegenstand (sonst neu würfeln: „Klinge“ bei einem Mantel wird zur Schnittkante).</p>
+<p><b>Material gehört zum Gegenstand:</b> jeder Posten der Listen trägt seine Materialgruppen (Me Metall, Ho Holz, Le Leder, Te Textil, St Stein/Glas, Or Bein/Horn, Pa Papier, Ti Tier, Zu Zutat); gewürfelt wird nur in diesen Gruppen (Gruppe wählen, dann d20 bzw. Listenlänge). Trank: immer Zutat. <b>Machart, Zustand, Besonderheit:</b> ein Eintrag mit Gruppen-Kürzel gilt nur für diese Materialien, passt er nicht, neu würfeln (ohne Kürzel passt er immer).<br><b>Wie viele?</b> Plunder: <i>Zustand</i> (erstes Drittel). Gut gearbeitet: <i>Machart</i>. Gewöhnlich: Material und ein Merkmal nach Wahl (Herkunft, Besonderheit oder Zustand). Ungewöhnlich und Wendung: Material, Machart und Besonderheit. Merkmale ändern den Preis nicht; kleine Boni (+10 einmal pro Szene, −10 in einer Lage) sind Besonderheiten.</p>
 <div class="two" style="column-count:5;column-gap:3mm">{mats}</div>
-{wl("Machart (d100)", str_li(M['machart']), 3, 6.9)}{wl("Zustand (d100; 01–15 schlecht, 86–00 makellos)", str_li(M['zustand']), 3, 6.9)}'''
+{wl("Machart (d100)", tagli(M['machart'], 0, 100), 3, 6.7)}{wl("Zustand (d100; 01–15 schlecht, 86–00 makellos)", tagli(M['zustand'], 0, 100), 3, 6.7)}'''
     N = D['namen']
     p9 = f'''<h1 class="pb">11 Herkunft, Besonderheit, Namen</h1>
-{wl("Herkunft (d100)", str_li(M['herkunft']), 3, 6.9)}{wl("Besonderheit (d100; mit „;“ steht eine kleine Regel dabei)", str_li(M['besonderheit']), 2, 6.9)}
+{wl("Herkunft (d100)", str_li(M['herkunft']), 3, 6.7)}{wl("Besonderheit (d100; mit „;“ steht eine kleine Regel dabei)", tagli(M['besonderheit'], 0, 100), 2, 6.7)}
+{wl('Zusatzlisten Tränke (Zu) und Tiere (Ti): Machart', tagli(M['machart'], 100, 130), 3, 6.7)}{wl('Zustand', tagli(M['zustand'], 100, 125), 3, 6.7)}{wl('Besonderheit', tagli(M['besonderheit'], 100, 115), 3, 6.7)}
 <h3>Namensgenerator für besondere Gegenstände (zwei d100)</h3><p class="note">Name = <b>Der/Die/Das</b> + Epitheton (+e) + Gegenstand + Bezug. Beispiel: Epitheton 05 + Schwert (n) + Bezug 41. Oder nur Gegenstand + Bezug („Klinge der stillen Witwe“). Ab selten, bei magischen Stücken und Wendungen.</p>
 <div class="grid"><div>{wl("Epitheton (d100, Endung -e anhängen)", str_li(N['epitheton']), 4, 6.9)}</div><div>{wl("Bezug (d100)", str_li(N['bezug']), 2, 6.9)}</div></div>'''
     cats = ''.join(cat_list(k) for k in KAT)
-    p10 = '<h1 class="pb">11 Gegenstandslisten (Art d20, Gegenstand d100)</h1><p class="note">Preise in Taler (T), Schilling (S) und Heller (H). Sch. = Schaden, Rü. = Rüstung. 01–60 gängig, 61–80 spezialisiert, 81–00 exotisch.</p>' + cats
+    p10 = '<h1 class="pb">11 Gegenstandslisten (Art d20, Gegenstand d100)</h1><p class="note">Preise in Taler (T), Schilling (S) und Heller (H). Sch. = Schaden, Rü. = Rüstung, Kürzel = Materialgruppen. 01–60 gängig, 61–80 spezialisiert, 81–00 exotisch.</p>' + cats
     return [f'<div class="it">{x}</div>' for x in (p1, p2, p3, p4, p5, p6, p7, p8, p9, p10)]

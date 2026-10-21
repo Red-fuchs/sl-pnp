@@ -1,82 +1,95 @@
 {
  "merkmale": {
-  "doc": "Mundane Merkmale. Material je Gruppe d20 (Gruppe nach Kategorie), Machart/Zustand/Herkunft/Besonderheit d100. Keine Preiswirkung.",
-  "material_gruppe": {
-   "waffe": "hart",
-   "ruestung": "hart",
-   "werkzeug": "hart",
-   "kleidung": "stoff",
-   "schmuck": "zier",
-   "kuriosum": "zier",
-   "schrift": "papier",
-   "transport": "tier"
-  },
+  "doc": "Merkmale nach Materialgruppe. Material: Gruppe je Posten (kategorien[].items[].mat). machart/zustand/besonderheit: {text, gruppen}; gruppen leer = passt zu allem, sonst nur zu diesen Materialgruppen. Keine Preiswirkung.",
   "material": {
-   "hart": [
+   "metall": [
     "Eisen, rostfleckig",
-    "Eschenholz",
-    "Eichenholz",
-    "Buchenholz",
     "Stahl, einfach",
     "Bronze",
     "Gusseisen",
-    "Knochen",
     "Kupfer",
-    "Hirschhorn",
-    "Kuhhaut, gehärtet",
-    "Flusskiesel",
-    "Schiefer",
-    "Basalt",
-    "Ulmenholz",
     "Messing",
-    "Hartholz, geölt",
     "Stahl, gehärtet",
     "Schwarzeisen",
-    "Meteoreisen"
+    "Meteoreisen",
+    "Messing, angelaufen",
+    "Silber",
+    "Zinn, gegossen",
+    "Kupfer, grün angelaufen",
+    "Gold, dünn",
+    "Messingbeschlag"
    ],
-   "stoff": [
-    "Leinen, grob",
-    "Wolle, grau",
-    "Schafwolle, gewalkt",
-    "Hanf, grob",
+   "holz": [
+    "Eschenholz",
+    "Eichenholz",
+    "Buchenholz",
+    "Ulmenholz",
+    "Hartholz, geölt",
+    "Holzkohle",
+    "Eichenholz-Karren",
+    "Buchenholz-Karren",
+    "Eschenholz-Wagen",
+    "Planwagen, plump",
+    "Leiterwagen",
+    "Lastkarren, schwer",
+    "Ochsenkarren, beschlagen",
+    "Ruderboot, Eichenplanken",
+    "Flachkahn, Tannenholz"
+   ],
+   "leder": [
+    "Kuhhaut, gehärtet",
     "Leder, geschwärzt",
     "Hirschleder",
     "Ziegenfell",
     "Wolfspelz",
     "Fuchsfell",
+    "Schaffell, gegerbt",
+    "Rindsleder, gegerbt",
+    "Bärenfell",
+    "Rinderhaut"
+   ],
+   "textil": [
+    "Leinen, grob",
+    "Wolle, grau",
+    "Schafwolle, gewalkt",
+    "Hanf, grob",
     "Ziegenwolle, braun",
     "Filz",
     "Loden",
     "Seide, verschlissen",
     "Samt, abgewetzt",
     "Leinen, gebleicht",
-    "Schaffell, gegerbt",
-    "Rindsleder, gegerbt",
-    "Bärenfell",
     "Krappfärbung, rot",
-    "Waidfärbung, blau"
+    "Waidfärbung, blau",
+    "Bindfaden"
    ],
-   "zier": [
-    "Messing, angelaufen",
-    "Silber",
-    "Zinn, gegossen",
+   "stein_glas": [
+    "Flusskiesel",
+    "Schiefer",
+    "Basalt",
     "Bernstein",
-    "Horn, poliert",
-    "Bein, geschnitzt",
     "Glas, trüb",
-    "Kupfer, grün angelaufen",
     "Jett",
     "Achat",
     "Bergkristall",
-    "Gold, dünn",
-    "Perlmutt",
-    "Elfenbein",
     "Onyx",
     "Obsidian",
-    "Koralle",
     "Smaragd",
     "Karneol",
-    "Amethyst"
+    "Amethyst",
+    "Kreide",
+    "Schiefertafel"
+   ],
+   "organisch": [
+    "Knochen",
+    "Hirschhorn",
+    "Horn, poliert",
+    "Bein, geschnitzt",
+    "Perlmutt",
+    "Elfenbein",
+    "Koralle",
+    "Knochenleim",
+    "Gänsekiel"
    ],
    "papier": [
     "Papier, fleckig",
@@ -85,20 +98,12 @@
     "Tinte, Eisengallus",
     "Ledereinband",
     "Holzdeckel",
-    "Bindfaden",
     "Rußtinte",
     "Kalbspergament",
     "Ziegenpergament",
     "Lumpenpapier",
     "Siegelwachs, rot",
-    "Kreide",
-    "Schiefertafel",
-    "Wachstafel",
-    "Holzkohle",
-    "Rinderhaut",
-    "Knochenleim",
-    "Messingbeschlag",
-    "Gänsekiel"
+    "Wachstafel"
    ],
    "tier": [
     "Rappe, struppig",
@@ -108,224 +113,1808 @@
     "Schecke",
     "Falbe, Aalstrich",
     "Schwarzbraun, ungeschoren",
-    "Eichenholz-Karren",
-    "Buchenholz-Karren",
-    "Eschenholz-Wagen",
-    "Planwagen, plump",
-    "Leiterwagen",
-    "Lastkarren, schwer",
-    "Ochsenkarren, beschlagen",
     "Maultier, grau",
     "Dorfpony, zottig",
     "Schwerer Kaltblüter",
-    "Warmblut, schlank",
-    "Ruderboot, Eichenplanken",
-    "Flachkahn, Tannenholz"
+    "Warmblut, schlank"
+   ],
+   "zutat": [
+    "Baldrianwurzel",
+    "Bilsenkrautsamen",
+    "Tollkirschenbeeren",
+    "Eibennadeln, zerstoßen",
+    "Rosenöl",
+    "Thymian und Essig",
+    "Salbeiblätter, getrocknet",
+    "Alraunwurzel",
+    "Wermutkraut",
+    "Schwarzkümmelöl",
+    "Kamillenblüten",
+    "Ziegenmilch, sauer",
+    "Tannenpech",
+    "Leinöl, gekocht",
+    "Schwefelpulver",
+    "Kalkmilch",
+    "Galläpfel, zerstoßen",
+    "Salpeter, gereinigt",
+    "Enzianwurzel",
+    "Hirschtalg",
+    "Bibergeil",
+    "Efeusaft",
+    "Fliegenpilz, getrocknet",
+    "Krötenfett"
    ]
   },
   "machart": [
-   "grob geschmiedet",
-   "Witwenarbeit, still und sauber",
-   "in Eile genietet",
-   "Zunftzeichen eingeschlagen",
-   "doppelt vernäht",
-   "aus Flusseisen getrieben",
-   "mit Hanfzwirn verschnürt",
-   "aus Eichenholz gefügt",
-   "ohne Leim verzapft",
-   "mit Hirschleder gebunden",
-   "handgedrechselt am Schemel",
-   "Lehrlingsstück, schief gefeilt",
-   "Klinge aus Raseneisen",
-   "Schmiedenaht sichtbar",
-   "im Kohlenmeiler geschwärzt",
-   "in Kupfer getrieben",
-   "mit Pech abgedichtet",
-   "aus Weidenruten geflochten",
-   "Dorfschmied, plump gehämmert",
-   "Wanderflickerei, kunterbunt",
-   "Stahl gehärtet, Anlassfarbe blau",
-   "mit Knochenleim geklebt",
-   "gegossen, Blasen im Metall",
-   "Kerbe statt Naht",
-   "ohne Nägel zusammengesteckt",
-   "aus Tannenharz verkittet",
-   "aus Schiffsplanken genagelt",
-   "Griff mit Lederstreifen umwickelt",
-   "Nieten aus Messing",
-   "Kettenglieder verlötet",
-   "Gerbung mit Eichenrinde",
-   "Alaungerbung, weich und hell",
-   "vom Wanderschmied zusammengeflickt",
-   "Schweißnaht unter dem Hammer",
-   "aus Feldstein gehauen",
-   "mit Ahle durchstochen, Naht gezogen",
-   "Bronze gegossen, Form ausgebessert",
-   "Zierleiste aus Zinn eingelegt",
-   "Klammern aus Eisendraht",
-   "Schnitzerei mit dem Messer",
-   "Filz gewalkt und verdichtet",
-   "mit Wachsfaden gefädelt",
-   "in Lehmform gegossen",
-   "Beschläge vernietet, nicht geschraubt",
-   "gefaltet und mit Schnur gehalten",
-   "Holzkern, Eisenband außen",
-   "Gelenke mit Splinten gesichert",
-   "mit Rosshaar genäht",
-   "Sehnenleim verklebt",
-   "aus Kiefernwurzel gedreht",
-   "Zunftmeister-Handschrift, fein gearbeitet",
-   "Schmiedemarke im Griffansatz",
-   "zweimal gehärtet, dann gehämmert",
-   "Eichenkern, mit Kupfer beschlagen",
-   "Fugen mit Harz gedichtet",
-   "Stich für Stich, sauber vernäht",
-   "aus Knochen geschnitzt, poliert",
-   "Silberdraht eingeflochten",
-   "Emaileinlage aus Glasfluss",
-   "Muster aus Perlmutt eingelegt",
-   "Feinschmiedearbeit, dünn ausgeschlagen",
-   "aus Ebenholz gedrechselt",
-   "Ornament aus Messingblech",
-   "verschraubt mit Messingstift",
-   "Lederkern, mehrfach beschichtet",
-   "auf dem Handwebstuhl gewebt",
-   "Stoff gefärbt mit Krapp",
-   "mit Goldfaden bestickt",
-   "Schuppenpanzer aus Eisenplättchen",
-   "aus Fundstücken zusammengesetzt",
-   "aus Resten einer Truhe",
-   "aus Glockenbronze gegossen",
-   "Klinge mit Wellenschliff",
-   "Gravur mit feiner Spitze",
-   "Tiegelstahl, zweifach gefaltet",
-   "Hohlschliff für Leichtigkeit",
-   "Ahornholz, dünn furniert",
-   "Zierfaden aus Seide verwoben",
-   "mit Silber und Gold eingelegt",
-   "Meisterstück, Zunftsiegel eingeprägt",
-   "im Stil der Hofschmiede",
-   "Mondsymbol handgeschnitzt",
-   "Elfenbeinbeschläge, sehr fein",
-   "aus Schiffsbauholz gedreht",
-   "im Salzbad gehärtet",
-   "Leder aus einem Stück",
-   "aus Pergament gefalzt",
-   "Damaszenermuster im Stahl",
-   "Edelholz, mit Harz versiegelt",
-   "Muster gleichmäßig verflochten",
-   "Goldschmiedearbeit, Fassung gelötet",
-   "Schutzrunen eingeritzt",
-   "nach alter Zunftformel geschmiedet",
-   "handgefertigt, Fuge kaum sichtbar",
-   "Schmiedekunst, perfekt ausgewogen",
-   "tiefschwarzer Lack, spiegelnd",
-   "mikroskopisch genaue Naht",
-   "meisterhaft gedrechselt, glatt",
-   "Meisterwerk der Zunft",
-   "Ein einziger Guss, nahtlos"
+   {
+    "text": "grob geschmiedet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Witwenarbeit, still und sauber",
+    "gruppen": []
+   },
+   {
+    "text": "in Eile genietet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Zunftzeichen eingeschlagen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "doppelt vernäht",
+    "gruppen": [
+     "textil",
+     "leder"
+    ]
+   },
+   {
+    "text": "aus Flusseisen getrieben",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "mit Hanfzwirn verschnürt",
+    "gruppen": [
+     "textil",
+     "leder",
+     "holz"
+    ]
+   },
+   {
+    "text": "aus Eichenholz gefügt",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "ohne Leim verzapft",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "mit Hirschleder gebunden",
+    "gruppen": [
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "handgedrechselt am Schemel",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Lehrlingsstück, schief gefeilt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Klinge aus Raseneisen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Schmiedenaht sichtbar",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "im Kohlenmeiler geschwärzt",
+    "gruppen": [
+     "holz",
+     "metall"
+    ]
+   },
+   {
+    "text": "in Kupfer getrieben",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "mit Pech abgedichtet",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "aus Weidenruten geflochten",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Dorfschmied, plump gehämmert",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Wanderflickerei, kunterbunt",
+    "gruppen": []
+   },
+   {
+    "text": "Stahl gehärtet, Anlassfarbe blau",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "mit Knochenleim geklebt",
+    "gruppen": [
+     "holz",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "gegossen, Blasen im Metall",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Kerbe statt Naht",
+    "gruppen": [
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "ohne Nägel zusammengesteckt",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "aus Tannenharz verkittet",
+    "gruppen": [
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "aus Schiffsplanken genagelt",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Griff mit Lederstreifen umwickelt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "Nieten aus Messing",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Kettenglieder verlötet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Gerbung mit Eichenrinde",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "Alaungerbung, weich und hell",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "vom Wanderschmied zusammengeflickt",
+    "gruppen": []
+   },
+   {
+    "text": "Schweißnaht unter dem Hammer",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "aus Feldstein gehauen",
+    "gruppen": [
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "mit Ahle durchstochen, Naht gezogen",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Bronze gegossen, Form ausgebessert",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Zierleiste aus Zinn eingelegt",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Klammern aus Eisendraht",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Schnitzerei mit dem Messer",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Filz gewalkt und verdichtet",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "mit Wachsfaden gefädelt",
+    "gruppen": [
+     "textil",
+     "leder",
+     "papier"
+    ]
+   },
+   {
+    "text": "in Lehmform gegossen",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Beschläge vernietet, nicht geschraubt",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "gefaltet und mit Schnur gehalten",
+    "gruppen": [
+     "papier",
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Holzkern, Eisenband außen",
+    "gruppen": [
+     "holz",
+     "metall"
+    ]
+   },
+   {
+    "text": "Gelenke mit Splinten gesichert",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "mit Rosshaar genäht",
+    "gruppen": [
+     "textil",
+     "leder"
+    ]
+   },
+   {
+    "text": "Sehnenleim verklebt",
+    "gruppen": [
+     "holz",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "aus Kiefernwurzel gedreht",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Zunftmeister-Handschrift, fein gearbeitet",
+    "gruppen": []
+   },
+   {
+    "text": "Schmiedemarke im Griffansatz",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "zweimal gehärtet, dann gehämmert",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Eichenkern, mit Kupfer beschlagen",
+    "gruppen": [
+     "holz",
+     "metall"
+    ]
+   },
+   {
+    "text": "Fugen mit Harz gedichtet",
+    "gruppen": [
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Stich für Stich, sauber vernäht",
+    "gruppen": [
+     "textil",
+     "leder"
+    ]
+   },
+   {
+    "text": "aus Knochen geschnitzt, poliert",
+    "gruppen": [
+     "organisch"
+    ]
+   },
+   {
+    "text": "Silberdraht eingeflochten",
+    "gruppen": [
+     "textil",
+     "metall"
+    ]
+   },
+   {
+    "text": "Emaileinlage aus Glasfluss",
+    "gruppen": [
+     "stein_glas",
+     "metall"
+    ]
+   },
+   {
+    "text": "Muster aus Perlmutt eingelegt",
+    "gruppen": [
+     "organisch",
+     "holz"
+    ]
+   },
+   {
+    "text": "Feinschmiedearbeit, dünn ausgeschlagen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "aus Ebenholz gedrechselt",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Ornament aus Messingblech",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "verschraubt mit Messingstift",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Lederkern, mehrfach beschichtet",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "auf dem Handwebstuhl gewebt",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "Stoff gefärbt mit Krapp",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "mit Goldfaden bestickt",
+    "gruppen": [
+     "textil",
+     "metall"
+    ]
+   },
+   {
+    "text": "Schuppenpanzer aus Eisenplättchen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "aus Fundstücken zusammengesetzt",
+    "gruppen": []
+   },
+   {
+    "text": "aus Resten einer Truhe",
+    "gruppen": []
+   },
+   {
+    "text": "aus Glockenbronze gegossen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Klinge mit Wellenschliff",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Gravur mit feiner Spitze",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Tiegelstahl, zweifach gefaltet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Hohlschliff für Leichtigkeit",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Ahornholz, dünn furniert",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Zierfaden aus Seide verwoben",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "mit Silber und Gold eingelegt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Meisterstück, Zunftsiegel eingeprägt",
+    "gruppen": []
+   },
+   {
+    "text": "im Stil der Hofschmiede",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Mondsymbol handgeschnitzt",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Elfenbeinbeschläge, sehr fein",
+    "gruppen": [
+     "organisch"
+    ]
+   },
+   {
+    "text": "aus Schiffsbauholz gedreht",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "im Salzbad gehärtet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Leder aus einem Stück",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "aus Pergament gefalzt",
+    "gruppen": [
+     "papier"
+    ]
+   },
+   {
+    "text": "Damaszenermuster im Stahl",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Edelholz, mit Harz versiegelt",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Muster gleichmäßig verflochten",
+    "gruppen": [
+     "textil",
+     "leder",
+     "holz"
+    ]
+   },
+   {
+    "text": "Goldschmiedearbeit, Fassung gelötet",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Schutzrunen eingeritzt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "nach alter Zunftformel geschmiedet",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "handgefertigt, Fuge kaum sichtbar",
+    "gruppen": []
+   },
+   {
+    "text": "Schmiedekunst, perfekt ausgewogen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "tiefschwarzer Lack, spiegelnd",
+    "gruppen": [
+     "holz",
+     "metall",
+     "leder"
+    ]
+   },
+   {
+    "text": "mikroskopisch genaue Naht",
+    "gruppen": [
+     "textil",
+     "leder"
+    ]
+   },
+   {
+    "text": "meisterhaft gedrechselt, glatt",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Meisterwerk der Zunft",
+    "gruppen": []
+   },
+   {
+    "text": "Ein einziger Guss, nahtlos",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "dreimal aufgekocht",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "in Wachs versiegelt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Honig gesüßt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "im Tonfläschchen abgefüllt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "kalt angesetzt, drei Nächte gezogen",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "über Kiefernrauch getrocknet",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Salz konserviert",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "in Eichenfass gelagert",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Kräutern gezogen, grün",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "destilliert im Kupferkessel",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "aus Wurzeln ausgekocht",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "in Lehmtiegel gebrannt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Wein verdünnt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Essig angesetzt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "im Mörser fein zerrieben",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "durch Leinentuch gefiltert",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "bei Vollmond gesammelt, gesegnet",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "mit Schwefel geräuchert",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "in Ziegenmilch eingerührt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "in Kork verschlossen, verpicht",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "zahm abgerichtet",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "gut gezäumt, Sattel gewöhnt",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "vom Hof aufgezogen",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "Brandzeichen am Schenkel",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "früh an Geschirr gewöhnt",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "gut beschlagen, Hufe frisch",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "im Gespann eingefahren",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "auf Wachsamkeit abgerichtet",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "auf Last dressiert",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "Wildfang, mühsam gezähmt",
+    "gruppen": [
+     "tier"
+    ]
+   }
   ],
   "zustand": [
-   "zerfressen, kaum noch brauchbar",
-   "durchgerostet, mit Löchern",
-   "zerbrochen und lose geklebt",
-   "Schimmel im Gefüge",
-   "verkohlt an einer Seite",
-   "Fäulnis am Rand",
-   "von Motten zerfressen",
-   "Riss quer durch die Mitte",
-   "stark verbeult, verzogen",
-   "Stockflecken, klamm und modrig",
-   "Dreck tief in den Fugen",
-   "ausgefranst, halb abgerissen",
-   "Griff fehlt, nur Stumpf übrig",
-   "verbogen, nicht mehr gerade",
-   "Blutspuren, nie gereinigt",
-   "rostige Stellen am Rand",
-   "abgeschabt, Farbe fleckig",
-   "Scharten an der Schneide",
-   "Beule in der Flanke",
-   "notdürftig geflickt",
-   "Naht an einer Stelle gelöst",
-   "nach Rauch riechend",
-   "Lehm in den Ritzen",
-   "leicht ausgeblichen, Sonnenseite",
-   "speckig vom langen Gebrauch",
-   "Kratzer, aber dicht",
-   "mit Schnur neu verbunden",
-   "Holz steif und trocken",
-   "Leder brüchig an den Kanten",
-   "ölig glänzend, aber schmutzig",
-   "Staub in jeder Falte",
-   "Schweißspuren am Griff",
-   "Schmutzrand, Gebrauchsspuren",
-   "Moosgeruch, feucht gewesen",
-   "Gebrauchsspuren an der Griffmulde",
-   "Ketten lose, leicht klappernd",
-   "verdreckt, abgewischt, nicht geputzt",
-   "Harz ist klebrig geworden",
-   "Fasern aufgeraut",
-   "Patina ungleichmäßig, fleckig",
-   "Schrammen am Beschlag",
-   "Rost im Gelenk, schwergängig",
-   "Kante angeschlagen, splittert",
-   "grob abgewischt, Schlieren bleiben",
-   "weich vom vielen Tragen",
-   "Nagelspuren in der Oberfläche",
-   "ausgebessert mit fremdem Stoff",
-   "Brandmal auf einer Seite",
-   "Schimmelränder, beim Reinigen mühsam",
-   "geschwärzt vom Ruß der Esse",
-   "Wachs bröckelt ab",
-   "Salzkruste, dunkle Ränder",
-   "Mäusespuren am Saum",
-   "ungleicher Glanz, halb poliert",
-   "Einschläge von Steinen",
-   "verwaschen, Farbe fast weg",
-   "Streifen von Salzwasser",
-   "zu eng, Naht spannt",
-   "Schweißkante innen rostig",
-   "blass und ausgewaschen",
-   "mit Pech nachgeschmiert",
-   "Klammern locker, wackelt",
-   "Rauchfahne im Lack",
-   "Lederriemen sitzt schief",
-   "Stoff dünn an den Ellbogen",
-   "mit Schlamm verkrustet, gereinigt",
-   "zerkratzt, mit Ritzen übersät",
-   "dumpf, nicht mehr gerieben",
-   "Scharnier knirscht",
-   "Spuren von Ölhaut, ranzig",
-   "gute Substanz, eine Macke",
-   "kaum benutzt, aber vergilbt",
-   "sauber gewaschen, leicht verfärbt",
-   "fest, nur kleine Druckstellen",
-   "Reste von altem Anstrich",
-   "eine Lage Lack, blasig",
-   "Naht frisch nachgezogen",
-   "geölt, aber schon leicht stumpf",
-   "fast neu, nur kleine Schrammen",
-   "gleichmäßig gebraucht, ehrlich",
-   "gewachst, glänzt im Licht",
-   "frisch geflickt, Fleck sichtbar",
-   "sauber, nur Staub im Schatten",
-   "solide, schwach nachgedunkelt",
-   "Griff neu umwickelt, sauber",
-   "frisch geölt, duftet nach Wachs",
-   "blank poliert, spiegelt",
-   "makellos, keine Spur von Gebrauch",
-   "Schutzlack, glasklar",
-   "neu gemacht, unbenutzt",
-   "Kanten fein geschliffen",
-   "Lederpflege mit Bienenwachs",
-   "Schmuck eingelegt, nie getragen",
-   "Patina gleichmäßig, edel",
-   "Bergkristall-Glanz, rein",
-   "gesegnet, nach Weihrauch riechend",
-   "mit Silberfaden ausgebessert, kunstvoll",
-   "nach Kräuterrauch duftend",
-   "Farbe tief, wie frisch lackiert",
-   "mit Runen gezeichnet, nie berührt"
+   {
+    "text": "zerfressen, kaum noch brauchbar",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "durchgerostet, mit Löchern",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "zerbrochen und lose geklebt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Schimmel im Gefüge",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "verkohlt an einer Seite",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Fäulnis am Rand",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "von Motten zerfressen",
+    "gruppen": [
+     "leder",
+     "textil",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Riss quer durch die Mitte",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "stein_glas",
+     "papier"
+    ]
+   },
+   {
+    "text": "stark verbeult, verzogen",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Stockflecken, klamm und modrig",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Dreck tief in den Fugen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "ausgefranst, halb abgerissen",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Griff fehlt, nur Stumpf übrig",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "verbogen, nicht mehr gerade",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Blutspuren, nie gereinigt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "rostige Stellen am Rand",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "abgeschabt, Farbe fleckig",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "Scharten an der Schneide",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Beule in der Flanke",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "notdürftig geflickt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Naht an einer Stelle gelöst",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "nach Rauch riechend",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Lehm in den Ritzen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "leicht ausgeblichen, Sonnenseite",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "speckig vom langen Gebrauch",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Kratzer, aber dicht",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "mit Schnur neu verbunden",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Holz steif und trocken",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Leder brüchig an den Kanten",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "ölig glänzend, aber schmutzig",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Staub in jeder Falte",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Schweißspuren am Griff",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "Schmutzrand, Gebrauchsspuren",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Moosgeruch, feucht gewesen",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Gebrauchsspuren an der Griffmulde",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Ketten lose, leicht klappernd",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "verdreckt, abgewischt, nicht geputzt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Harz ist klebrig geworden",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Fasern aufgeraut",
+    "gruppen": [
+     "textil",
+     "leder",
+     "holz"
+    ]
+   },
+   {
+    "text": "Patina ungleichmäßig, fleckig",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Schrammen am Beschlag",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Rost im Gelenk, schwergängig",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Kante angeschlagen, splittert",
+    "gruppen": [
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "grob abgewischt, Schlieren bleiben",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "weich vom vielen Tragen",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Nagelspuren in der Oberfläche",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "ausgebessert mit fremdem Stoff",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Brandmal auf einer Seite",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Schimmelränder, beim Reinigen mühsam",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "geschwärzt vom Ruß der Esse",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Wachs bröckelt ab",
+    "gruppen": [
+     "papier",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Salzkruste, dunkle Ränder",
+    "gruppen": [
+     "metall",
+     "stein_glas",
+     "holz",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Mäusespuren am Saum",
+    "gruppen": [
+     "leder",
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "ungleicher Glanz, halb poliert",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Einschläge von Steinen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "verwaschen, Farbe fast weg",
+    "gruppen": [
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "Streifen von Salzwasser",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "zu eng, Naht spannt",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Schweißkante innen rostig",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "blass und ausgewaschen",
+    "gruppen": [
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "mit Pech nachgeschmiert",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Klammern locker, wackelt",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Rauchfahne im Lack",
+    "gruppen": [
+     "holz",
+     "metall",
+     "leder"
+    ]
+   },
+   {
+    "text": "Lederriemen sitzt schief",
+    "gruppen": [
+     "leder",
+     "holz"
+    ]
+   },
+   {
+    "text": "Stoff dünn an den Ellbogen",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "mit Schlamm verkrustet, gereinigt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "zerkratzt, mit Ritzen übersät",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "dumpf, nicht mehr gerieben",
+    "gruppen": [
+     "metall",
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Scharnier knirscht",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Spuren von Ölhaut, ranzig",
+    "gruppen": [
+     "holz",
+     "leder",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "gute Substanz, eine Macke",
+    "gruppen": []
+   },
+   {
+    "text": "kaum benutzt, aber vergilbt",
+    "gruppen": [
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "sauber gewaschen, leicht verfärbt",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "fest, nur kleine Druckstellen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Reste von altem Anstrich",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "eine Lage Lack, blasig",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Naht frisch nachgezogen",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "geölt, aber schon leicht stumpf",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "fast neu, nur kleine Schrammen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "gleichmäßig gebraucht, ehrlich",
+    "gruppen": []
+   },
+   {
+    "text": "gewachst, glänzt im Licht",
+    "gruppen": [
+     "holz",
+     "leder",
+     "papier"
+    ]
+   },
+   {
+    "text": "frisch geflickt, Fleck sichtbar",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "sauber, nur Staub im Schatten",
+    "gruppen": []
+   },
+   {
+    "text": "solide, schwach nachgedunkelt",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "textil",
+     "stein_glas",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Griff neu umwickelt, sauber",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "frisch geölt, duftet nach Wachs",
+    "gruppen": [
+     "holz",
+     "leder"
+    ]
+   },
+   {
+    "text": "blank poliert, spiegelt",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "makellos, keine Spur von Gebrauch",
+    "gruppen": []
+   },
+   {
+    "text": "Schutzlack, glasklar",
+    "gruppen": [
+     "holz",
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "neu gemacht, unbenutzt",
+    "gruppen": []
+   },
+   {
+    "text": "Kanten fein geschliffen",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Lederpflege mit Bienenwachs",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "Schmuck eingelegt, nie getragen",
+    "gruppen": [
+     "metall",
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Patina gleichmäßig, edel",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Bergkristall-Glanz, rein",
+    "gruppen": [
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "gesegnet, nach Weihrauch riechend",
+    "gruppen": []
+   },
+   {
+    "text": "mit Silberfaden ausgebessert, kunstvoll",
+    "gruppen": [
+     "textil",
+     "metall"
+    ]
+   },
+   {
+    "text": "nach Kräuterrauch duftend",
+    "gruppen": []
+   },
+   {
+    "text": "Farbe tief, wie frisch lackiert",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "mit Runen gezeichnet, nie berührt",
+    "gruppen": []
+   },
+   {
+    "text": "trüb",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "frisch gebraut",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "abgestanden",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "klar wie Bergwasser",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Bodensatz am Grund, ausgefallen",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "schal geworden",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "leicht gegoren, prickelt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "bräunlich verfärbt",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Schimmel auf der Oberfläche",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "ölig, Schlieren obenauf",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "noch lauwarm vom Kessel",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "ranzig, riecht säuerlich",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Kristalle am Boden",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "geronnen, klumpig",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "kaum verdünnt, stark",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "gut gepflegt, glänzendes Fell",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "narbig an der Flanke",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "stur, bockt beim Ziehen",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "lahm auf dem linken Vorderbein",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "abgemagert, Rippen zählbar",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "ausgeruht, munter",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "räudig, kahle Stellen",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "gedrungen, kräftig gebaut",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "Hufe ausgeschlagen",
+    "gruppen": [
+     "tier"
+    ]
+   },
+   {
+    "text": "ängstlich, schreckhaft",
+    "gruppen": [
+     "tier"
+    ]
+   }
   ],
   "herkunft": [
    "aus dem Nachlass eines Büttels",
@@ -430,106 +2019,742 @@
    "Rest einer Karawane aus dem Osten"
   ],
   "besonderheit": [
-   "eingeritzter Name am Griff",
-   "riecht nach Lavendel",
-   "Griff liegt gut; +10 einmal pro Szene bei Verhör",
-   "ein Haar im Griff",
-   "Rostflecken wie ein Fingerabdruck",
-   "Klinge schartig; −10 bei Verhandlung",
-   "Wachsspuren an der Kante",
-   "Kratzer in Form eines Kreuzes",
-   "tief eingebrannte Initialen",
-   "Schloss knackt leicht; +10 einmal pro Szene bei Schlössern",
-   "klebt leicht an den Fingern",
-   "warm, egal wie lange gelegen",
-   "Dochtholz trocken; +10 einmal pro Szene bei Nebel",
-   "ein Stück Kerzendocht verklemmt",
-   "Lederriemen mit Brandmal",
-   "trägt Moorgeruch in den Fugen",
-   "Knoten lockert sich; −10 bei Sturm",
-   "Zahnspuren am Ende",
-   "Sand rieselt aus einer Ritze",
-   "Rost hat den Namen verschluckt",
-   "Lederriemen geschmeidig; +10 einmal pro Szene bei Flucht",
-   "kleine Glocke, leicht verbogen",
-   "Kinderzeichnung eingeritzt, verwischt",
-   "Geruch nach Schwefel; −10 bei Priestern",
-   "Wachs eines Siegels noch sichtbar",
-   "ein verblasstes Wappen aufgemalt",
-   "stinkt nach Teer",
-   "Naht hält dicht; +10 einmal pro Szene bei Kälte",
-   "Bienenwachs in den Schnitzungen",
-   "Mäusenest in der Öffnung",
-   "Stoff zieht Fliegen an; −10 bei Totenwache",
-   "eine Feder klemmt im Scharnier",
-   "Datum eingeritzt, nicht lesbar",
-   "ein Stück Rosenkranz verknotet",
-   "Stiefel fest besohlt; +10 einmal pro Szene bei Glätte",
-   "Fettflecken von Hammelfett",
-   "winzige Runen am Rand",
-   "Wachs klebt an Fingern; −10 bei Kälte",
-   "kalter Stein im Kern",
-   "Zettel mit Gebet eingerollt",
-   "Tropfen getrocknetes Blut",
-   "Ring liegt eng; +10 einmal pro Szene bei Ketten",
-   "Ärmelstoff noch eingeklemmt",
-   "klingt hohl, wenn man klopft",
-   "Hebel quietscht laut; −10 bei Schleichen",
-   "Mehlstaub in jeder Naht",
-   "schwarzer Ruß an den Ecken",
-   "Schimmel in einer Ritze",
-   "Tuch wasserdicht; +10 einmal pro Szene bei Regen",
-   "Schnittspuren eines Metzgers",
-   "Muschelschalen in den Fugen",
-   "Griff rutscht; −10 bei Hitze",
-   "hat einen Zweig Thymian im Futter",
-   "eine Schnur aus Frauenhaar",
-   "Abdruck einer Hand im Holz",
-   "Brief mit Siegel; +10 einmal pro Szene bei Zoll",
-   "zerkratzte Zahlen auf der Rückseite",
-   "riecht nach frischem Harz",
-   "Kette rasselt; −10 bei Wache",
-   "weicher Schimmer bei Kerzenlicht",
-   "Sprung im Glas, der leise pfeift",
-   "ein Stück Brot im Hohlraum",
-   "Schaft gut gewuchtet; +10 einmal pro Szene bei Wurf",
-   "trägt einen Rußfleck wie ein Mal",
-   "Gravur von Kinderhand",
-   "Schwielen vom Vorbesitzer",
-   "Sporn klirrt; −10 bei Hinterhalt",
-   "riecht immer nach Regen",
-   "Honigklebrigkeit an der Fuge",
-   "Flasche bleibt dicht; +10 einmal pro Szene bei Gift",
-   "kleiner Stein in der Schlaufe",
-   "Wurmloch mit Sägemehl gefüllt",
-   "verborgene Kerbe am Boden",
-   "Holzgriff warm; +10 einmal pro Szene bei Frost",
-   "ein Name mit Blei ausgefüllt",
-   "blasse Sonnenflecken auf einer Seite",
-   "Sohle löst sich; −10 bei Morast",
-   "Kaufzettel mit Ziffern, verknittert",
-   "Lack blättert in Flocken ab",
-   "Haken sitzt fest; +10 einmal pro Szene bei Seilen",
-   "Mäusekopf-Knochen in der Fuge",
-   "leichter Geruch nach Essig",
-   "Ledertasche stinkt; −10 bei Gasthaus",
-   "winziges Hufeisen eingelegt",
-   "Kreide-Strich quer über das Holz",
-   "Band fest gewebt; +10 einmal pro Szene bei Lasten",
-   "Harztropfen an der Oberfläche",
-   "Löchlein, aus denen Asche rieselt",
-   "Schnalle klemmt; −10 bei Eile",
-   "Ringelmuster wie ein Baumstamm",
-   "zwei Kerben, gefolgt von einer dritten",
-   "Kompass zittert kaum; +10 einmal pro Szene bei Dunkelheit",
-   "Lederschnur gegen die Fäulnis gewickelt",
-   "Splitter aus Weidenholz steckt tief",
-   "Stoff schluckt Licht; +10 einmal pro Szene bei Schatten",
-   "Tabakkrümel in der Tasche",
-   "hält Gerüche von Weihrauch fest",
-   "Pulver klebt; −10 bei Wind",
-   "Nagel schief eingeschlagen",
-   "Garn fest verknotet; +10 einmal pro Szene bei Reparatur"
+   {
+    "text": "eingeritzter Name am Griff",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "riecht nach Lavendel",
+    "gruppen": []
+   },
+   {
+    "text": "Griff liegt gut; +10 einmal pro Szene bei Verhör",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "ein Haar im Griff",
+    "gruppen": []
+   },
+   {
+    "text": "Rostflecken wie ein Fingerabdruck",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Klinge schartig; −10 bei Verhandlung",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Wachsspuren an der Kante",
+    "gruppen": [
+     "holz",
+     "leder",
+     "papier",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Kratzer in Form eines Kreuzes",
+    "gruppen": []
+   },
+   {
+    "text": "tief eingebrannte Initialen",
+    "gruppen": [
+     "holz",
+     "leder",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Schloss knackt leicht; +10 einmal pro Szene bei Schlössern",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "klebt leicht an den Fingern",
+    "gruppen": []
+   },
+   {
+    "text": "warm, egal wie lange gelegen",
+    "gruppen": []
+   },
+   {
+    "text": "Dochtholz trocken; +10 einmal pro Szene bei Nebel",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "ein Stück Kerzendocht verklemmt",
+    "gruppen": [
+     "textil",
+     "papier",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Lederriemen mit Brandmal",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "trägt Moorgeruch in den Fugen",
+    "gruppen": []
+   },
+   {
+    "text": "Knoten lockert sich; −10 bei Sturm",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Zahnspuren am Ende",
+    "gruppen": [
+     "holz",
+     "leder",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Sand rieselt aus einer Ritze",
+    "gruppen": [
+     "holz",
+     "stein_glas",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Rost hat den Namen verschluckt",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Lederriemen geschmeidig; +10 einmal pro Szene bei Flucht",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "kleine Glocke, leicht verbogen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Kinderzeichnung eingeritzt, verwischt",
+    "gruppen": [
+     "holz",
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Geruch nach Schwefel; −10 bei Priestern",
+    "gruppen": []
+   },
+   {
+    "text": "Wachs eines Siegels noch sichtbar",
+    "gruppen": [
+     "papier"
+    ]
+   },
+   {
+    "text": "ein verblasstes Wappen aufgemalt",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "stinkt nach Teer",
+    "gruppen": []
+   },
+   {
+    "text": "Naht hält dicht; +10 einmal pro Szene bei Kälte",
+    "gruppen": [
+     "leder",
+     "textil"
+    ]
+   },
+   {
+    "text": "Bienenwachs in den Schnitzungen",
+    "gruppen": [
+     "holz",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Mäusenest in der Öffnung",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "Stoff zieht Fliegen an; −10 bei Totenwache",
+    "gruppen": [
+     "textil",
+     "papier",
+     "organisch"
+    ]
+   },
+   {
+    "text": "eine Feder klemmt im Scharnier",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Datum eingeritzt, nicht lesbar",
+    "gruppen": [
+     "holz",
+     "metall",
+     "stein_glas",
+     "papier"
+    ]
+   },
+   {
+    "text": "ein Stück Rosenkranz verknotet",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "Stiefel fest besohlt; +10 einmal pro Szene bei Glätte",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "Fettflecken von Hammelfett",
+    "gruppen": [
+     "leder",
+     "textil",
+     "organisch"
+    ]
+   },
+   {
+    "text": "winzige Runen am Rand",
+    "gruppen": []
+   },
+   {
+    "text": "Wachs klebt an Fingern; −10 bei Kälte",
+    "gruppen": [
+     "holz",
+     "leder",
+     "papier",
+     "zutat"
+    ]
+   },
+   {
+    "text": "kalter Stein im Kern",
+    "gruppen": [
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Zettel mit Gebet eingerollt",
+    "gruppen": [
+     "papier"
+    ]
+   },
+   {
+    "text": "Tropfen getrocknetes Blut",
+    "gruppen": []
+   },
+   {
+    "text": "Ring liegt eng; +10 einmal pro Szene bei Ketten",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Ärmelstoff noch eingeklemmt",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "klingt hohl, wenn man klopft",
+    "gruppen": [
+     "holz",
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Hebel quietscht laut; −10 bei Schleichen",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Mehlstaub in jeder Naht",
+    "gruppen": []
+   },
+   {
+    "text": "schwarzer Ruß an den Ecken",
+    "gruppen": []
+   },
+   {
+    "text": "Schimmel in einer Ritze",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Tuch wasserdicht; +10 einmal pro Szene bei Regen",
+    "gruppen": [
+     "textil",
+     "leder"
+    ]
+   },
+   {
+    "text": "Schnittspuren eines Metzgers",
+    "gruppen": []
+   },
+   {
+    "text": "Muschelschalen in den Fugen",
+    "gruppen": [
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Griff rutscht; −10 bei Hitze",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "hat einen Zweig Thymian im Futter",
+    "gruppen": [
+     "textil",
+     "zutat"
+    ]
+   },
+   {
+    "text": "eine Schnur aus Frauenhaar",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "Abdruck einer Hand im Holz",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "Brief mit Siegel; +10 einmal pro Szene bei Zoll",
+    "gruppen": [
+     "papier"
+    ]
+   },
+   {
+    "text": "zerkratzte Zahlen auf der Rückseite",
+    "gruppen": [
+     "holz",
+     "metall",
+     "stein_glas",
+     "papier"
+    ]
+   },
+   {
+    "text": "riecht nach frischem Harz",
+    "gruppen": [
+     "holz",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Kette rasselt; −10 bei Wache",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "weicher Schimmer bei Kerzenlicht",
+    "gruppen": []
+   },
+   {
+    "text": "Sprung im Glas, der leise pfeift",
+    "gruppen": [
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "ein Stück Brot im Hohlraum",
+    "gruppen": [
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Schaft gut gewuchtet; +10 einmal pro Szene bei Wurf",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "trägt einen Rußfleck wie ein Mal",
+    "gruppen": []
+   },
+   {
+    "text": "Gravur von Kinderhand",
+    "gruppen": [
+     "metall",
+     "holz",
+     "leder",
+     "stein_glas",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Schwielen vom Vorbesitzer",
+    "gruppen": [
+     "leder",
+     "organisch",
+     "tier"
+    ]
+   },
+   {
+    "text": "Sporn klirrt; −10 bei Hinterhalt",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "riecht immer nach Regen",
+    "gruppen": []
+   },
+   {
+    "text": "Honigklebrigkeit an der Fuge",
+    "gruppen": [
+     "holz",
+     "organisch",
+     "zutat"
+    ]
+   },
+   {
+    "text": "Flasche bleibt dicht; +10 einmal pro Szene bei Gift",
+    "gruppen": [
+     "stein_glas",
+     "zutat"
+    ]
+   },
+   {
+    "text": "kleiner Stein in der Schlaufe",
+    "gruppen": [
+     "metall",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Wurmloch mit Sägemehl gefüllt",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "verborgene Kerbe am Boden",
+    "gruppen": [
+     "metall",
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Holzgriff warm; +10 einmal pro Szene bei Frost",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "ein Name mit Blei ausgefüllt",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "blasse Sonnenflecken auf einer Seite",
+    "gruppen": [
+     "holz",
+     "leder",
+     "textil",
+     "papier"
+    ]
+   },
+   {
+    "text": "Sohle löst sich; −10 bei Morast",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "Kaufzettel mit Ziffern, verknittert",
+    "gruppen": [
+     "papier"
+    ]
+   },
+   {
+    "text": "Lack blättert in Flocken ab",
+    "gruppen": [
+     "holz",
+     "metall",
+     "leder"
+    ]
+   },
+   {
+    "text": "Haken sitzt fest; +10 einmal pro Szene bei Seilen",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Mäusekopf-Knochen in der Fuge",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "leichter Geruch nach Essig",
+    "gruppen": []
+   },
+   {
+    "text": "Ledertasche stinkt; −10 bei Gasthaus",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "winziges Hufeisen eingelegt",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Kreide-Strich quer über das Holz",
+    "gruppen": [
+     "holz",
+     "papier"
+    ]
+   },
+   {
+    "text": "Band fest gewebt; +10 einmal pro Szene bei Lasten",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "Harztropfen an der Oberfläche",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Löchlein, aus denen Asche rieselt",
+    "gruppen": [
+     "holz",
+     "stein_glas"
+    ]
+   },
+   {
+    "text": "Schnalle klemmt; −10 bei Eile",
+    "gruppen": [
+     "metall",
+     "leder"
+    ]
+   },
+   {
+    "text": "Ringelmuster wie ein Baumstamm",
+    "gruppen": [
+     "holz"
+    ]
+   },
+   {
+    "text": "zwei Kerben, gefolgt von einer dritten",
+    "gruppen": [
+     "holz",
+     "metall"
+    ]
+   },
+   {
+    "text": "Kompass zittert kaum; +10 einmal pro Szene bei Dunkelheit",
+    "gruppen": [
+     "metall"
+    ]
+   },
+   {
+    "text": "Lederschnur gegen die Fäulnis gewickelt",
+    "gruppen": [
+     "leder"
+    ]
+   },
+   {
+    "text": "Splitter aus Weidenholz steckt tief",
+    "gruppen": [
+     "holz",
+     "organisch"
+    ]
+   },
+   {
+    "text": "Stoff schluckt Licht; +10 einmal pro Szene bei Schatten",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "Tabakkrümel in der Tasche",
+    "gruppen": [
+     "leder",
+     "textil",
+     "zutat"
+    ]
+   },
+   {
+    "text": "hält Gerüche von Weihrauch fest",
+    "gruppen": []
+   },
+   {
+    "text": "Pulver klebt; −10 bei Wind",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Nagel schief eingeschlagen",
+    "gruppen": [
+     "metall",
+     "holz"
+    ]
+   },
+   {
+    "text": "Garn fest verknotet; +10 einmal pro Szene bei Reparatur",
+    "gruppen": [
+     "textil"
+    ]
+   },
+   {
+    "text": "bitter am Gaumen, Nachgeschmack lang",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "zieht die Zunge zusammen",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "riecht nach Bittermandel",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "hinterlässt goldene Schlieren am Glas",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Kräuter würzig, Mund bleibt kühl; +10 einmal pro Szene bei Hitze",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "scharf wie Pfeffer, reizt die Augen; −10 bei Verhör",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "dicklich, klebt am Becher",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Flasche bleibt kalt, egal wo gelagert",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Korken mit Brandmal",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "schmeckt nach nassem Stein",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "Kraut schwimmt obenauf; +10 einmal pro Szene bei Heilung",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "schwer in der Hand, Glas stark",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "weckt Erinnerung an Sommerwiese",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "zischt beim Öffnen; −10 bei Stille",
+    "gruppen": [
+     "zutat"
+    ]
+   },
+   {
+    "text": "klumpt im Sud; +10 einmal pro Szene bei Giftproben",
+    "gruppen": [
+     "zutat"
+    ]
+   }
   ]
  }
 }

@@ -19,7 +19,10 @@
      "schaden": 2,
      "effekt": "versteckbar",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Messer / Dolch",
@@ -28,7 +31,11 @@
      "kern": "Messer",
      "schaden": 2,
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "metall",
+      "organisch"
+     ]
     },
     {
      "name": "Knüppel / Keule",
@@ -37,7 +44,10 @@
      "kern": "Knüppel",
      "schaden": 2,
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Wurfmesser (Satz)",
@@ -46,7 +56,10 @@
      "kern": "Wurfmesser",
      "schaden": 2,
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Speer",
@@ -55,7 +68,11 @@
      "kern": "Speer",
      "schaden": 3,
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Schwert",
@@ -64,7 +81,10 @@
      "kern": "Schwert",
      "schaden": 3,
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Axt / Streitbeil",
@@ -73,7 +93,11 @@
      "kern": "Axt",
      "schaden": 3,
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Bogen",
@@ -82,7 +106,10 @@
      "kern": "Bogen",
      "schaden": 3,
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Armbrust",
@@ -91,7 +118,11 @@
      "kern": "Armbrust",
      "schaden": 3,
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Feuerwaffe (Pistole / Arkebuse)",
@@ -100,7 +131,11 @@
      "kern": "Feuerwaffe",
      "schaden": 4,
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Sichel",
@@ -109,7 +144,10 @@
      "kern": "Sichel",
      "schaden": 1,
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Dreschflegel",
@@ -118,7 +156,11 @@
      "kern": "Dreschflegel",
      "schaden": 2,
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "holz",
+      "leder"
+     ]
     },
     {
      "name": "Mistgabel",
@@ -127,7 +169,11 @@
      "kern": "Mistgabel",
      "schaden": 2,
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Wanderstab",
@@ -136,7 +182,10 @@
      "kern": "Wanderstab",
      "schaden": 1,
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Hammer / Schlägel",
@@ -145,7 +194,11 @@
      "kern": "Hammer",
      "schaden": 2,
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Schleuder",
@@ -155,7 +208,11 @@
      "schaden": 1,
      "effekt": "Fernwaffe, braucht Steine",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Knotenstock",
@@ -164,7 +221,10 @@
      "kern": "Knotenstock",
      "schaden": 1,
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Ahle",
@@ -173,7 +233,11 @@
      "kern": "Ahle",
      "schaden": 1,
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "metall",
+      "organisch"
+     ]
     },
     {
      "name": "Haumesser",
@@ -182,7 +246,10 @@
      "kern": "Haumesser",
      "schaden": 2,
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Peitsche",
@@ -191,7 +258,11 @@
      "kern": "Peitsche",
      "schaden": 1,
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Jagdspieß",
@@ -200,7 +271,11 @@
      "kern": "Jagdspieß",
      "schaden": 2,
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Hellebarde",
@@ -209,7 +284,11 @@
      "kern": "Hellebarde",
      "schaden": 3,
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Kriegshammer",
@@ -218,7 +297,11 @@
      "kern": "Kriegshammer",
      "schaden": 3,
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Streitkolben",
@@ -227,7 +310,11 @@
      "kern": "Streitkolben",
      "schaden": 3,
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Morgenstern",
@@ -236,7 +323,11 @@
      "kern": "Morgenstern",
      "schaden": 3,
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Kurzschwert",
@@ -245,7 +336,10 @@
      "kern": "Kurzschwert",
      "schaden": 2,
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Säbel",
@@ -254,7 +348,10 @@
      "kern": "Säbel",
      "schaden": 3,
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Degen (Stoßklinge)",
@@ -263,7 +360,10 @@
      "kern": "Degen",
      "schaden": 2,
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Langbogen",
@@ -273,7 +373,10 @@
      "schaden": 3,
      "effekt": "Fernwaffe, braucht Pfeile",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Kurzbogen",
@@ -283,7 +386,10 @@
      "schaden": 2,
      "effekt": "Fernwaffe, braucht Pfeile",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Wurfaxt",
@@ -292,7 +398,11 @@
      "kern": "Wurfaxt",
      "schaden": 2,
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Sense",
@@ -301,7 +411,11 @@
      "kern": "Sense",
      "schaden": 2,
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Kriegsflegel",
@@ -310,7 +424,12 @@
      "kern": "Kriegsflegel",
      "schaden": 3,
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "holz",
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Glefe",
@@ -319,7 +438,11 @@
      "kern": "Glefe",
      "schaden": 3,
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Breitmesser",
@@ -328,7 +451,10 @@
      "kern": "Breitmesser",
      "schaden": 2,
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Partisane",
@@ -337,7 +463,11 @@
      "kern": "Partisane",
      "schaden": 2,
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Reiterlanze",
@@ -346,7 +476,11 @@
      "kern": "Reiterlanze",
      "schaden": 3,
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Schlachtbeil",
@@ -355,7 +489,11 @@
      "kern": "Schlachtbeil",
      "schaden": 2,
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Bastardschwert",
@@ -364,7 +502,10 @@
      "kern": "Bastardschwert",
      "schaden": 3,
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Kriegsgabel",
@@ -373,7 +514,11 @@
      "kern": "Kriegsgabel",
      "schaden": 2,
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Hakenschwert",
@@ -382,7 +527,10 @@
      "kern": "Hakenschwert",
      "schaden": 3,
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Zweihänder",
@@ -391,7 +539,10 @@
      "kern": "Zweihänder",
      "schaden": 3,
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Krummsäbel",
@@ -400,7 +551,10 @@
      "kern": "Krummsäbel",
      "schaden": 3,
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Pilum (Wurfspieß)",
@@ -409,7 +563,11 @@
      "kern": "Pilum",
      "schaden": 2,
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Handbüchse",
@@ -419,7 +577,11 @@
      "schaden": 3,
      "effekt": "Fernwaffe, langsam nachzuladen",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Blasrohr",
@@ -429,7 +591,10 @@
      "schaden": 1,
      "effekt": "Fernwaffe, leise",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Fischspieß",
@@ -438,7 +603,11 @@
      "kern": "Fischspieß",
      "schaden": 2,
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Rabenschnabel",
@@ -447,7 +616,11 @@
      "kern": "Rabenschnabel",
      "schaden": 2,
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Eisenkralle",
@@ -456,7 +629,10 @@
      "kern": "Eisenkralle",
      "schaden": 2,
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Sichelschwert",
@@ -465,7 +641,10 @@
      "kern": "Sichelschwert",
      "schaden": 3,
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "metall"
+     ]
     }
    ]
   },
@@ -486,7 +665,10 @@
      "ruestung": 1,
      "preis_h": 80,
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Gepolsterter Waffenrock",
@@ -495,7 +677,10 @@
      "ruestung": 1,
      "preis_h": 80,
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Beschlagenes Leder",
@@ -504,7 +689,11 @@
      "ruestung": 1,
      "preis_h": 80,
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "leder",
+      "metall"
+     ]
     },
     {
      "name": "Kettenhemd",
@@ -513,7 +702,10 @@
      "ruestung": 2,
      "preis_h": 160,
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Schuppenpanzer",
@@ -522,7 +714,11 @@
      "ruestung": 2,
      "preis_h": 160,
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Holzschild",
@@ -532,7 +728,10 @@
      "effekt": "+10 auf die Verteidigung (vergleichende Kampf-Probe)",
      "preis_h": 160,
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Helm",
@@ -542,7 +741,10 @@
      "effekt": "+1 Rüstung nur gegen Schuss und Wurf",
      "preis_h": 40,
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Plattenpanzer",
@@ -551,7 +753,10 @@
      "ruestung": 3,
      "preis_h": 240,
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Plattenharnisch (Halbrüstung)",
@@ -560,7 +765,10 @@
      "ruestung": 3,
      "preis_h": 240,
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Brigantine (genietete Platten)",
@@ -569,7 +777,11 @@
      "ruestung": 3,
      "preis_h": 240,
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "metall",
+      "textil"
+     ]
     },
     {
      "name": "Eisenhut",
@@ -578,7 +790,10 @@
      "ruestung": 1,
      "preis_h": 60,
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Lederkappe",
@@ -588,7 +803,10 @@
      "effekt": "+10 auf Probe, wenn Regen oder Schnee von oben kommt",
      "preis_h": 20,
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Gesteppter Rock",
@@ -597,7 +815,10 @@
      "ruestung": 1,
      "preis_h": 80,
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Kettenkappe",
@@ -606,7 +827,10 @@
      "ruestung": 1,
      "preis_h": 40,
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Weidenschild",
@@ -616,7 +840,10 @@
      "effekt": "+10 auf die Verteidigung (vergleichende Kampf-Probe)",
      "preis_h": 80,
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Fäustling",
@@ -626,7 +853,11 @@
      "effekt": "+10 auf Probe, heiße Dinge anzufassen",
      "preis_h": 20,
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "leder",
+      "metall"
+     ]
     },
     {
      "name": "Beinschiene",
@@ -635,7 +866,11 @@
      "ruestung": 1,
      "preis_h": 60,
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Armschiene",
@@ -645,7 +880,11 @@
      "effekt": "+10 auf Probe, Dolchstiche am Arm abzuwehren",
      "preis_h": 40,
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Lederschurz",
@@ -655,7 +894,10 @@
      "effekt": "+10 auf Probe in Schmiede und Gerberei",
      "preis_h": 20,
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Wappenrock",
@@ -665,7 +907,10 @@
      "effekt": "+10 auf Auftreten vor Zunftleuten und Wache",
      "preis_h": 80,
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Halsberger",
@@ -674,7 +919,10 @@
      "ruestung": 2,
      "preis_h": 160,
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Brünne",
@@ -683,7 +931,11 @@
      "ruestung": 2,
      "preis_h": 160,
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "metall",
+      "textil"
+     ]
     },
     {
      "name": "Lamellenharnisch",
@@ -693,7 +945,11 @@
      "effekt": "+10 auf Probe beim Klettern und Springen",
      "preis_h": 240,
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Gugelhelm",
@@ -702,7 +958,10 @@
      "ruestung": 1,
      "preis_h": 60,
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Beckenhaube",
@@ -712,7 +971,10 @@
      "effekt": "+10 auf Probe, Hiebe von oben abzuwehren",
      "preis_h": 60,
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Topfhelm",
@@ -722,7 +984,10 @@
      "effekt": "Sehschlitz –10 auf Wahrnehmung",
      "preis_h": 80,
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Visierhelm",
@@ -732,7 +997,10 @@
      "effekt": "+10 auf Probe gegen Blendung, Staub und Rauch",
      "preis_h": 80,
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Reiterschild",
@@ -742,7 +1010,11 @@
      "effekt": "+10 auf Verteidigung im Sattel",
      "preis_h": 160,
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Pavesenschild",
@@ -752,7 +1024,11 @@
      "effekt": "Hinter ihm stehend – +10 gegen Pfeile",
      "preis_h": 240,
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Torfmantel",
@@ -762,7 +1038,10 @@
      "effekt": "+10 auf Probe, im Moor nicht einzusinken",
      "preis_h": 40,
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Teerjacke",
@@ -772,7 +1051,11 @@
      "effekt": "+10 auf Probe im Regen und an Bord",
      "preis_h": 80,
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Bergmannsschurz",
@@ -782,7 +1065,10 @@
      "effekt": "+10 auf Probe gegen Staub im Stollen",
      "preis_h": 20,
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Eisenweste",
@@ -792,7 +1078,10 @@
      "effekt": "Unter Kutte verborgen – +10 auf Probe, sie zu verbergen",
      "preis_h": 160,
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Henkersrock",
@@ -802,7 +1091,11 @@
      "effekt": "+10 auf Einschüchtern gegen Zeugen",
      "preis_h": 80,
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Waldkoller",
@@ -812,7 +1105,10 @@
      "effekt": "+10 auf Schleichen im Unterholz",
      "preis_h": 80,
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Schuppenschurz",
@@ -822,7 +1118,11 @@
      "effekt": "+10 Verteidigung gegen Hiebe im Nahkampf",
      "preis_h": 80,
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Pechhaube",
@@ -832,7 +1132,11 @@
      "effekt": "+20 auf Probe, wenn Funken oder Pech den Kopf treffen",
      "preis_h": 60,
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Kettenkragen",
@@ -842,7 +1146,10 @@
      "effekt": "+20 auf Probe, wenn ein Würger am Hals greift",
      "preis_h": 40,
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Tartsche",
@@ -852,7 +1159,11 @@
      "effekt": "+10 Verteidigung gegen Fernwaffen, wenn du dich hinter ihr verbirgst",
      "preis_h": 160,
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "holz",
+      "leder"
+     ]
     },
     {
      "name": "Beinröhren",
@@ -862,7 +1173,11 @@
      "effekt": "+20 auf Probe gegen Stolpern im Geröll",
      "preis_h": 80,
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Gotischer Harnisch",
@@ -872,7 +1187,10 @@
      "effekt": "+20 auf Probe, wenn der Gegner stumpfe Waffen führt",
      "preis_h": 400,
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Rosshautpanzer",
@@ -882,7 +1200,10 @@
      "effekt": "+10 Verteidigung gegen Pfeile",
      "preis_h": 320,
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Schildkrötenschild",
@@ -892,7 +1213,10 @@
      "effekt": "+20 auf Verteidigung gegen Wurfgeschosse",
      "preis_h": 360,
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Krokodilhautwams",
@@ -902,7 +1226,10 @@
      "effekt": "+20 auf Probe, im Wasser nicht gepackt zu werden",
      "preis_h": 320,
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Bronzebrustpanzer",
@@ -912,7 +1239,10 @@
      "effekt": "+10 Verteidigung gegen Schwerthiebe",
      "preis_h": 240,
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Walrosskoller",
@@ -922,7 +1252,11 @@
      "effekt": "+20 auf Probe gegen Kälte und Nässe auf dem Meer",
      "preis_h": 280,
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "leder",
+      "organisch"
+     ]
     },
     {
      "name": "Spitzhelm aus Damaszener Stahl",
@@ -932,7 +1266,10 @@
      "effekt": "+20 auf Probe gegen Hiebe auf den Kopf",
      "preis_h": 200,
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Bambuslamellen",
@@ -942,7 +1279,10 @@
      "effekt": "+20 auf Probe, in Hitze und Sand nicht zu ermatten",
      "preis_h": 200,
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Muschelpanzer",
@@ -952,7 +1292,10 @@
      "effekt": "+20 auf Probe, auf nassen Planken nicht zu stürzen",
      "preis_h": 200,
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Eisenmaske",
@@ -962,7 +1305,10 @@
      "effekt": "+10 darauf, unerkannt zu bleiben",
      "preis_h": 320,
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "metall"
+     ]
     }
    ]
   },
@@ -982,7 +1328,10 @@
      "genus": "n",
      "kern": "Seil",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Laterne mit Öl",
@@ -990,7 +1339,11 @@
      "genus": "f",
      "kern": "Laterne",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Feuerstahl",
@@ -998,7 +1351,10 @@
      "genus": "m",
      "kern": "Feuerstahl",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Wasserschlauch",
@@ -1006,7 +1362,10 @@
      "genus": "m",
      "kern": "Wasserschlauch",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Zelt und Decken",
@@ -1014,7 +1373,10 @@
      "genus": "n",
      "kern": "Zelt",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Heilerbeutel",
@@ -1023,7 +1385,11 @@
      "genus": "m",
      "kern": "Heilerbeutel",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Fackeln (Bündel)",
@@ -1031,7 +1397,11 @@
      "genus": "f",
      "kern": "Fackel",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Handwerkszeug (Satz)",
@@ -1040,7 +1410,11 @@
      "genus": "n",
      "kern": "Handwerkszeug",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Rucksack",
@@ -1048,7 +1422,11 @@
      "genus": "m",
      "kern": "Rucksack",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Fahrtenmesser",
@@ -1056,7 +1434,10 @@
      "genus": "n",
      "kern": "Fahrtenmesser",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Kochtopf",
@@ -1064,7 +1445,10 @@
      "genus": "m",
      "kern": "Kochtopf",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Wetzstein",
@@ -1072,7 +1456,10 @@
      "genus": "m",
      "kern": "Wetzstein",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Ölhaut",
@@ -1080,7 +1467,10 @@
      "genus": "f",
      "kern": "Ölhaut",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Kerzenbündel",
@@ -1088,7 +1478,10 @@
      "genus": "n",
      "kern": "Kerzenbündel",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Nähzeug",
@@ -1096,7 +1489,12 @@
      "genus": "n",
      "kern": "Nähzeug",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "metall",
+      "textil",
+      "organisch"
+     ]
     },
     {
      "name": "Enterhaken und Kletterhaken",
@@ -1105,7 +1503,10 @@
      "genus": "m",
      "kern": "Enterhaken",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Schloss mit Schlüssel",
@@ -1113,7 +1514,10 @@
      "genus": "n",
      "kern": "Schloss",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Dietriche",
@@ -1122,7 +1526,10 @@
      "genus": "m",
      "kern": "Dietrich",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Fernrohr",
@@ -1131,7 +1538,11 @@
      "genus": "n",
      "kern": "Fernrohr",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Alchemistenset",
@@ -1140,7 +1551,11 @@
      "genus": "n",
      "kern": "Alchemistenset",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Kompass",
@@ -1149,7 +1564,10 @@
      "genus": "m",
      "kern": "Kompass",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Wegekarte",
@@ -1157,7 +1575,10 @@
      "genus": "f",
      "kern": "Wegekarte",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Zimmermannsbeil",
@@ -1166,7 +1587,11 @@
      "genus": "n",
      "kern": "Zimmermannsbeil",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Lederbesteck",
@@ -1175,7 +1600,11 @@
      "genus": "n",
      "kern": "Lederbesteck",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "leder",
+      "metall"
+     ]
     },
     {
      "name": "Schmiedezange",
@@ -1184,7 +1613,11 @@
      "genus": "f",
      "kern": "Schmiedezange",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Glasschneider",
@@ -1193,7 +1626,11 @@
      "genus": "m",
      "kern": "Glasschneider",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Stemmeisen",
@@ -1202,7 +1639,11 @@
      "genus": "n",
      "kern": "Stemmeisen",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Blendlaterne",
@@ -1211,7 +1652,11 @@
      "genus": "f",
      "kern": "Blendlaterne",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Nadelbesteck",
@@ -1220,7 +1665,11 @@
      "genus": "n",
      "kern": "Nadelbesteck",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "metall",
+      "organisch"
+     ]
     },
     {
      "name": "Kräuterpresse",
@@ -1228,7 +1677,11 @@
      "genus": "f",
      "kern": "Kräuterpresse",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Mörser mit Stößel",
@@ -1237,7 +1690,11 @@
      "genus": "m",
      "kern": "Mörser",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "stein_glas",
+      "holz"
+     ]
     },
     {
      "name": "Destillierkolben",
@@ -1246,7 +1703,11 @@
      "genus": "m",
      "kern": "Destillierkolben",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Fangeisen",
@@ -1255,7 +1716,11 @@
      "genus": "n",
      "kern": "Fangeisen",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Würfelbecher",
@@ -1264,7 +1729,11 @@
      "genus": "m",
      "kern": "Würfelbecher",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "holz",
+      "leder"
+     ]
     },
     {
      "name": "Schreibzeug",
@@ -1272,7 +1741,12 @@
      "genus": "n",
      "kern": "Schreibzeug",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "papier",
+      "stein_glas",
+      "organisch"
+     ]
     },
     {
      "name": "Petschaft",
@@ -1281,7 +1755,11 @@
      "genus": "n",
      "kern": "Petschaft",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Flaschenzug",
@@ -1290,7 +1768,12 @@
      "genus": "m",
      "kern": "Flaschenzug",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "holz",
+      "metall",
+      "textil"
+     ]
     },
     {
      "name": "Pilgerstab",
@@ -1299,7 +1782,10 @@
      "genus": "m",
      "kern": "Pilgerstab",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Steigeisen",
@@ -1308,7 +1794,11 @@
      "genus": "n",
      "kern": "Steigeisen",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Angelzeug",
@@ -1316,7 +1806,11 @@
      "genus": "n",
      "kern": "Angelzeug",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "textil",
+      "metall"
+     ]
     },
     {
      "name": "Taucherhelm",
@@ -1324,7 +1818,11 @@
      "genus": "m",
      "kern": "Taucherhelm",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Rechenbrett",
@@ -1333,7 +1831,10 @@
      "genus": "n",
      "kern": "Rechenbrett",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Sanduhr",
@@ -1341,7 +1842,11 @@
      "genus": "f",
      "kern": "Sanduhr",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "stein_glas",
+      "holz"
+     ]
     },
     {
      "name": "Sextant",
@@ -1350,7 +1855,11 @@
      "genus": "m",
      "kern": "Sextant",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Lupe",
@@ -1359,7 +1868,11 @@
      "genus": "f",
      "kern": "Lupe",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Gehörrohr",
@@ -1368,7 +1881,11 @@
      "genus": "n",
      "kern": "Gehörrohr",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "organisch",
+      "metall"
+     ]
     },
     {
      "name": "Bienenschleier",
@@ -1376,7 +1893,10 @@
      "genus": "m",
      "kern": "Bienenschleier",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Korkgurt",
@@ -1384,7 +1904,10 @@
      "genus": "m",
      "kern": "Korkgurt",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Falkenhaube",
@@ -1392,7 +1915,11 @@
      "genus": "f",
      "kern": "Falkenhaube",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Taschenblasebalg",
@@ -1400,7 +1927,11 @@
      "genus": "m",
      "kern": "Taschenblasebalg",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "holz",
+      "leder"
+     ]
     }
    ]
   },
@@ -1421,7 +1952,10 @@
      "kern": "Umschlag",
      "effekt": "heilt 1 LP",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Wundsalbe",
@@ -1430,7 +1964,10 @@
      "kern": "Salbe",
      "effekt": "heilt 2 LP (nur bei Rast)",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Mutwasser",
@@ -1439,7 +1976,10 @@
      "kern": "Wasser",
      "effekt": "+10 gegen Furcht und Schmerz eine Szene",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Gegengift",
@@ -1448,7 +1988,10 @@
      "kern": "Gegengift",
      "effekt": "beendet eine Vergiftung",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Klingengift",
@@ -1457,7 +2000,11 @@
      "kern": "Gift",
      "effekt": "nächster Treffer +1 Schaden und Vergiftung",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Schlaftrunk",
@@ -1466,7 +2013,10 @@
      "kern": "Trunk",
      "effekt": "tiefer Schlaf für mehrere Stunden (Wissen-Probe schwer, sonst wach)",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Nachtsicht-Tropfen",
@@ -1475,7 +2025,10 @@
      "kern": "Tropfen",
      "effekt": "sieht im Dunkeln eine Szene lang",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Stärkungstrank",
@@ -1484,7 +2037,10 @@
      "kern": "Trank",
      "effekt": "+10 auf Kampf eine Szene lang",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Heiltrank",
@@ -1500,6 +2056,9 @@
       3,
       4,
       4
+     ],
+     "mat": [
+      "zutat"
      ]
     },
     {
@@ -1510,7 +2069,10 @@
      "effekt": "+1 SP, nur bei SP ≤ 1 und höchstens einmal pro Sitzung (nicht über das Maximum); wird nie verdoppelt",
      "min": "ungewoehnlich",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Brandsalbe",
@@ -1519,7 +2081,10 @@
      "kern": "Salbe",
      "effekt": "heilt 1 LP bei Verbrennung oder Brühwunde",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Räucherkerze",
@@ -1528,7 +2093,10 @@
      "kern": "Kerze",
      "effekt": "Rauch vertreibt Ungeziefer; +10 auf Wissen beim Lesen von Spuren im Rauch eine Szene",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Fieberwurz-Tee",
@@ -1537,7 +2105,10 @@
      "kern": "Tee",
      "effekt": "heilt 1 LP nach Rast; Fieber fällt",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Leuchtöl",
@@ -1546,7 +2117,10 @@
      "kern": "Öl",
      "effekt": "+10 auf Wissen beim Suchen im Dunkeln eine Szene",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Hundefriede",
@@ -1555,7 +2129,10 @@
      "kern": "Brocken",
      "effekt": "Hund bellt nicht eine Szene; +10 auf Sozial bei Annäherung an Hunde",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Kälteöl",
@@ -1564,7 +2141,10 @@
      "kern": "Öl",
      "effekt": "+10 auf Kampf bei Frost eine Szene; Kälte schmerzt nicht",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Lederfett",
@@ -1573,7 +2153,10 @@
      "kern": "Fett",
      "effekt": "+10 auf Kampf bei Nässe eine Szene (Riemen, Schildgriff)",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Zunderpulver",
@@ -1582,7 +2165,10 @@
      "kern": "Pulver",
      "effekt": "Feuer in einer Runde; +10 auf Kampf, wenn Feuer sofort nötig",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Hustenbalsam",
@@ -1591,7 +2177,10 @@
      "kern": "Balsam",
      "effekt": "+10 auf Sozial bei Rede in Kälte oder Rauch eine Szene",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Fußsalbe",
@@ -1600,7 +2189,10 @@
      "kern": "Salbe",
      "effekt": "heilt 1 LP nach einer Nacht Marsch",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Bilsensud",
@@ -1609,7 +2201,11 @@
      "kern": "Sud",
      "effekt": "Gift: −10 auf Wissen, 1 LP je Szene bis Gegengift",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Rattenkorn",
@@ -1618,7 +2214,11 @@
      "kern": "Korn",
      "effekt": "Gift: −10 auf Kampf, 1 LP je Szene bis Gegengift",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Eibensaft",
@@ -1627,7 +2227,11 @@
      "kern": "Saft",
      "effekt": "Gift: −10 auf Sozial, 1 LP je Szene bis Gegengift",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Wetzöl",
@@ -1636,7 +2240,10 @@
      "kern": "Öl",
      "effekt": "+10 auf Kampf für den nächsten Angriff",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Panzerharz",
@@ -1645,7 +2252,10 @@
      "kern": "Harz",
      "effekt": "+1 Rüstung gegen Hiebschaden eine Szene",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Mohnmilch",
@@ -1654,7 +2264,10 @@
      "kern": "Milch",
      "effekt": "+10 auf Sozial beim Beruhigen von Kind oder Tier eine Szene",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Wachhalter",
@@ -1663,7 +2276,10 @@
      "kern": "Trank",
      "effekt": "hält wach bis Morgen; +10 auf Wissen bei Nachtwache",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Schlangenfett",
@@ -1672,7 +2288,10 @@
      "kern": "Fett",
      "effekt": "Bisse wirken eine Szene lang nicht als Gift",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Essigwasser",
@@ -1681,7 +2300,10 @@
      "kern": "Wasser",
      "effekt": "+10 auf Wissen bei Wundversorgung eine Szene",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Branntwein",
@@ -1690,7 +2312,10 @@
      "kern": "Branntwein",
      "effekt": "+10 auf Sozial bei Trinkrunde eine Szene",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Blendpulver",
@@ -1699,7 +2324,11 @@
      "kern": "Pulver",
      "effekt": "Gegner −10 auf Kampf für eine Runde",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Myrrhenharz",
@@ -1708,7 +2337,10 @@
      "kern": "Harz",
      "effekt": "+10 auf Sozial bei Gebet oder Trauerfeier eine Szene",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Pfeffersalbe",
@@ -1717,7 +2349,10 @@
      "kern": "Salbe",
      "effekt": "+10 auf Kampf nach Rast eine Szene (Muskeln warm)",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Nachtschattenpaste",
@@ -1726,7 +2361,11 @@
      "kern": "Paste",
      "effekt": "Gift: −10 auf Kampf, 1 LP je Szene bis Gegengift",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Eisenhut-Tinktur",
@@ -1735,7 +2374,11 @@
      "kern": "Tinktur",
      "effekt": "Gift: −10 auf Sozial (Sprache lahm), 1 LP je Szene bis Gegengift",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Blutstillpulver",
@@ -1744,7 +2387,10 @@
      "kern": "Pulver",
      "effekt": "heilt 1 LP sofort bei frischer Blutung",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Rostschutz",
@@ -1753,7 +2399,10 @@
      "kern": "Mittel",
      "effekt": "+10 auf Wissen beim Reparieren von Waffe oder Rüstung eine Szene",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Knochenkitt",
@@ -1762,7 +2411,10 @@
      "kern": "Kitt",
      "effekt": "heilt 2 LP einmal pro Sitzung bei Knochenbruch",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Rauschpfeffer",
@@ -1771,7 +2423,10 @@
      "kern": "Pfeffer",
      "effekt": "+10 auf Kampf eine Szene; danach −10 auf Wissen",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Beruhigungspulver",
@@ -1780,7 +2435,10 @@
      "kern": "Pulver",
      "effekt": "+10 auf Sozial bei Verhandlung mit wütendem Gegenüber eine Szene",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Quecksilber",
@@ -1789,7 +2447,11 @@
      "kern": "Metall",
      "effekt": "Gift: −10 auf Sozial (Zittern), 1 LP je Szene bis Gegengift",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Riechsalz",
@@ -1798,7 +2460,10 @@
      "kern": "Salz",
      "effekt": "weckt Ohnmächtige sofort aus der Bewusstlosigkeit",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Alaunstein",
@@ -1807,7 +2472,10 @@
      "kern": "Stein",
      "effekt": "+1 Rüstung gegen Schnittschaden eine Szene",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Silbersalz",
@@ -1816,7 +2484,10 @@
      "kern": "Salz",
      "effekt": "+10 auf Wissen beim Prüfen von Münzen und Metall",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Bitterwasser",
@@ -1825,7 +2496,10 @@
      "kern": "Wasser",
      "effekt": "beendet frische Vergiftung, wenn in der ersten Szene getrunken",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Ätzsud",
@@ -1834,7 +2508,10 @@
      "kern": "Sud",
      "effekt": "+10 auf Wissen beim Öffnen eines Schlosses mit Säure eine Szene",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Kohlepulver",
@@ -1843,7 +2520,10 @@
      "kern": "Pulver",
      "effekt": "bindet Gift im Magen; heilt 1 LP bei Vergiftung",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Glasstaub",
@@ -1852,7 +2532,11 @@
      "kern": "Staub",
      "effekt": "Gegner −10 auf Kampf eine Szene (reizt Augen)",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "schaedlich": true,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Pechschmiere",
@@ -1861,7 +2545,10 @@
      "kern": "Schmiere",
      "effekt": "+10 auf Wissen beim lautlosen Öffnen eines Schlosses eine Szene",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Terpentin",
@@ -1870,7 +2557,10 @@
      "kern": "Terpentin",
      "effekt": "+10 auf Wissen beim Entzünden in Nässe eine Szene",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "zutat"
+     ]
     }
    ]
   },
@@ -1890,7 +2580,10 @@
      "genus": "m",
      "kern": "Mantel",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Pelzumhang",
@@ -1898,7 +2591,11 @@
      "genus": "m",
      "kern": "Umhang",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Stiefel",
@@ -1906,7 +2603,10 @@
      "genus": "m",
      "kern": "Stiefel",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Handschuhe",
@@ -1914,7 +2614,11 @@
      "genus": "m",
      "kern": "Handschuh",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Festgewand",
@@ -1922,7 +2626,10 @@
      "genus": "n",
      "kern": "Gewand",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Priesterrobe",
@@ -1930,7 +2637,10 @@
      "genus": "f",
      "kern": "Robe",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Gauklertracht",
@@ -1938,7 +2648,10 @@
      "genus": "f",
      "kern": "Tracht",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Kapuzenumhang",
@@ -1946,7 +2659,10 @@
      "genus": "m",
      "kern": "Umhang",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Uniformrock (Wache, Zunft)",
@@ -1954,7 +2670,10 @@
      "genus": "m",
      "kern": "Rock",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Trauerkleidung",
@@ -1962,7 +2681,10 @@
      "genus": "f",
      "kern": "Kleidung",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Wollhemd",
@@ -1970,7 +2692,10 @@
      "genus": "n",
      "kern": "Hemd",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Leinenhose",
@@ -1978,7 +2703,10 @@
      "genus": "f",
      "kern": "Hose",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Wollweste",
@@ -1986,7 +2714,10 @@
      "genus": "f",
      "kern": "Weste",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Schal",
@@ -1994,7 +2725,10 @@
      "genus": "m",
      "kern": "Schal",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Filzkappe",
@@ -2002,7 +2736,10 @@
      "genus": "f",
      "kern": "Kappe",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Lederschürze",
@@ -2010,7 +2747,10 @@
      "genus": "f",
      "kern": "Schürze",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Arbeitskittel",
@@ -2018,7 +2758,10 @@
      "genus": "m",
      "kern": "Kittel",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Wachsjacke",
@@ -2026,7 +2769,10 @@
      "genus": "f",
      "kern": "Jacke",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Ledergürtel",
@@ -2034,7 +2780,10 @@
      "genus": "m",
      "kern": "Gürtel",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Lederkittel",
@@ -2042,7 +2791,10 @@
      "genus": "m",
      "kern": "Lederkittel",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Gerberschurz",
@@ -2050,7 +2802,10 @@
      "genus": "m",
      "kern": "Schurz",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Bergmannsjoppe",
@@ -2058,7 +2813,11 @@
      "genus": "f",
      "kern": "Joppe",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Tuchmacherrock",
@@ -2066,7 +2825,10 @@
      "genus": "m",
      "kern": "Rock",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Filzhut",
@@ -2074,7 +2836,10 @@
      "genus": "m",
      "kern": "Hut",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Marktkopftuch",
@@ -2082,7 +2847,10 @@
      "genus": "n",
      "kern": "Tuch",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Strohregenmantel",
@@ -2090,7 +2858,10 @@
      "genus": "m",
      "kern": "Mantel",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Lodenmantel",
@@ -2099,7 +2870,10 @@
      "kern": "Mantel",
      "effekt": "+10 auf Probe gegen Nässe und Kälte im Gebirge",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Moorstiefel",
@@ -2107,7 +2881,10 @@
      "genus": "m",
      "kern": "Stiefel",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Holzschuh",
@@ -2115,7 +2892,10 @@
      "genus": "m",
      "kern": "Schuh",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Nagelschuh",
@@ -2124,7 +2904,11 @@
      "kern": "Schuh",
      "effekt": "+10 auf Probe Klettern im Geröll",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "leder",
+      "metall"
+     ]
     },
     {
      "name": "Büttelrock",
@@ -2132,7 +2916,10 @@
      "genus": "m",
      "kern": "Rock",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Henkerskapuze",
@@ -2141,7 +2928,10 @@
      "kern": "Kapuze",
      "effekt": "+10 auf Probe Einschüchtern, Gesicht bleibt verborgen",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Richterrobe",
@@ -2149,7 +2939,10 @@
      "genus": "f",
      "kern": "Robe",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Zöllnerwams",
@@ -2157,7 +2950,10 @@
      "genus": "n",
      "kern": "Wams",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Gerichtsschleier",
@@ -2165,7 +2961,10 @@
      "genus": "m",
      "kern": "Schleier",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Totengräberkittel",
@@ -2173,7 +2972,10 @@
      "genus": "m",
      "kern": "Kittel",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Schreiberrock",
@@ -2181,7 +2983,10 @@
      "genus": "m",
      "kern": "Rock",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Wachsmantel",
@@ -2189,7 +2994,10 @@
      "genus": "m",
      "kern": "Mantel",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Fischerkittel",
@@ -2197,7 +3005,10 @@
      "genus": "m",
      "kern": "Kittel",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Beinlinge",
@@ -2205,7 +3016,11 @@
      "genus": "m",
      "kern": "Beinling",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Brokatrock",
@@ -2213,7 +3028,10 @@
      "genus": "m",
      "kern": "Rock",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Goldwams",
@@ -2221,7 +3039,11 @@
      "genus": "n",
      "kern": "Wams",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "textil",
+      "metall"
+     ]
     },
     {
      "name": "Seidenschleier",
@@ -2229,7 +3051,10 @@
      "genus": "m",
      "kern": "Schleier",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Hermelinkragen",
@@ -2237,7 +3062,10 @@
      "genus": "m",
      "kern": "Kragen",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Samtmantel",
@@ -2246,7 +3074,10 @@
      "kern": "Mantel",
      "effekt": "+10 auf Probe Eindruck bei Hof",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Rabenfederhut",
@@ -2254,7 +3085,11 @@
      "genus": "m",
      "kern": "Hut",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "textil",
+      "organisch"
+     ]
     },
     {
      "name": "Schleppenkleid",
@@ -2262,7 +3097,10 @@
      "genus": "n",
      "kern": "Kleid",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Zeremonialtracht",
@@ -2270,7 +3108,11 @@
      "genus": "f",
      "kern": "Tracht",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "textil",
+      "metall"
+     ]
     },
     {
      "name": "Lacklederstiefel",
@@ -2278,7 +3120,10 @@
      "genus": "m",
      "kern": "Stiefel",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Perlenhaube",
@@ -2286,7 +3131,11 @@
      "genus": "f",
      "kern": "Haube",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "textil",
+      "stein_glas"
+     ]
     }
    ]
   },
@@ -2306,7 +3155,10 @@
      "genus": "m",
      "kern": "Ring",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Amulett aus Holz oder Knochen",
@@ -2314,7 +3166,11 @@
      "genus": "n",
      "kern": "Amulett",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "holz",
+      "organisch"
+     ]
     },
     {
      "name": "Ohrring",
@@ -2322,7 +3178,10 @@
      "genus": "m",
      "kern": "Ohrring",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Brosche",
@@ -2330,7 +3189,10 @@
      "genus": "f",
      "kern": "Brosche",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Armreif",
@@ -2338,7 +3200,10 @@
      "genus": "m",
      "kern": "Armreif",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Silberkette",
@@ -2346,7 +3211,10 @@
      "genus": "f",
      "kern": "Silberkette",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Siegelring",
@@ -2354,7 +3222,10 @@
      "genus": "m",
      "kern": "Siegelring",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Goldring",
@@ -2362,7 +3233,10 @@
      "genus": "m",
      "kern": "Ring",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Edelsteinanhänger",
@@ -2370,7 +3244,11 @@
      "genus": "m",
      "kern": "Anhänger",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Diadem",
@@ -2378,7 +3256,11 @@
      "genus": "n",
      "kern": "Diadem",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Haarnadel aus Knochen",
@@ -2386,7 +3268,10 @@
      "genus": "f",
      "kern": "Haarnadel",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Lederarmband",
@@ -2394,7 +3279,10 @@
      "genus": "n",
      "kern": "Armband",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Zinnring",
@@ -2402,7 +3290,10 @@
      "genus": "m",
      "kern": "Ring",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Pilgermuschel aus Ton",
@@ -2410,7 +3301,11 @@
      "genus": "f",
      "kern": "Pilgermuschel",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "organisch",
+      "stein_glas"
+     ]
     },
     {
      "name": "Gewandnadel aus Messing",
@@ -2418,7 +3313,10 @@
      "genus": "f",
      "kern": "Gewandnadel",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Hornperlenkette",
@@ -2426,7 +3324,10 @@
      "genus": "f",
      "kern": "Kette",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Eisenring",
@@ -2434,7 +3335,10 @@
      "genus": "m",
      "kern": "Ring",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Zunftmarke aus Blei",
@@ -2442,7 +3346,10 @@
      "genus": "f",
      "kern": "Zunftmarke",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Drahtohrhänger",
@@ -2450,7 +3357,10 @@
      "genus": "m",
      "kern": "Ohrhänger",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Gürtelschnalle aus Bronze",
@@ -2458,7 +3368,10 @@
      "genus": "f",
      "kern": "Gürtelschnalle",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Totengräberring",
@@ -2467,7 +3380,10 @@
      "kern": "Ring",
      "effekt": "+10 Sozial bei Angehörigen am Grab",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Galgenholz-Anhänger",
@@ -2475,7 +3391,10 @@
      "genus": "m",
      "kern": "Anhänger",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Gerberzunftabzeichen",
@@ -2484,7 +3403,11 @@
      "kern": "Abzeichen",
      "effekt": "+10 Sozial bei Gerbern und Lederern",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Schieferplatte am Band",
@@ -2492,7 +3415,11 @@
      "genus": "f",
      "kern": "Schieferplatte",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "stein_glas",
+      "textil"
+     ]
     },
     {
      "name": "Moorgoldring",
@@ -2500,7 +3427,10 @@
      "genus": "m",
      "kern": "Ring",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Schuldschwur-Ring",
@@ -2509,7 +3439,10 @@
      "kern": "Ring",
      "effekt": "+10 Sozial bei Verhandlungen über Schulden",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Pfandmedaille",
@@ -2517,7 +3450,10 @@
      "genus": "f",
      "kern": "Medaille",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Fuhrmannssiegel",
@@ -2526,7 +3462,10 @@
      "kern": "Siegel",
      "effekt": "+10 Sozial bei Fuhrleuten an Poststraßen",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Haarkamm aus Horn mit Silberbeschlag",
@@ -2534,7 +3473,11 @@
      "genus": "m",
      "kern": "Haarkamm",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "organisch",
+      "metall"
+     ]
     },
     {
      "name": "Probiernadel des Goldschmieds",
@@ -2542,7 +3485,10 @@
      "genus": "f",
      "kern": "Probiernadel",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Fährmannsohrring",
@@ -2551,7 +3497,10 @@
      "kern": "Ohrring",
      "effekt": "+10 Sozial bei Schiffern am Fluss",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Fernhandels-Glasperlenkette",
@@ -2559,7 +3508,10 @@
      "genus": "f",
      "kern": "Kette",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Bleikreuz-Anhänger",
@@ -2567,7 +3519,10 @@
      "genus": "m",
      "kern": "Anhänger",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Eheband aus Haar",
@@ -2576,7 +3531,10 @@
      "kern": "Eheband",
      "effekt": "+10 Sozial bei Trauungen und Hochzeiten",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Torwächter-Schlüsselkette",
@@ -2584,7 +3542,10 @@
      "genus": "f",
      "kern": "Schlüsselkette",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Notarstempel an Kette",
@@ -2593,7 +3554,11 @@
      "kern": "Stempel",
      "effekt": "+10 Sozial bei Urkunden und Verträgen",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Brandzeichen-Anhänger",
@@ -2601,7 +3566,11 @@
      "genus": "m",
      "kern": "Anhänger",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Kräuterkapsel am Band",
@@ -2609,7 +3578,11 @@
      "genus": "f",
      "kern": "Kräuterkapsel",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Bernsteinbrosche",
@@ -2617,7 +3590,11 @@
      "genus": "f",
      "kern": "Brosche",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Marktmeister-Plakette an Kette",
@@ -2626,7 +3603,10 @@
      "kern": "Plakette",
      "effekt": "+10 Sozial bei Marktleuten",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Hofkette aus Silberfiligran",
@@ -2634,7 +3614,10 @@
      "genus": "f",
      "kern": "Kette",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Brautringpaar",
@@ -2642,7 +3625,10 @@
      "genus": "n",
      "kern": "Ringpaar",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Reliquienkapsel an Goldkette",
@@ -2651,7 +3637,10 @@
      "kern": "Reliquienkapsel",
      "effekt": "+10 Sozial bei Gläubigen und Pilgern",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Hofnadel aus Email",
@@ -2659,7 +3648,11 @@
      "genus": "f",
      "kern": "Anstecknadel",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Bernstein-Goldhalsband",
@@ -2667,7 +3660,11 @@
      "genus": "n",
      "kern": "Halsband",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Ordensband mit Goldkreuz",
@@ -2676,7 +3673,11 @@
      "kern": "Ordensband",
      "effekt": "+10 Sozial bei Adel und Klerus",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "metall",
+      "textil"
+     ]
     },
     {
      "name": "Smaragdsiegel der Ratsherren",
@@ -2684,7 +3685,11 @@
      "genus": "n",
      "kern": "Siegel",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     },
     {
      "name": "Mondsteinbrosche",
@@ -2692,7 +3697,11 @@
      "genus": "f",
      "kern": "Brosche",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "stein_glas",
+      "metall"
+     ]
     },
     {
      "name": "Halsreif aus Gold",
@@ -2700,7 +3709,10 @@
      "genus": "m",
      "kern": "Halsreif",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Gehänge des Landvogts",
@@ -2709,7 +3721,11 @@
      "kern": "Gehänge",
      "effekt": "+10 Sozial bei Amtspersonen",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "metall",
+      "stein_glas"
+     ]
     }
    ]
   },
@@ -2729,7 +3745,10 @@
      "genus": "m",
      "kern": "Brief",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Steckbrief",
@@ -2737,7 +3756,10 @@
      "genus": "m",
      "kern": "Steckbrief",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Gebetbuch",
@@ -2745,7 +3767,11 @@
      "genus": "n",
      "kern": "Gebetbuch",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Landkarte",
@@ -2753,7 +3779,10 @@
      "genus": "f",
      "kern": "Karte",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Rezeptbuch",
@@ -2761,7 +3790,11 @@
      "genus": "n",
      "kern": "Rezeptbuch",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Handelsbrief / Urkunde",
@@ -2769,7 +3802,10 @@
      "genus": "m",
      "kern": "Handelsbrief",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Chronik",
@@ -2777,7 +3813,11 @@
      "genus": "f",
      "kern": "Chronik",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Schatzkarte",
@@ -2785,7 +3825,10 @@
      "genus": "f",
      "kern": "Karte",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Schriftrolle mit Formel",
@@ -2794,7 +3837,10 @@
      "genus": "f",
      "kern": "Schriftrolle",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Verbotener Foliant",
@@ -2803,7 +3849,11 @@
      "genus": "m",
      "kern": "Foliant",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Warenbrief",
@@ -2811,7 +3861,10 @@
      "genus": "m",
      "kern": "Warenbrief",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Quittung",
@@ -2819,7 +3872,10 @@
      "genus": "f",
      "kern": "Quittung",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Zunftbrief",
@@ -2828,7 +3884,10 @@
      "kern": "Zunftbrief",
      "effekt": "+10 Wissen bei Zunftrecht und Siegeln",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Pachtbrief",
@@ -2836,7 +3895,10 @@
      "genus": "m",
      "kern": "Pachtbrief",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Schuldbrief",
@@ -2844,7 +3906,10 @@
      "genus": "m",
      "kern": "Schuldbrief",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Wegskizze",
@@ -2852,7 +3917,10 @@
      "genus": "f",
      "kern": "Wegskizze",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Kirchenkalender",
@@ -2860,7 +3928,10 @@
      "genus": "m",
      "kern": "Kirchenkalender",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Bauernkalender",
@@ -2868,7 +3939,10 @@
      "genus": "m",
      "kern": "Bauernkalender",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Zinsliste",
@@ -2876,7 +3950,10 @@
      "genus": "f",
      "kern": "Zinsliste",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Briefpapier",
@@ -2884,7 +3961,10 @@
      "genus": "n",
      "kern": "Briefpapier",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Taufregister",
@@ -2893,7 +3973,10 @@
      "kern": "Taufregister",
      "effekt": "+10 Wissen bei Abstammungsfragen",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Lehnsregister",
@@ -2901,7 +3984,10 @@
      "genus": "n",
      "kern": "Lehnsregister",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Pergamentrolle",
@@ -2909,7 +3995,10 @@
      "genus": "f",
      "kern": "Pergamentrolle",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Ahnenrolle",
@@ -2917,7 +4006,10 @@
      "genus": "f",
      "kern": "Ahnenrolle",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Geleitbrief",
@@ -2926,7 +4018,10 @@
      "kern": "Geleitbrief",
      "effekt": "+10 Wissen bei Grenzregeln und Wachposten",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Freibrief",
@@ -2934,7 +4029,10 @@
      "genus": "m",
      "kern": "Freibrief",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Arzneibuch",
@@ -2943,7 +4041,11 @@
      "kern": "Arzneibuch",
      "effekt": "+10 Wissen bei Kräuterkunde",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Kräuterbuch",
@@ -2951,7 +4053,11 @@
      "genus": "n",
      "kern": "Kräuterbuch",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Sternkarte",
@@ -2960,7 +4066,10 @@
      "kern": "Sternkarte",
      "effekt": "+10 Wissen bei Gestirnen und Wegen bei Nacht",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Seekarte",
@@ -2969,7 +4078,10 @@
      "kern": "Seekarte",
      "effekt": "+10 Wissen bei Küstenwegen und Strömungen",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Grenzkarte",
@@ -2977,7 +4089,10 @@
      "genus": "f",
      "kern": "Grenzkarte",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Kirchenfoliant",
@@ -2985,7 +4100,11 @@
      "genus": "m",
      "kern": "Kirchenfoliant",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Sippenbuch",
@@ -2993,7 +4112,11 @@
      "genus": "n",
      "kern": "Sippenbuch",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Ablassbrief",
@@ -3001,7 +4124,10 @@
      "genus": "m",
      "kern": "Ablassbrief",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Beichtzettel",
@@ -3009,7 +4135,10 @@
      "genus": "m",
      "kern": "Beichtzettel",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Rechenbuch",
@@ -3018,7 +4147,11 @@
      "kern": "Rechenbuch",
      "effekt": "+10 Wissen bei Münz- und Zinsfragen",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Fahrtenbuch",
@@ -3026,7 +4159,11 @@
      "genus": "n",
      "kern": "Fahrtenbuch",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Lagerbuch",
@@ -3034,7 +4171,11 @@
      "genus": "n",
      "kern": "Lagerbuch",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Segensbrief",
@@ -3042,7 +4183,10 @@
      "genus": "m",
      "kern": "Segensbrief",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Bannbrief",
@@ -3050,7 +4194,10 @@
      "genus": "m",
      "kern": "Bannbrief",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Hetzschrift",
@@ -3058,7 +4205,10 @@
      "genus": "f",
      "kern": "Hetzschrift",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Lästerschrift",
@@ -3066,7 +4216,10 @@
      "genus": "f",
      "kern": "Lästerschrift",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Chiffrierbuch",
@@ -3074,7 +4227,11 @@
      "genus": "n",
      "kern": "Chiffrierbuch",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Ketzerschrift",
@@ -3082,7 +4239,10 @@
      "genus": "f",
      "kern": "Ketzerschrift",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Fälscherbrief",
@@ -3090,7 +4250,10 @@
      "genus": "m",
      "kern": "Fälscherbrief",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Totenbuch",
@@ -3098,7 +4261,11 @@
      "genus": "n",
      "kern": "Totenbuch",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Geheimkarte",
@@ -3106,7 +4273,10 @@
      "genus": "f",
      "kern": "Geheimkarte",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Gerichtsakte",
@@ -3114,7 +4284,11 @@
      "genus": "f",
      "kern": "Gerichtsakte",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "papier",
+      "leder"
+     ]
     },
     {
      "name": "Schmähbrief",
@@ -3122,7 +4296,10 @@
      "genus": "m",
      "kern": "Schmähbrief",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Schmugglerkarte",
@@ -3130,7 +4307,10 @@
      "genus": "f",
      "kern": "Schmugglerkarte",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "papier"
+     ]
     }
    ]
   },
@@ -3150,7 +4330,10 @@
      "genus": "m",
      "kern": "Würfel",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Puppe",
@@ -3158,7 +4341,11 @@
      "genus": "f",
      "kern": "Puppe",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Glücksbringer",
@@ -3166,7 +4353,11 @@
      "genus": "m",
      "kern": "Glücksbringer",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "holz",
+      "stein_glas"
+     ]
     },
     {
      "name": "Totenschädel",
@@ -3174,7 +4365,10 @@
      "genus": "m",
      "kern": "Schädel",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Spiegelscherbe",
@@ -3182,7 +4376,10 @@
      "genus": "f",
      "kern": "Scherbe",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Ausgestopfter Rabe",
@@ -3190,7 +4387,10 @@
      "genus": "m",
      "kern": "Rabe",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Zahn eines Ungeheuers",
@@ -3198,7 +4398,10 @@
      "genus": "m",
      "kern": "Zahn",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Kristall",
@@ -3206,7 +4409,10 @@
      "genus": "m",
      "kern": "Kristall",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Zierkompass",
@@ -3214,7 +4420,10 @@
      "genus": "m",
      "kern": "Zierkompass",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Spieluhr",
@@ -3222,7 +4431,11 @@
      "genus": "f",
      "kern": "Spieluhr",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Tonmurmel",
@@ -3230,7 +4443,10 @@
      "genus": "f",
      "kern": "Murmel",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Lederbecher",
@@ -3238,7 +4454,10 @@
      "genus": "m",
      "kern": "Becher",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Holzpfeife",
@@ -3246,7 +4465,10 @@
      "genus": "f",
      "kern": "Pfeife",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Rosshaarband",
@@ -3254,7 +4476,11 @@
      "genus": "n",
      "kern": "Band",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "textil",
+      "organisch"
+     ]
     },
     {
      "name": "Hornknopf",
@@ -3262,7 +4488,10 @@
      "genus": "m",
      "kern": "Knopf",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Zinnsoldat",
@@ -3271,7 +4500,10 @@
      "kern": "Soldat",
      "effekt": "+10 bei Kindern und Spielgefährten.",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Talgstummel",
@@ -3280,7 +4512,10 @@
      "kern": "Stummel",
      "effekt": "Einmal pro Szene: ein kleines Licht, das eine Minute brennt.",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Messingschnalle",
@@ -3288,7 +4523,10 @@
      "genus": "f",
      "kern": "Schnalle",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Beinnadel",
@@ -3296,7 +4534,10 @@
      "genus": "f",
      "kern": "Nadel",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Kartenspiel aus Pergament",
@@ -3305,7 +4546,10 @@
      "kern": "Spiel",
      "effekt": "+10 beim Glücksspiel in der Schenke.",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Schachfigur",
@@ -3313,7 +4557,11 @@
      "genus": "f",
      "kern": "Figur",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "holz",
+      "stein_glas"
+     ]
     },
     {
      "name": "Hornlupe",
@@ -3322,7 +4570,11 @@
      "kern": "Lupe",
      "effekt": "+10 beim Prüfen von Siegeln und Münzen.",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "organisch",
+      "stein_glas"
+     ]
     },
     {
      "name": "Totenabguss",
@@ -3330,7 +4582,10 @@
      "genus": "m",
      "kern": "Abguss",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Heiligenkarte",
@@ -3338,7 +4593,10 @@
      "genus": "f",
      "kern": "Karte",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Taschenuhr",
@@ -3347,7 +4605,10 @@
      "kern": "Uhr",
      "effekt": "Einmal pro Szene: die Zeit auf die Minute schätzen.",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Schneckenhaus",
@@ -3355,7 +4616,10 @@
      "genus": "n",
      "kern": "Haus",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Fuchspfote",
@@ -3364,7 +4628,10 @@
      "kern": "Pfote",
      "effekt": "+10 beim Schleichen im Unterholz.",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Eberhauer",
@@ -3373,7 +4640,10 @@
      "kern": "Hauer",
      "effekt": "+10 bei Gesprächen mit Jägern.",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Prunk-Sanduhr",
@@ -3382,7 +4652,11 @@
      "kern": "Sanduhr",
      "effekt": "Einmal pro Sitzung: Orakel-Chance eine Stufe verschieben, solange sie läuft.",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "holz",
+      "stein_glas"
+     ]
     },
     {
      "name": "Pilgerzeichen",
@@ -3391,7 +4665,10 @@
      "kern": "Zeichen",
      "effekt": "+10 bei Pilgern und Klosterbrüdern.",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Federkielköcher",
@@ -3399,7 +4676,11 @@
      "genus": "m",
      "kern": "Köcher",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "leder",
+      "organisch"
+     ]
     },
     {
      "name": "Goldwaage",
@@ -3408,7 +4689,10 @@
      "kern": "Waage",
      "effekt": "+10 beim Prüfen von Münzen und Edelsteinen.",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Spielzeug-Siegelring",
@@ -3417,7 +4701,11 @@
      "kern": "Siegelring",
      "effekt": "+10 im Schriftverkehr mit Amtsstuben.",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Glasperlenkette",
@@ -3425,7 +4713,10 @@
      "genus": "f",
      "kern": "Kette",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Hirtenhorn",
@@ -3433,7 +4724,10 @@
      "genus": "n",
      "kern": "Horn",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Rattenfängerpfeife",
@@ -3442,7 +4736,11 @@
      "kern": "Pfeife",
      "effekt": "+10 bei Ratten und Kleintieren im Keller.",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Schlüsselbund",
@@ -3451,7 +4749,10 @@
      "kern": "Bund",
      "effekt": "Einmal pro Szene: ein fremdes Schloss öffnet sich.",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Wachsrose",
@@ -3459,7 +4760,10 @@
      "genus": "f",
      "kern": "Rose",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "zutat"
+     ]
     },
     {
      "name": "Blechdose",
@@ -3467,7 +4771,10 @@
      "genus": "f",
      "kern": "Dose",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Schnupftabakdose",
@@ -3476,7 +4783,11 @@
      "kern": "Dose",
      "effekt": "+10 bei Gesprächen in Schenken.",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "metall",
+      "holz"
+     ]
     },
     {
      "name": "Elfenbeinkamm",
@@ -3485,7 +4796,10 @@
      "kern": "Kamm",
      "effekt": "+10 bei Adel und Hofleuten.",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Silberlöffel",
@@ -3493,7 +4807,10 @@
      "genus": "m",
      "kern": "Löffel",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Bernsteinstück",
@@ -3501,7 +4818,10 @@
      "genus": "n",
      "kern": "Stück",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Meerschaumpfeife",
@@ -3509,7 +4829,11 @@
      "genus": "f",
      "kern": "Pfeife",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "stein_glas",
+      "organisch"
+     ]
     },
     {
      "name": "Landkartenfragment",
@@ -3518,7 +4842,10 @@
      "kern": "Fragment",
      "effekt": "+10 bei der Suche nach einem alten Ort.",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "papier"
+     ]
     },
     {
      "name": "Glasauge",
@@ -3527,7 +4854,10 @@
      "kern": "Auge",
      "effekt": "+10 bei Sammlern von Reliquien.",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "stein_glas"
+     ]
     },
     {
      "name": "Singvogel-Automat",
@@ -3535,7 +4865,11 @@
      "genus": "m",
      "kern": "Automat",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Schultertuch",
@@ -3544,7 +4878,10 @@
      "kern": "Tuch",
      "effekt": "+10 bei Zunftversammlungen.",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Mumienhand",
@@ -3553,7 +4890,10 @@
      "kern": "Hand",
      "effekt": "+10 bei Schaustellern, die damit prahlen.",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "organisch"
+     ]
     },
     {
      "name": "Himmelsglobus",
@@ -3561,7 +4901,11 @@
      "genus": "m",
      "kern": "Globus",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "papier",
+      "metall"
+     ]
     }
    ]
   },
@@ -3581,7 +4925,10 @@
      "genus": "f",
      "kern": "Taube",
      "von": 1,
-     "bis": 3
+     "bis": 3,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Jagdhund",
@@ -3589,7 +4936,10 @@
      "genus": "m",
      "kern": "Hund",
      "von": 4,
-     "bis": 6
+     "bis": 6,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Esel",
@@ -3597,7 +4947,10 @@
      "genus": "m",
      "kern": "Esel",
      "von": 7,
-     "bis": 9
+     "bis": 9,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Sattel und Zaumzeug",
@@ -3605,7 +4958,10 @@
      "genus": "m",
      "kern": "Sattel",
      "von": 10,
-     "bis": 12
+     "bis": 12,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Packpony",
@@ -3613,7 +4969,10 @@
      "genus": "n",
      "kern": "Pony",
      "von": 13,
-     "bis": 15
+     "bis": 15,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Karren",
@@ -3621,7 +4980,11 @@
      "genus": "m",
      "kern": "Karren",
      "von": 16,
-     "bis": 18
+     "bis": 18,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Maultier",
@@ -3629,7 +4992,10 @@
      "genus": "n",
      "kern": "Maultier",
      "von": 19,
-     "bis": 21
+     "bis": 21,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Ruderboot",
@@ -3637,7 +5003,10 @@
      "genus": "n",
      "kern": "Boot",
      "von": 22,
-     "bis": 24
+     "bis": 24,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Reitpferd",
@@ -3645,7 +5014,10 @@
      "genus": "n",
      "kern": "Pferd",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Streitross",
@@ -3653,7 +5025,10 @@
      "genus": "n",
      "kern": "Ross",
      "von": 28,
-     "bis": 30
+     "bis": 30,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Milchziege",
@@ -3661,7 +5036,10 @@
      "genus": "f",
      "kern": "Ziege",
      "von": 31,
-     "bis": 33
+     "bis": 33,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Hütehund",
@@ -3669,7 +5047,10 @@
      "genus": "m",
      "kern": "Hund",
      "von": 34,
-     "bis": 36
+     "bis": 36,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Halfter",
@@ -3677,7 +5058,10 @@
      "genus": "m",
      "kern": "Halfter",
      "von": 37,
-     "bis": 39
+     "bis": 39,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Hafersack",
@@ -3685,7 +5069,11 @@
      "genus": "m",
      "kern": "Sack",
      "von": 40,
-     "bis": 42
+     "bis": 42,
+     "mat": [
+      "textil",
+      "leder"
+     ]
     },
     {
      "name": "Pferdedecke",
@@ -3693,7 +5081,10 @@
      "genus": "f",
      "kern": "Decke",
      "von": 43,
-     "bis": 45
+     "bis": 45,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Handkarre",
@@ -3701,7 +5092,11 @@
      "genus": "f",
      "kern": "Karre",
      "von": 46,
-     "bis": 48
+     "bis": 48,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Staken",
@@ -3709,7 +5104,10 @@
      "genus": "m",
      "kern": "Staken",
      "von": 49,
-     "bis": 51
+     "bis": 51,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Schlitten",
@@ -3718,7 +5116,10 @@
      "kern": "Schlitten",
      "effekt": "+10 auf Gespannproben auf Eis und Schnee",
      "von": 52,
-     "bis": 54
+     "bis": 54,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Hufbeschlag",
@@ -3727,7 +5128,10 @@
      "kern": "Beschlag",
      "effekt": "+10 auf Proben mit dem Tier auf Geröll und Schlamm",
      "von": 55,
-     "bis": 57
+     "bis": 57,
+     "mat": [
+      "metall"
+     ]
     },
     {
      "name": "Wasserfass",
@@ -3735,7 +5139,11 @@
      "genus": "n",
      "kern": "Fass",
      "von": 58,
-     "bis": 60
+     "bis": 60,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Ochse",
@@ -3743,7 +5151,10 @@
      "genus": "m",
      "kern": "Ochse",
      "von": 61,
-     "bis": 61
+     "bis": 61,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Ochsengespann",
@@ -3751,7 +5162,11 @@
      "genus": "n",
      "kern": "Gespann",
      "von": 62,
-     "bis": 62
+     "bis": 62,
+     "mat": [
+      "tier",
+      "leder"
+     ]
     },
     {
      "name": "Zugpferd",
@@ -3759,7 +5174,10 @@
      "genus": "n",
      "kern": "Pferd",
      "von": 63,
-     "bis": 63
+     "bis": 63,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Kastenwagen",
@@ -3767,7 +5185,11 @@
      "genus": "m",
      "kern": "Wagen",
      "von": 64,
-     "bis": 64
+     "bis": 64,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Planwagen",
@@ -3775,7 +5197,11 @@
      "genus": "m",
      "kern": "Wagen",
      "von": 65,
-     "bis": 65
+     "bis": 65,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Lastkahn",
@@ -3784,7 +5210,10 @@
      "kern": "Kahn",
      "effekt": "+10 auf Proben beim Befahren eines Flusses mit starker Strömung",
      "von": 66,
-     "bis": 66
+     "bis": 66,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Fischernachen",
@@ -3792,7 +5221,10 @@
      "genus": "m",
      "kern": "Nachen",
      "von": 67,
-     "bis": 67
+     "bis": 67,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Treidelseil",
@@ -3800,7 +5232,10 @@
      "genus": "n",
      "kern": "Seil",
      "von": 68,
-     "bis": 68
+     "bis": 68,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Packsattel",
@@ -3808,7 +5243,11 @@
      "genus": "m",
      "kern": "Sattel",
      "von": 69,
-     "bis": 69
+     "bis": 69,
+     "mat": [
+      "leder",
+      "holz"
+     ]
     },
     {
      "name": "Satteltaschenpaar",
@@ -3816,7 +5255,11 @@
      "genus": "n",
      "kern": "Satteltaschenpaar",
      "von": 70,
-     "bis": 70
+     "bis": 70,
+     "mat": [
+      "leder",
+      "textil"
+     ]
     },
     {
      "name": "Wagenplane",
@@ -3824,7 +5267,10 @@
      "genus": "f",
      "kern": "Plane",
      "von": 71,
-     "bis": 71
+     "bis": 71,
+     "mat": [
+      "textil"
+     ]
     },
     {
      "name": "Schwimmgurt",
@@ -3833,7 +5279,10 @@
      "kern": "Gurt",
      "effekt": "+10 auf Proben, ein Tier sicher durch eine Furt zu führen",
      "von": 72,
-     "bis": 72
+     "bis": 72,
+     "mat": [
+      "leder"
+     ]
     },
     {
      "name": "Saumpferd",
@@ -3841,7 +5290,10 @@
      "genus": "n",
      "kern": "Pferd",
      "von": 73,
-     "bis": 73
+     "bis": 73,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Barke",
@@ -3849,7 +5301,10 @@
      "genus": "f",
      "kern": "Barke",
      "von": 74,
-     "bis": 74
+     "bis": 74,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Ochsenjoch",
@@ -3857,7 +5312,10 @@
      "genus": "n",
      "kern": "Joch",
      "von": 75,
-     "bis": 75
+     "bis": 75,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Wachgans",
@@ -3866,7 +5324,10 @@
      "kern": "Gans",
      "effekt": "+10 auf Wahrnehmungsproben, wenn sich Fremde dem Lager nähern",
      "von": 76,
-     "bis": 76
+     "bis": 76,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Frettchen",
@@ -3874,7 +5335,10 @@
      "genus": "n",
      "kern": "Frettchen",
      "von": 77,
-     "bis": 77
+     "bis": 77,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Jagdfalke",
@@ -3883,7 +5347,10 @@
      "kern": "Falke",
      "effekt": "+10 auf Proben, Wild im Gelände aufzuspüren",
      "von": 78,
-     "bis": 78
+     "bis": 78,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Flussfähre",
@@ -3891,7 +5358,11 @@
      "genus": "f",
      "kern": "Fähre",
      "von": 79,
-     "bis": 79
+     "bis": 79,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Leiterwagen",
@@ -3899,7 +5370,11 @@
      "genus": "m",
      "kern": "Wagen",
      "von": 80,
-     "bis": 80
+     "bis": 80,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Kutsche",
@@ -3908,7 +5383,12 @@
      "kern": "Kutsche",
      "effekt": "+10 auf Gesellschaftsproben bei Hof und Markt",
      "von": 81,
-     "bis": 82
+     "bis": 82,
+     "mat": [
+      "holz",
+      "metall",
+      "leder"
+     ]
     },
     {
      "name": "Schimmelstute",
@@ -3916,7 +5396,10 @@
      "genus": "f",
      "kern": "Stute",
      "von": 83,
-     "bis": 84
+     "bis": 84,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Apfelschimmel",
@@ -3924,7 +5407,10 @@
      "genus": "m",
      "kern": "Schimmel",
      "von": 85,
-     "bis": 86
+     "bis": 86,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Prunkgespann",
@@ -3932,7 +5418,11 @@
      "genus": "n",
      "kern": "Gespann",
      "von": 87,
-     "bis": 88
+     "bis": 88,
+     "mat": [
+      "tier",
+      "leder"
+     ]
     },
     {
      "name": "Prunkwagen",
@@ -3940,7 +5430,11 @@
      "genus": "m",
      "kern": "Wagen",
      "von": 89,
-     "bis": 90
+     "bis": 90,
+     "mat": [
+      "holz",
+      "metall"
+     ]
     },
     {
      "name": "Totenwagen",
@@ -3948,7 +5442,11 @@
      "genus": "m",
      "kern": "Wagen",
      "von": 91,
-     "bis": 92
+     "bis": 92,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Gondel",
@@ -3956,7 +5454,10 @@
      "genus": "f",
      "kern": "Gondel",
      "von": 93,
-     "bis": 94
+     "bis": 94,
+     "mat": [
+      "holz"
+     ]
     },
     {
      "name": "Staatsbarke",
@@ -3964,7 +5465,11 @@
      "genus": "f",
      "kern": "Barke",
      "von": 95,
-     "bis": 96
+     "bis": 96,
+     "mat": [
+      "holz",
+      "textil"
+     ]
     },
     {
      "name": "Zelter",
@@ -3973,7 +5478,10 @@
      "kern": "Zelter",
      "effekt": "+10 auf Proben, einen Tag lang im Sattel durchzuhalten",
      "von": 97,
-     "bis": 98
+     "bis": 98,
+     "mat": [
+      "tier"
+     ]
     },
     {
      "name": "Wolfshund",
@@ -3981,7 +5489,10 @@
      "genus": "m",
      "kern": "Hund",
      "von": 99,
-     "bis": 100
+     "bis": 100,
+     "mat": [
+      "tier"
+     ]
     }
    ]
   }
