@@ -9,15 +9,16 @@ Single-player behaviour is unchanged when `speaker` is absent.
 Busy: SSE `info` "SL denkt noch" and the text is dropped (same as today).
 
 ## POST /roll   (harness d100, schicksal engine RNG)
-`{ "speaker": String, "pillar"?: "kampf"|"sozial"|"wissen", "traits"?: [String], "difficulty"?: Int, "sp"?: Int, "reason"?: String }`
+`{ "speaker": String, "pillar"?: "kampf"|"sozial"|"wissen", "traits"?: [String], "difficulty"?: Int, "sp"?: Int, "ergeben"?: Bool, "reason"?: String }`
 - target = pillar value + fitting traits (+10/+20, negative -10/-20; trait words matched against the speaker's sheet) + `difficulty` (leicht +20, normal 0, schwer -20, sehr schwer -30; any integer accepted) + SP penalties (SP<=1: -10, SP 0: -20) + Wunden penalty (<=3 Wunden: -10).
 - `sp`: Schicksalspunkte spent now, each +10 on this roll (max 3, capped by the speaker's SP); negative `sp` is not allowed (use /sp with `target`).
 - Response `200`: `{ "speaker", "pillar", "reason", "target": Int, "roll": Int, "success": Bool, "dos": Int, "dof": Int, "crit": "success"|"failure"|null, "sp_left": Int }`
   - `dos` = 1 + floor((target-roll)/10) on success (else 0); `dof` = 1 + floor((roll-target)/10) on failure (else 0); 01-05 always success, 96-100 always failure; doubles (11..99, 100) make `crit`.
+- `ergeben` (Schicksalsergeben, see RULES-schicksalsschlag.md): -10 as its own modifier; at >= 2 DoS the speaker gets 1 SP back (capped at spMax), a failure gets `dof + 1` (also crit/96-100). Response and SSE `roll` additionally carry `"ergeben": Bool, "sp_gained": Int` (`sp_left` is after the gain); SSE `sheet` follows. Errors (nothing rolled, nothing changed), body `{ "error": German text }`: `400` with `sp > 0` (not combinable), on `difficulty > 0` (leicht), or when already used this scene (once per scene and figure, reset on start_scene/end_scene); `409` when the speaker has pre-spent SP (`/sp mode=pre`) or SP from others (`mod`) pending.
 - Side effects: SSE `roll`; the result is stored as a hard fact for the next narration of that speaker's turn ("[Fakt] Probe Kampf: 3 Grad Erfolg ...").
 
 ## POST /rollresult   (roll made in Foundry)
-`{ "speaker": String, "label": String, "target": Int, "roll": Int }` -> `200 { "success", "dos", "dof", "crit", "label" }`. sl computes the degrees with the same rules and queues them as a hard fact for the next narration (also emits SSE `roll` with `source:"foundry"`).
+`{ "speaker": String, "label": String, "target": Int, "roll": Int, "ergeben"?: Bool, "difficulty"?: Int, "sp"?: Int }` -> `200 { "success", "dos", "dof", "crit", "label", "ergeben", "sp_gained" }`. With `ergeben: true` Foundry has already put the -10 into `target`; sl applies DoF+1 / the SP gain and emits `sheet` (Foundry takes the new SP from there, no local write). Same refusals as `/roll` (`400` for `sp > 0`, `difficulty > 0`, already used; `409` pending SP/mod; `404` unknown speaker). sl computes the degrees with the same rules and queues them as a hard fact for the next narration (also emits SSE `roll` with `source:"foundry"`).
 
 ## POST /regie
 `{ "text": String }` -> `202`. Hidden GM note, injected once into the next narration (never shown to players).
@@ -36,7 +37,7 @@ Busy: SSE `info` "SL denkt noch" and the text is dropped (same as today).
 Existing fields unchanged, plus `"party": [ { "name", "pillars": {"kampf","sozial","wissen"}, "traits": [ {"text","kind":"minor|major","pos":Bool} ], "sp", "spMax", "wunden", "inventar": [String], "taler": Int } ]` (empty array when no party).
 
 ## GET /events  (SSE, `data: {json}\n\n`)
-Typed events (`t`): `narr` {d: chunk, speaker?}, `narr_end`, `roll` {speaker, pillar, reason, target, roll, success, dos, dof, crit, sp_left, source?}, `oracle` {q, answer, odds, p, roll}, `sheet` {party: [...as in /state]}, `info` {text}. The legacy events (`delta`, `end`, `retract`, `tool`, `event`, `world`, `state`, `user`) keep being sent for the built-in web UI; `narr`/`narr_end` mirror `delta`/`end`. `retract` also drops text already sent as `narr`.
+Typed events (`t`): `narr` {d: chunk, speaker?}, `narr_end`, `roll` {speaker, pillar, reason, target, roll, success, dos, dof, crit, sp_left, source?, ergeben, sp_gained}, `oracle` {q, answer, odds, p, roll}, `sheet` {party: [...as in /state]}, `info` {text}. The legacy events (`delta`, `end`, `retract`, `tool`, `event`, `world`, `state`, `user`) keep being sent for the built-in web UI; `narr`/`narr_end` mirror `delta`/`end`. `retract` also drops text already sent as `narr`.
 
 ## Errors
 `400 {"error": "..."}` bad JSON / missing field; `404` unknown speaker for /sp; `409 {"error":"busy"}` only for /say while a turn runs.

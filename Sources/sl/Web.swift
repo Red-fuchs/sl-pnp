@@ -133,12 +133,15 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       let pillar = (j["pillar"] as? String ?? "kampf").lowercased()
       guard ["kampf", "sozial", "wissen"].contains(pillar) else { return json("400 Bad Request", ["error": "pillar: kampf|sozial|wissen"]) }
       guard let g = runner.game else { return json("503 Service Unavailable", ["error": "kein Spiel"]) }
-      let ch = g.doCheck(speaker: sp, pillar: pillar, traits: j["traits"] as? [String] ?? [], difficulty: j["difficulty"] as? Int ?? 0, sp: j["sp"] as? Int ?? 0, reason: j["reason"] as? String ?? "")
-      json("200 OK", ch.json)
+      let ch = g.doCheck(speaker: sp, pillar: pillar, traits: j["traits"] as? [String] ?? [], difficulty: j["difficulty"] as? Int ?? 0, sp: j["sp"] as? Int ?? 0, reason: j["reason"] as? String ?? "", ergeben: j["ergeben"] as? Bool ?? false)
+      if let e = ch.error { json(ch.errCode == 409 ? "409 Conflict" : "400 Bad Request", ["error": e]) } else { json("200 OK", ch.json) }
     case ("POST", "/rollresult"):
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, let t = j["target"] as? Int, let r = j["roll"] as? Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker, label, target, roll"]) }
-      let ch = g.foundryRoll(speaker: sp, label: j["label"] as? String ?? "Probe", target: t, roll: r)
-      json("200 OK", ["success": ch.success, "dos": ch.dos, "dof": ch.dof, "crit": ch.crit as Any? ?? NSNull(), "label": ch.reason])
+      let erg = j["ergeben"] as? Bool ?? false
+      if erg, (j["sp"] as? Int ?? 0) > 0 { return json("400 Bad Request", ["error": "Schicksalsergeben ist nicht kombinierbar mit Schicksalspunkten."]) }
+      let ch = g.foundryRoll(speaker: sp, label: j["label"] as? String ?? "Probe", target: t, roll: r, ergeben: erg, difficulty: j["difficulty"] as? Int ?? 0)
+      if let e = ch.error { return json(ch.errCode == 409 ? "409 Conflict" : ch.errCode == 404 ? "404 Not Found" : "400 Bad Request", ["error": e]) }
+      json("200 OK", ["success": ch.success, "dos": ch.dos, "dof": ch.dof, "crit": ch.crit as Any? ?? NSNull(), "label": ch.reason, "ergeben": ch.ergeben, "sp_gained": ch.spGained])
     case ("POST", "/regie"):
       guard let j = bodyJSON(), let t = j["text"] as? String, !t.isEmpty, let g = runner.game else { return json("400 Bad Request", ["error": "text fehlt"]) }
       g.partyStore.lock.lock(); g.pendingRegie.append(clean(t, 300)); g.partyStore.lock.unlock()

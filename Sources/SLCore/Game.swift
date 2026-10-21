@@ -332,7 +332,7 @@ public final class Game {
       }
       let res = eng.call(name, args)
       if name == "ask_oracle", let a = res["answer"].str { if a.hasPrefix("NEIN") { sceneNein += 1 } else { sceneJa += 1 }; if !res["event"].isNull { sceneEvents += 1 } }
-      if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0 }
+      if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0; partyStore.with { SR.resetScene(&$0) } }
       calls += 1
       if name == "ask_oracle" { asked = true; sceneQs.append(args["q"].str ?? "") }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }

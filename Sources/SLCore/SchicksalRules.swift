@@ -17,13 +17,21 @@ public struct Check: Codable, Equatable {
   public var crit: String?
   public var spLeft = 0
   public var source = "sl"
+  /// Schicksalsergeben: -10 before the roll; >= 2 DoS gives 1 SP back, a failure gets 1 DoF more (Schicksalsschlag). Stored optional so older saves still decode.
+  var _ergeben: Bool?, _spGained: Int?
+  public var ergeben: Bool { get { _ergeben ?? false } set { _ergeben = newValue } }
+  public var spGained: Int { get { _spGained ?? 0 } set { _spGained = newValue } }
+  /// set when the check was refused (nothing rolled, nothing changed); errCode = HTTP status (400/409)
+  public var error: String?
+  public var errCode = 0
   public init() {}
-  public var json: [String: Any] { ["speaker": speaker, "pillar": pillar, "reason": reason, "target": target, "roll": roll, "success": success, "dos": dos, "dof": dof, "crit": crit as Any? ?? NSNull(), "sp_left": spLeft, "source": source] }
+  public var json: [String: Any] { ["speaker": speaker, "pillar": pillar, "reason": reason, "target": target, "roll": roll, "success": success, "dos": dos, "dof": dof, "crit": crit as Any? ?? NSNull(), "sp_left": spLeft, "source": source, "ergeben": ergeben, "sp_gained": spGained] }
   /// hard fact for the narrator
   public var fact: String {
     let what = pillar.isEmpty ? reason : (reason.isEmpty ? "Probe \(pillar.capitalized)" : "Probe \(pillar.capitalized) (\(reason))")
     var s = "[Fakt] \(speaker.isEmpty ? "" : speaker + ": ")\(what): Ziel \(target), Wurf \(roll) – "
     s += success ? "Erfolg, \(dos) Grad\(dos == 1 ? "" : "e")" : "Misserfolg, \(dof) Grad\(dof == 1 ? "" : "e")"
+    if ergeben { s += success ? " [schicksalsergeben (−10)\(spGained > 0 ? ", 1 SP zurück" : "")]" : " [schicksalsergeben (−10): Schicksalsschlag, der Misserfolg wiegt einen Grad schwerer und wird härter erzählt]" }
     if crit == "success" { s += ", KRITISCHER ERFOLG: eine Wendung zu Gunsten der Figur" }
     if crit == "failure" { s += ", KRITISCHER MISSERFOLG: eine Komplikation" }
     return s + ". Erzähle genau dieses Ergebnis" + (success ? (dos >= 3 ? " (glänzend)." : " (knapp bis solide).") : (dof >= 3 ? " (deutlich gescheitert)." : " (knapp gescheitert)."))
@@ -41,6 +49,8 @@ public struct Pc: Codable, Equatable {
   public var pendingSp = 0          // pre-spent: +10 each on the next check (max 3)
   public var pendingOracle = 0      // steps for the next oracle odds
   public var mod = 0                // +-10 steps put on this character by others (applies to the next check)
+  var _ergebenUsed: Bool?           // Schicksalsergeben already used in this scene (optional: older saves)
+  public var ergebenUsed: Bool { get { _ergebenUsed ?? false } set { _ergebenUsed = newValue } }
   public var lastCheck: Check?
   public init(speaker: String, name: String? = nil) { self.speaker = speaker; self.name = name ?? speaker }
   public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "inventar": inventar, "taler": taler] }
@@ -65,15 +75,41 @@ public enum SR {
   public static func target(_ pc: Pc, pillar: String, fit: [Trait], difficulty: Int, spBonus: Int = 0) -> Int {
     (pc.pillars[pillar] ?? 40) + fit.reduce(0) { $0 + $1.bonus } + difficulty + penalty(pc) + spBonus + pc.mod
   }
+  /// Schicksalsergeben refusals (nil = allowed): 400 = not combinable / leicht / used, 409 = pending SP or mod on the sheet
+  public static func ergebenRefusal(_ pc: Pc, difficulty: Int, spUse: Int) -> (code: Int, msg: String)? {
+    if spUse > 0 { return (400, "Schicksalsergeben ist nicht kombinierbar mit Schicksalspunkten auf derselben Probe.") }
+    if pc.pendingSp > 0 { return (409, "Schicksalsergeben ist nicht kombinierbar mit vorab eingesetzten Schicksalspunkten.") }
+    if pc.mod != 0 { return (409, "Schicksalsergeben ist nicht kombinierbar mit Schicksalspunkten anderer auf dieser Probe.") }
+    if difficulty > 0 { return (400, "Schicksalsergeben gibt es nicht bei leichten Proben.") }
+    if pc.ergebenUsed { return (400, "Schicksalsergeben ist in dieser Szene schon verbraucht (einmal pro Szene und Figur).") }
+    return nil
+  }
+  /// after the degrees: failure +1 DoF, success with >= 2 DoS +1 SP (capped at max). Voids a gain of an earlier result (Neuwurf: the second result counts).
+  public static func settleErgeben(_ pc: inout Pc, _ c: inout Check) {
+    guard c.ergeben else { return }
+    if c.spGained > 0 { pc.sp = max(0, pc.sp - c.spGained); c.spGained = 0 }
+    if !c.success { c.dof += 1 }
+    else if c.dos >= 2 { let n = max(0, min(pc.spMax, pc.sp + 1) - pc.sp); pc.sp += n; c.spGained = n }
+    c.spLeft = pc.sp
+  }
+  /// scene change: Schicksalsergeben is available again
+  public static func resetScene(_ pcs: inout [Pc]) { for i in pcs.indices { pcs[i].ergebenUsed = false } }
+  public static let ergebenMod = -10
   /// d: 1...100
-  public static func check(_ pc: inout Pc, pillar: String, traits: [Trait], difficulty: Int, spUse: Int, reason: String, d100: Int, source: String = "sl") -> Check {
+  public static func check(_ pc: inout Pc, pillar: String, traits: [Trait], difficulty: Int, spUse: Int, reason: String, d100: Int, source: String = "sl", ergeben: Bool = false) -> Check {
+    if ergeben, let r = ergebenRefusal(pc, difficulty: difficulty, spUse: spUse) {
+      var c = Check(); c.speaker = pc.name; c.pillar = pillar; c.reason = reason; c.source = source; c.ergeben = true; c.error = r.msg; c.errCode = r.code; c.spLeft = pc.sp
+      return c
+    }
     let use = max(0, min(3, spUse + pc.pendingSp, pc.sp)) , mod = pc.mod
     _ = mod
     pc.sp -= use; pc.pendingSp = 0
-    let t = target(pc, pillar: pillar, fit: traits, difficulty: difficulty, spBonus: 10 * use)
+    let t = target(pc, pillar: pillar, fit: traits, difficulty: difficulty, spBonus: 10 * use) + (ergeben ? ergebenMod : 0)   // own labelled modifier, not via difficulty
     pc.mod = 0
     var c = Check(); c.speaker = pc.name; c.pillar = pillar; c.reason = reason; c.target = t; c.roll = d100; c.source = source
     (c.success, c.dos, c.dof, c.crit) = degrees(target: t, roll: d100)
+    c.ergeben = ergeben
+    if ergeben { pc.ergebenUsed = true; settleErgeben(&pc, &c) }
     c.spLeft = pc.sp; pc.lastCheck = c
     return c
   }

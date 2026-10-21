@@ -184,6 +184,8 @@ add(f'''<h1>5 Schicksalspunkte (SP)</h1>
 ['<b>1 SP</b>','Chancen des Orakels um <b>eine Stufe</b> verschieben (z. B. offen → wahrscheinlich; bei Gegnern gegen sie).'],
 ['<b>2 SP</b>','<b>Neu würfeln.</b> Das zweite Ergebnis zählt.'],
 ['<b>1 SP</b>','Bei 0 Wunden <b>überleben</b> (du bleibst am Boden, aber lebst).']])}
+<div class="box"><b class="t">Schicksalsergeben.</b> Vor dem Wurf, bei einer Probe mit echtem Einsatz (die Spielleitung entscheidet; nie bei leichten Proben, Initiative oder reinen Übungen), kannst du dich dem Schicksal ergeben: <b>−10</b> auf die Probe. Gelingt sie trotzdem mit mindestens <b>2 Erfolgsgraden</b>, erhältst du <b>1 SP</b> zurück (nicht über dein Maximum). Scheitert sie, ist es ein <b>Schicksalsschlag</b>: der Misserfolg zählt <b>einen Fehlergrad mehr</b> und wird härter erzählt.<br>
+<b>Einmal pro Szene und Figur.</b> Nicht kombinierbar mit SP auf derselben Probe, weder eigenen noch fremden. Ein Neuwurf (2 SP) bleibt erlaubt, das zweite Ergebnis zählt.</div>
 <p class="note">±10 auf die Zielzahl entspricht ∓10 auf den Wurf: Erfolgsgrade ändern sich nach der Formel, der Pasch bleibt Pasch.</p>
 <h3>Schwellen (Schicksalsmüdigkeit)</h3>
 {table(['SP','Folge'],[['5 bis 2','keine'],['1','„schicksalsmüde“: <b>−10</b> auf alle Proben'],['0','<b>−20</b> auf alle Proben (statt −10), und Orakelfragen zu deinen Gunsten gehen eine Stufe schlechter aus']],'small')}
@@ -192,7 +194,8 @@ add(f'''<h1>5 Schicksalspunkte (SP)</h1>
 <p>Das Maximum bleibt die Obergrenze.</p>
 <div class="box ex"><b class="t">Beispiel A: Einen NSC-Wurf verbiegen.</b> Der Schmuggler greift Mirne mit Ziel 40 an und würfelt 19 (DoS 3). Mirne gibt <b>2 SP</b> aus: −20 auf die Zielzahl des Schmugglers (Ziel 20). 19 ≤ 20 ist noch ein Treffer, aber nur DoS 1 + abgerundet(1 ÷ 10) = <b>1</b>. Statt 5 bekommt Mirne nur 3 + 1 − 1 = <b>3</b> Schaden. Mit einem dritten SP (Ziel 10) wäre 19 ein Misserfolg gewesen. Mirne hat jetzt 4 von 6 SP.</div>
 <div class="box ex"><b class="t">Beispiel B: Orakel-Chancen verschieben.</b> Frage: „Ist die Hintertür unverschlossen?“ Spannung 5, Chancen <b>offen</b>: JA+ ≤ {A[0]}, JA ≤ {A[1]}, NEIN ≤ {A[2]}, darüber NEIN+. Mirne gibt <b>1 SP</b> aus und verschiebt auf <b>wahrscheinlich</b>: JA+ ≤ {B[0]}, JA ≤ {B[1]}, NEIN ≤ {B[2]}. Die Chance auf JA oder JA+ steigt von {A[1]} % auf {B[1]} %. Würde ein Gegner das Orakel verbiegen, verschiebt er die Chancen entsprechend in die andere Richtung.</div>
-<div class="box ex"><b class="t">Beispiel C: Rettung und Neuwurf.</b> Mirne hat 4 SP (Stand nach Beispiel A) und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3). Sie zahlt <b>2 SP</b> für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (−10 auf alle Proben).</div>''')
+<div class="box ex"><b class="t">Beispiel C: Rettung und Neuwurf.</b> Mirne hat 4 SP (Stand nach Beispiel A) und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3). Sie zahlt <b>2 SP</b> für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (−10 auf alle Proben).</div>
+<div class="box ex"><b class="t">Beispiel D: Schicksalsergeben.</b> Kampf 50, Ziel mit Ergeben <b>40</b>. Wurf <b>30</b>: DoS 2, <b>+1 SP</b> (Wurf 35: DoS 1, kein SP). Wurf <b>45</b>: DoF 1 + 1 = <b>2</b>, Schicksalsschlag. Gewinn gibt es bei Wurf ≤ Ziel − 20; jeder Misserfolg bekommt +1 DoF.</div>''')
 
 # ================= 6 ORAKEL =================
 add(f'''<h1>6 Das Orakel ohne KI</h1>
@@ -277,7 +280,7 @@ add(f'''<h1>7 Einfalls-Werkzeugkasten: Komplikationen, Beute, Stimmung</h1>
 <div><h3>Stimmung der Szene (d10)</h3>{d10t(W['tageszeit_stimmung'],'Sinn',1)}</div></div>''')
 
 # ================= 8 FALLBACK =================
-add(f'''<h1>8 Notfall: Spielleitung von Hand</h1>
+add(f'''<h1 class="pb">8 Notfall: Spielleitung von Hand</h1>
 <p>Wenn sl hängt (keine Antwort, Absturz, kaputte Verbindung) oder die Technik ausfällt: <b>nicht abbrechen.</b> Das Spiel läuft mit diesem Heft weiter.</p>
 <h3>Ablauf</h3>
 <ol>
@@ -314,16 +317,16 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 <div class="box"><b class="t">Zielzahl = Säule + Eigenschaften + Schwierigkeit + Zustände.</b> &nbsp; Würfle d100, <b>Wurf ≤ Zielzahl = Erfolg</b>. Wurf 01–05 immer Erfolg, 96–100 immer Misserfolg.<br>
 <b>DoS</b> = 1 + abgerundet((Ziel − Wurf) ÷ 10) &nbsp;·&nbsp; <b>DoF</b> = 1 + abgerundet((Wurf − Ziel) ÷ 10) &nbsp;·&nbsp; max 10 &nbsp;·&nbsp; <b>Pasch</b> (11 … 99, 100) = kritisch.</div>
 <div class="grid"><div>
-{table(['Quelle','Mod.'],[['Vorteil klein / groß','+10 / +20'],['Nachteil klein / groß','−10 / −20'],['Schwierigkeit leicht','+20'],['normal','±0'],['schwer','−20'],['sehr schwer','−30'],['Wunden ≤ 3','−10'],['SP = 1','−10'],['SP = 0','−20 (nicht addiert)'],['1 SP ausgegeben (max. 3 je Probe)','±10 pro SP, auch bei anderen']],'')}</div>
+{table(['Quelle','Mod.'],[['Vorteil klein / groß','+10 / +20'],['Nachteil klein / groß','−10 / −20'],['Schwierigkeit leicht','+20'],['normal','±0'],['schwer','−20'],['sehr schwer','−30'],['Wunden ≤ 3','−10'],['SP = 1','−10'],['SP = 0','−20 (nicht addiert)'],['1 SP ausgegeben (max. 3 je Probe)','±10 pro SP, auch bei anderen'],['Schicksalsergeben (1× je Szene)','−10, ohne SP']],'')}</div>
 <div>
 {table(['Säule','Grundwert'],[['Kampf, Sozial, Wissen','30 / 40 / 50 (frei verteilt)']],'')}
 {table(['Waffe','Sch.'],[['Faust','1'],['Messer, Knüppel','2'],['Schwert, Axt, Bogen, Armbrust','3'],['Feuerwaffe','4']],'')}
 {table(['Rüstung','Abzug'],[['Stoff','0'],['Leder','1'],['Kette','2'],['Platte','3']],'')}</div>
 <div>
-{table(['SP-Kosten','Wirkung'],[['1','±10 auf eine Probe'],['1','Orakel um 1 Stufe'],['2','Neuwurf'],['1','Überleben bei 0 Wunden']],'')}
+{table(['SP-Kosten','Wirkung'],[['1','±10 auf eine Probe'],['1','Orakel um 1 Stufe'],['2','Neuwurf'],['1','Überleben bei 0 Wunden'],['+1','Ergeben: ≥ 2 DoS, Wurf ≤ Ziel − 20']],'')}
 {table(['SP-Erholung','+'],[['Rast 1 h','1'],['Nacht / sicher','3'],['Nachteil ausgespielt','1'],['Fest / Tempel','2'],['Strang abgeschlossen','2']],'')}</div></div>
 <div class="grid"><div>
-<b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). Wunden 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.</div>
+<b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). Wunden 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
 <div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2 Punkte = 1 Gegenstand · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
 <h3>Richtwerte Preise (Vorschlag der Spielleitung, nicht Kernregel)</h3>
 {table(['Gut','Taler'],[['Mahlzeit, Bett im Schlafsaal','1–2'],['Messer, Knüppel, Seil','3–5'],['Lederwams, Bogen','15–25'],['Schwert, Axt, Kettenhemd','40–80'],['Plattenpanzer, Feuerwaffe','150–300']],'small')}</div>''')

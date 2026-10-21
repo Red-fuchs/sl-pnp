@@ -39,23 +39,35 @@ public extension Game {
 
   /// harness check (POST /roll, or an action under `schicksal`)
   @discardableResult
-  func doCheck(speaker: String?, pillar: String, traits: [String] = [], difficulty: Int = 0, sp: Int = 0, reason: String = "", context: String = "") -> Check {
+  func doCheck(speaker: String?, pillar: String, traits: [String] = [], difficulty: Int = 0, sp: Int = 0, reason: String = "", context: String = "", ergeben: Bool = false) -> Check {
     let i = pcIndex(speaker)!
     let c: Check = partyStore.with { p in
       var pc = p[i]
       let fit = SR.fitting(reason + " " + context + " " + traits.joined(separator: " "), pc.traits)
-      let r = SR.check(&pc, pillar: pillar, traits: fit, difficulty: difficulty, spUse: sp, reason: reason, d100: d100())
+      let r = SR.check(&pc, pillar: pillar, traits: fit, difficulty: difficulty, spUse: sp, reason: reason, d100: d100(), ergeben: ergeben)
       p[i] = pc; return r
     }
+    if c.error != nil { return c }
     out(.roll(c)); announceSheet()
     return c
   }
   /// a roll made in Foundry: degrees computed here, queued as a fact for the next narration
-  func foundryRoll(speaker: String?, label: String, target: Int, roll: Int) -> Check {
+  func foundryRoll(speaker: String?, label: String, target: Int, roll: Int, ergeben: Bool = false, difficulty: Int = 0) -> Check {
     var c = Check(); c.speaker = speaker ?? ""; c.reason = label; c.target = target; c.roll = roll; c.source = "foundry"
+    let i = pcIndex(speaker, create: false)
+    if ergeben {
+      // target already carries -10 (Foundry computed it); Foundry shows no SP buttons on ergeben cards
+      c.ergeben = true
+      guard let i else { c.error = "unbekannter speaker"; c.errCode = 404; return c }
+      if let r = partyStore.with({ SR.ergebenRefusal($0[i], difficulty: difficulty, spUse: 0) }) { c.error = r.msg; c.errCode = r.code; return c }
+    }
     (c.success, c.dos, c.dof, c.crit) = SR.degrees(target: target, roll: roll)
-    if let i = pcIndex(speaker, create: false) { c.speaker = partyStore.with { $0[i].name }; c.spLeft = partyStore.with { $0[i].sp } }
+    if let i {
+      c.speaker = partyStore.with { $0[i].name }; c.spLeft = partyStore.with { $0[i].sp }
+      if ergeben { partyStore.with { p in var pc = p[i]; pc.ergebenUsed = true; SR.settleErgeben(&pc, &c); pc.lastCheck = c; p[i] = pc } }
+    }
     pendingFacts.append(c.fact); out(.roll(c))
+    if ergeben { announceSheet() }
     return c
   }
 
@@ -75,7 +87,7 @@ public extension Game {
       case "survive":
         if pc.sp >= 1 && pc.wunden <= 0 { pc.sp -= 1; pc.wunden = 0 } else { err = "überleben braucht 1 SP und 0 Wunden" }
       case "reroll":
-        if pc.sp >= 2, var last = pc.lastCheck { pc.sp -= 2; let r = d100(); last.roll = r; (last.success, last.dos, last.dof, last.crit) = SR.degrees(target: last.target, roll: r); last.spLeft = pc.sp; last.reason += " (Neuwurf)"; pc.lastCheck = last; pendingFacts.append(last.fact); self.out(.roll(last)) } else { err = "Neuwurf braucht 2 SP und eine vorherige Probe" }
+        if pc.sp >= 2, var last = pc.lastCheck { pc.sp -= 2; let r = d100(); last.roll = r; (last.success, last.dos, last.dof, last.crit) = SR.degrees(target: last.target, roll: r); SR.settleErgeben(&pc, &last); last.spLeft = pc.sp; last.reason += " (Neuwurf)"; pc.lastCheck = last; pendingFacts.append(last.fact); self.out(.roll(last)) } else { err = "Neuwurf braucht 2 SP und eine vorherige Probe" }
       default:
         if let t = target, !t.isEmpty {       // spend SP on someone else's next check: 1 SP = +-10
           let n = min(abs(delta), pc.sp); pc.sp -= n

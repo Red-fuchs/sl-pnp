@@ -1567,6 +1567,36 @@ final class SchicksalRulesTests: XCTestCase {
     let c = SR.check(&pc, pillar: "kampf", traits: [], difficulty: 0, spUse: 5, reason: "x", d100: 50)
     XCTAssertEqual(c.target, 80, "max 3 SP = +30"); XCTAssertEqual(pc.sp, 2); XCTAssertEqual(c.spLeft, 2); XCTAssertTrue(c.fact.contains("Ziel 80"))
   }
+  func testSchicksalsergeben() {
+    func pc50(sp: Int = 3) -> Pc { var p = Pc(speaker: "a"); p.pillars["kampf"] = 50; p.sp = sp; return p }
+    func go(_ p: inout Pc, _ r: Int, dif: Int = 0, sp: Int = 0) -> Check { SR.check(&p, pillar: "kampf", traits: [], difficulty: dif, spUse: sp, reason: "x", d100: r, ergeben: true) }
+    var p = pc50(); var c = go(&p, 30)
+    XCTAssertEqual(c.target, 40); XCTAssertTrue(c.success); XCTAssertEqual(c.dos, 2); XCTAssertEqual(c.spGained, 1); XCTAssertEqual(p.sp, 4); XCTAssertEqual(c.spLeft, 4); XCTAssertTrue(c.ergeben)
+    XCTAssertTrue(c.fact.contains("schicksalsergeben (−10), 1 SP zurück")); XCTAssertEqual(c.json["sp_gained"] as? Int, 1); XCTAssertEqual(c.json["ergeben"] as? Bool, true)
+    p = pc50(); c = go(&p, 35); XCTAssertTrue(c.success); XCTAssertEqual(c.dos, 1); XCTAssertEqual(c.spGained, 0); XCTAssertEqual(p.sp, 3)
+    p = pc50(); c = go(&p, 3); XCTAssertEqual(c.dos, 1 + 37 / 10); XCTAssertEqual(c.spGained, 1, "01-05 needs no special case")
+    p = pc50(); c = go(&p, 45); XCTAssertFalse(c.success); XCTAssertEqual(c.dof, 2, "1 + 1"); XCTAssertNil(c.crit); XCTAssertEqual(p.sp, 3); XCTAssertTrue(c.fact.contains("Schicksalsschlag"))
+    p = pc50(); c = go(&p, 44); XCTAssertEqual(c.crit, "failure"); XCTAssertEqual(c.dof, 2)
+    p = pc50(); c = go(&p, 98); XCTAssertEqual(c.dof, 1 + 58 / 10 + 1)
+    p = pc50(sp: 5); c = go(&p, 30); XCTAssertEqual(c.dos, 2); XCTAssertEqual(c.spGained, 0); XCTAssertEqual(p.sp, 5, "capped at max")
+    p = pc50(); c = go(&p, 30, sp: 1); XCTAssertEqual(c.errCode, 400); XCTAssertNotNil(c.error); XCTAssertEqual(c.roll, 0); XCTAssertEqual(p.sp, 3); XCTAssertFalse(p.ergebenUsed)
+    p = pc50(); p.pendingSp = 1; c = go(&p, 30); XCTAssertEqual(c.errCode, 409); XCTAssertEqual(p.pendingSp, 1)
+    p = pc50(); p.mod = 10; c = go(&p, 30); XCTAssertEqual(c.errCode, 409); XCTAssertEqual(p.mod, 10)
+    p = pc50(); c = go(&p, 30, dif: 20); XCTAssertEqual(c.errCode, 400); XCTAssertTrue(c.error!.contains("leicht")); XCTAssertFalse(p.ergebenUsed)
+    p = pc50(); _ = go(&p, 60); XCTAssertTrue(p.ergebenUsed)
+    c = go(&p, 30); XCTAssertEqual(c.errCode, 400); XCTAssertTrue(c.error!.contains("Szene"))
+    var party = [p, pc50()]; SR.resetScene(&party); XCTAssertFalse(party[0].ergebenUsed)
+    c = go(&party[0], 30); XCTAssertNil(c.error); XCTAssertEqual(c.spGained, 1)
+    // Neuwurf: the second result counts (gain voided, failure gets +1 DoF)
+    p = pc50(); c = go(&p, 30); XCTAssertEqual(p.sp, 4)
+    c.roll = 70; (c.success, c.dos, c.dof, c.crit) = SR.degrees(target: c.target, roll: 70); SR.settleErgeben(&p, &c)
+    XCTAssertEqual(p.sp, 3); XCTAssertEqual(c.spGained, 0); XCTAssertEqual(c.dof, 1 + 30 / 10 + 1)
+    // without ergeben nothing changes
+    p = pc50(); c = SR.check(&p, pillar: "kampf", traits: [], difficulty: 0, spUse: 0, reason: "x", d100: 30); XCTAssertEqual(c.target, 50); XCTAssertEqual(c.spGained, 0); XCTAssertFalse(c.ergeben); XCTAssertFalse(p.ergebenUsed)
+    // old saves without the keys still decode
+    let old = try! JSONEncoder().encode(Pc(speaker: "z")); var d = try! JSONSerialization.jsonObject(with: old) as! [String: Any]; d.removeValue(forKey: "_ergebenUsed")
+    XCTAssertFalse(try! JSONDecoder().decode(Pc.self, from: JSONSerialization.data(withJSONObject: d)).ergebenUsed)
+  }
   func testCreation() {
     let t = [Trait(text: "a", major: true, pos: true), Trait(text: "b", major: true, pos: true), Trait(text: "c", major: true, pos: true), Trait(text: "d", major: true, pos: true), Trait(text: "e", major: true, pos: true), Trait(text: "f", major: true, pos: true), Trait(text: "Schuld", major: false, pos: false)]
     XCTAssertEqual(SR.budgetLeft(t), 20 - 24 + 2)

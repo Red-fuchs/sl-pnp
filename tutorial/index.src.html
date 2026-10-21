@@ -346,6 +346,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <label>SP-Stand vorher<select id="c-s"><option value="0">2 bis 5 (keine)</option><option value="-10">1 (&minus;10)</option><option value="-20">0 (&minus;20)</option></select></label>
       <label>Wunden<select id="c-w"><option value="0">4 bis 10</option><option value="-10">3 oder weniger (&minus;10)</option></select></label>
       <label>SP jetzt ausgeben (+10 je)<select id="c-x"><option>0</option><option>1</option><option>2</option><option>3</option></select></label>
+      <label>Schicksalsergeben (&minus;10)<select id="c-e"><option value="0">nein</option><option value="1">ja</option></select></label>
       <label>Wurf (1 bis 100)<input type="number" id="c-r" min="1" max="100" value="47"></label>
     </div>
     <button class="btn" id="c-roll" type="button">Würfeln</button>
@@ -498,11 +499,19 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   <p data-r>Auf jeder Proben-Karte stehen die Knöpfe <b>SP +10</b> und <b>SP &minus;10</b>. Setzt du sie bei einer <b>fremden</b> Probe ein, fragt der Moderator per Dialog nach, ob er es erlaubt. Maximal 3 SP pro Probe. Deinen SP-Stand siehst du oben rechts auf dem Charakterbogen als <i>Wert/Max</i>.</p>
   {{FIG:approve}}
 
-  <h3 data-r>Drei Beispiele</h3>
+  <h3 data-r id="ergeben">Schicksalsergeben: SP zurückholen</h3>
+  <div class="card" data-r>
+    <p><b>Schicksalsergeben.</b> Vor dem Wurf, bei einer Probe mit echtem Einsatz (die Spielleitung entscheidet; nie bei leichten Proben, Initiative oder reinen Übungen), kannst du dich dem Schicksal ergeben: <b>&minus;10</b> auf die Probe. Gelingt sie trotzdem mit mindestens <b>2 Erfolgsgraden</b>, erhältst du <b>1 SP</b> zurück (nicht über dein Maximum). Scheitert sie, ist es ein <b>Schicksalsschlag</b>: der Misserfolg zählt <b>einen Fehlergrad mehr</b> und wird härter erzählt.</p>
+    <p style="margin:0"><b>Einmal pro Szene und Figur.</b> Nicht kombinierbar mit Schicksalspunkten auf derselben Probe, weder eigenen noch fremden. Ein Neuwurf (2 SP) bleibt erlaubt, das zweite Ergebnis zählt. <span class="tag">Auslegung</span> Die Zielzahl wird T &minus; 10, die SP-Belohnung gibt es bei Wurf &le; T &minus; 20. Wurf 01 bis 05 gelingt immer (Grade nach der Formel, kein Sonderfall). Jeder Misserfolg bekommt +1 DoF, auch 96 bis 100 und kritische.</p>
+  </div>
+  <p data-r><b>In Foundry:</b> Haken <b>Schicksalsergeben</b> im Proben-Dialog. Er schließt das SP-Feld aus (und umgekehrt) und ist bei leichten Proben gesperrt. Auf der Karte gibt es dann keine SP-Knöpfe; den SP-Gewinn trägt der Spielleiter <b>sl</b> ein. Probier es im Rechner oben aus (Feld &bdquo;Schicksalsergeben&ldquo;).</p>
+
+  <h3 data-r>Vier Beispiele</h3>
   <div class="card" data-r>
     <p><b>A. Einen NSC-Wurf verbiegen.</b> Der Schmuggler greift Mirne mit Ziel 40 an und würfelt 19 (DoS 3). Mirne gibt 2 SP aus: &minus;20 auf die Zielzahl des Schmugglers (Ziel 20). 19 &le; 20 ist noch ein Treffer, aber nur DoS 1 + abgerundet(1 &divide; 10) = <b>1</b>. Statt 5 bekommt Mirne nur 3 + 1 &minus; 1 = <b>3</b> Schaden. Mit einem dritten SP (Ziel 10) wäre 19 ein Misserfolg gewesen. Mirne hat jetzt 4 von 6 SP.</p>
     <p><b>B. Orakel-Chancen verschieben.</b> Frage: &bdquo;Ist die Hintertür unverschlossen?&ldquo; Spannung 5, Chancen <i>offen</i>: JA+ &le; 8, JA &le; 50, NEIN &le; 92, darüber NEIN+. Mirne gibt 1 SP aus und verschiebt auf <i>wahrscheinlich</i>: JA+ &le; 11, JA &le; 71, NEIN &le; 96. Die Chance auf JA oder JA+ steigt von 50 % auf 71 %.</p>
-    <p style="margin:0"><b>C. Rettung und Neuwurf.</b> Mirne hat 4 SP und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3, dazu ein Pasch über der Zielzahl, also ein kritischer Misserfolg). Sie zahlt 2 SP für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (&minus;10 auf alle Proben).</p>
+    <p><b>C. Rettung und Neuwurf.</b> Mirne hat 4 SP und sinkt auf 0 Wunden. Sie gibt 1 SP aus und bleibt am Leben (3 SP). Beim Entkommen wirft sie 88 gegen Ziel 60 (DoF 3, dazu ein Pasch über der Zielzahl, also ein kritischer Misserfolg). Sie zahlt 2 SP für einen Neuwurf: 41, Erfolg mit DoS 2. Das zweite Ergebnis zählt. Jetzt hat sie nur noch 1 SP und ist schicksalsmüde (&minus;10 auf alle Proben).</p>
+    <p style="margin:0"><b>D. Schicksalsergeben.</b> Mirne (Kampf 50, keine Mods) wagt den Sprung über die Zugbrücke und ergibt sich dem Schicksal: Ziel <b>40</b>. Wurf <b>30</b>: DoS 2, also <b>+1 SP</b> zurück. Bei Wurf 35 wäre es DoS 1 und kein SP. Bei Wurf <b>45</b>: DoF 1 + 1 = <b>2</b>, ein Schicksalsschlag: die Brücke bricht unter ihr weg.</p>
   </div>
 </div></section>
 
@@ -589,13 +598,14 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <tr><td>Vorteil klein / groß</td><td>+10 / +20</td></tr><tr><td>Nachteil klein / groß</td><td>&minus;10 / &minus;20</td></tr>
       <tr><td>leicht / normal</td><td>+20 / ±0</td></tr><tr><td>schwer / sehr schwer</td><td>&minus;20 / &minus;30</td></tr>
       <tr><td>Wunden &le; 3</td><td>&minus;10</td></tr><tr><td>SP = 1</td><td>&minus;10</td></tr><tr><td>SP = 0</td><td>&minus;20 (nicht addiert)</td></tr>
-      <tr><td>1 SP ausgegeben (max. 3 je Probe)</td><td>±10 je SP, auch bei anderen</td></tr></table></div>
+      <tr><td>1 SP ausgegeben (max. 3 je Probe)</td><td>±10 je SP, auch bei anderen</td></tr><tr><td>Schicksalsergeben (1× je Szene)</td><td>&minus;10, ohne SP</td></tr></table></div>
     <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2 Punkte = 1 Gegenstand &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. Wunden 10, SP 5.</p></div>
     <div class="card" data-r><h4>Kampf</h4><p><b>Schaden = Waffe + DoS &minus; Rüstung</b> (min. 0).</p><table>
       <tr><td>Faust 1 &middot; Messer, Knüppel 2</td><td>Stoff 0 &middot; Leder 1</td></tr><tr><td>Schwert, Axt, Bogen, Armbrust 3 &middot; Feuerwaffe 4</td><td>Kette 2 &middot; Platte 3</td></tr></table>
-      <p style="margin:6px 0 0">Vergleichende Probe: Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt. Initiative: d100 &le; Kampf, mehr DoS zuerst (oder Spieler zuerst).</p></div>
+      <p style="margin:6px 0 0">Vergleichende Probe: Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt. Initiative: d100 &le; Kampf, mehr DoS zuerst (oder Spieler zuerst).</p>
+      <p style="margin:6px 0 0"><b>Schicksalsergeben:</b> vor dem Wurf &minus;10; &ge; 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</p></div>
     <div class="card" data-r><h4>SP-Kosten</h4><table>
-      <tr><td>1</td><td>±10 auf eine Probe</td></tr><tr><td>1</td><td>Orakel um 1 Stufe</td></tr><tr><td>2</td><td>Neuwurf</td></tr><tr><td>1</td><td>Überleben bei 0 Wunden</td></tr></table></div>
+      <tr><td>1</td><td>±10 auf eine Probe</td></tr><tr><td>1</td><td>Orakel um 1 Stufe</td></tr><tr><td>2</td><td>Neuwurf</td></tr><tr><td>1</td><td>Überleben bei 0 Wunden</td></tr><tr><td>+1</td><td>Ergeben: &ge; 2 DoS (Wurf &le; Ziel &minus; 20)</td></tr></table></div>
     <div class="card" data-r><h4>SP-Erholung</h4><table>
       <tr><td>Rast 1 Stunde</td><td>+1</td></tr><tr><td>Nacht / sicher</td><td>+3</td></tr><tr><td>Nachteil ausgespielt</td><td>+1</td></tr><tr><td>Fest / Tempel</td><td>+2</td></tr><tr><td>Strang abgeschlossen</td><td>+2</td></tr></table></div>
     <div class="card" data-r><h4>Orakel</h4><p style="margin:0">Chancen &times; Spannung &rarr; a / b / c. d100 &le; a <b>JA+</b> &middot; &le; b <b>JA</b> &middot; &le; c <b>NEIN</b> &middot; darüber <b>NEIN+</b>. Pasch mit Ziffer &le; Spannung = Zufallsereignis. Szenentest: d100 &le; 5 &times; Spannung &rarr; Szene verändert sich.</p></div>
@@ -715,17 +725,19 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   }
   function calc(){
     var p=+$('#c-p').value,tr=+$('#c-t').value,df=+$('#c-d').value,sp=+$('#c-s').value,w=+$('#c-w').value,x=+$('#c-x').value,roll=Math.max(1,Math.min(100,+$('#c-r').value||1));
-    var target=p+tr+df+sp+w+10*x;
-    var r=d100(target,roll);
+    var ge=+$('#c-e').value===1, erg=ge&&x===0&&df<=0, note=ge&&!erg?' <i>(Schicksalsergeben gilt nicht bei leichten Proben und nicht zusammen mit SP)</i>':'';
+    var target=p+tr+df+sp+w+10*x+(erg?-10:0);
+    var r=d100(target,roll); if(erg&&!r.succ)r.dof=Math.min(10,r.dof+1);
     drawBar(target,roll);
-    var s='Zielzahl = '+p+(tr?(tr>0?' + ':' − ')+Math.abs(tr):'')+(df?(df>0?' + ':' − ')+Math.abs(df):'')+(sp?' − '+Math.abs(sp)+' (SP-müde)':'')+(w?' − 10 (Wunden)':'')+(x?' + '+10*x+' (SP)':'')+' = <b>'+target+'</b>. Wurf <b>'+roll+'</b>: ';
+    var s='Zielzahl = '+p+(tr?(tr>0?' + ':' − ')+Math.abs(tr):'')+(df?(df>0?' + ':' − ')+Math.abs(df):'')+(sp?' − '+Math.abs(sp)+' (SP-müde)':'')+(w?' − 10 (Wunden)':'')+(x?' + '+10*x+' (SP)':'')+(erg?' − 10 (Schicksalsergeben)':'')+' = <b>'+target+'</b>. Wurf <b>'+roll+'</b>: ';
     if(r.succ)s+='<b class="ok">Erfolg, '+r.dos+' Erfolgsgrad'+(r.dos>1?'e':'')+'</b>'+(r.auto?' (01 bis 05 gelingt immer)':'');
     else s+='<b class="bad">Misserfolg, '+r.dof+' Misserfolgsgrad'+(r.dof>1?'e':'')+'</b>'+(r.auto?' (96 bis 100 misslingt immer)':'');
     if(r.crit==='s')s+=' &middot; <b class="ok">Pasch: kritischer Erfolg, eine Wendung zu deinen Gunsten</b>';
     if(r.crit==='f')s+=' &middot; <b class="bad">Pasch: kritischer Misserfolg, eine Komplikation</b>';
-    $('#c-out').innerHTML=s;
+    if(erg)s+=r.succ?(r.dos>=2?' &middot; <b class="ok">+1 SP zurück (Schicksalsergeben)</b>':' &middot; kein SP-Gewinn (nur 1 Erfolgsgrad)'):' &middot; <b class="bad">Schicksalsschlag: ein Fehlergrad mehr, härter erzählt</b>';
+    $('#c-out').innerHTML=s+note;
   }
-  ['c-p','c-t','c-d','c-s','c-w','c-x','c-r'].forEach(function(i){$('#'+i).addEventListener('input',calc)});
+  ['c-p','c-t','c-d','c-s','c-w','c-x','c-e','c-r'].forEach(function(i){$('#'+i).addEventListener('input',calc)});
   $('#c-roll').addEventListener('click',function(){$('#c-r').value=1+Math.floor(Math.random()*100);calc();
     if(window.Motion&&!matchMedia('(prefers-reduced-motion: reduce)').matches){var b=$('.rollball');if(b)Motion.animate(b,{transform:['translateY(-24px) scale(.4)','translateY(0) scale(1)']},{duration:.5,type:'spring',bounce:.4})}});
   calc();
