@@ -10,7 +10,7 @@ Temporary isekai: characters from any world are pulled into the Gramsmark by the
 - **Familiar:** the GM speaks as a party member (speaker = the familiar's name). NPC `gmFigur` flag: the narrator never voices it or invents its perceptions (prompt block). Costs: whisper 0, `/vertrauter laut` +1, `/vertrauter eingriff` +2 (hidden cue each), Spindelhaus +1 by `/spannung +1`.
 - **Material:** player PDF `tutorial/Schicksalsschlag-Spieler.pdf` (14 pages, setting on p. 2-3), GM sheet `handout/oneshot/Schicksalsschlag-OneShot-SL.pdf` (5 pages), single content source `handout/oneshot/content.py` (`python3 handout/oneshot/build.py` regenerates world seed, GM PDF and Foundry journals).
 - **Foundry (not imported):** journal texts waiting in `handout/oneshot/foundry/`: `Die-Berufung_Spieler.html`, `Weberin-SL_nur-GM.html` (GM only), `Der-Kater_GM-Actor.html`.
-- Tests: 205 green (`VorlageTests`: seed consistency, ContentRule, tiers, Fremdkraft, engine raise).
+- Tests: 205 green (`VorlageTests`: seed consistency, ContentRule, tiers, Fremdkraft, engine raise). Live check (headless sl on :8861 under gpu-run, scratch session weberin-live): world loads at Blick 3 with the Kater as gmFigur, Fremdkraft check 3 -> 4 -> 5 (unrelated check leaves it), `/spannung 8` then a Fremdkraft check gives 9 and the Eingriff reset to 5, `/vertrauter laut|eingriff` +1/+2, first narrated turn plays the Weberin without leaks. Note: the `/state` tension value only refreshes at scene/tool events, `/spannung` (no argument) shows the live value.
 - Rollback: `git checkout pnp-22c`.
 
 ## What pnp-22c adds over pnp-22b
