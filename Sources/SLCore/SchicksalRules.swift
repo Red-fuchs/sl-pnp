@@ -102,6 +102,16 @@ public enum SR {
       return Trait(text: t, major: f[1] == "major", pos: pos)
     }
   }
+  /// the extraction sometimes lists a flaw as a skill or twice ("Schulden bei X" / "Schuld bei X"): a trait that shares a content word with an earlier one or with any flaw is dropped (flaws win)
+  public static func dedupe(_ traits: [Trait]) -> [Trait] {
+    func words(_ t: Trait) -> Set<String> { Set(contentWords(t.text).map(lemma)) }
+    var out: [Trait] = []
+    for t in traits.filter({ !$0.pos }) + traits.filter(\.pos) {
+      let w = words(t)
+      if w.isEmpty || !out.contains(where: { !words($0).isDisjoint(with: w) }) { out.append(t) }
+    }
+    return traits.filter { out.contains($0) }
+  }
   /// check reason for cards: cut at a word boundary, never mid-word
   public static func shortReason(_ s: String, _ n: Int = 60) -> String {
     let t = s.trimmingCharacters(in: .whitespacesAndNewlines); if t.count <= n { return t }

@@ -1579,6 +1579,11 @@ final class BudgetTests: XCTestCase {
     XCTAssertEqual(r.taler, (4 + 14 - 11) * 10); XCTAssertEqual(r.sp, 1); XCTAssertEqual(r.items.count, 2)
     XCTAssertNil(SR.allocate(left: 5, talerPts: 0, items: ["a", "b", "c"], sp: 0)); XCTAssertNil(SR.allocate(left: 2, talerPts: 0, items: [], sp: 1)); XCTAssertEqual(Cmd.parse("/budget sp=1"), .budget("sp=1"))
   }
+  func testDedupe() {
+    let t = [Trait(text: "Botin", major: true, pos: true), Trait(text: "Schulden bei Wucherern", major: false, pos: true), Trait(text: "Behinderte Hand", major: false, pos: false), Trait(text: "Schuld bei Wucherern", major: true, pos: false)]
+    let d = SR.dedupe(t)
+    XCTAssertEqual(d.map(\.text), ["Botin", "Behinderte Hand", "Schuld bei Wucherern"]); XCTAssertFalse(d.contains { $0.pos && $0.text.contains("Schulden") })
+  }
   func testShortReason() {
     XCTAssertEqual(SR.shortReason("Ich greife an"), "Ich greife an")
     let r = SR.shortReason("Ich schleiche mit zitternder Hand an den Tresen und bettle den Wirt um einen Schlafplatz an"); XCTAssertTrue(r.hasSuffix(" …")); XCTAssertFalse(r.contains("bettle d "))

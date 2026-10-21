@@ -139,18 +139,18 @@ public extension Game {
     let i = pcIndex(speaker)!
     var traits: [Trait] = []
     // two passes: a single pass made the model list only a few skills and skip flaws and debts
-    func line(_ key: String) -> G { G.seq([.s("\(key): "), .re(Cls.rep(Cls.lineNoQ, 6)), .s(" | "), GenGr.en(["minor", "major"])]) }
+    func line(_ key: String) -> G { G.seq([.s("\(key): "), .re(Cls.rep(Cls.lineNoQ, 6)), .s("| "), GenGr.en(["minor", "major"])]) }
     func opt(_ key: String) -> G { G.or([.s(""), .seq([.s("\n"), line(key)])]) }
     let posG = Grammar(.seq([line("Merkmal"), .s("\n"), line("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal"), opt("Merkmal")]))
     let negG = Grammar(.seq([.or([line("Schwäche"), .s("Schwäche: -")]), opt("Schwäche"), opt("Schwäche"), opt("Schwäche")]))
     let posSys = "Du extrahierst aus einer Hintergrundgeschichte alle positiven Merkmale der Figur als kurze Wendungen (2 bis 5 Wörter): Fertigkeiten, Begabungen, Berufe, Kontakte, Freunde, Titel. Jede Fertigkeit und jeden Kontakt einzeln nennen. Format je Zeile: Merkmal: <Text> | minor oder major. major = prägend, minor = beiläufig. Nur Dinge, die in der Geschichte stehen."
-    let negSys = "Du extrahierst aus einer Hintergrundgeschichte alle Schwächen der Figur als kurze Wendungen (2 bis 5 Wörter): Fehler, Süchte, Schulden, Feinde, Ängste, Gebrechen, Verfolger. Format je Zeile: Schwäche: <Text> | minor oder major. Gibt es keine, antworte genau: Schwäche: -"
+    let negSys = "Du extrahierst aus einer Hintergrundgeschichte alle Schwächen der Figur als kurze Wendungen (2 bis 5 Wörter): Fehler, Süchte, Schulden, Feinde, Ängste (auch „ich fürchte X“), Gebrechen, Verfolger, Verletzungen. Format je Zeile: Schwäche: <Text> | minor oder major. Gibt es keine, antworte genau: Schwäche: -"
     let st = clean(story, 700)
     let posEx = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nMerkmal: geübter Bogenschütze | major\nMerkmal: Stadtwache gedient | minor"
     let negEx = "Beispiel:\nGeschichte: Ich war Bogenschütze der Stadtwache, bis ich beim Würfeln meinen Sold verlor. Seitdem schulde ich dem Wirt Geld und trinke zu viel.\nAusgabe:\nSchwäche: Spielsucht | major\nSchwäche: Schulden beim Wirt | minor\nSchwäche: trinkt zu viel | minor"
-    if let (txt, _) = try? lm.aux(system: posSys, user: "\(posEx)\n\nGeschichte: \(st)\nAusgabe:", posG, temp: 0.3, maxTok: 260) { traits += SR.parseTraits(txt, pos: true) }
-    if let (txt, _) = try? lm.aux(system: negSys, user: "\(negEx)\n\nGeschichte: \(st)\nAusgabe:", negG, temp: 0.3, maxTok: 200) { traits += SR.parseTraits(txt, pos: false) }
-    return setTraits(i, name: name, story: story, traits: traits)
+    do { let (txt, _) = try lm.aux(system: posSys, user: "\(posEx)\n\nGeschichte: \(st)\nAusgabe:", posG, temp: 0.3, maxTok: 450); traits += SR.parseTraits(txt, pos: true) } catch { out(.info("Merkmal-Extraktion (Stärken) fehlgeschlagen: \(error) \((error as? TruncatedError)?.partial.prefix(300) ?? "")")) }
+    do { let (txt, _) = try lm.aux(system: negSys, user: "\(negEx)\n\nGeschichte: \(st)\nAusgabe:", negG, temp: 0.3, maxTok: 300); traits += SR.parseTraits(txt, pos: false) } catch { out(.info("Merkmal-Extraktion (Schwächen) fehlgeschlagen: \(error)")) }
+    return setTraits(i, name: name, story: story, traits: SR.dedupe(traits))
   }
   /// pure part (testable): budget fit, pillars, Taler
   @discardableResult
