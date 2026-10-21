@@ -1,0 +1,9 @@
+video/node_modules/
+video/snapshots/
+video/build/narr-raw.wav
+video/build/render.log
+video/.hyperframes/
+video/renders/
+video/assets/tts/
+shots/
+video/out/schicksalsschlag-erklaer.mp4
