@@ -1334,6 +1334,53 @@ final class TensionTests: XCTestCase {   // N9
   }
 }
 
+final class TensionStepTests: XCTestCase {
+  func testStep() {
+    XCTAssertEqual(tensionStep(control: false, nein: 1, ja: 0, events: 0, fails: 0), 1)
+    XCTAssertEqual(tensionStep(control: false, nein: 3, ja: 0, events: 0, fails: 0), 2)
+    XCTAssertEqual(tensionStep(control: false, nein: 3, ja: 1, events: 0, fails: 0), 1)
+    XCTAssertEqual(tensionStep(control: false, nein: 0, ja: 0, events: 1, fails: 1), 2)
+    XCTAssertEqual(tensionStep(control: false, nein: 0, ja: 0, events: 1, fails: 0), 1)
+    XCTAssertEqual(tensionStep(control: true, nein: 0, ja: 3, events: 0, fails: 0), -2)
+    XCTAssertEqual(tensionStep(control: true, nein: 0, ja: 2, events: 0, fails: 0), -1)
+    XCTAssertEqual(tensionStep(control: true, nein: 0, ja: 5, events: 0, fails: 1), -1)
+    XCTAssertEqual(tensionStep(control: true, nein: 1, ja: 4, events: 0, fails: 0), -1)
+  }
+  func end(_ e: Engine, control: Bool, step: Int) -> J {
+    _ = e.call("start_scene", ["expect": "b", "el": ["ort": "o", "beteiligte": "b"]])
+    return endSceneTension(e, ["summary": "s", "control": .bool(control)], step: step)
+  }
+  func testNoBrakeFromFive() throws {
+    for seed in 1...40 {
+      let e = try Session.newEngine(rng: "seed:\(seed)")
+      XCTAssertEqual(e.st.policy, "elastisch")
+      let r = end(e, control: seed % 2 == 0, step: seed % 2 == 0 ? -1 : 1)
+      XCTAssertEqual(r["s"].int, seed % 2 == 0 ? 4 : 6, "seed \(seed): tension must move away from 5 every time")
+      XCTAssertEqual(e.st.s, r["s"].int)
+    }
+  }
+  func testDoubleStepAndBounds() throws {
+    let e = try Session.newEngine(rng: "seed:3")
+    XCTAssertEqual(end(e, control: false, step: 2)["s"].int, 7)
+    XCTAssertEqual(end(e, control: false, step: 2)["s"].int, 9)
+    XCTAssertEqual(end(e, control: false, step: 2)["s"].int, 9)       // clamp
+    XCTAssertEqual(end(e, control: false, step: 1)["s"].int, 9)
+    XCTAssertEqual(end(e, control: true, step: -2)["s"].int, 7)
+    _ = e.call("session", ["op": "set_tension", "s": 2])
+    XCTAssertEqual(end(e, control: true, step: -2)["s"].int, 1)       // clamp
+    XCTAssertEqual(e.st.s, 1)
+  }
+  func testParseAndCue() {
+    XCTAssertEqual(parseTension("8", cur: 5), 8); XCTAssertEqual(parseTension("+2", cur: 5), 7); XCTAssertEqual(parseTension("-3", cur: 5), 2)
+    XCTAssertEqual(parseTension("+9", cur: 5), 9); XCTAssertEqual(parseTension("-9", cur: 5), 1); XCTAssertEqual(parseTension("0", cur: 5), 1); XCTAssertEqual(parseTension("42", cur: 5), 9)
+    XCTAssertNil(parseTension("", cur: 5)); XCTAssertNil(parseTension("hoch", cur: 5)); XCTAssertNil(parseTension("+", cur: 5)); XCTAssertNil(parseTension("1.5", cur: 5))
+    XCTAssertEqual(Cmd.parse("/spannung 8"), .spannung("8")); XCTAssertEqual(Cmd.parse("/spannung -2"), .spannung("-2")); XCTAssertEqual(Cmd.parse("/spannung"), .spannung(""))
+    XCTAssertEqual(Cmd.parse("/spannungx"), .unknown("/spannungx"))
+    XCTAssertTrue(tensionCue(from: 5, to: 8)!.contains("bedrohlicher")); XCTAssertTrue(tensionCue(from: 5, to: 2)!.contains("ruhiger")); XCTAssertNil(tensionCue(from: 5, to: 5))
+    XCTAssertFalse(tensionCue(from: 5, to: 8)!.contains("8"))
+  }
+}
+
 final class StripRegieTests: XCTestCase {
   func testCompactDropsRegie() { XCTAssertEqual(stripWelt("[Regie verdeckt] Marta zögert.\nIch gehe."), "Ich gehe."); XCTAssertEqual(stripWelt("[Welt]\nx\n---\nIch gehe."), "Ich gehe.") }
 }

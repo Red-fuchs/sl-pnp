@@ -48,6 +48,7 @@ public extension Game {
       p[i] = pc; return r
     }
     if c.error != nil { return c }
+    if !c.success { sceneFails += 1 }
     out(.roll(c)); announceSheet()
     return c
   }
@@ -66,6 +67,7 @@ public extension Game {
       c.speaker = partyStore.with { $0[i].name }; c.spLeft = partyStore.with { $0[i].sp }
       if ergeben { partyStore.with { p in var pc = p[i]; pc.ergebenUsed = true; SR.settleErgeben(&pc, &c); pc.lastCheck = c; p[i] = pc } }
     }
+    if !c.success { sceneFails += 1 }
     if let id, probes.resolve(id, c) {} else { pendingFacts.append(c.fact) }      // a probe roll is narrated by the waiting turn itself
     out(.roll(c))
     if ergeben { announceSheet() }

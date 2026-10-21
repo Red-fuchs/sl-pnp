@@ -158,6 +158,12 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       guard let j = bodyJSON(), let t = j["text"] as? String, !t.isEmpty, let g = runner.game else { return json("400 Bad Request", ["error": "text fehlt"]) }
       g.partyStore.lock.lock(); g.pendingRegie.append(clean(t, 300)); g.partyStore.lock.unlock()
       json("202 Accepted", ["ok": true])
+    case ("POST", "/spannung"):      // GM: {"set": N} | {"delta": ±N} | {"text": "+2"}; every change goes to the narrator as a hidden cue
+      guard let j = bodyJSON(), let g = runner.game else { return json("400 Bad Request", ["error": "set|delta|text"]) }
+      let arg = (j["set"] as? Int).map(String.init) ?? (j["delta"] as? Int).map { $0 >= 0 ? "+\($0)" : "\($0)" } ?? (j["text"] as? String) ?? ""
+      g.partyStore.lock.lock(); let r = try? runner.spannung(arg); g.partyStore.lock.unlock()
+      guard let r, r.ok else { return json("400 Bad Request", ["error": "set N | delta ±N | text '+N'|'-N'|'N' (1-9)"]) }
+      hub.send(state(runner, busy: snap().1)); json("200 OK", ["ok": true, "s_before": r.before, "s": r.now])
     case ("POST", "/wunden"), ("POST", "/lp"):
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, j["delta"] is Int || j["set"] is Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker und delta|set"]) }
       guard let res = g.partyStore.wunden(speaker: sp, delta: j["delta"] as? Int, set: j["set"] as? Int) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }
@@ -206,7 +212,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       rep("202 Accepted", "text/plain", Data("ok".utf8))
       runner.game?.probeWait = (sayJ?["probe_timeout"] as? NSNumber)?.doubleValue      // bridge setting; absent = sl flag
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
-        if !text.hasPrefix("/regie") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
+        if !text.hasPrefix("/regie"), !text.hasPrefix("/spannung") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
         if Cmd.parse(text) == .quit { hub.send(["t": "info", "text": "/quit beendet nur die CLI – den Web-Server beendest du im Terminal (Ctrl-C)."]) }   // never kill the server over HTTP
         else { job { try runner.handle(text, speaker: spk) } }
       }

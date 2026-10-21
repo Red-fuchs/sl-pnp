@@ -1,6 +1,11 @@
-# pnp-22 / pnp-22b release note (session 2026-10-22)
-Tags: `pnp-22` = first state for the session (do not move). **`pnp-22b` = final state** (sl-pnp and sl-foundry, annotated). Rollback: `git checkout pnp-22` (sl-pnp: `aa54365` is the last commit before the whole PnP work; ~/Projects/sl is untouched). sl-foundry: `git checkout pnp-22` is not defined there, use `git checkout 5715d4d` (state before pnp-22b).
+# pnp-22 / pnp-22b / pnp-22c release note (session 2026-10-22)
+Tags: `pnp-22` = first state for the session (do not move). `pnp-22b` = earlier final state (annotated, left as is). **`pnp-22c` = final state** (sl-pnp and sl-foundry, annotated; adds tension rules + `/spannung`). Rollback to the state before pnp-22c: `git checkout pnp-22b` in both repos. Rollback: `git checkout pnp-22` (sl-pnp: `aa54365` is the last commit before the whole PnP work; ~/Projects/sl is untouched). sl-foundry: `git checkout pnp-22` is not defined there, use `git checkout 5715d4d` (state before pnp-22b).
 API: notes/API-foundry.md. Rules: notes/RULES-schicksalsschlag.md. Foundry module docs: ~/Projects/sl-foundry/README.md.
+
+## What pnp-22c adds over pnp-22b
+- Tension (Spannung): d6 brake dropped (always +-1 at scene end, also away from 5), +-2 for a clearly tipped scene (NEIN >= 3 and no JA, or event + failed check -> +2; JA >= 3 and no NEIN/event/failed check -> -2), bounds 1..9. Rules: notes/RULES-schicksalsschlag.md "Tension".
+- GM control `/spannung +N | -N | N` (HTTP `POST /spannung`, Foundry GM button "Spannung" with dialog, chat command; players refused, value never shown to players); the narrator gets a hidden tone cue on change. API: notes/API-foundry.md.
+- Handout (full) + tutorial updated; player handout unchanged (it does not mention tension).
 
 ## What pnp-22b adds over pnp-22
 - GM purchase commands `/kauf`, `/taler`, `/gegenstand` (GM only, slash + HTTP), purse in Heller ("3 T 1 S 1 H"), `[Fakt]` for the narrator, GM button "Kauf". Taler/gear are one-way sl -> Foundry (hand edits are overwritten).
@@ -19,7 +24,7 @@ API: notes/API-foundry.md. Rules: notes/RULES-schicksalsschlag.md. Foundry modul
 4. Passwords: Foundry admin password = Setup > Configuration > Administrator Password (set it before `online.sh start`, otherwise the setup page is open to the internet). User passwords: in the world, User Management, give every player and the Gamemaster a password; delete unused users. (Passwords are not stored in any repo; hand them out per player.)
 5. Per player: assign the figure (User Configuration > Character) after `/sl /figur Name: Geschichte` created it; the figure name must equal the sl name. Test `/sl Hallo`.
 6. GM before the first scene: lamp green, one test turn so the model is warm; print or open `~/Projects/sl-pnp/handout/Schicksalsschlag-Spieler.pdf` (players) and the full handout (GM).
-7. During play: bookings by GM only: `/kauf Name Ware Preis`, `/taler Name ±N[T|S|H]`, `/gegenstand Name +Text|-Text` (or button "Kauf"); `/szene` between scenes; "sl pausieren" if sl hangs.
+7. During play: tension by GM only: `/spannung 7`, `/spannung +1`, `/spannung -2` (or the button "Spannung"); it changes the narrator's tone, players never see the value. Bookings by GM only: `/kauf Name Ware Preis`, `/taler Name ±N[T|S|H]`, `/gegenstand Name +Text|-Text` (or button "Kauf"); `/szene` between scenes; "sl pausieren" if sl hangs.
 8. After the session: `~/Projects/sl-foundry/online.sh stop`; stop sl (Ctrl-C in its terminal or `pkill -f "sl web --lease --idle .* --port 8787"`).
 9. Never start two models at once: one sl instance at a time on the GPU.
 

@@ -104,6 +104,14 @@ public final class Runner {
   func refresh() { guard game != nil else { return }; let d = (status(), story(), rolls); snapLock.lock(); snapData = d; snapLock.unlock() }
 
   public func player(_ t: String) throws { session.log("\n**Spieler\(game.speaker.map { " (\($0))" } ?? ""):** \(t)\n"); try run { try game.turn(t, speaker: game.speaker) } }
+  /// GM tension override (/spannung, POST /spannung): "+N" | "-N" | "N", clamped 1...9; every change goes to the narrator as a hidden cue
+  @discardableResult
+  public func spannung(_ a: String) throws -> (ok: Bool, before: Int, now: Int) {
+    if a.trimmingCharacters(in: .whitespaces).isEmpty { sink(.info("Spannung \(game.eng.st.s) · /spannung +N | -N | N (1-9)")); return (false, game.eng.st.s, game.eng.st.s) }
+    let r = game.setTension(a)
+    if r.ok { try session.save(game); refresh(); sink(.info("Spannung \(r.before) → \(r.now)")) } else { sink(.info("/spannung +N | -N | N (1-9)")) }
+    return r
+  }
   public func ende() throws {
     guard game.eng.st.open else { sink(.info("keine offene Szene")); return }
     session.log("\n**Spieler:** /ende\n"); try run { try game.turn("Die Szene ist hier zu Ende.", forceEnd: true) } }
@@ -206,6 +214,7 @@ public final class Runner {
       else if ["frei", "saeulen", "schicksal"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen | schicksal")) }
     case .regie(let a):      // hidden GM note for the next narration: never logged, never shown in the story
       if a.isEmpty { sink(.info("/regie <Text>  (versteckte Spielleiter-Notiz für die nächste Erzählung)")) } else { game.pendingRegie.append(clean(a, 300)); sink(.info("Regie-Notiz vorgemerkt (nur für die nächste Erzählung).")) }
+    case .spannung(let a): _ = try spannung(a)
     case .merkmal(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyMerkmal(i, args: a))); try session.save(game); refresh() } else { sink(.info("/merkmal: erst /figur Name: Geschichte")) }
     case .budget(let a):
@@ -261,7 +270,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), spannung(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -289,6 +298,7 @@ public enum Cmd: Equatable {
     if t == "/merkmal" || t.hasPrefix("/merkmal ") { return .merkmal(arg(8)) }
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
+    if t == "/spannung" || t.hasPrefix("/spannung ") { return .spannung(arg(10)) }
     if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
     if t == "/rast" || t.hasPrefix("/rast ") { return .rast(arg(5)) }
     if t == "/wunden" || t.hasPrefix("/wunden ") { return .wunden(arg(7)) }

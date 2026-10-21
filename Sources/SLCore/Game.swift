@@ -74,7 +74,7 @@ public final class Game {
   var turnNo = 0
   var sceneQs: [String] = []
   var metaVetoes = 0
-  var sceneNein = 0, sceneJa = 0, sceneEvents = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
+  var sceneNein = 0, sceneJa = 0, sceneEvents = 0, sceneFails = 0     // N9: what went wrong in this scene (drives the tension, not the model's "control" guess)
   public var quiet = 0                 // consecutive turns without an oracle question in an open scene
   var recap = ""
   public var sys: String { SYS + "\n\n" + MINOR_RULE + figurBlock(figur) + recap }
@@ -334,13 +334,15 @@ public final class Game {
         if let sh = combinedShift(haltung: world.shift(forQuestion: args["q"].str ?? ""), regel: rs) { o["shift"] = .int(sh); args = .obj(o) }
         if world.regeln == "saeulen" { lastArt = art }
       }
+      var tip = 0      // scene-end tension step (±1/±2), see tensionStep
       if name == "end_scene", var o = args.obj {
         let c = tensionControl(model: o["control"]?.bool ?? true, nein: sceneNein, ja: sceneJa, events: sceneEvents)
+        tip = tensionStep(control: c, nein: sceneNein, ja: sceneJa, events: sceneEvents, fails: sceneFails)
         if o["control"]?.bool != c { o["control"] = .bool(c); args = .obj(o); if debug { out(.info("[debug] Spannung: control → \(c) (NEIN \(sceneNein), JA \(sceneJa), Ereignisse \(sceneEvents))")) } }
       }
-      let res = eng.call(name, args)
+      let res = name == "end_scene" ? endSceneTension(eng, args, step: tip) : eng.call(name, args)
       if name == "ask_oracle", let a = res["answer"].str { if a.hasPrefix("NEIN") { sceneNein += 1 } else { sceneJa += 1 }; if !res["event"].isNull { sceneEvents += 1 } }
-      if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0; partyStore.with { SR.resetScene(&$0) } }
+      if name == "end_scene" || name == "start_scene" { sceneQs = []; sceneNein = 0; sceneJa = 0; sceneEvents = 0; sceneFails = 0; partyStore.with { SR.resetScene(&$0) } }
       calls += 1
       if name == "ask_oracle" { asked = true; sceneQs.append(args["q"].str ?? "") }
       if name == "start_scene" || name == "end_scene" { quiet = 0 }

@@ -104,6 +104,15 @@ Math and decisions:
 - Yes/no questions with odds (sicher … unmöglich) and tension/Spannung 1–9 → JA+ / JA / NEIN / NEIN+, plus event on doubles ≤ tension. Tables: `~/Projects/schicksal/Sources/Schicksal/Resources/tables_de_darkfantasy.json`.
 - Spending SP shifts the odds by one step (see above).
 
+## Tension (Spannung) - pnp-22c
+- Range 1-9, start 5. **No d6 brake any more:** at scene end it always moves, also away from 5. The old brake lived in the external `schicksal` package (`Core.tension`, policy `elastisch`: a move away from 5 only on d6 1-4, `qElast`). sl-pnp does not touch that package: `endSceneTension` (Sources/SLCore/Tension.swift) switches the engine policy `elastisch` -> `kontrolle` (same rule without the brake) before every `end_scene`. Policies `fest`, `zufall`, `gegen` stay as they are.
+- Direction: `tensionControl` (N9, unchanged): events >= 1 or NEIN > JA -> tension rises (+1), else falls (-1).
+- Step +-2 (`tensionStep`, counters of the scene: NEIN, JA, random events, failed checks `sceneFails` from `/roll` and `/rollresult`):
+  - **+2** if NEIN >= 3 and JA = 0, or if a random event coincided with >= 1 failed check in the scene.
+  - **-2** if JA >= 3 and NEIN = 0 and no event and no failed check.
+  - otherwise +-1. Always clamped to 1..9. Counters reset on `start_scene`/`end_scene`.
+- **GM control** `/spannung +N | -N | N` (also `POST /spannung`, see API-foundry.md, and the Foundry GM button "Spannung"): clamped to 1..9, takes effect at once. On a change the narrator gets a hidden cue (`[Regie verdeckt]`, no number): rises -> denser, more threatening; falls -> calmer. Players cannot use it (Foundry whitelist) and never see the value.
+
 ## Content rule
 - Minors are never victims of violence or of sexual content. Dark content among adults is fine.
 

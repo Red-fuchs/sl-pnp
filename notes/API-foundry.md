@@ -60,6 +60,13 @@ Sheet data flows **sl -> Foundry only** for Taler and gear. Foundry writes back 
 ## POST /regie
 `{ "text": String }` -> `202`. Hidden GM note, injected once into the next narration (never shown to players).
 
+## POST /spannung   (GM)
+`{ "set": Int }` | `{ "delta": Int }` | `{ "text": "8" | "+2" | "-1" }` -> `200 { "ok": true, "s_before": Int, "s": Int }`; the value is clamped to 1..9; `400` for anything else. Same as the chat command `/spannung N | +N | -N` (via `/say`, GM only in the Foundry bridge: the player whitelist does not contain it). Effects:
+- SSE `state` (with `"s"`) and SSE `info` "Spannung 5 → 8" (the bridge hides this info line from the chat; the value is never shown to players). `GET /state` carries `"s"`.
+- On a change the next narration gets a hidden cue (like `/regie`, no number): rising = denser, more threatening; falling = calmer.
+- Scene-end tension: no d6 brake any more, always +-1, +-2 for a clearly tipped scene (NEIN >= 3 and no JA, or event plus failed check -> +2; JA >= 3 and no NEIN/event/failed check -> -2). Details: RULES-schicksalsschlag.md "Tension".
+- Foundry: GM chat command `/spannung [N|+N|-N]` (no argument opens the dialog) and the toolbar button "Spannung" (current value, -/+, set field).
+
 ## POST /sp
 `{ "speaker": String, "delta": Int, "target"?: String, "mode"?: String }` -> `200 { "name", "sp", "spMax", "pending": Int }`
 - default (`mode` absent / `"adjust"`): GM grant/removal, `sp += delta` (clamped 0..spMax).
