@@ -1,0 +1,732 @@
+{
+ "wendungen": {
+  "doc": "Fenster je Seltenheit (Breite 50): Wurf d100; liegt er unter dem Fenster, +50; darüber, −50. Nur Spielleitung.",
+  "fenster": {
+   "gewoehnlich": [
+    1,
+    50
+   ],
+   "ungewoehnlich": [
+    1,
+    50
+   ],
+   "selten": [
+    26,
+    75
+   ],
+   "sehr_selten": [
+    51,
+    100
+   ],
+   "legendaer": [
+    51,
+    100
+   ]
+  },
+  "falte": 50,
+  "doppelt": [],
+  "gm": true,
+  "tabelle": [
+   {
+    "von": 1,
+    "bis": 1,
+    "text": "Frischer Ölfilm: Jemand hat den Gegenstand vor Kurzem gereinigt, um alte Spuren zu tilgen.",
+    "enthuellung": "Der Reiniger ist eine Magd aus dem Gasthaus; gegen eine Münze verrät sie, wer ihr die Lauge bezahlt hat.",
+    "stufe": 1
+   },
+   {
+    "von": 2,
+    "bis": 2,
+    "text": "Zweiter Name: Unter dem Boden steht ein anderer Vorname, halb weggeschabt.",
+    "enthuellung": "Ein Kaufmann im Dorf erkennt den Namen und nennt gegen einen Gefallen, wer den Gegenstand vor Jahren verkaufte.",
+    "stufe": 1
+   },
+   {
+    "von": 3,
+    "bis": 3,
+    "text": "Bleikern: Die Ecke klingt dumpf, weil eine Bleiplatte eingelassen wurde.",
+    "enthuellung": "+10 einmalig auf eine Probe, um den Händler beim Feilschen als Betrüger zu überführen.",
+    "stufe": 1
+   },
+   {
+    "von": 4,
+    "bis": 4,
+    "text": "Gitterabdruck: Die Kratzer stammen von einem Zellengitter, nicht von einer Werkstatt.",
+    "enthuellung": "Die Wache am Torhaus erkennt das Muster und nennt den Namen eines Gefangenen von damals.",
+    "stufe": 1
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Leere Fuge: Am Rand lässt sich eine dünne Platte öffnen, darunter nur Staub.",
+    "enthuellung": "Im Staub liegt eine zerknitterte Quittung aus einem Nachbardorf, datiert auf den letzten Herbst.",
+    "stufe": 1
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Kirchenraub: Der Gegenstand fehlte jahrelang aus einer Gemeindebank, der Name wird verschwiegen.",
+    "enthuellung": "Der Küster schuldet der Gruppe einen Gefallen, wenn sie das Stück zurückbringt; er vergisst Schulden nicht.",
+    "stufe": 1
+   },
+   {
+    "von": 7,
+    "bis": 7,
+    "text": "Nachgeschnittenes Siegel: Die Prägung wirkt echt, ist aber eine grobe Kopie.",
+    "enthuellung": "Ein Siegelschneider in der Vorstadt erkennt die Kopie und nennt den Auftraggeber gegen Bezahlung.",
+    "stufe": 1
+   },
+   {
+    "von": 8,
+    "bis": 8,
+    "text": "Kälte ohne Grund: Der Gegenstand bleibt auch am heißesten Tag kühl.",
+    "enthuellung": "Unter dem Hof liegt ein Brunnenschacht mit eisigem Wasser; nasse Fußspuren führen hinab.",
+    "stufe": 1
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Doppelte Nieten: Eine Reihe Nägel ist neu und passt nicht zu den alten.",
+    "enthuellung": "Der Gegenstand wurde zweimal zusammengesetzt; ein Schmied im Viertel erkennt seine Arbeit und nennt den Auftraggeber der zweiten Montage.",
+    "stufe": 1
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Geliehen, nicht geschenkt: Auf der Rückseite steht der Name eines Verleihers.",
+    "enthuellung": "Der Verleiher wartet noch auf das Stück und bietet Geld oder eine kleine Gegenleistung.",
+    "stufe": 1
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Pergamentfutter: Im Inneren des Stücks steckt ein Fetzen mit der Preisliste fremder Waren.",
+    "enthuellung": "Die Liste gehört einem Schmuggler, der seit Wochen auf dem Markt Ware verschiebt.",
+    "stufe": 1
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Falsche Ausbesserung: Eine Naht wurde mit ungewöhnlich grauem Garn geflickt.",
+    "enthuellung": "Ein Seiler im Moor verkauft solches Garn nur an einen Fremden; er erinnert sich an dessen Gesicht.",
+    "stufe": 1
+   },
+   {
+    "von": 13,
+    "bis": 13,
+    "text": "Vertauschter Schaft: Der Griff passt nicht zur Klinge, beides stammt aus verschiedenen Stücken.",
+    "enthuellung": "Die fehlende Hälfte liegt beim Waffenmeister der Stadt, der beide Teile wiedererkennt.",
+    "stufe": 1
+   },
+   {
+    "von": 14,
+    "bis": 14,
+    "text": "Kleine Gravur: Ein Hausname ist eingraviert und wieder ausgekratzt, Spuren bleiben.",
+    "enthuellung": "Die Familie des Hauses lebt noch und wäre dankbar für das Stück, zahlt aber nur wenig.",
+    "stufe": 1
+   },
+   {
+    "von": 15,
+    "bis": 15,
+    "text": "Mäusenest: Im Inneren hat ein Tier Pergamentreste zu einem Nest verarbeitet.",
+    "enthuellung": "Die Reste zeigen das Zunftzeichen eines Fälscherkreises; wer es kennt, öffnet Türen in der Unterstadt.",
+    "stufe": 1
+   },
+   {
+    "von": 16,
+    "bis": 16,
+    "text": "Zu neu für sein Alter: Das Holz wurde gebeizt, damit es alt wirkt.",
+    "enthuellung": "Ein Schreiner in der Gasse mischte die Beize und verrät den Auftraggeber für einen Krug Bier.",
+    "stufe": 1
+   },
+   {
+    "von": 17,
+    "bis": 17,
+    "text": "Harzige Spur: Auf dem Griff klebt Harz, das nach Weihrauch riecht.",
+    "enthuellung": "Der Weihrauch stammt aus einer kleinen Kapelle im Wald; der Pfarrer dort sucht seine Glocke und belohnt, wer sie findet.",
+    "stufe": 1
+   },
+   {
+    "von": 18,
+    "bis": 18,
+    "text": "Zweite Sprache: Eine Zeile ist in einer Fremdsprache eingeritzt, mit ungelenker Hand.",
+    "enthuellung": "Ein Zollschreiber am Hafen übersetzt die Zeile; sie nennt einen Ort am Fluss.",
+    "stufe": 1
+   },
+   {
+    "von": 19,
+    "bis": 19,
+    "text": "Nicht eingelöst: Eine Pfandmarke aus dem Leihhaus steckt unter der Lasche.",
+    "enthuellung": "Das Leihhaus führt den Eintrag noch; der Pfandgeber lebt und zahlt eine Belohnung, wenn das Stück zu ihm zurückkommt.",
+    "stufe": 1
+   },
+   {
+    "von": 20,
+    "bis": 20,
+    "text": "Halbes Muster: Ein Teil des Musters gleicht einem Tuch, das im Gasthaus hängt.",
+    "enthuellung": "Der Wirt erzählt von einem Zecher, der mit dem passenden Tuch prahlt, und wo er wohnt.",
+    "stufe": 1
+   },
+   {
+    "von": 21,
+    "bis": 21,
+    "text": "Stumme Zahlen: Eine Zahlenreihe ist in den Rand gepresst, sinnlos auf den ersten Blick.",
+    "enthuellung": "Die Zahlen sind Preise eines Großhändlers in der Hafenstadt, eingeprägt vom Hersteller.",
+    "stufe": 1
+   },
+   {
+    "von": 22,
+    "bis": 22,
+    "text": "Leises Klappern: Ein Krümel im Gehäuse rasselt, ein Salzkristall statt Staub.",
+    "enthuellung": "Der Kristall stammt von einer Schmugglerroute; ein Schmuggler sucht Kontakt, sobald er den Stein sieht.",
+    "stufe": 1
+   },
+   {
+    "von": 23,
+    "bis": 23,
+    "text": "Ungewohnter Ortsname: Eine Gravur trägt den Namen einer Stadt, die es nicht mehr gibt.",
+    "enthuellung": "Die Ruinenstadt im Moor hat einen Friedhof, der dem früheren Besitzer gehörte; die Gruppe erhält eine Karte.",
+    "stufe": 1
+   },
+   {
+    "von": 24,
+    "bis": 24,
+    "text": "Klebriger Grund: Am Boden hängt frisches Wachs von einem Siegel.",
+    "enthuellung": "Wer das Wachs geschmolzen hat, will nicht erkannt werden; der Bote wartet in der Taverne am Markt.",
+    "stufe": 1
+   },
+   {
+    "von": 25,
+    "bis": 25,
+    "text": "Verwitterter Zettel: Im Verschlag steckt eine halb zerfallene Wegbeschreibung.",
+    "enthuellung": "Die Beschreibung führt zu einem Gehöft, auf dem die Familie des früheren Besitzers lebt.",
+    "stufe": 1
+   },
+   {
+    "von": 26,
+    "bis": 26,
+    "text": "Gestohlener Ring: Der Gegenstand wurde vor Jahren aus einem Grafenhaus entwendet.",
+    "enthuellung": "Ein Wappenkundiger in der Stadt erkennt das Stück und zahlt gutes Geld für eine Rückgabe an den Grafenhof.",
+    "stufe": 2
+   },
+   {
+    "von": 27,
+    "bis": 27,
+    "text": "Falsches Brandmal: Ein Zunftzeichen ist eingebrannt, die Zunft existiert nicht mehr.",
+    "enthuellung": "Ein ehemaliger Meister der aufgelösten Gilde will das Zeichen zurück und zahlt dafür gut.",
+    "stufe": 2
+   },
+   {
+    "von": 28,
+    "bis": 28,
+    "text": "Grabgut: Der Gegenstand wurde nach einer Beerdigung aus einem Grab genommen.",
+    "enthuellung": "Der Totengräber erinnert sich an die Beisetzung und zahlt eine Grabgabe, wenn das Stück zurückkommt.",
+    "stufe": 2
+   },
+   {
+    "von": 29,
+    "bis": 29,
+    "text": "Blutiger Stiel: Am Griff klebt altes Blut, das nie abgewaschen wurde.",
+    "enthuellung": "Das Blut gehört zu einem Mord im Dorf vor drei Monaten; der Büttel sucht den Täter noch.",
+    "stufe": 2
+   },
+   {
+    "von": 30,
+    "bis": 30,
+    "text": "Hinterlegtes Geld: Unter dem Futter steckt eine Münzrolle aus einer Bank.",
+    "enthuellung": "Der Kontoinhaber ist tot; sein Erbe zahlt Finderlohn, wenn das Geld zurückkommt, und verdächtigt die Gruppe.",
+    "stufe": 2
+   },
+   {
+    "von": 31,
+    "bis": 31,
+    "text": "Schmuggelgut: Im Inneren des Stücks liegt Silberdraht zwischen doppelten Lagen Holz.",
+    "enthuellung": "Die Schmuggler, denen der Draht gehört, bieten der Gruppe ihre Route gegen den Draht an.",
+    "stufe": 2
+   },
+   {
+    "von": 32,
+    "bis": 32,
+    "text": "Verlorene Fassung: Ein Edelstein fehlt, die Fassung ist gebrochen und frisch geputzt.",
+    "enthuellung": "Der Stein liegt beim Goldschmied im Viertel, der ihn für einen Adligen vorgesehen hat.",
+    "stufe": 2
+   },
+   {
+    "von": 33,
+    "bis": 33,
+    "text": "Umstrittenes Erbe: Die Familie beansprucht das Stück, doch das Testament fehlt.",
+    "enthuellung": "Im Archiv des Schreibers liegt das Testament; ein Verwandter fälschte das Erbe und zahlt Schweigegeld.",
+    "stufe": 2
+   },
+   {
+    "von": 34,
+    "bis": 34,
+    "text": "Zu kleine Hand: Der Griff ist für einen schmalen Arm gefertigt, nicht für einen Erwachsenen.",
+    "enthuellung": "Es gehörte einer Heilerin, die vor einem Jahr verschwand; ihre Tochter sucht danach und fragt nach Hilfe.",
+    "stufe": 2
+   },
+   {
+    "von": 35,
+    "bis": 35,
+    "text": "Geheimfach im Griff: Ein Schieber verbirgt eine dünne Rolle mit Ortsnamen.",
+    "enthuellung": "Die Rolle nennt ein Versteck im Moor; ein Hexenzirkel bewacht den Ort und lässt niemanden hinein.",
+    "stufe": 2
+   },
+   {
+    "von": 36,
+    "bis": 36,
+    "text": "Unterschlagene Abgabe: Das Stück gehört zu einer Steuer, die nie beim Vogt ankam.",
+    "enthuellung": "Der Vogt verspricht Straferlass, wenn die Gruppe das Stück abliefert, schiebt aber die Schuld auf sie.",
+    "stufe": 2
+   },
+   {
+    "von": 37,
+    "bis": 37,
+    "text": "Eingeritzte Liste: Auf der Innenseite stehen Namen mit Häkchen, teils durchgestrichen.",
+    "enthuellung": "Die Namen gehören verschwundenen Ordensbrüdern; einer lebt noch im Hospiz am Stadtrand.",
+    "stufe": 2
+   },
+   {
+    "von": 38,
+    "bis": 38,
+    "text": "Fremde Hand: Die Schrift auf dem Band stammt von einem anderen Verfasser als angegeben.",
+    "enthuellung": "Der wahre Schreiber ist ein Mönch im Kloster, der sich schuldig fühlt und reden will.",
+    "stufe": 2
+   },
+   {
+    "von": 39,
+    "bis": 39,
+    "text": "Stiefelabdruck im Lack: Ein Abdruck zeigt ein Schuhwerk, das nur Wachtleute tragen.",
+    "enthuellung": "Eine Wache aus dem Torhaus war am Tatort; sie bietet Schweigen gegen das Stück an.",
+    "stufe": 2
+   },
+   {
+    "von": 40,
+    "bis": 40,
+    "text": "Spitzelsiegel: Im Inneren zeichnet ein Wachssiegel Gespräche auf, nur das Öffnen spielt sie ab.",
+    "enthuellung": "Die Stimme gehört einem Spitzel der Stadtherrin; wer ihm das Siegel übergibt, erfährt, wen die Herrin fürchtet.",
+    "stufe": 2
+   },
+   {
+    "von": 41,
+    "bis": 41,
+    "text": "Absichtlicher Schrott: Der Gegenstand wurde mit Absicht wertlos gemacht, um Diebe zu täuschen.",
+    "enthuellung": "Der echte Wert liegt in einem zweiten Stück, das ein Händler im Hafen beim Zoll versteckt.",
+    "stufe": 2
+   },
+   {
+    "von": 42,
+    "bis": 42,
+    "text": "Falscher Name: Der eingravierte Besitzer existiert nicht; die Gravur ist Gaunerei.",
+    "enthuellung": "Der Gauner, der den Namen erfand, sitzt im Gefängnis und verhandelt; er kennt die echte Herkunft.",
+    "stufe": 2
+   },
+   {
+    "von": 43,
+    "bis": 43,
+    "text": "Verbotene Wachsreste: Am Rand haften Wachsspuren eines verbotenen Ordens.",
+    "enthuellung": "Der verbotene Orden wirbt um Mitglieder; ein Ordensbote lädt die Gruppe zu einem Treffen ein.",
+    "stufe": 2
+   },
+   {
+    "von": 44,
+    "bis": 44,
+    "text": "Tatwaffe aus dem Gerücht: Im Dorf wurde mit dieser Art Klinge ein Ratsherr erschlagen.",
+    "enthuellung": "Der Ratsherr wurde nicht erschlagen, sondern vergiftet; die Klinge lenkte die Ermittlung nur ab.",
+    "stufe": 2
+   },
+   {
+    "von": 45,
+    "bis": 45,
+    "text": "Angesengte Spur: Im Inneren des Stücks ist etwas verbrannt, als wäre es aus einem Brandhaus geholt.",
+    "enthuellung": "Das Brandhaus gehörte einem Schmuggler, der seine Spuren löschte; seine Tochter lebt noch.",
+    "stufe": 2
+   },
+   {
+    "von": 46,
+    "bis": 46,
+    "text": "Ausgelöschte Gravur: Das Stück trägt das Wappen einer Familie, die man ausgelöscht hat.",
+    "enthuellung": "Ein Erbe der Familie lebt verborgen in der Stadt und erkennt das Stück beim ersten Blick.",
+    "stufe": 2
+   },
+   {
+    "von": 47,
+    "bis": 47,
+    "text": "Gemischtes Metall: Die Legierung ist ungewöhnlich, halb fremde Schmelze aus fernen Hütten.",
+    "enthuellung": "Die Hütte im Gebirge gehört einem Händler, der Waffen für Fremde baut; die Gruppe erhält eine Spur.",
+    "stufe": 2
+   },
+   {
+    "von": 48,
+    "bis": 48,
+    "text": "Fremdwerk aus dem Süden: Der Griff stammt aus einer Werkstatt im Süden, das Holz ist nicht heimisch.",
+    "enthuellung": "Ein Holzhändler am Fluss kennt den Import und nennt den Kaufmann, der das Stück verkauft hat.",
+    "stufe": 2
+   },
+   {
+    "von": 49,
+    "bis": 49,
+    "text": "Heimliche Abschrift: Die Pergamentrolle im Gegenstand ist die Kopie eines Kontrakts.",
+    "enthuellung": "Der Kontrakt betrifft ein Stadtgut; wer ihn vorlegt, kann im Gericht eine Verhandlung erzwingen.",
+    "stufe": 2
+   },
+   {
+    "von": 50,
+    "bis": 50,
+    "text": "Schuld im Holz: Ein Name ist mit dem Messer eingekerbt, die Kerben sind frisch.",
+    "enthuellung": "Der Name gehört einem Mann, der den früheren Käufer kennt; er zahlt Geld für das Stück und nennt dafür dessen Namen.",
+    "stufe": 2
+   },
+   {
+    "von": 51,
+    "bis": 51,
+    "text": "Reliquie der Bruderschaft: Ein Knochensplitter ist im Griff eingelegt, geweiht, aber gestohlen.",
+    "enthuellung": "Die Bruderschaft verfolgt den Dieb; ein Bruder der Wacht stellt sich der Gruppe als Verbündeter oder Feind.",
+    "stufe": 3
+   },
+   {
+    "von": 52,
+    "bis": 52,
+    "text": "Beseelter Spiegel: Im Glas erscheint manchmal das Gesicht eines Ertrunkenen.",
+    "enthuellung": "Der Ertrunkene war ein Schmugglerkapitän am Hafen; seine Tochter sucht den Spiegel seit Jahren.",
+    "stufe": 3
+   },
+   {
+    "von": 53,
+    "bis": 53,
+    "text": "Fälschung des Königssiegels: Das Stück trägt ein Siegel, das der Vogt nie verwendete.",
+    "enthuellung": "Hinter der Fälschung steht ein Adliger, der einen Prozess aufhalten will; er bietet Geld oder Drohung.",
+    "stufe": 3
+   },
+   {
+    "von": 54,
+    "bis": 54,
+    "text": "Flüsternde Glocke: Im Klöppel steckt eine Stimme, die Namen nennt, wenn sie läutet.",
+    "enthuellung": "Die Namen sind Verbrecher aus den Akten; die Stimme nennt auch den Mörder aus dem Hafen.",
+    "stufe": 3
+   },
+   {
+    "von": 55,
+    "bis": 55,
+    "text": "Traumort im Dorn: Wer lange hält, sieht eine Nebelbrücke über einem Moor.",
+    "enthuellung": "Die Brücke führt zu einer versunkenen Kapelle mit einem Schrein; +10 einmalig auf die Suche nach dem Pfad.",
+    "stufe": 3
+   },
+   {
+    "von": 56,
+    "bis": 56,
+    "text": "Gefälschter Zunftbrief: Das Papier ist ein Blankobrief der Zunft mit falschem Namen.",
+    "enthuellung": "Die Zunftmeister suchen den Fälscher; die Gruppe kann für eine Schuld des Meisters verhandeln.",
+    "stufe": 3
+   },
+   {
+    "von": 57,
+    "bis": 57,
+    "text": "Erbe eines Hexers: Das Stück gehörte einem Hexer, der in der Stadt verbrannt wurde.",
+    "enthuellung": "Der Hexer hinterließ Schulden bei einem Fürsten; der Fürst sucht den Erben und stellt Bedingungen.",
+    "stufe": 3
+   },
+   {
+    "von": 58,
+    "bis": 58,
+    "text": "Verfluchter Vorbesitzer: Drei Besitzer starben, der Gegenstand selbst ist unschuldig.",
+    "enthuellung": "Der letzte Besitzer wurde vom Stadtrat erpresst; wer die Akte vorlegt, erhält Schweigegeld vom Rat.",
+    "stufe": 3
+   },
+   {
+    "von": 59,
+    "bis": 59,
+    "text": "Spitzelkristall: Ein Kristall im Futter nimmt Stimmen auf und sendet sie an einen Turm.",
+    "enthuellung": "Der Turm gehört der Stadtwache; die Gruppe kann den Kristall gegen einen Wachhauptmann wenden.",
+    "stufe": 3
+   },
+   {
+    "von": 60,
+    "bis": 60,
+    "text": "Tatwaffe des Grafen: Die Klinge tötete den Vorgänger des heutigen Grafen im Duell.",
+    "enthuellung": "Der heutige Graf ließ den Mord vertuschen; ein Richter besitzt Akten, die ihn belasten.",
+    "stufe": 3
+   },
+   {
+    "von": 61,
+    "bis": 61,
+    "text": "Geheimfach mit Karte: Ein falscher Boden verbirgt eine Karte zu einer Silbermine im Gebirge.",
+    "enthuellung": "Die Mine ist verschüttet; ein Bergmann kennt den Eingang und verlangt einen Anteil am Fund.",
+    "stufe": 3
+   },
+   {
+    "von": 62,
+    "bis": 62,
+    "text": "Schatzspur im Futter: Ein Faden führt aus dem Stück zu einer Gruft unter der Stadtmauer.",
+    "enthuellung": "Die Gruft ist seit Jahrzehnten vergessen; ein Totengräber hütet den Schlüssel und will mitkommen.",
+    "stufe": 3
+   },
+   {
+    "von": 63,
+    "bis": 63,
+    "text": "Erwacht im Regen: Bei Nässe zeigt sich eine Schrift auf dem Metall, die nach Gelöbnis klingt.",
+    "enthuellung": "Die Schrift nennt ein Gelöbnis an eine Rebellenarmee; ein Anführer wirbt die Gruppe an.",
+    "stufe": 3
+   },
+   {
+    "von": 64,
+    "bis": 64,
+    "text": "Kopie eines Testaments: Der Gegenstand ist mit einem Dokument verschmolzen, das ein Erbe belegt.",
+    "enthuellung": "Das Erbe gehört einem Kloster; die Äbtissin bietet Schutz und verlangt das Original zurück.",
+    "stufe": 3
+   },
+   {
+    "von": 65,
+    "bis": 65,
+    "text": "Gestohlen von einer Hexe: Eine Zauberin sammelte solche Stücke, dieses fehlte in ihrer Sammlung.",
+    "enthuellung": "Die Zauberin ist im Wald begraben; ihre Tochter sammelt die restlichen Stücke und bittet um Hilfe.",
+    "stufe": 3
+   },
+   {
+    "von": 66,
+    "bis": 66,
+    "text": "Fremdwerk aus dem Osten: Eine Gravur in fremder Schrift zeigt das Zeichen einer Handelsflotte.",
+    "enthuellung": "Die Flotte verschwand vor Jahren; ein Kapitän lebt in einer Hafenschenke und kennt ihren Weg.",
+    "stufe": 3
+   },
+   {
+    "von": 67,
+    "bis": 67,
+    "text": "Lebendes Metall: Die Oberfläche verändert sich mit der Hand des Trägers und wird kalt.",
+    "enthuellung": "Das Metall stammt aus einem heimlich ausgebeuteten Erzgang; ein Zeuge der Gilde verkauft die Lage des Gangs für Schutz.",
+    "stufe": 3
+   },
+   {
+    "von": 68,
+    "bis": 68,
+    "text": "Beweisstück im Mordfall: Eine Gravur passt zu einem ungeklärten Tatort im Nachbarort.",
+    "enthuellung": "Der Täter sitzt im Rat; die Gruppe erhält einen Zeugen, der den Mord bezeugen kann.",
+    "stufe": 3
+   },
+   {
+    "von": 69,
+    "bis": 69,
+    "text": "Verschollener Brief: Im Gegenstand ist ein Brief versteckt, der Verräter namentlich nennt.",
+    "enthuellung": "Die Verräter sind angesehene Männer der Stadt; sie bieten der Gruppe Schweigegeld an.",
+    "stufe": 3
+   },
+   {
+    "von": 70,
+    "bis": 70,
+    "text": "Falsche Reliquie: Der Knochen ist aus einem Tierschenkel geschnitzt und trotzdem geweiht.",
+    "enthuellung": "Der Pfarrer kennt die Fälschung und deckt sie; ein Mönch will das Geheimnis verkaufen.",
+    "stufe": 3
+   },
+   {
+    "von": 71,
+    "bis": 71,
+    "text": "Wiedergänger-Zeichen: Auf dem Gegenstand liegt ein Abdruck eines Toten, der nicht im Grab liegt.",
+    "enthuellung": "Der Tote verlangt sein Grab; ein Totenbeschwörer will den Gegenstand als Pfand.",
+    "stufe": 3
+   },
+   {
+    "von": 72,
+    "bis": 72,
+    "text": "Doppelter Schlüssel: Das Stück öffnet ein Tor in der Stadtmauer, das seit Jahren zugemauert ist.",
+    "enthuellung": "Hinter dem Tor liegt ein Gang zum Palast; eine Verschwörung nutzt ihn für nächtliche Treffen.",
+    "stufe": 3
+   },
+   {
+    "von": 73,
+    "bis": 73,
+    "text": "Zweites Siegel: Ein Zollsiegel beweist, dass das Stück als Kriegsgut gelistet ist.",
+    "enthuellung": "Der Zollschreiber am Hafen führte die Liste und verkauft die Namen der Käufer gegen Silber.",
+    "stufe": 3
+   },
+   {
+    "von": 74,
+    "bis": 74,
+    "text": "Spitzelschrift: Die Gravur ist eine verschlüsselte Liste von Informanten der Stadt.",
+    "enthuellung": "Einer der Informanten bittet die Gruppe um Hilfe bei der Flucht aus der Unterstadt.",
+    "stufe": 3
+   },
+   {
+    "von": 75,
+    "bis": 75,
+    "text": "Sprechende Figur: Im Griff murmelt eine Figur Wahrheiten, aber nur halb.",
+    "enthuellung": "Die Figur gehört einem Orakel im Wald; das Orakel lockt die Gruppe mit einem verlockenden Angebot.",
+    "stufe": 3
+   },
+   {
+    "von": 76,
+    "bis": 76,
+    "text": "Königsmord: Die Klinge tötete den letzten König, seither wird sie gesucht.",
+    "enthuellung": "Die Gruppe findet heraus, dass der Thronerbe den Mord befahl; der rivalisierende Hof zahlt für den Beweis und bietet Schutz.",
+    "stufe": 4
+   },
+   {
+    "von": 77,
+    "bis": 77,
+    "text": "Erwachtes Wesen: Im Inneren schläft ein Geist, der Namen speichert und ruft.",
+    "enthuellung": "Der Geist will befreit werden; er hilft gegen den Rat der Stadt, verlangt aber ein Opfer.",
+    "stufe": 4
+   },
+   {
+    "von": 78,
+    "bis": 78,
+    "text": "Brandstiftung der Herrin: Das Stück beweist, dass die Stadtherrin den Brand selbst legte.",
+    "enthuellung": "Die Gruppe kann die Herrin stürzen; die Stadtwache wird zur Feindin. +10 einmalig auf eine Probe, wenn die Gruppe das Geheimnis klärt.",
+    "stufe": 4
+   },
+   {
+    "von": 79,
+    "bis": 79,
+    "text": "Falscher Thronerbe: Das Siegel im Gegenstand beweist einen falschen Erben der Krone.",
+    "enthuellung": "Der echte Erbe wurde im Kloster versteckt; die Gruppe kann ihn finden und den Thron verändern.",
+    "stufe": 4
+   },
+   {
+    "von": 80,
+    "bis": 80,
+    "text": "Schatz der verlorenen Stadt: Der Gegenstand ist der Schlüssel zu einer Gruft unter dem Moor.",
+    "enthuellung": "Die Gruft ist der Schatzort; ein Schatzjäger mit Söldnern taucht als Gegner auf und verfolgt die Gruppe.",
+    "stufe": 4
+   },
+   {
+    "von": 81,
+    "bis": 81,
+    "text": "Lebender Zeuge: Der frühere Besitzer ist nicht tot, sondern seit Jahren eingekerkert.",
+    "enthuellung": "Der Gefangene kennt die Wahrheit über den Mord am Grafen; er wird Verbündeter, wenn die Gruppe ihn befreit.",
+    "stufe": 4
+   },
+   {
+    "von": 82,
+    "bis": 82,
+    "text": "Verfluchter Name: Die Gravur trägt den Namen eines Dämonenpakts, der jeden Träger bindet.",
+    "enthuellung": "Die Gruppe kann den Pakt lösen, verliert aber einen Verbündeten, der bisher im Stillen half.",
+    "stufe": 4
+   },
+   {
+    "von": 83,
+    "bis": 83,
+    "text": "Beweis gegen den Richter: Im Geheimfach liegen Briefe, die den Richter als Mörder nennen.",
+    "enthuellung": "Der Richter wird zum Feind; wer die Briefe dem Rat übergibt, gewinnt die Stadtherren als Verbündete.",
+    "stufe": 4
+   },
+   {
+    "von": 84,
+    "bis": 84,
+    "text": "Blutschwur: Der Gegenstand erwacht, wenn Blut fällt, und spricht mit der Stimme des Erschlagenen.",
+    "enthuellung": "Der Geist verlangt Rache und nennt den wahren Täter, der seit Monaten als Helfer der Gruppe dient.",
+    "stufe": 4
+   },
+   {
+    "von": 85,
+    "bis": 85,
+    "text": "Gefangener Geist: Im Inneren sitzt ein Geist aus einem Verlies, der Mauern brechen kann.",
+    "enthuellung": "Der Geist hilft gegen Belagerer; je Einsatz verlangt er eine schlaflose Nacht (−10 am Folgetag). Ihn zu entfesseln bringt die Stadt in Gefahr.",
+    "stufe": 4
+   },
+   {
+    "von": 86,
+    "bis": 86,
+    "text": "Erbe des Grafenhauses: Das Stück beweist, dass der Träger der rechtmäßige Erbe des Landes ist.",
+    "enthuellung": "Die Gruppe wird zum Ziel des Grafen; ein Verbündeter aus dem Adel bietet Schutz. +10 einmalig auf eine Probe, wenn die Gruppe das Geheimnis klärt.",
+    "stufe": 4
+   },
+   {
+    "von": 87,
+    "bis": 87,
+    "text": "Brüchige Schuld: Der Gegenstand hält das Wort eines Dämons, das Stadt und Fluss verbindet.",
+    "enthuellung": "Die Schuld wurde vor hundert Jahren geschlossen; der Dämon fordert Einlösung und einen Begleiter.",
+    "stufe": 4
+   },
+   {
+    "von": 88,
+    "bis": 88,
+    "text": "Erzfälschung: Die Stadturkunde beruht auf einer Fälschung, die dieses Stück belegt.",
+    "enthuellung": "Die Stadt steht vor Umsturz; die Gruppe entscheidet, ob sie die Wahrheit verkündet. +10 einmalig auf eine Probe, wenn die Gruppe das Geheimnis klärt.",
+    "stufe": 4
+   },
+   {
+    "von": 89,
+    "bis": 89,
+    "text": "Pestkiste: Das Stück kam aus einem Haus, das die Stadt wegen Seuche versiegelte.",
+    "enthuellung": "Die Nachfahrin lebt versteckt im Hospiz; sie bittet um Schutz und fordert das Erbe zurück.",
+    "stufe": 4
+   },
+   {
+    "von": 90,
+    "bis": 90,
+    "text": "Pakt der Ahnen: Der Gegenstand ist ein Bindeglied zu den Ahnen des Totengräber-Ordens.",
+    "enthuellung": "Der Orden verlangt Gehorsam; die Gruppe erhält den Auftrag, die Gräber der Stadt zu öffnen.",
+    "stufe": 4
+   },
+   {
+    "von": 91,
+    "bis": 91,
+    "text": "Ketzerische Reliquie: Das Stück beweist, dass die Kirchenweihe der Stadt eine Lüge war.",
+    "enthuellung": "Der Klerus verfolgt jeden Besitzer; ein Inquisitor reist an und zahlt gutes Geld für das Stück, wenn es ihm übergeben wird.",
+    "stufe": 4
+   },
+   {
+    "von": 92,
+    "bis": 92,
+    "text": "Kriegszeichen: Der Gegenstand war ein Feldzeichen, das die Schlacht am Galgenhügel entschied.",
+    "enthuellung": "Die Wahrheit über die Schlacht bricht das Bündnis der Adligen; ein Heerführer will das Stück öffentlich zeigen.",
+    "stufe": 4
+   },
+   {
+    "von": 93,
+    "bis": 93,
+    "text": "Lebender Wächter: Ein Torwächter ruht im Stück und regt sich bei jeder Gefahr für die Stadt.",
+    "enthuellung": "Der Wächter erwacht bei Gefahr und verteidigt die Gruppe; je Einsatz verlangt er, dass sie ein Siegel bricht. +10 einmalig auf eine Probe, wenn die Gruppe das Geheimnis klärt.",
+    "stufe": 4
+   },
+   {
+    "von": 94,
+    "bis": 94,
+    "text": "Pakt mit dem Moorkönig: Die Schuld ist ein Vertrag, der das ganze Dorf an das Moor bindet.",
+    "enthuellung": "Der Moorkönig fordert Opfer; die Gruppe kann den Pakt brechen, wenn sie die Äcker der Bauern auslöst.",
+    "stufe": 4
+   },
+   {
+    "von": 95,
+    "bis": 95,
+    "text": "Kopfgeld auf den Träger: Der Gegenstand ist markiert; jeder Häscher weiß, wer ihn trägt.",
+    "enthuellung": "Eine Gilde von Häschern sucht den Träger; ihr Anführer, der Vetter des Ermordeten, handelt, wenn der Mörder ausgeliefert wird.",
+    "stufe": 4
+   },
+   {
+    "von": 96,
+    "bis": 96,
+    "text": "Tatzeit im Metall: Der Gegenstand zeigt die Stunde des Mordes, der Täter ist ein Bekannter der Gruppe.",
+    "enthuellung": "Der Bekannte wird zum Gegner; die Gruppe muss entscheiden, ob sie ihn an die Wache ausliefert.",
+    "stufe": 4
+   },
+   {
+    "von": 97,
+    "bis": 97,
+    "text": "Herzstück der Verschwörung: Der Gegenstand verbindet die Stadtherrin, die Zunft und die Wache.",
+    "enthuellung": "Die Verschwörung wird aufgedeckt; die Gruppe gewinnt einen Verbündeten im Rat, doch ein Mordauftrag gegen sie wird erteilt.",
+    "stufe": 4
+   },
+   {
+    "von": 98,
+    "bis": 98,
+    "text": "Beweis eines Wunders: Das Stück ist echt, und das Wunder war Betrug einer Heilerin.",
+    "enthuellung": "Die Heilerin wird gesucht; die Gruppe kann ihr Schutz gewähren oder sie den Priestern übergeben.",
+    "stufe": 4
+   },
+   {
+    "von": 99,
+    "bis": 99,
+    "text": "Mutter der Flüche: Der Gegenstand gehört einer Hexe, die den Fluch über die Stadt legte.",
+    "enthuellung": "Die Gruppe muss den Fluch brechen; die Hexe verlangt ein Pfand, und die Stadt verliert ihre Ruhe.",
+    "stufe": 4
+   },
+   {
+    "von": 100,
+    "bis": 100,
+    "text": "Schlüssel zur Wahrheit: Im Gegenstand liegt die Wahrheit über die Gründung der Stadt und ihre Schuld.",
+    "enthuellung": "Die Stadt steht vor dem Zerfall; die Gruppe entscheidet, welcher Seite sie zur Macht verhilft.",
+    "stufe": 4
+   }
+  ]
+ }
+}

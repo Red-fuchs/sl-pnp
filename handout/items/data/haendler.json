@@ -1,0 +1,65 @@
+{
+ "haendler": {
+  "doc": "Posten: d6 + Stufe. Seltenheit je Posten: d100 auf die Seltenheitstabelle, \"wuerfe\" mal gewürfelt; negativ = der gewöhnlichere, positiv = der seltenere Wurf zählt. plunder_d6: bei einem gewöhnlichen Posten d6 <= Wert = Plunder. orakel = Schritte auf der Chancenleiter für \"Hat er genau das?\".",
+  "anzahl": "d6 + stufe",
+  "spezial_d6": [
+   1,
+   4
+  ],
+  "spezial_schritt": 1,
+  "kontext": [
+   {
+    "id": "grossstadt",
+    "name": "Großstadt, Hafen, Markttag, Messe",
+    "shift": 1
+   },
+   {
+    "id": "normal",
+    "name": "Dorf, Straße, gewöhnlicher Tag",
+    "shift": 0
+   },
+   {
+    "id": "wildnis",
+    "name": "Wildnis, Grenzland, Krieg, Belagerung, Seuche",
+    "shift": -1
+   }
+  ],
+  "stufen": [
+   {
+    "stufe": 1,
+    "beispiel": "Straßenbrauer, Hausierer",
+    "orakel": -1,
+    "wuerfe": -2,
+    "plunder_d6": 2
+   },
+   {
+    "stufe": 2,
+    "beispiel": "Dorfkrämer, Wanderhändler",
+    "orakel": 0,
+    "wuerfe": 1,
+    "plunder_d6": 1
+   },
+   {
+    "stufe": 3,
+    "beispiel": "Stadthändler, Waffenschmied",
+    "orakel": 0,
+    "wuerfe": 1,
+    "plunder_d6": 0
+   },
+   {
+    "stufe": 4,
+    "beispiel": "Meister (Alchemist, Rüstmeister), Hafenkontor",
+    "orakel": 1,
+    "wuerfe": 2,
+    "plunder_d6": 0
+   },
+   {
+    "stufe": 5,
+    "beispiel": "Hofmagier, Schatzkammer, Gildenhaus",
+    "orakel": 2,
+    "wuerfe": 3,
+    "plunder_d6": 0
+   }
+  ]
+ }
+}

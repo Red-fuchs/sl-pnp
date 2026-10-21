@@ -1,0 +1,732 @@
+{
+ "flueche": {
+  "doc": "Fenster je Seltenheit (Breite 50): Wurf d100; liegt er unter dem Fenster, +50; darüber, −50. Nur Spielleitung. Jeder Fluch klebt.",
+  "fenster": {
+   "gewoehnlich": [
+    1,
+    50
+   ],
+   "ungewoehnlich": [
+    1,
+    50
+   ],
+   "selten": [
+    26,
+    75
+   ],
+   "sehr_selten": [
+    51,
+    100
+   ],
+   "legendaer": [
+    51,
+    100
+   ]
+  },
+  "falte": 50,
+  "doppelt": [],
+  "gm": true,
+  "tabelle": [
+   {
+    "von": 1,
+    "bis": 1,
+    "text": "Schuldenlast: Gläubiger finden dich in jeder Schenke; −10 auf Überreden gegenüber Zunftmeistern.",
+    "haken": "Die Schuld bleibt offen, die der Gläubiger einzieht, sobald der Träger sich sicher fühlt.",
+    "stufe": 1
+   },
+   {
+    "von": 2,
+    "bis": 2,
+    "text": "Krähenfolge: Krähen sitzen auf den Dächern, unter denen du vorbeigehst; Bauern tuscheln, Wachen fragen dich zuerst.",
+    "haken": "Die Vögel warten dort, wo bald ein Dorf stirbt, und der Träger gilt ihnen als Zeuge.",
+    "stufe": 1
+   },
+   {
+    "von": 3,
+    "bis": 3,
+    "text": "Aschenhaar: Dein Haar riecht nach Brand; Kinder meiden dich, Mägde weisen dich aus der Küche.",
+    "haken": "Brandmeister Ruel in Kohlhausen fordert den Namen des Verbrannten, sonst zeigt er den Träger an.",
+    "stufe": 1
+   },
+   {
+    "von": 4,
+    "bis": 4,
+    "text": "Stummer Glockenklang: Beim Betreten einer Kirche verstummt jedes Gespräch; −10 auf Überreden in Gotteshäusern.",
+    "haken": "Das Schweigen folgt dem Glockenschlag, den ein Priester einst verstummen ließ, und er sucht den Träger.",
+    "stufe": 1
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Kohlenfinger: Deine Hände färben Papier schwarz; Fremde weigern sich, Verträge mit dir zu unterschreiben.",
+    "haken": "Die Tinte verblasst erst, wenn der Träger einen Schwur vor Zeugen bricht.",
+    "stufe": 1
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Totengräberruf: Man bittet dich um Leichen, nie um Hochzeiten; Wirte schenken dir kein Bier mehr ein.",
+    "haken": "Ein Toter hat dich als Zeugen bestellt, und wer dich bittet, begräbt bald jemanden.",
+    "stufe": 1
+   },
+   {
+    "von": 7,
+    "bis": 7,
+    "text": "Wachsschwur: Versprechen, die du gibst, werden vor Fremden nachgesprochen; Gerüchte eilen dir voraus.",
+    "haken": "Ein Schreiber notiert jedes Wort und will es eines Tages als Beweis gegen dich verwenden.",
+    "stufe": 1
+   },
+   {
+    "von": 8,
+    "bis": 8,
+    "text": "Moorgeruch: Nach jedem Regen steigt Modergeruch aus deinen Kleidern; Pferde scheuen, −10 auf Reiten.",
+    "haken": "Der Geruch stammt aus einem Moorgrab, dessen Tote den Träger holen wollen.",
+    "stufe": 1
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Galgenschuld: Du starrst auf Galgenholz zu lange; Richter befragen dich nur ungern, und Henker schauen weg.",
+    "haken": "Ein Henker erkennt im Gegenstand seinen eigenen Knoten und will ihn zurückholen.",
+    "stufe": 1
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Fremdes Auge: In Spiegeln fehlt ein Auge; −10 auf Menschenkenntnis bei Unbekannten.",
+    "haken": "Das Auge gehört einer Seherin, die durch den Träger sieht, was er verheimlicht.",
+    "stufe": 1
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Verschwiegener Name: Einen Namen kannst du nicht laut aussprechen; Freunde fragen, warum du sie meidest.",
+    "haken": "Der verschwiegene Name gehört dem Toten, der den Gegenstand einst verfluchte.",
+    "stufe": 1
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Knirschende Schritte: Deine Schritte klingen wie brechendes Eis; −10 auf Heimlichkeit im Wald bei Nacht.",
+    "haken": "Die Schritte folgen Kinderspuren im Schnee, und die Dorfbewohner suchen dieselben Spuren.",
+    "stufe": 1
+   },
+   {
+    "von": 13,
+    "bis": 13,
+    "text": "Kalte Glut: Feuer will dich nicht wärmen; Gastgeber fragen, warum ihre Glut vor dir erlischt.",
+    "haken": "Köhler Dorn aus den Wäldern bei Grauhain verlangt seine Glut zurück und lauert dem Träger am Meiler auf.",
+    "stufe": 1
+   },
+   {
+    "von": 14,
+    "bis": 14,
+    "text": "Ketzerzeichen: Man ruft dich nie zum Gebet; Mönche schließen die Türen, wenn du am Kloster vorbeigehst.",
+    "haken": "Das Zeichen gehörte einem verbrannten Ketzer, dessen Anhänger den Gegenstand suchen.",
+    "stufe": 1
+   },
+   {
+    "von": 15,
+    "bis": 15,
+    "text": "Verbrannte Zunftmarke: Deine Marke ist zur Hälfte verkohlt; Zunftbrüder fragen, wer dich ausgeschlossen hat.",
+    "haken": "Ein alter Meister brannte die Marke aus Rache, und sein Sohn sucht den Träger.",
+    "stufe": 1
+   },
+   {
+    "von": 16,
+    "bis": 16,
+    "text": "Nachtgeschrei: Im Schlaf rufst du Namen; Mitreisende wachen auf, −10 auf Überreden am Lagermorgen.",
+    "haken": "Die Namen gehören Schuldnern, die noch leben und den Träger bis zum Lager verfolgen.",
+    "stufe": 1
+   },
+   {
+    "von": 17,
+    "bis": 17,
+    "text": "Feilschzwang: Händler verlangen von dir immer den höchsten Preis; −10 auf Feilschen auf dem Markt.",
+    "haken": "Eine Bank im Hafen hält den Ursprungsvertrag, und wer ihn löst, erhält Zugang zu ihrem Keller.",
+    "stufe": 1
+   },
+   {
+    "von": 18,
+    "bis": 18,
+    "text": "Abgeschabtes Wappen: Das Wappen am Gegenstand ist unkenntlich; Adlige sehen durch dich hindurch, −10 auf Auftreten.",
+    "haken": "Das Wappen gehörte einem Mörder, dessen Familie den Mantel zurückfordert.",
+    "stufe": 1
+   },
+   {
+    "von": 19,
+    "bis": 19,
+    "text": "Tierscheu: Hunde knurren, Pferde scheuen, Katzen fauchen, sobald du einen Hof betrittst.",
+    "haken": "Schäfer Wendel vom Hof am Moorrand verlangt, dass der Träger seinen Hund aus dem Moor holt, bevor die Nacht fällt.",
+    "stufe": 1
+   },
+   {
+    "von": 20,
+    "bis": 20,
+    "text": "Fußspuren aus Blut: Deine Spuren zeigen Blut, auch wenn keines fließt; Spurenleser finden dich leicht.",
+    "haken": "Das Blut gehört dem Vorbesitzer, der noch sucht und Spuren hinterlässt, die der Träger nicht sieht.",
+    "stufe": 1
+   },
+   {
+    "von": 21,
+    "bis": 21,
+    "text": "Fremdes Lied: Du summst im Schlaf eine Weise, die niemand kennt; Mönche schreiben sie ab.",
+    "haken": "Die Weise ist eine Wegbeschreibung zu einem Versteck, das der Gegenstand schützt.",
+    "stufe": 1
+   },
+   {
+    "von": 22,
+    "bis": 22,
+    "text": "Verstimmte Mühle: Mühlräder stocken, wenn du vorbeigehst; Müller verlangen Ersatz für den Schaden.",
+    "haken": "Ein Müller verkaufte einst seinen Schatten für ein drehendes Rad, und der Gegenstand erinnert sich daran.",
+    "stufe": 1
+   },
+   {
+    "von": 23,
+    "bis": 23,
+    "text": "Ungläubige Aussage: Richter halten jede Aussage des Trägers für Lüge; −10 auf Zeugenaussagen.",
+    "haken": "Ein Richter wittert einen Trick und zieht den Träger in einen Prozess gegen einen Wirt.",
+    "stufe": 1
+   },
+   {
+    "von": 24,
+    "bis": 24,
+    "text": "Verbrannter Zucker: Süßes schmeckt dir bitter; Wirte bieten dir kein Mahl mehr an.",
+    "haken": "Wirt Gerlach im Gasthof Zur Eule verlangt ein Mahl als Sühne und schickt den Träger in den Keller zum Geist.",
+    "stufe": 1
+   },
+   {
+    "von": 25,
+    "bis": 25,
+    "text": "Schattenhund: Ein struppiger Hund folgt dir auf Schritt und Tritt; Dorfbewohner fürchten um ihre Kinder.",
+    "haken": "Der Hund ist der Schatten eines Vorbesitzers, der zu seinem Grab zurückwill.",
+    "stufe": 1
+   },
+   {
+    "von": 26,
+    "bis": 26,
+    "text": "Nachzehr: Einmal pro Sitzung verliert der Träger 1 SP, weil der Gegenstand die Träume zerreißt.",
+    "haken": "Die Träume zeigen den Weg zu einem Schatz, den der Vorbesitzer im Moor vergrub.",
+    "stufe": 2
+   },
+   {
+    "von": 27,
+    "bis": 27,
+    "text": "Schwerer Schlaf: Einmal pro Sitzung kostet die Nachtruhe 1 SP; der Gegenstand zieht Kraft aus jedem Schlafenden.",
+    "haken": "Ein Geist im Gegenstand braucht Ruhe, um sich zu vollenden, und borgt sie sich vom Träger.",
+    "stufe": 2
+   },
+   {
+    "von": 28,
+    "bis": 28,
+    "text": "Schattenlicht: Einmal pro Sitzung kostet die Nachtruhe 1 SP; der Gegenstand hält Schatten wach, die nicht ruhen dürfen.",
+    "haken": "Die Schatten wurden einst gebannt und suchen einen Körper, in dem sie rasten können.",
+    "stufe": 2
+   },
+   {
+    "von": 29,
+    "bis": 29,
+    "text": "Lehmschlaf: Einmal pro Sitzung nimmt die Nachtruhe dem Träger 1 SP, als sauge der Boden ihn aus.",
+    "haken": "Der Lehm stammt aus einem Grab, in dem ein Hexenmeister liegt und sich in den Schlaf anderer Körper einnistet.",
+    "stufe": 2
+   },
+   {
+    "von": 30,
+    "bis": 30,
+    "text": "Nachtwache: Einmal pro Sitzung zahlt der Träger 1 SP an die Wache der Toten.",
+    "haken": "Die Toten wachen über ein Grab, das der Träger einst öffnete, und fordern Schuld in Schlaf.",
+    "stufe": 2
+   },
+   {
+    "von": 31,
+    "bis": 31,
+    "text": "Müde Ruhe: Einmal pro Sitzung nach der Nachtruhe −1 SP; der Gegenstand verschluckt Ruhe und gibt sie nie zurück.",
+    "haken": "Das Material stammt von einem Grabmal, dessen Tote ihre Ruhe zurückverlangen.",
+    "stufe": 2
+   },
+   {
+    "von": 32,
+    "bis": 32,
+    "text": "Brandmal: Maximale LP −1, solange der Gegenstand getragen wird; die Haut am Hals schrumpft.",
+    "haken": "Die Narbe trägt das Zeichen eines Brandmeisters, der den Träger noch sucht.",
+    "stufe": 2
+   },
+   {
+    "von": 33,
+    "bis": 33,
+    "text": "Eisenhalt: Maximale LP −1, weil feine Eisenspitzen in den Körper wachsen.",
+    "haken": "Die Spitzen zeigen auf die Esse, in der der Gegenstand geschmiedet wurde, und locken Schmiede an.",
+    "stufe": 2
+   },
+   {
+    "von": 34,
+    "bis": 34,
+    "text": "Knochenwachs: Maximale LP −1; der Körper wird eng, als hielte der Gegenstand den Atem zurück.",
+    "haken": "Ein Knochenmacher band den Gegenstand an das Gebein eines Hingerichteten und will ihn wiederhaben.",
+    "stufe": 2
+   },
+   {
+    "von": 35,
+    "bis": 35,
+    "text": "Schwindende Haut: Maximale LP −1; Verletzungen nässen länger und schließen sich schlecht.",
+    "haken": "Die Haut erinnert sich an einen Aderlass, den der Gegenstand einst verlangte.",
+    "stufe": 2
+   },
+   {
+    "von": 36,
+    "bis": 36,
+    "text": "Moorkälte: Maximale LP −1; Moorwasser sickert durch die Poren und hält den Körper klamm.",
+    "haken": "Im Moor wartet der Geist, dessen Hunger der Gegenstand früher stillte.",
+    "stufe": 2
+   },
+   {
+    "von": 37,
+    "bis": 37,
+    "text": "Gallenfieber: Maximale LP −1; Galle nistet sich in jeder Verletzung ein und bremst die Heilung.",
+    "haken": "Der Gegenstand war einst der Lohn eines Henkers und wartet auf seinen nächsten Gebrauch.",
+    "stufe": 2
+   },
+   {
+    "von": 38,
+    "bis": 38,
+    "text": "Herzgießer – Hunger: 1 SP je Sitzung, nach Herzwärme.",
+    "haken": "Der Gegenstand wurde aus einem Herz gegossen und vergisst nicht, dass es warm sein wollte.",
+    "stufe": 2
+   },
+   {
+    "von": 39,
+    "bis": 39,
+    "text": "Aschenzehrer – Hunger: 1 SP je Sitzung, nach Glut.",
+    "haken": "Die Asche glimmt nur, solange sie Wärme aus dem Träger zieht, und er merkt den Verlust zu spät.",
+    "stufe": 2
+   },
+   {
+    "von": 40,
+    "bis": 40,
+    "text": "Tränensog – Hunger: 1 SP je Sitzung, nach Tränen.",
+    "haken": "Der Gegenstand füllt sich nur mit Trauer, die der Träger nicht loslässt, und sucht deshalb immer neuen Kummer.",
+    "stufe": 2
+   },
+   {
+    "von": 41,
+    "bis": 41,
+    "text": "Zunftdorn: −10 auf Angriffe im Nahkampf gegen Bewaffnete mit Zunftzeichen; der Gegenstand klemmt jede Parade.",
+    "haken": "Der Gegenstand stammt von einem Söldner, der im Kampf verriet und heute Rache sucht.",
+    "stufe": 2
+   },
+   {
+    "von": 42,
+    "bis": 42,
+    "text": "Verschluckte Predigt: −10 auf Überreden in Gegenwart von Priestern; der Gegenstand verschluckt jedes Wort.",
+    "haken": "Der Gegenstand gehörte einem Prediger, der jedes Dorf mit seinem Schweigen stillte.",
+    "stufe": 2
+   },
+   {
+    "von": 43,
+    "bis": 43,
+    "text": "Schwarzer Staub: −10 auf das Entziffern alter Runen; die Zeichen verschwimmen, sobald man sie fasst.",
+    "haken": "Die Runen wehren sich gegen jeden, bis der Träger eine Wahrheit bekennt, die er verschwiegen hat.",
+    "stufe": 2
+   },
+   {
+    "von": 44,
+    "bis": 44,
+    "text": "Hundsgeld: −10 auf Handel mit Händlern im Hafen; Münzen rollen dem Träger vom Tisch.",
+    "haken": "Das Geld stammt von einem Kaufmann, der seine Schulden im Hafen vergrub.",
+    "stufe": 2
+   },
+   {
+    "von": 45,
+    "bis": 45,
+    "text": "Blendlicht: −10 auf Fernblick bei Nacht; jede Lichtquelle blendet doppelt.",
+    "haken": "Der Gegenstand zeigt Dinge, die niemand sehen will, und blendet, damit der Träger sie übersieht.",
+    "stufe": 2
+   },
+   {
+    "von": 46,
+    "bis": 46,
+    "text": "Zitternde Hand: −10 auf Präzisionsangriffe mit Waffen; die Hand zittert vor jeder Entscheidung.",
+    "haken": "Der Gegenstand wurde für einen Mord gemacht und zittert, bis er wieder Blut gesehen hat.",
+    "stufe": 2
+   },
+   {
+    "von": 47,
+    "bis": 47,
+    "text": "Rauer Atem: −10 auf Ausdauerproben bei Steigungen und im Moor; der Atem bleibt in der Brust hängen.",
+    "haken": "Die Lunge gehört einer Ertrunkenen, die den Träger ins Moor zurückziehen will.",
+    "stufe": 2
+   },
+   {
+    "von": 48,
+    "bis": 48,
+    "text": "Verbrannte Zunge: −10 auf Überreden in Verhandlungen mit Zunftmeistern; Worte kommen als Asche.",
+    "haken": "Der Mund verbrannte einst eine Lüge und wird jede neue Lüge mit Schmerz bezahlen lassen.",
+    "stufe": 2
+   },
+   {
+    "von": 49,
+    "bis": 49,
+    "text": "Stummer Dolmetscher: −10 auf Wissen bei fremden Sprachen; Wörter verlieren sich in der Kehle.",
+    "haken": "Die Sprache stammt von einer Stadt, die im Moor versank, und sie hält ihre Schätze verborgen.",
+    "stufe": 2
+   },
+   {
+    "von": 50,
+    "bis": 50,
+    "text": "Gehetzte Nacht: −10 auf Wahrnehmung in Wäldern nach Sonnenuntergang; Geräusche täuschen den Träger.",
+    "haken": "Die Geräusche sind Rufe der Gejagten, die den Träger in die Irre führen wollen.",
+    "stufe": 2
+   },
+   {
+    "von": 51,
+    "bis": 51,
+    "text": "Raunen der Nacht: −10 auf alle Proben, solange es Nacht ist; leise Namen raunen dem Träger zu.",
+    "haken": "Das Licht zeigt einem Toten den Weg zum Träger und wartet, bis er gehört wird.",
+    "stufe": 3
+   },
+   {
+    "von": 52,
+    "bis": 52,
+    "text": "Eigenes Echo: −10 auf alle Proben, solange andere Menschen im Raum sind; seine Stimme hallt verzögert nach.",
+    "haken": "Im Glanz wohnt die Stimme des Vorbesitzers, die jede Lüge des Trägers kennt.",
+    "stufe": 3
+   },
+   {
+    "von": 53,
+    "bis": 53,
+    "text": "Ohrenhauch: −10 auf alle Proben, solange der Träger im Freien steht; ein Hauch flüstert ihm ins Ohr.",
+    "haken": "Der Gegenstand trägt den Willen einer Hexe, die Schuld einfordert, wenn der Träger zögert.",
+    "stufe": 3
+   },
+   {
+    "von": 54,
+    "bis": 54,
+    "text": "Halsgeflüster: −10 auf alle Proben, solange der Träger bewaffnet ist; die Stimme drängt zum Zuschlag.",
+    "haken": "Der Gegenstand gehörte einem Mörder, der nun in jedem Schritt des Trägers Beute sucht.",
+    "stufe": 3
+   },
+   {
+    "von": 55,
+    "bis": 55,
+    "text": "Wasserraunen: −10 auf alle Proben, solange es regnet; Wasser flüstert Namen ins Ohr.",
+    "haken": "Ein ertrunkener Schiffer wispert aus der Tiefe, bis der Träger Wasser verschwendet.",
+    "stufe": 3
+   },
+   {
+    "von": 56,
+    "bis": 56,
+    "text": "Warnzischen: −10 auf alle Proben, solange der Träger im Kampf steht; ein Zischen warnt vor jedem Schlag.",
+    "haken": "Der Gegenstand will Blut von den Nachkommen seines Schmieds und flüstert deren Namen.",
+    "stufe": 3
+   },
+   {
+    "von": 57,
+    "bis": 57,
+    "text": "Nachklang: −10 auf alle Proben, solange der Träger allein unterwegs ist; Stimmen antworten auf jeden Schritt.",
+    "haken": "Der Klang ruft den Träger vor Gericht, wenn er verhallt.",
+    "stufe": 3
+   },
+   {
+    "von": 58,
+    "bis": 58,
+    "text": "Seitenflüstern: −10 auf alle Proben, solange der Träger in einer Stadt ist; Gerüchte flüstern hinter ihm her.",
+    "haken": "Der Gegenstand flüstert den Namen jedes Schuldigen, den der Träger kennt, und verlangt Gerechtigkeit.",
+    "stufe": 3
+   },
+   {
+    "von": 59,
+    "bis": 59,
+    "text": "Verräterhand: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er Verrat niederschreibt.",
+    "haken": "Der Gegenstand schrieb einst den Verrat an einem Freund und wartet, bis der Träger wieder vertraut.",
+    "stufe": 3
+   },
+   {
+    "von": 60,
+    "bis": 60,
+    "text": "Gefährtenbund: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er einem Freund vertraut.",
+    "haken": "Der Gegenstand gehörte einem Verräter, der seinen Herrn in den Hinterhalt führte.",
+    "stufe": 3
+   },
+   {
+    "von": 61,
+    "bis": 61,
+    "text": "Zunftrecht: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er eine Zunftregel ehrt.",
+    "haken": "Der Gegenstand gehörte einem Meister, der seine Lehrlinge verkaufte, und er hält das Verkaufsrecht noch.",
+    "stufe": 3
+   },
+   {
+    "von": 62,
+    "bis": 62,
+    "text": "Lügenmahl: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er ein Versprechen hält.",
+    "haken": "Der Gegenstand wurde mit dem Blut eines Schwurbrechers getränkt und nährt den Verrat, den er verlangt.",
+    "stufe": 3
+   },
+   {
+    "von": 63,
+    "bis": 63,
+    "text": "Zweifacher Schwur: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er zum Kampf ansetzt.",
+    "haken": "Der Gegenstand tötete einst einen Bruder und verlangt, dass der Träger sich ein zweites Mal verrät.",
+    "stufe": 3
+   },
+   {
+    "von": 64,
+    "bis": 64,
+    "text": "Verschlossenes Herz: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er eine Tür verriegelt.",
+    "haken": "Der Gegenstand gehörte einem Kerkermeister, der jeden Gefangenen verriet, der ihm vertraute.",
+    "stufe": 3
+   },
+   {
+    "von": 65,
+    "bis": 65,
+    "text": "Brotbund: Einmal pro Sitzung zählt ein Wurf des Trägers als Fehlschlag, wenn er Brot unter Fremden teilt.",
+    "haken": "Der Gegenstand schnitt einst den Bund eines Dorfes auf und zwingt den Träger zur Wiederholung.",
+    "stufe": 3
+   },
+   {
+    "von": 66,
+    "bis": 66,
+    "text": "Moorlocker: Lockruf – Spannung des Orakels +1 oder ein zusätzliches Zufallsereignis bei jeder Reise ins Moor.",
+    "haken": "Ein Moorgeist lockt den Träger, um seinen Körper gegen den des Geistes zu tauschen.",
+    "stufe": 3
+   },
+   {
+    "von": 67,
+    "bis": 67,
+    "text": "Ruinenruf: Lockruf – Spannung des Orakels +1 oder ein zusätzliches Zufallsereignis beim Betreten fremder Ruinen.",
+    "haken": "Der Gegenstand stammt aus einer Burg, deren Herrin ihren Gast sucht.",
+    "stufe": 3
+   },
+   {
+    "von": 68,
+    "bis": 68,
+    "text": "Lockflamme: Lockruf – Spannung des Orakels +1 oder ein zusätzliches Zufallsereignis bei jeder Nacht im Wald.",
+    "haken": "Die Flamme zieht Gefahren an, weil der Gegenstand nur von Gefahren lebt.",
+    "stufe": 3
+   },
+   {
+    "von": 69,
+    "bis": 69,
+    "text": "Meeressang: Lockruf – ein zusätzliches Zufallsereignis in jeder Hafenszene, Gesang im Ohr des Trägers.",
+    "haken": "Ein Meeresgeist singt durch den Gegenstand und lockt den Träger zu seinen Ertrunkenen.",
+    "stufe": 3
+   },
+   {
+    "von": 70,
+    "bis": 70,
+    "text": "Kirchenschein: Lockruf – Spannung des Orakels +1, sobald der Träger eine Kirche betritt.",
+    "haken": "Im Glanz wartet ein Priester, der den Träger für ein früheres Verbrechen vor Gericht bringen will.",
+    "stufe": 3
+   },
+   {
+    "von": 71,
+    "bis": 71,
+    "text": "Krähenruf: Lockruf – ein zusätzliches Zufallsereignis pro Szene in Städten; Krähen bringen Briefe.",
+    "haken": "Der Gegenstand gehört einem Boten, der seine Post noch nicht abgegeben hat.",
+    "stufe": 3
+   },
+   {
+    "von": 72,
+    "bis": 72,
+    "text": "Jagdruf: Lockruf – Spannung des Orakels +1, wenn der Gegenstand zu Jagd oder Schlacht ruft.",
+    "haken": "Der Gegenstand gehörte einem Jäger, der seine Beute nie erlegte und nun den Träger jagt.",
+    "stufe": 3
+   },
+   {
+    "von": 73,
+    "bis": 73,
+    "text": "Aschenklang – Hunger: 1 SP je Sitzung, nach Wärme; Feuer in Nähe des Trägers flackert kalt.",
+    "haken": "Der Gegenstand wurde aus dem Feuer eines Scheiterhaufens geschmolzen und will den Schmerz derer hören, die ihn trugen.",
+    "stufe": 3
+   },
+   {
+    "von": 74,
+    "bis": 74,
+    "text": "Blutsaft – Hunger: 1 SP je Sitzung, nach Lebenssaft; wer verwundet ist, blutet nach jeder Szene 1 LP aus.",
+    "haken": "Der Gegenstand diente einem Opferpriester, der seine Gemeinde zurückverlangt.",
+    "stufe": 3
+   },
+   {
+    "von": 75,
+    "bis": 75,
+    "text": "Knochenmark – Hunger: 1 SP je Sitzung, nach Mark; Leichenfledermäuse umkreisen den Träger.",
+    "haken": "Der Gegenstand hängt an einem Gerippe, das den Weg zum eigenen Grab nicht findet.",
+    "stufe": 3
+   },
+   {
+    "von": 76,
+    "bis": 76,
+    "text": "Dämonenbund: Pakt – Ein Dämon verlangt einmal pro Sitzung einen Auftrag; verweigert der Träger ihn, gilt Hunger 2 SP (nie unter 1 SP).",
+    "haken": "Der Dämon sammelt Schulden, bis der Träger ihm seinen Namen gibt, und dann gehört er ihm.",
+    "stufe": 4
+   },
+   {
+    "von": 77,
+    "bis": 77,
+    "text": "Schwurbann: Pakt – Ein Geist verlangt einmal pro Sitzung einen Dienst; verweigert der Träger ihn, gilt −10 auf alle Proben bis der Dienst getan ist.",
+    "haken": "Der Geist will seine Freiheit und bindet sich an den Körper des Trägers, bis der Dienst erfüllt ist.",
+    "stufe": 4
+   },
+   {
+    "von": 78,
+    "bis": 78,
+    "text": "Feuerpakt: Pakt – Eine Glut verlangt Dienst, genährt mit 1 LP je Szene; verweigert der Träger ihn, gilt −10 auf alle Proben, bis er ihn tut.",
+    "haken": "Die Glut sucht einen Schmied, der sie aus Blut schmiedet, und lässt sich nicht täuschen.",
+    "stufe": 4
+   },
+   {
+    "von": 79,
+    "bis": 79,
+    "text": "Totenschuld: Pakt – Totengeist verlangt ein Grab für seine Sippe; verweigert der Träger es, gilt Hunger 2 SP diese Sitzung (nie unter 1 SP).",
+    "haken": "Der Geist will ein Grab für seine Sippe und sucht den Träger, der es ihm verspricht.",
+    "stufe": 4
+   },
+   {
+    "von": 80,
+    "bis": 80,
+    "text": "Hafenschwur: Pakt – Ein Meeresgeist verlangt Dienst: versunkene Boote heben. Verweigert der Träger ihn, gilt −10 auf alle Proben bis der Dienst getan ist.",
+    "haken": "Der Geist verlor seine Flotte im Sturm und macht den Träger für jeden Verlust verantwortlich.",
+    "stufe": 4
+   },
+   {
+    "von": 81,
+    "bis": 81,
+    "text": "Schattenvertrag: Pakt – Ein Schatten verlangt Dienst; verweigert der Träger ihn, gilt Hunger 1 SP diese Sitzung.",
+    "haken": "Der Schatten gehörte einem Vorbesitzer, der seinen Körper verkaufte und den Rückkauf sucht.",
+    "stufe": 4
+   },
+   {
+    "von": 82,
+    "bis": 82,
+    "text": "Wachender Zorn: Erwachter Wille – Der Gegenstand bestimmt, wen der Träger angreift; jeder andere Angriff hat −10.",
+    "haken": "Der Gegenstand will eine Schlacht, die vor hundert Jahren nicht endete, und wählt die Gegner dafür.",
+    "stufe": 4
+   },
+   {
+    "von": 83,
+    "bis": 83,
+    "text": "Sprechendes Gewissen: Erwachter Wille – Der Gegenstand verweigert Schläge gegen Unschuldige; vor jedem Kampf fordert er einen Schwur vor Zeugen.",
+    "haken": "Der Gegenstand will Gerechtigkeit für einen Mord, den niemand sühnte, und sucht den Mörder.",
+    "stufe": 4
+   },
+   {
+    "von": 84,
+    "bis": 84,
+    "text": "Gewachsene Trauer: Erwachter Wille – Der Gegenstand spielt nur Lieder der Trauer und verweigert andere Töne.",
+    "haken": "Der Gegenstand trägt die Seele einer Sängerin, die ihren Mörder sucht.",
+    "stufe": 4
+   },
+   {
+    "von": 85,
+    "bis": 85,
+    "text": "Lenkender Ruf: Erwachter Wille – Der Gegenstand zeigt stets auf den nächsten Toten, nie nach Norden.",
+    "haken": "Der Gegenstand sucht die Gräber seiner Herren und verlangt Besuch an jedem.",
+    "stufe": 4
+   },
+   {
+    "von": 86,
+    "bis": 86,
+    "text": "Schlafende Herrschaft: Erwachter Wille – Der Gegenstand flüstert Befehle; einmal pro Sitzung muss der Träger einen ausführen oder verliert 1 SP.",
+    "haken": "Der Gegenstand gehörte einem König, der an seiner Macht zerbrach, und will wieder regieren.",
+    "stufe": 4
+   },
+   {
+    "von": 87,
+    "bis": 87,
+    "text": "Blinder Eid: Erwachter Wille – Der Gegenstand erinnert den Träger an einen Eid und zwingt ihn, ihn zu halten.",
+    "haken": "Der Gegenstand erinnert sich an einen Wächter, der sich selbst opferte, und sucht einen Nachfolger.",
+    "stufe": 4
+   },
+   {
+    "von": 88,
+    "bis": 88,
+    "text": "Kohlenherz – Hunger: 2 SP je Sitzung, nach Lebenswärme; nie unter 1 SP.",
+    "haken": "Das Herz ist aus Kohle gebrannt und vergisst nie, dass es einmal geschlagen hat.",
+    "stufe": 4
+   },
+   {
+    "von": 89,
+    "bis": 89,
+    "text": "Sichelmond – Hunger: 2 SP je Sitzung, nach Schlaf; nie unter 1 SP.",
+    "haken": "Der Mond nährt sich von Träumen, weil er den Schlaf der Dörfer seit Jahrhunderten isst.",
+    "stufe": 4
+   },
+   {
+    "von": 90,
+    "bis": 90,
+    "text": "Ketzerdurst – Hunger: 2 SP je Sitzung, nach Gebet; nie unter 1 SP.",
+    "haken": "Der Gegenstand trinkt jede Hoffnung aus, die man im Gebet ausspricht, und wird davon stärker.",
+    "stufe": 4
+   },
+   {
+    "von": 91,
+    "bis": 91,
+    "text": "Scharlachstahl: Verlangt Blut, 1 LP je Szene, in der er gebraucht wird.",
+    "haken": "Der Stahl wurde auf einem Schlachtfeld gehärtet und erinnert sich an jeden Kampf.",
+    "stufe": 4
+   },
+   {
+    "von": 92,
+    "bis": 92,
+    "text": "Knochenzoll: Verlangt Blut, 1 LP je Szene, in der er gebraucht wird; scharfe Kanten ritzen die Haut.",
+    "haken": "Die Knochen gehören einem Hexer, der seine Kinder fraß, und suchen den nächsten Träger.",
+    "stufe": 4
+   },
+   {
+    "von": 93,
+    "bis": 93,
+    "text": "Rotwachs: Verlangt Blut, 1 LP je Szene, in der er gebraucht wird; der Gegenstand brennt nur mit Blut.",
+    "haken": "Das Wachs stammt von einem Märtyrer, dessen Blut den Gegenstand noch bindet.",
+    "stufe": 4
+   },
+   {
+    "von": 94,
+    "bis": 94,
+    "text": "Blutzoll: Verlangt Blut, 1 LP je Szene, in der er gebraucht wird; der Gegenstand nimmt Anteil.",
+    "haken": "Der Gegenstand wog einst das Leben eines Kindes gegen Gold und gleicht die Rechnung weiter aus.",
+    "stufe": 4
+   },
+   {
+    "von": 95,
+    "bis": 95,
+    "text": "Adersog: Verlangt Blut, 1 LP je Szene, in der er gebraucht wird; der Gegenstand sitzt im Arm.",
+    "haken": "Der Gegenstand hielt einen Aderlässer fest, der den Träger in seine Schuld zieht.",
+    "stufe": 4
+   },
+   {
+    "von": 96,
+    "bis": 96,
+    "text": "Zunfterbe: Besitzanspruch Dritter – Die Zunft fordert den Gegenstand zurück und schickt Häscher.",
+    "haken": "Die Zunft will ihn unter Verschluss halten, weil er ihren Gründer verriet.",
+    "stufe": 4
+   },
+   {
+    "von": 97,
+    "bis": 97,
+    "text": "Herzogsrecht: Besitzanspruch Dritter – Ein Adliger hält den Gegenstand für sein Eigentum und lässt Diebe jagen.",
+    "haken": "Der Adlige war Auftraggeber des Mordes, bei dem der Gegenstand verflucht wurde.",
+    "stufe": 4
+   },
+   {
+    "von": 98,
+    "bis": 98,
+    "text": "Bruderschwur: Besitzanspruch Dritter – Der Bruder des Vorbesitzers verlangt den Gegenstand zurück.",
+    "haken": "Der Bruder hält den Träger für den Mörder, und bricht der Träger seinen Schwur, hat er recht.",
+    "stufe": 4
+   },
+   {
+    "von": 99,
+    "bis": 99,
+    "text": "Klostergut: Besitzanspruch Dritter – Ein Orden besteht auf Rückgabe und sendet Mönche auf die Spur.",
+    "haken": "Die Mönche wissen, dass der Gegenstand aus ihrem Schatz gestohlen wurde, und suchen den Dieb.",
+    "stufe": 4
+   },
+   {
+    "von": 100,
+    "bis": 100,
+    "text": "Moorherrenpfand: Besitzanspruch Dritter – Der Moorherr beansprucht den Gegenstand als Pfand für eine alte Schuld.",
+    "haken": "Die Schuld wurde nie beglichen, und der Moorherr kann sie jederzeit mit dem Gegenstand einfordern.",
+    "stufe": 4
+   }
+  ]
+ }
+}

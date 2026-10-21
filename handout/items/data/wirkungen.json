@@ -1,0 +1,834 @@
+{
+ "wirkungen": {
+  "doc": "Fenster je Seltenheit (Breite 50): Wurf d100; liegt er unter dem Fenster, +50; darüber, −50. Legendär würfelt zweimal (zwei verschiedene Einträge).",
+  "fenster": {
+   "gewoehnlich": [
+    1,
+    50
+   ],
+   "ungewoehnlich": [
+    1,
+    50
+   ],
+   "selten": [
+    26,
+    75
+   ],
+   "sehr_selten": [
+    51,
+    100
+   ],
+   "legendaer": [
+    51,
+    100
+   ]
+  },
+  "falte": 50,
+  "doppelt": [
+   "legendaer"
+  ],
+  "gm": false,
+  "tabelle": [
+   {
+    "von": 1,
+    "bis": 1,
+    "text": "Nachtauge: Bei Nacht +10 auf Wahrnehmungs-Proben, solange der Gegenstand getragen wird.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 2,
+    "bis": 2,
+    "text": "Marktstimme: +10 auf Feilschen-Proben auf Märkten und in Kontoren.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 3,
+    "bis": 3,
+    "text": "Hundeflüsterer: +10 auf Proben, einen Hund zu beruhigen oder zu täuschen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 4,
+    "bis": 4,
+    "text": "Moorfuß: +10 auf Proben, sicher über Torf und Schlamm zu gehen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Tintenblick: +10 auf Proben, verwischte oder fleckige Schrift zu entziffern.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Kirchhofsruhe: +10 auf Mut-Proben bei Gräbern, Begräbnissen und Leichen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 7,
+    "bis": 7,
+    "text": "Glutnest: +10 auf Proben, im Regen oder Schneeregen ein Feuer zu entzünden.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 8,
+    "bis": 8,
+    "text": "Zunftzeichen: +10 auf Sozial-Proben gegenüber Mitgliedern derselben Zunft.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Rauchmantel: +10 auf Schleichen-Proben in Rauch oder dichtem Nebel.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Schuldnerblick: +10 auf Proben, bei Verhandlungen einen Lügner zu erkennen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Kerzentrick: Einmal pro Szene ein Licht von Kerzengröße auf Befehl entzünden oder löschen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Trockenhand: Einmal pro Szene ist nasse Kleidung des Trägers sofort trocken.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 13,
+    "bis": 13,
+    "text": "Stillhalter: Einmal pro Szene wird ein Geräusch des Trägers gedämpft, etwa Schritt oder Klirren.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 14,
+    "bis": 14,
+    "text": "Spürnase: Einmal pro Szene Richtung eines bekannten Ortes oder Gegenstands innerhalb 50 Schritten ermitteln.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 15,
+    "bis": 15,
+    "text": "Tierstimme: Einmal pro Szene erkennen, welches einfache Gefühl ein einzelnes Tier zeigt.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 16,
+    "bis": 16,
+    "text": "Trittsicher: Einmal pro Szene wird ein Sturz auf glattem Grund verhindert.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 17,
+    "bis": 17,
+    "text": "Schlossfühler: Einmal pro Szene erfühlen, ob ein Schloss verriegelt oder nur angelehnt ist.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 18,
+    "bis": 18,
+    "text": "Glutnase: Einmal pro Szene Rauch oder Gasgeruch wahrnehmen, bevor er sichtbar wird.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 19,
+    "bis": 19,
+    "text": "Wärmehand: Einmal pro Szene werden klamme Finger für eine Handlung warm und beweglich.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 20,
+    "bis": 20,
+    "text": "Kreidestrich: Einmal pro Szene eine Spur markieren, die nur der Träger sehen kann.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 21,
+    "bis": 21,
+    "text": "Zweiter Wurf: Einmal pro Sitzung ein kostenloser Neuwurf einer Probe, bei der das Werkzeug oder die Waffe selbst zählt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 22,
+    "bis": 22,
+    "text": "Stiller Blick: Einmal pro Sitzung ein Neuwurf einer Wissensprobe, solange der Gegenstand in der Hand liegt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 23,
+    "bis": 23,
+    "text": "Berührung: Einmal pro Sitzung 2 LP heilen, wenn der Träger einen Verletzten berührt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 24,
+    "bis": 24,
+    "text": "Harzsalbe: Einmal pro Sitzung 2 LP heilen, nachdem der Verletzte zehn Minuten geruht hat.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 25,
+    "bis": 25,
+    "text": "Schwerer Fehl: Einmal pro Sitzung zählt ein kritischer Misserfolg mit dem Gegenstand nur als Misserfolg.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "schutz"
+   },
+   {
+    "von": 26,
+    "bis": 26,
+    "text": "Schriftkunde: +10 auf Wissens-Proben über Siegel und Wappen auf Urkunden und Kontrakten.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 27,
+    "bis": 27,
+    "text": "Bärenruhe: +10 auf Proben, ein wildes Tier nicht zu reizen, wenn der Träger stillsteht.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 28,
+    "bis": 28,
+    "text": "Fährmann: +10 auf Proben, ein Boot bei Hochwasser sicher zu führen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 29,
+    "bis": 29,
+    "text": "Zunftkrug: +10 auf Sozial-Proben in Schenken, wo der Gegenstand offen getragen wird.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 30,
+    "bis": 30,
+    "text": "Hofgericht: +10 auf Proben vor Richtern, wenn der Gegenstand sichtbar am Gürtel hängt.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 31,
+    "bis": 31,
+    "text": "Giftfühler: Einmal pro Szene erkennen, ob Speise oder Trank vergiftet ist.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 32,
+    "bis": 32,
+    "text": "Sprachkante: Einmal pro Szene fremde Rufe oder Schilder so weit verstehen, dass Gefahr klar wird.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 33,
+    "bis": 33,
+    "text": "Tür nur für dich: Einmal pro Szene eine Tür so schließen, dass nur der Träger sie ohne Probe öffnet.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 34,
+    "bis": 34,
+    "text": "Wetterauge: Einmal pro Szene wissen, ob innerhalb der nächsten Stunde Regen fällt.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 35,
+    "bis": 35,
+    "text": "Spurensinn: Einmal pro Szene die Richtung der letzten Spuren eines Menschen oder Tieres erkennen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 36,
+    "bis": 36,
+    "text": "Schlichter Neuwurf: Einmal pro Sitzung ein Neuwurf einer Schleichen- oder Wahrnehmungsprobe.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 37,
+    "bis": 37,
+    "text": "Blutstopp: Einmal pro Sitzung 2 LP heilen, nachdem der Träger eine Blutung verbunden hat.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 38,
+    "bis": 38,
+    "text": "Doppelschritt: Einmal pro Szene ein zweiter Zug nach einer Flucht, ohne Probe.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 39,
+    "bis": 39,
+    "text": "Ahlenspitze: +1 Schaden mit dieser Waffe, nur gegen ungepanzerte Gegner.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 40,
+    "bis": 40,
+    "text": "Hammerschlag: +1 Schaden mit dieser Waffe, wenn der Gegner am Boden liegt.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 41,
+    "bis": 41,
+    "text": "Lederhaut: +1 Rüstung gegen Hiebe, solange der Träger sie trägt.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 42,
+    "bis": 42,
+    "text": "Ringbrust: +1 Rüstung, nur gegen Stichschaden von Dolch oder Pfeil.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 43,
+    "bis": 43,
+    "text": "Totengräberfluch: +1 Schaden mit dieser Waffe gegen Untote.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 44,
+    "bis": 44,
+    "text": "Sternenlaut: Einmal pro Sitzung eine Orakel-Chance um eine Stufe nach oben verschieben.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 45,
+    "bis": 45,
+    "text": "Aschenkreis: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, solange der Träger im Kreis steht.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 46,
+    "bis": 46,
+    "text": "Richterstab: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage an Obrigkeit.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 47,
+    "bis": 47,
+    "text": "Blutbindung: Einmal pro Sitzung Treffer-Schaden auf 1 senken, wenn der Träger getroffen wird.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 48,
+    "bis": 48,
+    "text": "Wegeschild: +20 auf Proben, sich bei Dunkelheit im Moor zu orientieren.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 49,
+    "bis": 49,
+    "text": "Hauch der Ahnen: +20 auf Mut-Proben, solange ein Toter in Sichtweite liegt.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 50,
+    "bis": 50,
+    "text": "Pechhaut: +1 Rüstung, nur gegen Brandschaden durch Feuer oder Hitze.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 51,
+    "bis": 51,
+    "text": "Dolchkante: +1 Schaden mit dieser Waffe, wenn der Gegner überrascht ist.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 52,
+    "bis": 52,
+    "text": "Schildbuckel: +1 Rüstung, nur gegen Stangenwaffen.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 53,
+    "bis": 53,
+    "text": "Zunftrache: +1 Schaden mit dieser Waffe, nur gegen Diebe oder Räuber.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 54,
+    "bis": 54,
+    "text": "Lederbrust: +1 Rüstung, nur gegen Bisse und Krallen von Tieren.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 55,
+    "bis": 55,
+    "text": "Gewitterstille: +20 auf Schleichen-Proben während eines Gewitters.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 56,
+    "bis": 56,
+    "text": "Galgenfall: +20 auf Proben, einen Leichnam am Galgenholz zu deuten.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 57,
+    "bis": 57,
+    "text": "Feilschstein: Einmal pro Szene +20 auf eine einzige Feilschen-Probe.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 58,
+    "bis": 58,
+    "text": "Schiffsstiege: +20 auf Proben, auf schiefem Deck nicht zu stürzen.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 59,
+    "bis": 59,
+    "text": "Brunnenohr: +20 auf Wahrnehmung, wenn Stimmen durch Stein oder Wasser dringen.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 60,
+    "bis": 60,
+    "text": "Mondrad: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, solange Mondlicht fällt.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 61,
+    "bis": 61,
+    "text": "Krähenzahl: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, wenn eine Krähe sitzt.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 62,
+    "bis": 62,
+    "text": "Wachstein: Einmal pro Sitzung Treffer-Schaden auf 1 senken, wenn der Träger im Hinterhalt steht.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 63,
+    "bis": 63,
+    "text": "Schwurstein: Einmal pro Sitzung ein Neuwurf einer Sozial-Probe, wenn der Träger einen Schwur leistet.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 64,
+    "bis": 64,
+    "text": "Schlossgeist: Einmal pro Sitzung ein Schloss öffnen, das nur mit einem Dietrich zu knacken wäre.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 65,
+    "bis": 65,
+    "text": "Stimmenspiegel: Einmal pro Szene die Stimme eines Anwesenden nachahmen, die der Träger gehört hat.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 66,
+    "bis": 66,
+    "text": "Hirtenblick: Einmal pro Sitzung eine Herde zählen und sagen, welches Tier fehlt.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 67,
+    "bis": 67,
+    "text": "Tauchgeist: Einmal pro Szene unter Wasser atmen, bis die Szene endet.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 68,
+    "bis": 68,
+    "text": "Wegfeuer: Einmal pro Sitzung ein Feuer aus feuchtem Holz entzünden, das nicht raucht.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 69,
+    "bis": 69,
+    "text": "Glockenohr: Einmal pro Szene die Richtung einer Glocke im Nebel erkennen.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 70,
+    "bis": 70,
+    "text": "Schlinge: Einmal pro Sitzung eine Fesselung lösen, wenn der Träger gefesselt ist.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 71,
+    "bis": 71,
+    "text": "Kohlenbrand: Einmal pro Szene einen Brand im Umkreis von drei Schritten ersticken.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 72,
+    "bis": 72,
+    "text": "Flüsterweg: Einmal pro Sitzung eine kurze Nachricht unbemerkt an eine Person im selben Gebäude senden.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 73,
+    "bis": 73,
+    "text": "Zweiter Blick: Einmal pro Szene +20 auf eine Probe, Verstecke oder Fallenspuren zu finden.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 74,
+    "bis": 74,
+    "text": "Lagerlied: Einmal pro Sitzung eine gereizte Gruppe mit einem Lied beruhigen.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 75,
+    "bis": 75,
+    "text": "Schneeblick: Einmal pro Szene durch Schneetreiben bis zum nächsten Pfahl sehen.",
+    "kp": 2,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 76,
+    "bis": 76,
+    "text": "Runenstein: +10 auf Wissens-Proben bei Runen und Zeichen; einmal pro Szene Lichtschimmer auf Befehl.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 77,
+    "bis": 77,
+    "text": "Grabeshand: +10 auf Mut-Proben im Beinhaus; einmal pro Szene Schritte im Knochenlager dämpfen.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 78,
+    "bis": 78,
+    "text": "Richterfrost: +10 auf Sozial-Proben vor Gericht; einmal pro Szene eine Lüge des Gegenübers spüren.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 79,
+    "bis": 79,
+    "text": "Pilgerschuh: +10 auf Proben im Gebirge bei Schnee; einmal pro Szene den sicheren Pfad zeigen.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 80,
+    "bis": 80,
+    "text": "Schwertzahn: +1 Schaden mit dieser Waffe; bei einem kritischen Treffer ist der Gegner entwaffnet.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "schaden"
+   },
+   {
+    "von": 81,
+    "bis": 81,
+    "text": "Trauerweide: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben; einmal pro Szene Stimmen aus Gräbern hören.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 82,
+    "bis": 82,
+    "text": "Sturmauge: Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben; einmal pro Szene Regen um den Träger abweisen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 83,
+    "bis": 83,
+    "text": "Totenfährte: Einmal pro Sitzung ein Neuwurf einer Spurenprobe; einmal pro Szene Fußspuren eines Toten erkennen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 84,
+    "bis": 84,
+    "text": "Eidstein: Einmal pro Sitzung ein Neuwurf einer Sozial-Probe; einmal pro Szene einen gebrochenen Schwur erkennen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 85,
+    "bis": 85,
+    "text": "Bruchfleisch: Einmal pro Sitzung 2 LP heilen; einmal pro Szene den Schmerz eines Verletzten dämpfen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 86,
+    "bis": 86,
+    "text": "Wachsruh: Einmal pro Sitzung 2 LP heilen; einmal pro Szene das Fieber eines Begleiters senken.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 87,
+    "bis": 87,
+    "text": "Ascheharnisch: Einmal pro Sitzung Treffer-Schaden auf 1 senken; einmal pro Szene Feuer um den Träger meiden.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 88,
+    "bis": 88,
+    "text": "Mondnadel: Einmal pro Szene einen Riegel lautlos öffnen; einmal pro Sitzung erkennen, was in einer verschlossenen Truhe liegt.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 89,
+    "bis": 89,
+    "text": "Seelenfuchs: Einmal pro Szene ein Tier zu einer Spur führen lassen; einmal pro Sitzung eine Frage an ein Tier.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 90,
+    "bis": 90,
+    "text": "Glasspiegel: Einmal pro Szene Licht um eine Ecke leiten; einmal pro Sitzung einen Brief unentdeckt in einen Raum schmuggeln.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 91,
+    "bis": 91,
+    "text": "Feuerschrift: Einmal pro Szene eine Schrift glühen lassen, die nur der Träger liest; einmal pro Sitzung Feuer aus Schnee.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 92,
+    "bis": 92,
+    "text": "Zweimal Gehör: +10 auf Wahrnehmung bei Stimmen; einmal pro Szene Verfolger hinter einer Mauer hören.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "bonus"
+   },
+   {
+    "von": 93,
+    "bis": 93,
+    "text": "Fischhaut: Einmal pro Szene einen Sturz ins Wasser ohne Schaden überstehen; +10 auf Schwimmen.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 94,
+    "bis": 94,
+    "text": "Rabenzeichen: Einmal pro Szene Krähen an einen Ort locken, wo sie laut krächzen; +10 auf Schleichen dort.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 95,
+    "bis": 95,
+    "text": "Zunftbrief: Einmal pro Sitzung ein Neuwurf einer Sozial-Probe bei einer Zunft; +10 auf Wissens-Proben zum Zunftrecht.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 96,
+    "bis": 96,
+    "text": "Totenlicht: Einmal pro Szene erkennen, ob ein Leichnam durch Gift oder Stahl starb; +10 auf Wissens-Proben am Toten.",
+    "kp": 3,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 97,
+    "bis": 97,
+    "text": "Ruhestein: Einmal pro Sitzung 2 LP heilen, wenn der Träger einen Verletzten zur Ruhe bettet; einmal pro Szene Angst von Begleitern bannen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 98,
+    "bis": 98,
+    "text": "Lebenshorn: Einmal pro Sitzung 2 LP heilen; einmal pro Szene Gift im Blut eines Begleiters binden.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 99,
+    "bis": 99,
+    "text": "Schwurkette: Einmal pro Sitzung Treffer-Schaden auf 1 senken, nur bei einem Gegner, der einen Eid geschworen hat.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 100,
+    "bis": 100,
+    "text": "Dornkrone: Einmal pro Sitzung einen Hinweis zu einem Rätsel erhalten; einmal pro Szene +10 auf Mut-Proben gegen Angst.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   }
+  ]
+ }
+}

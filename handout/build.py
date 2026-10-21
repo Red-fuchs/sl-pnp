@@ -342,8 +342,8 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 <p style="margin-bottom:0">1 Taler = 2 Schilling = 4 Heller. Messer, Knüppel, Lederrüstung 20 T · Schwert, Axt, Bogen, Kette, Schild 40 T · Platte, Feuerwaffe 60 T. Mahlzeit 2 H, Tagelohn 1 T. 10 Taler = 1 Budgetpunkt.</p></div>''')
 
 # ================= 11 GEGENSTAENDE =================
-from items_pages import pages as item_pages, example as item_example
-for x in item_pages(item_example()): add(x)
+from items.pages import pages as item_pages
+for x in item_pages(): add(x)
 
 # ================= BUILD =================
 doc = '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Schicksalsschlag – Handout</title><link rel="stylesheet" href="style.css"></head><body>' + '\n'.join(P) + '</body></html>'

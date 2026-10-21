@@ -1,0 +1,240 @@
+{
+ "version": 1,
+ "muenzen": {
+  "doc": "Rechnung intern nur in Heller (ganze Zahl). Anzeige T S H: 15 H = 3 T 1 S 1 H (3¾ Taler). Nullstellen weglassen.",
+  "heller_pro_taler": 4,
+  "heller_pro_schilling": 2,
+  "heller_pro_punkt": 40
+ },
+ "alltag": [
+  {
+   "name": "Laib Brot, Krug Bier",
+   "preis_h": 1
+  },
+  {
+   "name": "Warme Mahlzeit, Bett im Schlafsaal",
+   "preis_h": 2
+  },
+  {
+   "name": "Einzelzimmer mit Frühstück",
+   "preis_h": 4
+  },
+  {
+   "name": "Wegzehrung (3 Tage)",
+   "preis_h": 6
+  },
+  {
+   "name": "Dörrfleisch, Tabak, Schnaps",
+   "preis_h": 4
+  },
+  {
+   "name": "Fackel, Kerze, Zunder",
+   "preis_h": 1
+  },
+  {
+   "name": "Tagelohn (Handlanger, Magd)",
+   "preis_h": 4
+  },
+  {
+   "name": "Tagelohn (Geselle, Söldner)",
+   "preis_h": 8
+  },
+  {
+   "name": "Überfahrt, Fährmann",
+   "preis_h": 2
+  },
+  {
+   "name": "Wirtshaus-Gelage (ganze Runde)",
+   "preis_h": 16
+  },
+  {
+   "name": "Festmahl",
+   "preis_h": 12
+  },
+  {
+   "name": "Fass Bier",
+   "preis_h": 24
+  },
+  {
+   "name": "Heilkundiger versorgt eine Verletzung (heilt 1 LP)",
+   "preis_h": 8
+  },
+  {
+   "name": "Bestechung Torwache (klein)",
+   "preis_h": 8
+  }
+ ],
+ "praegung": [
+  {
+   "id": "plunder",
+   "name": "Plunder",
+   "mult": 0.25,
+   "text": "beschädigt oder minderwertig: Schaden/Rüstung −1 (nicht unter 0), Werkzeug und Tränke wirken halb (−10 bzw. halbe Heilung), zerbricht bei kritischem Misserfolg."
+  },
+  {
+   "id": "normal",
+   "name": "normal",
+   "mult": 1,
+   "text": "ganz gewöhnlich, nichts Besonderes."
+  },
+  {
+   "id": "gut",
+   "name": "gut gearbeitet",
+   "mult": 1.5,
+   "text": "Handwerkskunst, siehe Spalte „gut“ der Kategorie."
+  },
+  {
+   "id": "magisch",
+   "name": "magisch",
+   "mult": null,
+   "text": "trägt Magie: würfle die Wirkung (Tabelle Magische Wirkung).",
+   "preis": "Stufenpreis + Basis"
+  },
+  {
+   "id": "gesegnet",
+   "name": "gesegnet",
+   "mult": null,
+   "text": "trägt einen Segen: würfle die Wirkung (Tabelle Segen).",
+   "preis": "Stufenpreis + Basis"
+  },
+  {
+   "id": "verflucht",
+   "name": "verflucht",
+   "mult": null,
+   "text": "magisch (Tabelle Magische Wirkung, immer ein Vorteil) und verflucht (Tabelle Fluch, nur Spielleitung); der Fluch ist unsichtbar, darum nur der halbe Preis.",
+   "preis": "halber Stufenpreis + Basis"
+  },
+  {
+   "id": "wendung",
+   "name": "Wendung",
+   "mult": 1,
+   "text": "trägt ein verborgenes Geheimnis (Tabelle Wendung, nur Spielleitung); Preis wie die angebotene Seltenheit (Basis × Seltenheit)."
+  }
+ ],
+ "praegung_d20": {
+  "doc": "Je Seltenheit eine Spalte: so viele von 20 Wuerfelaugen. Lesereihenfolge der Zeilen = Reihenfolge der Bereiche.",
+  "reihenfolge": [
+   "plunder",
+   "normal",
+   "gut",
+   "magisch",
+   "gesegnet",
+   "verflucht",
+   "wendung"
+  ],
+  "anzahl": {
+   "gewoehnlich": [
+    2,
+    13,
+    4,
+    0,
+    0,
+    0,
+    1
+   ],
+   "ungewoehnlich": [
+    0,
+    9,
+    6,
+    2,
+    1,
+    1,
+    1
+   ],
+   "selten": [
+    0,
+    4,
+    3,
+    6,
+    3,
+    3,
+    1
+   ],
+   "sehr_selten": [
+    0,
+    2,
+    1,
+    5,
+    4,
+    4,
+    4
+   ],
+   "legendaer": [
+    0,
+    0,
+    0,
+    5,
+    5,
+    5,
+    5
+   ]
+  }
+ },
+ "regeln": {
+  "vergiftet": "Vergiftet: −10 auf alle Proben und 1 LP Verlust je Szene, bis Gegengift oder Nachtruhe.",
+  "kleinkram": "Posten unter 10 T kosten 0 Budgetpunkte, werden aber in Taler bezahlt."
+ },
+ "doc": "notes/RULES-gegenstaende.md. Einzige Quelle für Handout (items/pages.py), items/roll.py und die Engine (/item, /haendler). Preise als ganze Heller (preis_h). 1 Taler = 2 Schilling = 4 Heller; 10 Taler = 1 Budgetpunkt.",
+ "preis_regel": "Gewöhnliche, gut gearbeitete und Plunder-Stücke: preis_h = basis_h * mult(praegung) (Plunder 0,25; normal 1; gut 1,5), Seltenheit zählt nicht. Wendung: preis_h = basis_h * mult(seltenheit) (so angeboten). Magisch/gesegnet: preis_h = seltenheit.magie_h + basis_h; verflucht: die Hälfte davon. Ab 40 H (10 T) auf 20 H (5 T) runden ((p+10)//20*20), darunter ganze Heller, mindestens 1 H. Budgetpunkte: unter 40 H = 0 (Kleinkram, in Taler zahlen), sonst aufgerundet (preis_h / 40). Tränke und andere Verbrauchsgüter: magisch/gesegnet = Basis × 5, verflucht = Basis × 2 (Nebenwirkung: vergiftet bis zur Nachtruhe, kein Fluchwurf); der Stufenpreis gilt nur für dauerhafte Gegenstände.",
+ "seltenheit": [
+  {
+   "id": "gewoehnlich",
+   "name": "gewöhnlich",
+   "d100": [
+    1,
+    60
+   ],
+   "mult": 1,
+   "orakel": 2,
+   "deckel": 3
+  },
+  {
+   "id": "ungewoehnlich",
+   "name": "ungewöhnlich",
+   "d100": [
+    61,
+    85
+   ],
+   "mult": 2,
+   "magie_h": 1000,
+   "orakel": 1,
+   "deckel": 3
+  },
+  {
+   "id": "selten",
+   "name": "selten",
+   "d100": [
+    86,
+    95
+   ],
+   "mult": 5,
+   "magie_h": 2000,
+   "orakel": -1,
+   "deckel": 1
+  },
+  {
+   "id": "sehr_selten",
+   "name": "sehr selten",
+   "d100": [
+    96,
+    99
+   ],
+   "mult": 10,
+   "magie_h": 4000,
+   "orakel": -2,
+   "deckel": 0
+  },
+  {
+   "id": "legendaer",
+   "name": "legendär",
+   "d100": [
+    100,
+    100
+   ],
+   "mult": 20,
+   "magie_h": 8000,
+   "orakel": -3,
+   "deckel": -1
+  }
+ ]
+}

@@ -1,0 +1,834 @@
+{
+ "segen": {
+  "doc": "Fenster je Seltenheit (Breite 50): Wurf d100; liegt er unter dem Fenster, +50; darüber, −50. Legendär würfelt zweimal. Pro Figur zählt nur ein SP-Segen.",
+  "fenster": {
+   "gewoehnlich": [
+    1,
+    50
+   ],
+   "ungewoehnlich": [
+    1,
+    50
+   ],
+   "selten": [
+    26,
+    75
+   ],
+   "sehr_selten": [
+    51,
+    100
+   ],
+   "legendaer": [
+    51,
+    100
+   ]
+  },
+  "falte": 50,
+  "doppelt": [
+   "legendaer"
+  ],
+  "gm": false,
+  "tabelle": [
+   {
+    "von": 1,
+    "bis": 1,
+    "text": "Rosenkranz aus Knochen: +10 auf Proben beim Beten am Grab.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 2,
+    "bis": 2,
+    "text": "Eichenkreuz: +10 auf Proben, Dämonen auszutreiben.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 3,
+    "bis": 3,
+    "text": "Stola der Trauer: +10 auf Proben bei Trauerarbeit am offenen Grab.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 4,
+    "bis": 4,
+    "text": "Silberglöckchen: +10 auf Proben, Verderbnis im Raum zu spüren.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Schwurring: +10 auf Proben beim Eid vor Zeugen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Bußstrick: +10 auf Proben, wenn du eine Schuld vor dem Priester beichtest.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 7,
+    "bis": 7,
+    "text": "Salbentiegel: +10 auf Proben, Verletzte zu verbinden.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 8,
+    "bis": 8,
+    "text": "Totenhemd-Faden: +10 auf Proben, dich unter Leichen unbemerkt zu bewegen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Priesterstab: +10 auf Proben im Gespräch mit Gläubigen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Pilgerbrief: +10 auf Proben, Klöster und Herbergen zu finden.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Talgkerze: +10 auf Proben, Zeichen im Dunkel eines Kellers zu lesen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Amulett der Wache: +10 auf Proben, Hinterhalte von Untoten zu bemerken.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 13,
+    "bis": 13,
+    "text": "Psalter: +10 auf Wissensproben über die Heiligen Schriften.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 14,
+    "bis": 14,
+    "text": "Schweigegelübde: +10 auf Proben, im Verhör nichts zu verraten.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 15,
+    "bis": 15,
+    "text": "Leichentuchschnur: +10 auf Proben, Hinterbliebene zu trösten.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 16,
+    "bis": 16,
+    "text": "Glockenhammer: +10 auf Proben, Verderbnis mit Glockenschlag zu vertreiben.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 17,
+    "bis": 17,
+    "text": "Wallfahrtsmedaille: +10 auf Proben auf dem Weg zu Reliquien.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 18,
+    "bis": 18,
+    "text": "Segensbrot: +10 auf Proben, am Abend Frieden zwischen Nachbarn zu stiften.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 19,
+    "bis": 19,
+    "text": "Mönchskutte: +10 auf Proben, Gebete in fremden Klöstern zu führen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 20,
+    "bis": 20,
+    "text": "Grabsand: +10 auf Proben gegen Geister, die am Grab umgehen.",
+    "kp": 1,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 21,
+    "bis": 21,
+    "text": "Heilsalbe der Mönche: Einmal pro Sitzung 2 LP heilen, wenn ein Mönch sie aufträgt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 22,
+    "bis": 22,
+    "text": "Kräuterbündel: Einmal pro Sitzung 2 LP heilen, nur durch Berührung.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 23,
+    "bis": 23,
+    "text": "Rosenöl: Einmal pro Sitzung 2 LP heilen durch Auflegen der Hand.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 24,
+    "bis": 24,
+    "text": "Leinenverband: Einmal pro Sitzung 2 LP heilen, wenn er angelegt wird.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 25,
+    "bis": 25,
+    "text": "Hebammenschürze: Einmal pro Sitzung 2 LP heilen, wenn ein Kind sicher zur Welt kommt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 26,
+    "bis": 26,
+    "text": "Quellwasserflasche: Einmal pro Sitzung 2 LP heilen, wenn ein Verletzter daraus trinkt.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 27,
+    "bis": 27,
+    "text": "Gebetsband: Einmal pro Sitzung 2 LP heilen, wenn ein Freund es segnet.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 28,
+    "bis": 28,
+    "text": "Hirtenstab der Heiler: Einmal pro Sitzung 2 LP heilen, nur bei Lebenden.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "heilung"
+   },
+   {
+    "von": 29,
+    "bis": 29,
+    "text": "Zunftmarke: Einmal pro Sitzung kostenloser Neuwurf einer Probe mit diesem Gegenstand.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 30,
+    "bis": 30,
+    "text": "Pilgerstab: Einmal pro Sitzung kostenloser Neuwurf einer Wegprobe.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 31,
+    "bis": 31,
+    "text": "Wallfahrtsstein: Einmal pro Sitzung kostenloser Neuwurf einer Glaubensprobe mit dem Gegenstand.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 32,
+    "bis": 32,
+    "text": "Ehrenschild der Waldhüter: Einmal pro Sitzung kostenloser Neuwurf einer Kampfprobe.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 33,
+    "bis": 33,
+    "text": "Siegelring des Notars: Einmal pro Sitzung kostenloser Neuwurf einer Sozialprobe.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 34,
+    "bis": 34,
+    "text": "Lesezeichen: Einmal pro Sitzung kostenloser Neuwurf einer Wissensprobe.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 35,
+    "bis": 35,
+    "text": "Klosterschlüssel: Einmal pro Sitzung kostenloser Neuwurf einer Probe, Türen zu öffnen.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 36,
+    "bis": 36,
+    "text": "Kreuzsplitter: Einmal pro Sitzung kostenloser Neuwurf einer Probe, Dämonen zu bannen.",
+    "kp": 1,
+    "takt": "sitzung",
+    "typ": "neuwurf"
+   },
+   {
+    "von": 37,
+    "bis": 37,
+    "text": "Gifttöpfchen: Einmal pro Szene wirkt Gift an dir nicht.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "schutz"
+   },
+   {
+    "von": 38,
+    "bis": 38,
+    "text": "Fluchschnur: Einmal pro Szene wirkt ein Fluch auf den Träger nicht.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "schutz"
+   },
+   {
+    "von": 39,
+    "bis": 39,
+    "text": "Muschelhorn: Einmal pro Szene wirkt eine Blendung oder Betäubung nicht.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "schutz"
+   },
+   {
+    "von": 40,
+    "bis": 40,
+    "text": "Krötenbeutel: Einmal pro Szene wirkt Furcht übernatürlichen Ursprungs nicht.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "schutz"
+   },
+   {
+    "von": 41,
+    "bis": 41,
+    "text": "Laterne des Totengräbers: Einmal pro Szene ein Licht, das Dunkles zurückdrängt.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 42,
+    "bis": 42,
+    "text": "Wachsmantel: Einmal pro Szene bleibst du trocken, auch im Regen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 43,
+    "bis": 43,
+    "text": "Filzsohlen: Einmal pro Szene Schritte dämpfen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 44,
+    "bis": 44,
+    "text": "Schlüsselbund der Pilger: Einmal pro Szene eine Tür nur für dich öffnen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 45,
+    "bis": 45,
+    "text": "Stille Schnalle: Einmal pro Szene Geräusch dämpfen.",
+    "kp": 1,
+    "takt": "szene",
+    "typ": "nutz"
+   },
+   {
+    "von": 46,
+    "bis": 46,
+    "text": "Schwertscheide der Wächter: +20 auf Proben am Grab, wenn du Untote bannst.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 47,
+    "bis": 47,
+    "text": "Heiliger Dolch: +20 auf Proben gegen Dämonen bei Austreibung im Gebet.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 48,
+    "bis": 48,
+    "text": "Schwurstab des Richters: +20 auf Proben beim Schwören vor Gericht.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 49,
+    "bis": 49,
+    "text": "Trauerkerze: +20 auf Proben, im Leichenhaus eine Totenwache zu halten.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 50,
+    "bis": 50,
+    "text": "Heilbrunnenschale: +20 auf Heilproben bei Sterbenden.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "bonus"
+   },
+   {
+    "von": 51,
+    "bis": 51,
+    "text": "Geweihte Klinge: +1 Schaden gegen Untote.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 52,
+    "bis": 52,
+    "text": "Silberspeer: +1 Schaden gegen das Böse.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 53,
+    "bis": 53,
+    "text": "Eisenkette des Gebets: +1 Schaden gegen Dämonen.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 54,
+    "bis": 54,
+    "text": "Hakenstab der Exorzisten: +1 Schaden gegen Kultisten.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 55,
+    "bis": 55,
+    "text": "Eibenschwert: +1 Schaden gegen Kreaturen der Verderbnis.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "schaden"
+   },
+   {
+    "von": 56,
+    "bis": 56,
+    "text": "Kettenhemd aus Weihwasserstahl: +1 Rüstung gegen Untote.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 57,
+    "bis": 57,
+    "text": "Brustplatte des Totenfeldwächters: +1 Rüstung gegen Dämonen.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 58,
+    "bis": 58,
+    "text": "Eichenschild: +1 Rüstung gegen das Böse.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 59,
+    "bis": 59,
+    "text": "Krötenhaut-Wams: +1 Rüstung gegen Verderbnis.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 60,
+    "bis": 60,
+    "text": "Ochsenhaut-Mantel: +1 Rüstung gegen Schläge von Untoten.",
+    "kp": 2,
+    "takt": "passiv",
+    "typ": "ruestung"
+   },
+   {
+    "von": 61,
+    "bis": 61,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach Verrat.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 62,
+    "bis": 62,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach dem Ausgang eines Würfelspiels.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 63,
+    "bis": 63,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach einem Termin oder Fest.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 64,
+    "bis": 64,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach einer Reise bei Nacht.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 65,
+    "bis": 65,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach einem Los oder einer Verlosung.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 66,
+    "bis": 66,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach einem Schriftstück oder Vertrag.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 67,
+    "bis": 67,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage an einen Geistlichen.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 68,
+    "bis": 68,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach einem Traum oder Vorzeichen.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 69,
+    "bis": 69,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage über einen Verstorbenen.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 70,
+    "bis": 70,
+    "text": "Ehrlichkeitsstein: Einmal pro Sitzung eine Ja/Nein-Frage um eine Stufe verschieben.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 71,
+    "bis": 71,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach Glück oder Pech.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 72,
+    "bis": 72,
+    "text": "Einmal pro Sitzung eine Orakel-Chance um eine Stufe verschieben, bei einer Frage nach altem Recht oder Gesetz.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 73,
+    "bis": 73,
+    "text": "Schildkreuz: Einmal pro Sitzung Treffer-Schaden auf 1 senken.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 74,
+    "bis": 74,
+    "text": "Totenkopfamulett: Einmal pro Sitzung Treffer-Schaden auf 1 senken, nur für den Träger.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 75,
+    "bis": 75,
+    "text": "Glockenkette: Einmal pro Sitzung Treffer-Schaden auf 1 senken, wenn der Träger im Kampf eine Glocke läutet.",
+    "kp": 2,
+    "takt": "sitzung",
+    "typ": "schutz"
+   },
+   {
+    "von": 76,
+    "bis": 76,
+    "text": "Weihwasserfläschchen: Einmal pro Sitzung Untote eine Szene lang spüren, dazu +10 auf Proben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 77,
+    "bis": 77,
+    "text": "Ruhetuch: Einmal pro Sitzung Untote eine Szene lang vom Lager fernhalten.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 78,
+    "bis": 78,
+    "text": "Friedenskerze: Einmal pro Sitzung Frieden stiften, Gegner eine Szene lang unentschlossen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 79,
+    "bis": 79,
+    "text": "Lichtschale: Einmal pro Sitzung Dunkles eine Szene lang auf Abstand halten, dazu +10 auf Proben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 80,
+    "bis": 80,
+    "text": "Weihe des Totenhauses: Einmal pro Sitzung einen Hinweis zu einem Rätsel des Grabes erhalten.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 81,
+    "bis": 81,
+    "text": "Gruftschlüssel: Einmal pro Sitzung eine Szene lang unbemerkt in der Gruft bleiben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 82,
+    "bis": 82,
+    "text": "Heiliges Öl: Einmal pro Sitzung Dämonen eine Szene lang fernhalten, dazu +10 auf Gebetsproben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 83,
+    "bis": 83,
+    "text": "Schutzheiligen-Reliquie: Einmal pro Sitzung einen Hinweis zu einem Rätsel erhalten.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 84,
+    "bis": 84,
+    "text": "Pergament der Weihe: Einmal pro Sitzung eine Szene lang von Wachen als Pilger durchgelassen werden.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 85,
+    "bis": 85,
+    "text": "Gnadenschale: Einmal pro Sitzung einen Gruftgeist eine Szene lang still halten.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 86,
+    "bis": 86,
+    "text": "Grabsteinschnitzung: Einmal pro Sitzung eine verwitterte Grabinschrift vollständig lesen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 87,
+    "bis": 87,
+    "text": "Glockenklang des Friedens: Einmal pro Sitzung einen Kampf für eine Szene aussetzen lassen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 88,
+    "bis": 88,
+    "text": "Totenmaske: Einmal pro Sitzung Geister eine Szene lang ignorieren, sie sehen dich nicht.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 89,
+    "bis": 89,
+    "text": "Salzkreis-Stab: Einmal pro Sitzung Verderbnis am Boden bannen, dazu +10 auf Proben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 90,
+    "bis": 90,
+    "text": "Taufwasser: Einmal pro Sitzung Untote eine Szene lang vertreiben, dazu +10 auf Glaubensproben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 91,
+    "bis": 91,
+    "text": "Ketzerbrief-Siegel: Einmal pro Sitzung einen Kultisten eine Szene lang täuschen, dazu +10 auf Lügenproben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 92,
+    "bis": 92,
+    "text": "Kreuzweg-Stab: Einmal pro Sitzung Gegnerwachen eine Szene lang umgehen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "nutz"
+   },
+   {
+    "von": 93,
+    "bis": 93,
+    "text": "Seherstein des Abtes: Einmal pro Sitzung Orakel um eine Stufe verschieben, dazu den Pfad der Toten erkennen.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 94,
+    "bis": 94,
+    "text": "Wahrheitsglas: Einmal pro Sitzung Orakel um eine Stufe verschieben, dazu +10 auf Lügenproben.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 95,
+    "bis": 95,
+    "text": "Mondtafel der Sterndeuter: Einmal pro Sitzung Orakel um eine Stufe verschieben, dazu eine Szene lang Verderbnis spüren.",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "orakel"
+   },
+   {
+    "von": 96,
+    "bis": 96,
+    "text": "Segen des Sonnenaufgangs: +1 SP einmal pro Sitzung, wenn der Träger zu Sonnenaufgang im Freien betet (nicht über das Maximum).",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "sp"
+   },
+   {
+    "von": 97,
+    "bis": 97,
+    "text": "Gebet am Altar: Nach ernstem Gebet +1 SP einmal pro Sitzung (nicht über das Maximum).",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "sp"
+   },
+   {
+    "von": 98,
+    "bis": 98,
+    "text": "Beichte beim Priester: Wer die Schuld ausspricht, erhält +1 SP einmal pro Sitzung (nicht über das Maximum).",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "sp"
+   },
+   {
+    "von": 99,
+    "bis": 99,
+    "text": "Weihe der Pilgerschaft: Am Wallfahrtsort +1 SP einmal pro Sitzung (nicht über das Maximum).",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "sp"
+   },
+   {
+    "von": 100,
+    "bis": 100,
+    "text": "Fürbitte für Tote: Bei Trauerarbeit +1 SP einmal pro Sitzung (nicht über das Maximum).",
+    "kp": 3,
+    "takt": "sitzung",
+    "typ": "sp"
+   }
+  ]
+ }
+}

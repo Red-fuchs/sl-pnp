@@ -1,0 +1,82 @@
+{
+ "orakel": {
+  "doc": "Wahrscheinlichkeiten sind Orakelfragen auf der Fate-Chart des Handouts (Kap. 3/6), nicht eigene Regeln. Chancen -3..+3: fast unmöglich, sehr unwahrscheinlich, unwahrscheinlich, offen, wahrscheinlich, sehr wahrscheinlich, fast sicher.",
+  "paar": [
+   "tun",
+   "thema"
+  ],
+  "fragen_item": [
+   {
+    "text": "Hat es einen Preis?",
+    "chancen": "offen"
+   },
+   {
+    "text": "Kennt jemand es?",
+    "chancen": "offen"
+   },
+   {
+    "text": "Will jemand es zurückhaben?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Zeigt es sich nur manchmal?",
+    "chancen": "offen"
+   },
+   {
+    "text": "Reagiert es auf Gefühle oder Menschen?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Ist sein Ursprung bekannt?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Hat es einen Hüter oder Vorbesitzer in der Nähe?",
+    "chancen": "offen"
+   },
+   {
+    "text": "Zieht es Ärger an?",
+    "chancen": "wahrscheinlich"
+   },
+   {
+    "text": "Ist es bei jemandem im Dorf verpfändet gewesen?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Hat der Verkäufer Angst vor ihm?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Wird es schwerer, je länger man es trägt?",
+    "chancen": "unwahrscheinlich"
+   },
+   {
+    "text": "Ist es mit einem Ort verbunden?",
+    "chancen": "offen"
+   }
+  ],
+  "fragen_gm": [
+   {
+    "text": "Hat der Händler genau das?",
+    "chancen": "nach Seltenheit: gewöhnlich sehr wahrscheinlich · ungewöhnlich wahrscheinlich · selten unwahrscheinlich · sehr selten sehr unwahrscheinlich · legendär fast unmöglich"
+   },
+   {
+    "text": "Ist es verflucht?",
+    "chancen": "sehr unwahrscheinlich (unwahrscheinlich bei dunkler Herkunft, Grabbeigabe, Pfandleihe)"
+   },
+   {
+    "text": "Erkennt jemand den Fluch?",
+    "chancen": "unwahrscheinlich (wahrscheinlich bei Wissen-Erfolg, sehr wahrscheinlich bei einem Priester)"
+   },
+   {
+    "text": "Ist es echt?",
+    "chancen": "wahrscheinlich; offen bei seltenem Angebot zu günstig; unwahrscheinlich bei Wendung"
+   },
+   {
+    "text": "Ist der Verkäufer ehrlich?",
+    "chancen": "wahrscheinlich"
+   }
+  ],
+  "schritte": "Stufe 1 −1 · Stufe 2 und 3 ±0 · Stufe 4 +1 · Stufe 5 +2; Spezialgebiet +1; Großstadt/Hafen/Markttag +1; Wildnis/Krieg/Belagerung −1. Schicksalspunkte verschieben wie immer (1 SP = 1 Schritt). Außergewöhnliches JA+: bessere Prägung (eine Stufe höher: Plunder→normal→gut, magisch stärker). Außergewöhnliches NEIN+: Fälschung oder Falle im Angebot (Wendung). Deckel (alle Schritte und SP zusammen): selten höchstens wahrscheinlich, sehr selten höchstens offen, legendär höchstens unwahrscheinlich. Jede „Hat er das?“-Frage gilt einmal je Händler und Stück; ein NEIN bleibt bis zum nächsten Markttag oder zur nächsten Lieferung."
+ }
+}

@@ -1,0 +1,3982 @@
+{
+ "art_d20": "Kategorie: d20 gegen kategorien[].d20; Gegenstand: d100 gegen kategorien[].items[].von/bis (01–60 gängig, 61–80 spezialisiert, 81–00 exotisch).",
+ "kategorien": [
+  {
+   "id": "waffe",
+   "name": "Waffe",
+   "d20": [
+    1,
+    3
+   ],
+   "verbrauch": false,
+   "gut": "kritischer Erfolg mit ihr: +1 Schaden.",
+   "items": [
+    {
+     "name": "Schlagring / Faustriemen",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Schlagring",
+     "schaden": 2,
+     "effekt": "versteckbar",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Messer / Dolch",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Messer",
+     "schaden": 2,
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Knüppel / Keule",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Knüppel",
+     "schaden": 2,
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Wurfmesser (Satz)",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Wurfmesser",
+     "schaden": 2,
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Speer",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Speer",
+     "schaden": 3,
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Schwert",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Schwert",
+     "schaden": 3,
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Axt / Streitbeil",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Axt",
+     "schaden": 3,
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Bogen",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Bogen",
+     "schaden": 3,
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Armbrust",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Armbrust",
+     "schaden": 3,
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Feuerwaffe (Pistole / Arkebuse)",
+     "preis_h": 240,
+     "genus": "f",
+     "kern": "Feuerwaffe",
+     "schaden": 4,
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Sichel",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Sichel",
+     "schaden": 1,
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Dreschflegel",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Dreschflegel",
+     "schaden": 2,
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Mistgabel",
+     "preis_h": 80,
+     "genus": "f",
+     "kern": "Mistgabel",
+     "schaden": 2,
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Wanderstab",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Wanderstab",
+     "schaden": 1,
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Hammer / Schlägel",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Hammer",
+     "schaden": 2,
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Schleuder",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Schleuder",
+     "schaden": 1,
+     "effekt": "Fernwaffe, braucht Steine",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Knotenstock",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Knotenstock",
+     "schaden": 1,
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Ahle",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Ahle",
+     "schaden": 1,
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Haumesser",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Haumesser",
+     "schaden": 2,
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Peitsche",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Peitsche",
+     "schaden": 1,
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Jagdspieß",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Jagdspieß",
+     "schaden": 2,
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Hellebarde",
+     "preis_h": 240,
+     "genus": "f",
+     "kern": "Hellebarde",
+     "schaden": 3,
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Kriegshammer",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Kriegshammer",
+     "schaden": 3,
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Streitkolben",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Streitkolben",
+     "schaden": 3,
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Morgenstern",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Morgenstern",
+     "schaden": 3,
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Kurzschwert",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Kurzschwert",
+     "schaden": 2,
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Säbel",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Säbel",
+     "schaden": 3,
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Degen (Stoßklinge)",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Degen",
+     "schaden": 2,
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Langbogen",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Langbogen",
+     "schaden": 3,
+     "effekt": "Fernwaffe, braucht Pfeile",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Kurzbogen",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Kurzbogen",
+     "schaden": 2,
+     "effekt": "Fernwaffe, braucht Pfeile",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Wurfaxt",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Wurfaxt",
+     "schaden": 2,
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Sense",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Sense",
+     "schaden": 2,
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Kriegsflegel",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Kriegsflegel",
+     "schaden": 3,
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Glefe",
+     "preis_h": 240,
+     "genus": "f",
+     "kern": "Glefe",
+     "schaden": 3,
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Breitmesser",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Breitmesser",
+     "schaden": 2,
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Partisane",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Partisane",
+     "schaden": 2,
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Reiterlanze",
+     "preis_h": 240,
+     "genus": "f",
+     "kern": "Reiterlanze",
+     "schaden": 3,
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Schlachtbeil",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Schlachtbeil",
+     "schaden": 2,
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Bastardschwert",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Bastardschwert",
+     "schaden": 3,
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Kriegsgabel",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Kriegsgabel",
+     "schaden": 2,
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Hakenschwert",
+     "preis_h": 320,
+     "genus": "n",
+     "kern": "Hakenschwert",
+     "schaden": 3,
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Zweihänder",
+     "preis_h": 400,
+     "genus": "m",
+     "kern": "Zweihänder",
+     "schaden": 3,
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Krummsäbel",
+     "preis_h": 320,
+     "genus": "m",
+     "kern": "Krummsäbel",
+     "schaden": 3,
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Pilum (Wurfspieß)",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Pilum",
+     "schaden": 2,
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Handbüchse",
+     "preis_h": 400,
+     "genus": "f",
+     "kern": "Handbüchse",
+     "schaden": 3,
+     "effekt": "Fernwaffe, langsam nachzuladen",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Blasrohr",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Blasrohr",
+     "schaden": 1,
+     "effekt": "Fernwaffe, leise",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Fischspieß",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Fischspieß",
+     "schaden": 2,
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Rabenschnabel",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Rabenschnabel",
+     "schaden": 2,
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Eisenkralle",
+     "preis_h": 240,
+     "genus": "f",
+     "kern": "Eisenkralle",
+     "schaden": 2,
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Sichelschwert",
+     "preis_h": 400,
+     "genus": "n",
+     "kern": "Sichelschwert",
+     "schaden": 3,
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "ruestung",
+   "name": "Rüstung / Schild",
+   "d20": [
+    4,
+    5
+   ],
+   "verbrauch": false,
+   "gut": "sitzt perfekt: +10 auf Proben, bei denen Beweglichkeit in der Rüstung zählt (Klettern, Schleichen, Ausweichen).",
+   "items": [
+    {
+     "name": "Lederwams",
+     "genus": "m",
+     "kern": "Wams",
+     "ruestung": 1,
+     "preis_h": 80,
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Gepolsterter Waffenrock",
+     "genus": "m",
+     "kern": "Waffenrock",
+     "ruestung": 1,
+     "preis_h": 80,
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Beschlagenes Leder",
+     "genus": "n",
+     "kern": "Leder",
+     "ruestung": 1,
+     "preis_h": 80,
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Kettenhemd",
+     "genus": "n",
+     "kern": "Hemd",
+     "ruestung": 2,
+     "preis_h": 160,
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Schuppenpanzer",
+     "genus": "m",
+     "kern": "Panzer",
+     "ruestung": 2,
+     "preis_h": 160,
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Holzschild",
+     "genus": "m",
+     "kern": "Schild",
+     "ruestung": 0,
+     "effekt": "+10 auf die Verteidigung (vergleichende Kampf-Probe)",
+     "preis_h": 160,
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Helm",
+     "genus": "m",
+     "kern": "Helm",
+     "ruestung": 0,
+     "effekt": "+1 Rüstung nur gegen Schuss und Wurf",
+     "preis_h": 40,
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Plattenpanzer",
+     "genus": "m",
+     "kern": "Panzer",
+     "ruestung": 3,
+     "preis_h": 240,
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Plattenharnisch (Halbrüstung)",
+     "genus": "m",
+     "kern": "Harnisch",
+     "ruestung": 3,
+     "preis_h": 240,
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Brigantine (genietete Platten)",
+     "genus": "f",
+     "kern": "Brigantine",
+     "ruestung": 3,
+     "preis_h": 240,
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Eisenhut",
+     "genus": "m",
+     "kern": "Hut",
+     "ruestung": 1,
+     "preis_h": 60,
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Lederkappe",
+     "genus": "f",
+     "kern": "Kappe",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe, wenn Regen oder Schnee von oben kommt",
+     "preis_h": 20,
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Gesteppter Rock",
+     "genus": "m",
+     "kern": "Rock",
+     "ruestung": 1,
+     "preis_h": 80,
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Kettenkappe",
+     "genus": "f",
+     "kern": "Kappe",
+     "ruestung": 1,
+     "preis_h": 40,
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Weidenschild",
+     "genus": "m",
+     "kern": "Schild",
+     "ruestung": 1,
+     "effekt": "+10 auf die Verteidigung (vergleichende Kampf-Probe)",
+     "preis_h": 80,
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Fäustling",
+     "genus": "m",
+     "kern": "Fäustling",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe, heiße Dinge anzufassen",
+     "preis_h": 20,
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Beinschiene",
+     "genus": "f",
+     "kern": "Schiene",
+     "ruestung": 1,
+     "preis_h": 60,
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Armschiene",
+     "genus": "f",
+     "kern": "Schiene",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe, Dolchstiche am Arm abzuwehren",
+     "preis_h": 40,
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Lederschurz",
+     "genus": "m",
+     "kern": "Schurz",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe in Schmiede und Gerberei",
+     "preis_h": 20,
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Wappenrock",
+     "genus": "m",
+     "kern": "Rock",
+     "ruestung": 1,
+     "effekt": "+10 auf Auftreten vor Zunftleuten und Wache",
+     "preis_h": 80,
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Halsberger",
+     "genus": "m",
+     "kern": "Halsberger",
+     "ruestung": 2,
+     "preis_h": 160,
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Brünne",
+     "genus": "f",
+     "kern": "Brünne",
+     "ruestung": 2,
+     "preis_h": 160,
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Lamellenharnisch",
+     "genus": "m",
+     "kern": "Harnisch",
+     "ruestung": 2,
+     "effekt": "+10 auf Probe beim Klettern und Springen",
+     "preis_h": 240,
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Gugelhelm",
+     "genus": "m",
+     "kern": "Helm",
+     "ruestung": 1,
+     "preis_h": 60,
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Beckenhaube",
+     "genus": "f",
+     "kern": "Haube",
+     "ruestung": 1,
+     "effekt": "+10 auf Probe, Hiebe von oben abzuwehren",
+     "preis_h": 60,
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Topfhelm",
+     "genus": "m",
+     "kern": "Helm",
+     "ruestung": 1,
+     "effekt": "Sehschlitz –10 auf Wahrnehmung",
+     "preis_h": 80,
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Visierhelm",
+     "genus": "m",
+     "kern": "Helm",
+     "ruestung": 1,
+     "effekt": "+10 auf Probe gegen Blendung, Staub und Rauch",
+     "preis_h": 80,
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Reiterschild",
+     "genus": "m",
+     "kern": "Schild",
+     "ruestung": 1,
+     "effekt": "+10 auf Verteidigung im Sattel",
+     "preis_h": 160,
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Pavesenschild",
+     "genus": "m",
+     "kern": "Schild",
+     "ruestung": 2,
+     "effekt": "Hinter ihm stehend – +10 gegen Pfeile",
+     "preis_h": 240,
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Torfmantel",
+     "genus": "m",
+     "kern": "Mantel",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe, im Moor nicht einzusinken",
+     "preis_h": 40,
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Teerjacke",
+     "genus": "f",
+     "kern": "Jacke",
+     "ruestung": 1,
+     "effekt": "+10 auf Probe im Regen und an Bord",
+     "preis_h": 80,
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Bergmannsschurz",
+     "genus": "m",
+     "kern": "Schurz",
+     "ruestung": 0,
+     "effekt": "+10 auf Probe gegen Staub im Stollen",
+     "preis_h": 20,
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Eisenweste",
+     "genus": "f",
+     "kern": "Weste",
+     "ruestung": 2,
+     "effekt": "Unter Kutte verborgen – +10 auf Probe, sie zu verbergen",
+     "preis_h": 160,
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Henkersrock",
+     "genus": "m",
+     "kern": "Rock",
+     "ruestung": 1,
+     "effekt": "+10 auf Einschüchtern gegen Zeugen",
+     "preis_h": 80,
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Waldkoller",
+     "genus": "m",
+     "kern": "Koller",
+     "ruestung": 1,
+     "effekt": "+10 auf Schleichen im Unterholz",
+     "preis_h": 80,
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Schuppenschurz",
+     "genus": "m",
+     "kern": "Schurz",
+     "ruestung": 1,
+     "effekt": "+10 Verteidigung gegen Hiebe im Nahkampf",
+     "preis_h": 80,
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Pechhaube",
+     "genus": "f",
+     "kern": "Haube",
+     "ruestung": 1,
+     "effekt": "+20 auf Probe, wenn Funken oder Pech den Kopf treffen",
+     "preis_h": 60,
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Kettenkragen",
+     "genus": "m",
+     "kern": "Kragen",
+     "ruestung": 0,
+     "effekt": "+20 auf Probe, wenn ein Würger am Hals greift",
+     "preis_h": 40,
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Tartsche",
+     "genus": "f",
+     "kern": "Tartsche",
+     "ruestung": 2,
+     "effekt": "+10 Verteidigung gegen Fernwaffen, wenn du dich hinter ihr verbirgst",
+     "preis_h": 160,
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Beinröhren",
+     "genus": "f",
+     "kern": "Röhre",
+     "ruestung": 1,
+     "effekt": "+20 auf Probe gegen Stolpern im Geröll",
+     "preis_h": 80,
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Gotischer Harnisch",
+     "genus": "m",
+     "kern": "Harnisch",
+     "ruestung": 3,
+     "effekt": "+20 auf Probe, wenn der Gegner stumpfe Waffen führt",
+     "preis_h": 400,
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Rosshautpanzer",
+     "genus": "m",
+     "kern": "Panzer",
+     "ruestung": 2,
+     "effekt": "+10 Verteidigung gegen Pfeile",
+     "preis_h": 320,
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Schildkrötenschild",
+     "genus": "m",
+     "kern": "Schild",
+     "ruestung": 2,
+     "effekt": "+20 auf Verteidigung gegen Wurfgeschosse",
+     "preis_h": 360,
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Krokodilhautwams",
+     "genus": "m",
+     "kern": "Wams",
+     "ruestung": 1,
+     "effekt": "+20 auf Probe, im Wasser nicht gepackt zu werden",
+     "preis_h": 320,
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Bronzebrustpanzer",
+     "genus": "m",
+     "kern": "Brustpanzer",
+     "ruestung": 2,
+     "effekt": "+10 Verteidigung gegen Schwerthiebe",
+     "preis_h": 240,
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Walrosskoller",
+     "genus": "m",
+     "kern": "Koller",
+     "ruestung": 2,
+     "effekt": "+20 auf Probe gegen Kälte und Nässe auf dem Meer",
+     "preis_h": 280,
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Spitzhelm aus Damaszener Stahl",
+     "genus": "m",
+     "kern": "Helm",
+     "ruestung": 1,
+     "effekt": "+20 auf Probe gegen Hiebe auf den Kopf",
+     "preis_h": 200,
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Bambuslamellen",
+     "genus": "f",
+     "kern": "Lamellen",
+     "ruestung": 2,
+     "effekt": "+20 auf Probe, in Hitze und Sand nicht zu ermatten",
+     "preis_h": 200,
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Muschelpanzer",
+     "genus": "m",
+     "kern": "Panzer",
+     "ruestung": 1,
+     "effekt": "+20 auf Probe, auf nassen Planken nicht zu stürzen",
+     "preis_h": 200,
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Eisenmaske",
+     "genus": "f",
+     "kern": "Maske",
+     "ruestung": 1,
+     "effekt": "+10 darauf, unerkannt zu bleiben",
+     "preis_h": 320,
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "werkzeug",
+   "name": "Werkzeug",
+   "d20": [
+    6,
+    8
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Proben, bei denen es hilft.",
+   "items": [
+    {
+     "name": "Seil (20 Schritt)",
+     "preis_h": 12,
+     "genus": "n",
+     "kern": "Seil",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Laterne mit Öl",
+     "preis_h": 32,
+     "genus": "f",
+     "kern": "Laterne",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Feuerstahl",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Feuerstahl",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Wasserschlauch",
+     "preis_h": 12,
+     "genus": "m",
+     "kern": "Wasserschlauch",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Zelt und Decken",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Zelt",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Heilerbeutel",
+     "effekt": "+10 auf Heilen (Wissen)",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Heilerbeutel",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Fackeln (Bündel)",
+     "preis_h": 8,
+     "genus": "f",
+     "kern": "Fackel",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Handwerkszeug (Satz)",
+     "effekt": "+10 auf Handwerk",
+     "preis_h": 60,
+     "genus": "n",
+     "kern": "Handwerkszeug",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Rucksack",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Rucksack",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Fahrtenmesser",
+     "preis_h": 28,
+     "genus": "n",
+     "kern": "Fahrtenmesser",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Kochtopf",
+     "preis_h": 20,
+     "genus": "m",
+     "kern": "Kochtopf",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Wetzstein",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Wetzstein",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Ölhaut",
+     "preis_h": 20,
+     "genus": "f",
+     "kern": "Ölhaut",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Kerzenbündel",
+     "preis_h": 12,
+     "genus": "n",
+     "kern": "Kerzenbündel",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Nähzeug",
+     "preis_h": 16,
+     "genus": "n",
+     "kern": "Nähzeug",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Enterhaken und Kletterhaken",
+     "effekt": "+10 auf Klettern",
+     "preis_h": 32,
+     "genus": "m",
+     "kern": "Enterhaken",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Schloss mit Schlüssel",
+     "preis_h": 48,
+     "genus": "n",
+     "kern": "Schloss",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Dietriche",
+     "effekt": "+10 auf Schlösser öffnen",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Dietrich",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Fernrohr",
+     "effekt": "+10 auf Wahrnehmung auf Distanz",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Fernrohr",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Alchemistenset",
+     "effekt": "+10 auf Tränke und Gifte",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Alchemistenset",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Kompass",
+     "effekt": "+10 auf Orientierung im Gelände",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Kompass",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Wegekarte",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Wegekarte",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Zimmermannsbeil",
+     "effekt": "+10 auf Holzarbeit",
+     "preis_h": 60,
+     "genus": "n",
+     "kern": "Zimmermannsbeil",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Lederbesteck",
+     "effekt": "+10 auf Lederarbeit",
+     "preis_h": 72,
+     "genus": "n",
+     "kern": "Lederbesteck",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Schmiedezange",
+     "effekt": "+10 auf Schmieden (Eisen fassen)",
+     "preis_h": 96,
+     "genus": "f",
+     "kern": "Schmiedezange",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Glasschneider",
+     "effekt": "+10 auf lautloses Öffnen von Fenstern",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Glasschneider",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Stemmeisen",
+     "effekt": "+10 auf Türen aufbrechen",
+     "preis_h": 96,
+     "genus": "n",
+     "kern": "Stemmeisen",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Blendlaterne",
+     "effekt": "+10 auf Schleichen im Dunkeln",
+     "preis_h": 56,
+     "genus": "f",
+     "kern": "Blendlaterne",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Nadelbesteck",
+     "effekt": "+10 auf Wundnaht (Heilen)",
+     "preis_h": 64,
+     "genus": "n",
+     "kern": "Nadelbesteck",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Kräuterpresse",
+     "preis_h": 48,
+     "genus": "f",
+     "kern": "Kräuterpresse",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Mörser mit Stößel",
+     "effekt": "+10 auf Salben mischen",
+     "preis_h": 88,
+     "genus": "m",
+     "kern": "Mörser",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Destillierkolben",
+     "effekt": "+10 auf Destillieren (Tinkturen)",
+     "preis_h": 140,
+     "genus": "m",
+     "kern": "Destillierkolben",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Fangeisen",
+     "effekt": "+10 auf Fallen stellen",
+     "preis_h": 72,
+     "genus": "n",
+     "kern": "Fangeisen",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Würfelbecher",
+     "effekt": "+10 auf Glücksspiel",
+     "preis_h": 24,
+     "genus": "m",
+     "kern": "Würfelbecher",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Schreibzeug",
+     "preis_h": 44,
+     "genus": "n",
+     "kern": "Schreibzeug",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Petschaft",
+     "effekt": "+10 auf Siegel nachahmen",
+     "preis_h": 120,
+     "genus": "n",
+     "kern": "Petschaft",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Flaschenzug",
+     "effekt": "+10 auf Lasten heben",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Flaschenzug",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Pilgerstab",
+     "effekt": "+10 auf sicheres Queren von Moor",
+     "preis_h": 32,
+     "genus": "m",
+     "kern": "Pilgerstab",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Steigeisen",
+     "effekt": "+10 auf Klettern im Eis",
+     "preis_h": 112,
+     "genus": "n",
+     "kern": "Steigeisen",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Angelzeug",
+     "preis_h": 36,
+     "genus": "n",
+     "kern": "Angelzeug",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Taucherhelm",
+     "preis_h": 320,
+     "genus": "m",
+     "kern": "Taucherhelm",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Rechenbrett",
+     "effekt": "+10 auf Rechnen",
+     "preis_h": 96,
+     "genus": "n",
+     "kern": "Rechenbrett",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Sanduhr",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Sanduhr",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Sextant",
+     "effekt": "+10 auf Navigation auf See",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Sextant",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Lupe",
+     "effekt": "+10 auf Spuren lesen (Nahbereich)",
+     "preis_h": 60,
+     "genus": "f",
+     "kern": "Lupe",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Gehörrohr",
+     "effekt": "+10 auf Lauschen durch Türen",
+     "preis_h": 56,
+     "genus": "n",
+     "kern": "Gehörrohr",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Bienenschleier",
+     "preis_h": 28,
+     "genus": "m",
+     "kern": "Bienenschleier",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Korkgurt",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Korkgurt",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Falkenhaube",
+     "preis_h": 36,
+     "genus": "f",
+     "kern": "Falkenhaube",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Taschenblasebalg",
+     "preis_h": 64,
+     "genus": "m",
+     "kern": "Taschenblasebalg",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "trank",
+   "name": "Trank / Tinktur",
+   "d20": [
+    9,
+    12
+   ],
+   "verbrauch": true,
+   "gut": "wirkt stärker: Heilung +1 LP, Bonus +10 wird +20.",
+   "items": [
+    {
+     "name": "Kräuterumschlag",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Umschlag",
+     "effekt": "heilt 1 LP",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Wundsalbe",
+     "preis_h": 20,
+     "genus": "f",
+     "kern": "Salbe",
+     "effekt": "heilt 2 LP (nur bei Rast)",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Mutwasser",
+     "preis_h": 20,
+     "genus": "n",
+     "kern": "Wasser",
+     "effekt": "+10 gegen Furcht und Schmerz eine Szene",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Gegengift",
+     "preis_h": 40,
+     "genus": "n",
+     "kern": "Gegengift",
+     "effekt": "beendet eine Vergiftung",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Klingengift",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Gift",
+     "effekt": "nächster Treffer +1 Schaden und Vergiftung",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Schlaftrunk",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Trunk",
+     "effekt": "tiefer Schlaf für mehrere Stunden (Wissen-Probe schwer, sonst wach)",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Nachtsicht-Tropfen",
+     "preis_h": 100,
+     "genus": "m",
+     "kern": "Tropfen",
+     "effekt": "sieht im Dunkeln eine Szene lang",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Stärkungstrank",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Trank",
+     "effekt": "+10 auf Kampf eine Szene lang",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Heiltrank",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Trank",
+     "effekt": "heilt 4 LP sofort, auch im Kampf",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Schicksalstropfen",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Tropfen",
+     "effekt": "+1 SP, nur bei SP ≤ 1 und höchstens einmal pro Sitzung (nicht über das Maximum); wird nie verdoppelt",
+     "min": "ungewoehnlich",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Brandsalbe",
+     "preis_h": 24,
+     "genus": "f",
+     "kern": "Salbe",
+     "effekt": "heilt 1 LP bei Verbrennung oder Brühwunde",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Räucherkerze",
+     "preis_h": 12,
+     "genus": "f",
+     "kern": "Kerze",
+     "effekt": "Rauch vertreibt Ungeziefer; +10 auf Wissen beim Lesen von Spuren im Rauch eine Szene",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Fieberwurz-Tee",
+     "preis_h": 6,
+     "genus": "m",
+     "kern": "Tee",
+     "effekt": "heilt 1 LP nach Rast; Fieber fällt",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Leuchtöl",
+     "preis_h": 10,
+     "genus": "n",
+     "kern": "Öl",
+     "effekt": "+10 auf Wissen beim Suchen im Dunkeln eine Szene",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Hundefriede",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Brocken",
+     "effekt": "Hund bellt nicht eine Szene; +10 auf Sozial bei Annäherung an Hunde",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Kälteöl",
+     "preis_h": 18,
+     "genus": "n",
+     "kern": "Öl",
+     "effekt": "+10 auf Kampf bei Frost eine Szene; Kälte schmerzt nicht",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Lederfett",
+     "preis_h": 9,
+     "genus": "n",
+     "kern": "Fett",
+     "effekt": "+10 auf Kampf bei Nässe eine Szene (Riemen, Schildgriff)",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Zunderpulver",
+     "preis_h": 6,
+     "genus": "n",
+     "kern": "Pulver",
+     "effekt": "Feuer in einer Runde; +10 auf Kampf, wenn Feuer sofort nötig",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Hustenbalsam",
+     "preis_h": 14,
+     "genus": "m",
+     "kern": "Balsam",
+     "effekt": "+10 auf Sozial bei Rede in Kälte oder Rauch eine Szene",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Fußsalbe",
+     "preis_h": 10,
+     "genus": "f",
+     "kern": "Salbe",
+     "effekt": "heilt 1 LP nach einer Nacht Marsch",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Bilsensud",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Sud",
+     "effekt": "Gift: −10 auf Wissen, 1 LP je Szene bis Gegengift",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Rattenkorn",
+     "preis_h": 40,
+     "genus": "n",
+     "kern": "Korn",
+     "effekt": "Gift: −10 auf Kampf, 1 LP je Szene bis Gegengift",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Eibensaft",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Saft",
+     "effekt": "Gift: −10 auf Sozial, 1 LP je Szene bis Gegengift",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Wetzöl",
+     "preis_h": 36,
+     "genus": "n",
+     "kern": "Öl",
+     "effekt": "+10 auf Kampf für den nächsten Angriff",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Panzerharz",
+     "preis_h": 70,
+     "genus": "n",
+     "kern": "Harz",
+     "effekt": "+1 Rüstung gegen Hiebschaden eine Szene",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Mohnmilch",
+     "preis_h": 30,
+     "genus": "f",
+     "kern": "Milch",
+     "effekt": "+10 auf Sozial beim Beruhigen von Kind oder Tier eine Szene",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Wachhalter",
+     "preis_h": 56,
+     "genus": "m",
+     "kern": "Trank",
+     "effekt": "hält wach bis Morgen; +10 auf Wissen bei Nachtwache",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Schlangenfett",
+     "preis_h": 48,
+     "genus": "n",
+     "kern": "Fett",
+     "effekt": "Bisse wirken eine Szene lang nicht als Gift",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Essigwasser",
+     "preis_h": 8,
+     "genus": "n",
+     "kern": "Wasser",
+     "effekt": "+10 auf Wissen bei Wundversorgung eine Szene",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Branntwein",
+     "preis_h": 12,
+     "genus": "m",
+     "kern": "Branntwein",
+     "effekt": "+10 auf Sozial bei Trinkrunde eine Szene",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Blendpulver",
+     "preis_h": 40,
+     "genus": "n",
+     "kern": "Pulver",
+     "effekt": "Gegner −10 auf Kampf für eine Runde",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Myrrhenharz",
+     "preis_h": 28,
+     "genus": "n",
+     "kern": "Harz",
+     "effekt": "+10 auf Sozial bei Gebet oder Trauerfeier eine Szene",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Pfeffersalbe",
+     "preis_h": 22,
+     "genus": "f",
+     "kern": "Salbe",
+     "effekt": "+10 auf Kampf nach Rast eine Szene (Muskeln warm)",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Nachtschattenpaste",
+     "preis_h": 130,
+     "genus": "f",
+     "kern": "Paste",
+     "effekt": "Gift: −10 auf Kampf, 1 LP je Szene bis Gegengift",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Eisenhut-Tinktur",
+     "preis_h": 150,
+     "genus": "f",
+     "kern": "Tinktur",
+     "effekt": "Gift: −10 auf Sozial (Sprache lahm), 1 LP je Szene bis Gegengift",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Blutstillpulver",
+     "preis_h": 26,
+     "genus": "n",
+     "kern": "Pulver",
+     "effekt": "heilt 1 LP sofort bei frischer Blutung",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Rostschutz",
+     "preis_h": 16,
+     "genus": "n",
+     "kern": "Mittel",
+     "effekt": "+10 auf Wissen beim Reparieren von Waffe oder Rüstung eine Szene",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Knochenkitt",
+     "preis_h": 34,
+     "genus": "m",
+     "kern": "Kitt",
+     "effekt": "heilt 2 LP einmal pro Sitzung bei Knochenbruch",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Rauschpfeffer",
+     "preis_h": 44,
+     "genus": "m",
+     "kern": "Pfeffer",
+     "effekt": "+10 auf Kampf eine Szene; danach −10 auf Wissen",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Beruhigungspulver",
+     "preis_h": 18,
+     "genus": "n",
+     "kern": "Pulver",
+     "effekt": "+10 auf Sozial bei Verhandlung mit wütendem Gegenüber eine Szene",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Quecksilber",
+     "preis_h": 110,
+     "genus": "n",
+     "kern": "Metall",
+     "effekt": "Gift: −10 auf Sozial (Zittern), 1 LP je Szene bis Gegengift",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Riechsalz",
+     "preis_h": 22,
+     "genus": "n",
+     "kern": "Salz",
+     "effekt": "weckt Ohnmächtige sofort aus der Bewusstlosigkeit",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Alaunstein",
+     "preis_h": 16,
+     "genus": "m",
+     "kern": "Stein",
+     "effekt": "+1 Rüstung gegen Schnittschaden eine Szene",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Silbersalz",
+     "preis_h": 90,
+     "genus": "n",
+     "kern": "Salz",
+     "effekt": "+10 auf Wissen beim Prüfen von Münzen und Metall",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Bitterwasser",
+     "preis_h": 14,
+     "genus": "n",
+     "kern": "Wasser",
+     "effekt": "beendet frische Vergiftung, wenn in der ersten Szene getrunken",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Ätzsud",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Sud",
+     "effekt": "+10 auf Wissen beim Öffnen eines Schlosses mit Säure eine Szene",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Kohlepulver",
+     "preis_h": 20,
+     "genus": "n",
+     "kern": "Pulver",
+     "effekt": "bindet Gift im Magen; heilt 1 LP bei Vergiftung",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Glasstaub",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Staub",
+     "effekt": "Gegner −10 auf Kampf eine Szene (reizt Augen)",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Pechschmiere",
+     "preis_h": 14,
+     "genus": "f",
+     "kern": "Schmiere",
+     "effekt": "+10 auf Wissen beim lautlosen Öffnen eines Schlosses eine Szene",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Terpentin",
+     "preis_h": 30,
+     "genus": "n",
+     "kern": "Terpentin",
+     "effekt": "+10 auf Wissen beim Entzünden in Nässe eine Szene",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "kleidung",
+   "name": "Kleidung",
+   "d20": [
+    13,
+    13
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Sozial beim ersten Auftritt vor Fremden.",
+   "items": [
+    {
+     "name": "Reisemantel",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Mantel",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Pelzumhang",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Umhang",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Stiefel",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Stiefel",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Handschuhe",
+     "preis_h": 32,
+     "genus": "m",
+     "kern": "Handschuh",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Festgewand",
+     "preis_h": 160,
+     "genus": "n",
+     "kern": "Gewand",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Priesterrobe",
+     "preis_h": 100,
+     "genus": "f",
+     "kern": "Robe",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Gauklertracht",
+     "preis_h": 80,
+     "genus": "f",
+     "kern": "Tracht",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Kapuzenumhang",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Umhang",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Uniformrock (Wache, Zunft)",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Rock",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Trauerkleidung",
+     "preis_h": 60,
+     "genus": "f",
+     "kern": "Kleidung",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Wollhemd",
+     "preis_h": 16,
+     "genus": "n",
+     "kern": "Hemd",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Leinenhose",
+     "preis_h": 20,
+     "genus": "f",
+     "kern": "Hose",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Wollweste",
+     "preis_h": 24,
+     "genus": "f",
+     "kern": "Weste",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Schal",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Schal",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Filzkappe",
+     "preis_h": 12,
+     "genus": "f",
+     "kern": "Kappe",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Lederschürze",
+     "preis_h": 28,
+     "genus": "f",
+     "kern": "Schürze",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Arbeitskittel",
+     "preis_h": 36,
+     "genus": "m",
+     "kern": "Kittel",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Wachsjacke",
+     "preis_h": 72,
+     "genus": "f",
+     "kern": "Jacke",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Ledergürtel",
+     "preis_h": 10,
+     "genus": "m",
+     "kern": "Gürtel",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Lederkittel",
+     "preis_h": 52,
+     "genus": "m",
+     "kern": "Lederkittel",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Gerberschurz",
+     "preis_h": 44,
+     "genus": "m",
+     "kern": "Schurz",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Bergmannsjoppe",
+     "preis_h": 64,
+     "genus": "f",
+     "kern": "Joppe",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Tuchmacherrock",
+     "preis_h": 130,
+     "genus": "m",
+     "kern": "Rock",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Filzhut",
+     "preis_h": 30,
+     "genus": "m",
+     "kern": "Hut",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Marktkopftuch",
+     "preis_h": 10,
+     "genus": "n",
+     "kern": "Tuch",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Strohregenmantel",
+     "preis_h": 16,
+     "genus": "m",
+     "kern": "Mantel",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Lodenmantel",
+     "preis_h": 96,
+     "genus": "m",
+     "kern": "Mantel",
+     "effekt": "+10 auf Probe gegen Nässe und Kälte im Gebirge",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Moorstiefel",
+     "preis_h": 48,
+     "genus": "m",
+     "kern": "Stiefel",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Holzschuh",
+     "preis_h": 12,
+     "genus": "m",
+     "kern": "Schuh",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Nagelschuh",
+     "preis_h": 36,
+     "genus": "m",
+     "kern": "Schuh",
+     "effekt": "+10 auf Probe Klettern im Geröll",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Büttelrock",
+     "preis_h": 70,
+     "genus": "m",
+     "kern": "Rock",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Henkerskapuze",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Kapuze",
+     "effekt": "+10 auf Probe Einschüchtern, Gesicht bleibt verborgen",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Richterrobe",
+     "preis_h": 150,
+     "genus": "f",
+     "kern": "Robe",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Zöllnerwams",
+     "preis_h": 84,
+     "genus": "n",
+     "kern": "Wams",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Gerichtsschleier",
+     "preis_h": 50,
+     "genus": "m",
+     "kern": "Schleier",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Totengräberkittel",
+     "preis_h": 28,
+     "genus": "m",
+     "kern": "Kittel",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Schreiberrock",
+     "preis_h": 58,
+     "genus": "m",
+     "kern": "Rock",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Wachsmantel",
+     "preis_h": 64,
+     "genus": "m",
+     "kern": "Mantel",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Fischerkittel",
+     "preis_h": 34,
+     "genus": "m",
+     "kern": "Kittel",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Beinlinge",
+     "preis_h": 14,
+     "genus": "m",
+     "kern": "Beinling",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Brokatrock",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Rock",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Goldwams",
+     "preis_h": 280,
+     "genus": "n",
+     "kern": "Wams",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Seidenschleier",
+     "preis_h": 150,
+     "genus": "m",
+     "kern": "Schleier",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Hermelinkragen",
+     "preis_h": 220,
+     "genus": "m",
+     "kern": "Kragen",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Samtmantel",
+     "preis_h": 260,
+     "genus": "m",
+     "kern": "Mantel",
+     "effekt": "+10 auf Probe Eindruck bei Hof",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Rabenfederhut",
+     "preis_h": 180,
+     "genus": "m",
+     "kern": "Hut",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Schleppenkleid",
+     "preis_h": 340,
+     "genus": "n",
+     "kern": "Kleid",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Zeremonialtracht",
+     "preis_h": 390,
+     "genus": "f",
+     "kern": "Tracht",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Lacklederstiefel",
+     "preis_h": 200,
+     "genus": "m",
+     "kern": "Stiefel",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Perlenhaube",
+     "preis_h": 320,
+     "genus": "f",
+     "kern": "Haube",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "schmuck",
+   "name": "Schmuck",
+   "d20": [
+    14,
+    15
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Sozial beim ersten Auftritt vor Fremden.",
+   "items": [
+    {
+     "name": "Kupferring",
+     "preis_h": 4,
+     "genus": "m",
+     "kern": "Ring",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Amulett aus Holz oder Knochen",
+     "preis_h": 6,
+     "genus": "n",
+     "kern": "Amulett",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Ohrring",
+     "preis_h": 20,
+     "genus": "m",
+     "kern": "Ohrring",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Brosche",
+     "preis_h": 100,
+     "genus": "f",
+     "kern": "Brosche",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Armreif",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Armreif",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Silberkette",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Silberkette",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Siegelring",
+     "preis_h": 240,
+     "genus": "m",
+     "kern": "Siegelring",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Goldring",
+     "preis_h": 320,
+     "genus": "m",
+     "kern": "Ring",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Edelsteinanhänger",
+     "preis_h": 480,
+     "genus": "m",
+     "kern": "Anhänger",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Diadem",
+     "preis_h": 800,
+     "genus": "n",
+     "kern": "Diadem",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Haarnadel aus Knochen",
+     "preis_h": 4,
+     "genus": "f",
+     "kern": "Haarnadel",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Lederarmband",
+     "preis_h": 6,
+     "genus": "n",
+     "kern": "Armband",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Zinnring",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Ring",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Pilgermuschel aus Ton",
+     "preis_h": 8,
+     "genus": "f",
+     "kern": "Pilgermuschel",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Gewandnadel aus Messing",
+     "preis_h": 6,
+     "genus": "f",
+     "kern": "Gewandnadel",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Hornperlenkette",
+     "preis_h": 12,
+     "genus": "f",
+     "kern": "Kette",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Eisenring",
+     "preis_h": 4,
+     "genus": "m",
+     "kern": "Ring",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Zunftmarke aus Blei",
+     "preis_h": 20,
+     "genus": "f",
+     "kern": "Zunftmarke",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Drahtohrhänger",
+     "preis_h": 10,
+     "genus": "m",
+     "kern": "Ohrhänger",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Gürtelschnalle aus Bronze",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Gürtelschnalle",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Totengräberring",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Ring",
+     "effekt": "+10 Sozial bei Angehörigen am Grab",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Galgenholz-Anhänger",
+     "preis_h": 10,
+     "genus": "m",
+     "kern": "Anhänger",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Gerberzunftabzeichen",
+     "preis_h": 50,
+     "genus": "n",
+     "kern": "Abzeichen",
+     "effekt": "+10 Sozial bei Gerbern und Lederern",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Schieferplatte am Band",
+     "preis_h": 30,
+     "genus": "f",
+     "kern": "Schieferplatte",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Moorgoldring",
+     "preis_h": 90,
+     "genus": "m",
+     "kern": "Ring",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Schuldschwur-Ring",
+     "preis_h": 150,
+     "genus": "m",
+     "kern": "Ring",
+     "effekt": "+10 Sozial bei Verhandlungen über Schulden",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Pfandmedaille",
+     "preis_h": 70,
+     "genus": "f",
+     "kern": "Medaille",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Fuhrmannssiegel",
+     "preis_h": 200,
+     "genus": "n",
+     "kern": "Siegel",
+     "effekt": "+10 Sozial bei Fuhrleuten an Poststraßen",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Haarkamm aus Horn mit Silberbeschlag",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Haarkamm",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Probiernadel des Goldschmieds",
+     "preis_h": 180,
+     "genus": "f",
+     "kern": "Probiernadel",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Fährmannsohrring",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Ohrring",
+     "effekt": "+10 Sozial bei Schiffern am Fluss",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Fernhandels-Glasperlenkette",
+     "preis_h": 260,
+     "genus": "f",
+     "kern": "Kette",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Bleikreuz-Anhänger",
+     "preis_h": 35,
+     "genus": "m",
+     "kern": "Anhänger",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Eheband aus Haar",
+     "preis_h": 25,
+     "genus": "n",
+     "kern": "Eheband",
+     "effekt": "+10 Sozial bei Trauungen und Hochzeiten",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Torwächter-Schlüsselkette",
+     "preis_h": 110,
+     "genus": "f",
+     "kern": "Schlüsselkette",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Notarstempel an Kette",
+     "preis_h": 220,
+     "genus": "m",
+     "kern": "Stempel",
+     "effekt": "+10 Sozial bei Urkunden und Verträgen",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Brandzeichen-Anhänger",
+     "preis_h": 16,
+     "genus": "m",
+     "kern": "Anhänger",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Kräuterkapsel am Band",
+     "preis_h": 8,
+     "genus": "f",
+     "kern": "Kräuterkapsel",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Bernsteinbrosche",
+     "preis_h": 300,
+     "genus": "f",
+     "kern": "Brosche",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Marktmeister-Plakette an Kette",
+     "preis_h": 140,
+     "genus": "f",
+     "kern": "Plakette",
+     "effekt": "+10 Sozial bei Marktleuten",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Hofkette aus Silberfiligran",
+     "preis_h": 600,
+     "genus": "f",
+     "kern": "Kette",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Brautringpaar",
+     "preis_h": 900,
+     "genus": "n",
+     "kern": "Ringpaar",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Reliquienkapsel an Goldkette",
+     "preis_h": 500,
+     "genus": "f",
+     "kern": "Reliquienkapsel",
+     "effekt": "+10 Sozial bei Gläubigen und Pilgern",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Hofnadel aus Email",
+     "preis_h": 450,
+     "genus": "f",
+     "kern": "Anstecknadel",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Bernstein-Goldhalsband",
+     "preis_h": 700,
+     "genus": "n",
+     "kern": "Halsband",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Ordensband mit Goldkreuz",
+     "preis_h": 1000,
+     "genus": "n",
+     "kern": "Ordensband",
+     "effekt": "+10 Sozial bei Adel und Klerus",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Smaragdsiegel der Ratsherren",
+     "preis_h": 1100,
+     "genus": "n",
+     "kern": "Siegel",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Mondsteinbrosche",
+     "preis_h": 750,
+     "genus": "f",
+     "kern": "Brosche",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Halsreif aus Gold",
+     "preis_h": 950,
+     "genus": "m",
+     "kern": "Halsreif",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Gehänge des Landvogts",
+     "preis_h": 1200,
+     "genus": "n",
+     "kern": "Gehänge",
+     "effekt": "+10 Sozial bei Amtspersonen",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "schrift",
+   "name": "Schriftstück",
+   "d20": [
+    16,
+    16
+   ],
+   "verbrauch": false,
+   "gut": "echt und lesbar: +10 auf Wissen beim Auswerten.",
+   "items": [
+    {
+     "name": "Brief",
+     "preis_h": 2,
+     "genus": "m",
+     "kern": "Brief",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Steckbrief",
+     "preis_h": 1,
+     "genus": "m",
+     "kern": "Steckbrief",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Gebetbuch",
+     "preis_h": 60,
+     "genus": "n",
+     "kern": "Gebetbuch",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Landkarte",
+     "preis_h": 80,
+     "genus": "f",
+     "kern": "Karte",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Rezeptbuch",
+     "preis_h": 80,
+     "genus": "n",
+     "kern": "Rezeptbuch",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Handelsbrief / Urkunde",
+     "preis_h": 100,
+     "genus": "m",
+     "kern": "Handelsbrief",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Chronik",
+     "preis_h": 120,
+     "genus": "f",
+     "kern": "Chronik",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Schatzkarte",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Karte",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Schriftrolle mit Formel",
+     "preis_h": 200,
+     "effekt": "Aufhänger für die Spielleitung (Geheimnis, Hinweis), keine Zauberregel",
+     "genus": "f",
+     "kern": "Schriftrolle",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Verbotener Foliant",
+     "preis_h": 240,
+     "effekt": "Aufhänger für die Spielleitung (Geheimnis, Hinweis), keine Zauberregel",
+     "genus": "m",
+     "kern": "Foliant",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Warenbrief",
+     "preis_h": 1,
+     "genus": "m",
+     "kern": "Warenbrief",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Quittung",
+     "preis_h": 1,
+     "genus": "f",
+     "kern": "Quittung",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Zunftbrief",
+     "preis_h": 6,
+     "genus": "m",
+     "kern": "Zunftbrief",
+     "effekt": "+10 Wissen bei Zunftrecht und Siegeln",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Pachtbrief",
+     "preis_h": 12,
+     "genus": "m",
+     "kern": "Pachtbrief",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Schuldbrief",
+     "preis_h": 4,
+     "genus": "m",
+     "kern": "Schuldbrief",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Wegskizze",
+     "preis_h": 3,
+     "genus": "f",
+     "kern": "Wegskizze",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Kirchenkalender",
+     "preis_h": 16,
+     "genus": "m",
+     "kern": "Kirchenkalender",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Bauernkalender",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Bauernkalender",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Zinsliste",
+     "preis_h": 5,
+     "genus": "f",
+     "kern": "Zinsliste",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Briefpapier",
+     "preis_h": 2,
+     "genus": "n",
+     "kern": "Briefpapier",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Taufregister",
+     "preis_h": 40,
+     "genus": "n",
+     "kern": "Taufregister",
+     "effekt": "+10 Wissen bei Abstammungsfragen",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Lehnsregister",
+     "preis_h": 96,
+     "genus": "n",
+     "kern": "Lehnsregister",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Pergamentrolle",
+     "preis_h": 24,
+     "genus": "f",
+     "kern": "Pergamentrolle",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Ahnenrolle",
+     "preis_h": 60,
+     "genus": "f",
+     "kern": "Ahnenrolle",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Geleitbrief",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Geleitbrief",
+     "effekt": "+10 Wissen bei Grenzregeln und Wachposten",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Freibrief",
+     "preis_h": 140,
+     "genus": "m",
+     "kern": "Freibrief",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Arzneibuch",
+     "preis_h": 90,
+     "genus": "n",
+     "kern": "Arzneibuch",
+     "effekt": "+10 Wissen bei Kräuterkunde",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Kräuterbuch",
+     "preis_h": 70,
+     "genus": "n",
+     "kern": "Kräuterbuch",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Sternkarte",
+     "preis_h": 110,
+     "genus": "f",
+     "kern": "Sternkarte",
+     "effekt": "+10 Wissen bei Gestirnen und Wegen bei Nacht",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Seekarte",
+     "preis_h": 130,
+     "genus": "f",
+     "kern": "Seekarte",
+     "effekt": "+10 Wissen bei Küstenwegen und Strömungen",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Grenzkarte",
+     "preis_h": 150,
+     "genus": "f",
+     "kern": "Grenzkarte",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Kirchenfoliant",
+     "preis_h": 200,
+     "genus": "m",
+     "kern": "Kirchenfoliant",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Sippenbuch",
+     "preis_h": 140,
+     "genus": "n",
+     "kern": "Sippenbuch",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Ablassbrief",
+     "preis_h": 300,
+     "genus": "m",
+     "kern": "Ablassbrief",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Beichtzettel",
+     "preis_h": 30,
+     "genus": "m",
+     "kern": "Beichtzettel",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Rechenbuch",
+     "preis_h": 110,
+     "genus": "n",
+     "kern": "Rechenbuch",
+     "effekt": "+10 Wissen bei Münz- und Zinsfragen",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Fahrtenbuch",
+     "preis_h": 130,
+     "genus": "n",
+     "kern": "Fahrtenbuch",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Lagerbuch",
+     "preis_h": 180,
+     "genus": "n",
+     "kern": "Lagerbuch",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Segensbrief",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Segensbrief",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Bannbrief",
+     "preis_h": 260,
+     "genus": "m",
+     "kern": "Bannbrief",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Hetzschrift",
+     "preis_h": 200,
+     "genus": "f",
+     "kern": "Hetzschrift",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Lästerschrift",
+     "preis_h": 150,
+     "genus": "f",
+     "kern": "Lästerschrift",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Chiffrierbuch",
+     "preis_h": 380,
+     "genus": "n",
+     "kern": "Chiffrierbuch",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Ketzerschrift",
+     "preis_h": 420,
+     "genus": "f",
+     "kern": "Ketzerschrift",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Fälscherbrief",
+     "preis_h": 280,
+     "genus": "m",
+     "kern": "Fälscherbrief",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Totenbuch",
+     "preis_h": 260,
+     "genus": "n",
+     "kern": "Totenbuch",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Geheimkarte",
+     "preis_h": 360,
+     "genus": "f",
+     "kern": "Geheimkarte",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Gerichtsakte",
+     "preis_h": 200,
+     "genus": "f",
+     "kern": "Gerichtsakte",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Schmähbrief",
+     "preis_h": 90,
+     "genus": "m",
+     "kern": "Schmähbrief",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Schmugglerkarte",
+     "preis_h": 220,
+     "genus": "f",
+     "kern": "Schmugglerkarte",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "kuriosum",
+   "name": "Kuriosum",
+   "d20": [
+    17,
+    18
+   ],
+   "verbrauch": false,
+   "gut": "echtes Sammlerstück: Preis hoch, sonst nur Gesprächsstoff (+10 Sozial bei Sammlern).",
+   "items": [
+    {
+     "name": "Knochenwürfel",
+     "preis_h": 4,
+     "genus": "m",
+     "kern": "Würfel",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Puppe",
+     "preis_h": 4,
+     "genus": "f",
+     "kern": "Puppe",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Glücksbringer",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Glücksbringer",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Totenschädel",
+     "preis_h": 40,
+     "genus": "m",
+     "kern": "Schädel",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Spiegelscherbe",
+     "preis_h": 20,
+     "genus": "f",
+     "kern": "Scherbe",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Ausgestopfter Rabe",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Rabe",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Zahn eines Ungeheuers",
+     "preis_h": 80,
+     "genus": "m",
+     "kern": "Zahn",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Kristall",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Kristall",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Zierkompass",
+     "preis_h": 140,
+     "genus": "m",
+     "kern": "Zierkompass",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Spieluhr",
+     "preis_h": 160,
+     "genus": "f",
+     "kern": "Spieluhr",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Tonmurmel",
+     "preis_h": 2,
+     "genus": "f",
+     "kern": "Murmel",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Lederbecher",
+     "preis_h": 6,
+     "genus": "m",
+     "kern": "Becher",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Holzpfeife",
+     "preis_h": 6,
+     "genus": "f",
+     "kern": "Pfeife",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Rosshaarband",
+     "preis_h": 4,
+     "genus": "n",
+     "kern": "Band",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Hornknopf",
+     "preis_h": 2,
+     "genus": "m",
+     "kern": "Knopf",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Zinnsoldat",
+     "preis_h": 12,
+     "genus": "m",
+     "kern": "Soldat",
+     "effekt": "+10 bei Kindern und Spielgefährten.",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Talgstummel",
+     "preis_h": 2,
+     "genus": "m",
+     "kern": "Stummel",
+     "effekt": "Einmal pro Szene: ein kleines Licht, das eine Minute brennt.",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Messingschnalle",
+     "preis_h": 10,
+     "genus": "f",
+     "kern": "Schnalle",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Beinnadel",
+     "preis_h": 3,
+     "genus": "f",
+     "kern": "Nadel",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Kartenspiel aus Pergament",
+     "preis_h": 8,
+     "genus": "n",
+     "kern": "Spiel",
+     "effekt": "+10 beim Glücksspiel in der Schenke.",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Schachfigur",
+     "preis_h": 16,
+     "genus": "f",
+     "kern": "Figur",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Hornlupe",
+     "preis_h": 28,
+     "genus": "f",
+     "kern": "Lupe",
+     "effekt": "+10 beim Prüfen von Siegeln und Münzen.",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Totenabguss",
+     "preis_h": 35,
+     "genus": "m",
+     "kern": "Abguss",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Heiligenkarte",
+     "preis_h": 6,
+     "genus": "f",
+     "kern": "Karte",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Taschenuhr",
+     "preis_h": 75,
+     "genus": "f",
+     "kern": "Uhr",
+     "effekt": "Einmal pro Szene: die Zeit auf die Minute schätzen.",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Schneckenhaus",
+     "preis_h": 3,
+     "genus": "n",
+     "kern": "Haus",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Fuchspfote",
+     "preis_h": 9,
+     "genus": "f",
+     "kern": "Pfote",
+     "effekt": "+10 beim Schleichen im Unterholz.",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Eberhauer",
+     "preis_h": 22,
+     "genus": "m",
+     "kern": "Hauer",
+     "effekt": "+10 bei Gesprächen mit Jägern.",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Prunk-Sanduhr",
+     "preis_h": 48,
+     "genus": "f",
+     "kern": "Sanduhr",
+     "effekt": "Einmal pro Sitzung: Orakel-Chance eine Stufe verschieben, solange sie läuft.",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Pilgerzeichen",
+     "preis_h": 14,
+     "genus": "n",
+     "kern": "Zeichen",
+     "effekt": "+10 bei Pilgern und Klosterbrüdern.",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Federkielköcher",
+     "preis_h": 11,
+     "genus": "m",
+     "kern": "Köcher",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Goldwaage",
+     "preis_h": 80,
+     "genus": "f",
+     "kern": "Waage",
+     "effekt": "+10 beim Prüfen von Münzen und Edelsteinen.",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Spielzeug-Siegelring",
+     "preis_h": 55,
+     "genus": "m",
+     "kern": "Siegelring",
+     "effekt": "+10 im Schriftverkehr mit Amtsstuben.",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Glasperlenkette",
+     "preis_h": 16,
+     "genus": "f",
+     "kern": "Kette",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Hirtenhorn",
+     "preis_h": 7,
+     "genus": "n",
+     "kern": "Horn",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Rattenfängerpfeife",
+     "preis_h": 65,
+     "genus": "f",
+     "kern": "Pfeife",
+     "effekt": "+10 bei Ratten und Kleintieren im Keller.",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Schlüsselbund",
+     "preis_h": 26,
+     "genus": "m",
+     "kern": "Bund",
+     "effekt": "Einmal pro Szene: ein fremdes Schloss öffnet sich.",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Wachsrose",
+     "preis_h": 5,
+     "genus": "f",
+     "kern": "Rose",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Blechdose",
+     "preis_h": 9,
+     "genus": "f",
+     "kern": "Dose",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Schnupftabakdose",
+     "preis_h": 45,
+     "genus": "f",
+     "kern": "Dose",
+     "effekt": "+10 bei Gesprächen in Schenken.",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Elfenbeinkamm",
+     "preis_h": 90,
+     "genus": "m",
+     "kern": "Kamm",
+     "effekt": "+10 bei Adel und Hofleuten.",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Silberlöffel",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Löffel",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Bernsteinstück",
+     "preis_h": 150,
+     "genus": "n",
+     "kern": "Stück",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Meerschaumpfeife",
+     "preis_h": 180,
+     "genus": "f",
+     "kern": "Pfeife",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Landkartenfragment",
+     "preis_h": 220,
+     "genus": "n",
+     "kern": "Fragment",
+     "effekt": "+10 bei der Suche nach einem alten Ort.",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Glasauge",
+     "preis_h": 260,
+     "genus": "n",
+     "kern": "Auge",
+     "effekt": "+10 bei Sammlern von Reliquien.",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Singvogel-Automat",
+     "preis_h": 340,
+     "genus": "m",
+     "kern": "Automat",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Schultertuch",
+     "preis_h": 380,
+     "genus": "n",
+     "kern": "Tuch",
+     "effekt": "+10 bei Zunftversammlungen.",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Mumienhand",
+     "preis_h": 480,
+     "genus": "f",
+     "kern": "Hand",
+     "effekt": "+10 bei Schaustellern, die damit prahlen.",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Himmelsglobus",
+     "preis_h": 600,
+     "genus": "m",
+     "kern": "Globus",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  },
+  {
+   "id": "transport",
+   "name": "Reittier / Transport",
+   "d20": [
+    19,
+    20
+   ],
+   "verbrauch": false,
+   "gut": "gesund und gut abgerichtet: +10 auf Proben mit dem Tier oder Gefährt.",
+   "items": [
+    {
+     "name": "Brieftaube",
+     "preis_h": 40,
+     "genus": "f",
+     "kern": "Taube",
+     "von": 1,
+     "bis": 3
+    },
+    {
+     "name": "Jagdhund",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Hund",
+     "von": 4,
+     "bis": 6
+    },
+    {
+     "name": "Esel",
+     "preis_h": 160,
+     "genus": "m",
+     "kern": "Esel",
+     "von": 7,
+     "bis": 9
+    },
+    {
+     "name": "Sattel und Zaumzeug",
+     "preis_h": 100,
+     "genus": "m",
+     "kern": "Sattel",
+     "von": 10,
+     "bis": 12
+    },
+    {
+     "name": "Packpony",
+     "preis_h": 200,
+     "genus": "n",
+     "kern": "Pony",
+     "von": 13,
+     "bis": 15
+    },
+    {
+     "name": "Karren",
+     "preis_h": 200,
+     "genus": "m",
+     "kern": "Karren",
+     "von": 16,
+     "bis": 18
+    },
+    {
+     "name": "Maultier",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Maultier",
+     "von": 19,
+     "bis": 21
+    },
+    {
+     "name": "Ruderboot",
+     "preis_h": 240,
+     "genus": "n",
+     "kern": "Boot",
+     "von": 22,
+     "bis": 24
+    },
+    {
+     "name": "Reitpferd",
+     "preis_h": 320,
+     "genus": "n",
+     "kern": "Pferd",
+     "von": 25,
+     "bis": 27
+    },
+    {
+     "name": "Streitross",
+     "preis_h": 800,
+     "genus": "n",
+     "kern": "Ross",
+     "von": 28,
+     "bis": 30
+    },
+    {
+     "name": "Milchziege",
+     "preis_h": 24,
+     "genus": "f",
+     "kern": "Ziege",
+     "von": 31,
+     "bis": 33
+    },
+    {
+     "name": "Hütehund",
+     "preis_h": 90,
+     "genus": "m",
+     "kern": "Hund",
+     "von": 34,
+     "bis": 36
+    },
+    {
+     "name": "Halfter",
+     "preis_h": 10,
+     "genus": "m",
+     "kern": "Halfter",
+     "von": 37,
+     "bis": 39
+    },
+    {
+     "name": "Hafersack",
+     "preis_h": 16,
+     "genus": "m",
+     "kern": "Sack",
+     "von": 40,
+     "bis": 42
+    },
+    {
+     "name": "Pferdedecke",
+     "preis_h": 24,
+     "genus": "f",
+     "kern": "Decke",
+     "von": 43,
+     "bis": 45
+    },
+    {
+     "name": "Handkarre",
+     "preis_h": 36,
+     "genus": "f",
+     "kern": "Karre",
+     "von": 46,
+     "bis": 48
+    },
+    {
+     "name": "Staken",
+     "preis_h": 8,
+     "genus": "m",
+     "kern": "Staken",
+     "von": 49,
+     "bis": 51
+    },
+    {
+     "name": "Schlitten",
+     "preis_h": 120,
+     "genus": "m",
+     "kern": "Schlitten",
+     "effekt": "+10 auf Gespannproben auf Eis und Schnee",
+     "von": 52,
+     "bis": 54
+    },
+    {
+     "name": "Hufbeschlag",
+     "preis_h": 60,
+     "genus": "m",
+     "kern": "Beschlag",
+     "effekt": "+10 auf Proben mit dem Tier auf Geröll und Schlamm",
+     "von": 55,
+     "bis": 57
+    },
+    {
+     "name": "Wasserfass",
+     "preis_h": 32,
+     "genus": "n",
+     "kern": "Fass",
+     "von": 58,
+     "bis": 60
+    },
+    {
+     "name": "Ochse",
+     "preis_h": 220,
+     "genus": "m",
+     "kern": "Ochse",
+     "von": 61,
+     "bis": 61
+    },
+    {
+     "name": "Ochsengespann",
+     "preis_h": 520,
+     "genus": "n",
+     "kern": "Gespann",
+     "von": 62,
+     "bis": 62
+    },
+    {
+     "name": "Zugpferd",
+     "preis_h": 280,
+     "genus": "n",
+     "kern": "Pferd",
+     "von": 63,
+     "bis": 63
+    },
+    {
+     "name": "Kastenwagen",
+     "preis_h": 400,
+     "genus": "m",
+     "kern": "Wagen",
+     "von": 64,
+     "bis": 64
+    },
+    {
+     "name": "Planwagen",
+     "preis_h": 480,
+     "genus": "m",
+     "kern": "Wagen",
+     "von": 65,
+     "bis": 65
+    },
+    {
+     "name": "Lastkahn",
+     "preis_h": 360,
+     "genus": "m",
+     "kern": "Kahn",
+     "effekt": "+10 auf Proben beim Befahren eines Flusses mit starker Strömung",
+     "von": 66,
+     "bis": 66
+    },
+    {
+     "name": "Fischernachen",
+     "preis_h": 200,
+     "genus": "m",
+     "kern": "Nachen",
+     "von": 67,
+     "bis": 67
+    },
+    {
+     "name": "Treidelseil",
+     "preis_h": 24,
+     "genus": "n",
+     "kern": "Seil",
+     "von": 68,
+     "bis": 68
+    },
+    {
+     "name": "Packsattel",
+     "preis_h": 140,
+     "genus": "m",
+     "kern": "Sattel",
+     "von": 69,
+     "bis": 69
+    },
+    {
+     "name": "Satteltaschenpaar",
+     "preis_h": 56,
+     "genus": "n",
+     "kern": "Satteltaschenpaar",
+     "von": 70,
+     "bis": 70
+    },
+    {
+     "name": "Wagenplane",
+     "preis_h": 48,
+     "genus": "f",
+     "kern": "Plane",
+     "von": 71,
+     "bis": 71
+    },
+    {
+     "name": "Schwimmgurt",
+     "preis_h": 90,
+     "genus": "m",
+     "kern": "Gurt",
+     "effekt": "+10 auf Proben, ein Tier sicher durch eine Furt zu führen",
+     "von": 72,
+     "bis": 72
+    },
+    {
+     "name": "Saumpferd",
+     "preis_h": 260,
+     "genus": "n",
+     "kern": "Pferd",
+     "von": 73,
+     "bis": 73
+    },
+    {
+     "name": "Barke",
+     "preis_h": 480,
+     "genus": "f",
+     "kern": "Barke",
+     "von": 74,
+     "bis": 74
+    },
+    {
+     "name": "Ochsenjoch",
+     "preis_h": 40,
+     "genus": "n",
+     "kern": "Joch",
+     "von": 75,
+     "bis": 75
+    },
+    {
+     "name": "Wachgans",
+     "preis_h": 14,
+     "genus": "f",
+     "kern": "Gans",
+     "effekt": "+10 auf Wahrnehmungsproben, wenn sich Fremde dem Lager nähern",
+     "von": 76,
+     "bis": 76
+    },
+    {
+     "name": "Frettchen",
+     "preis_h": 36,
+     "genus": "n",
+     "kern": "Frettchen",
+     "von": 77,
+     "bis": 77
+    },
+    {
+     "name": "Jagdfalke",
+     "preis_h": 480,
+     "genus": "m",
+     "kern": "Falke",
+     "effekt": "+10 auf Proben, Wild im Gelände aufzuspüren",
+     "von": 78,
+     "bis": 78
+    },
+    {
+     "name": "Flussfähre",
+     "preis_h": 600,
+     "genus": "f",
+     "kern": "Fähre",
+     "von": 79,
+     "bis": 79
+    },
+    {
+     "name": "Leiterwagen",
+     "preis_h": 320,
+     "genus": "m",
+     "kern": "Wagen",
+     "von": 80,
+     "bis": 80
+    },
+    {
+     "name": "Kutsche",
+     "preis_h": 560,
+     "genus": "f",
+     "kern": "Kutsche",
+     "effekt": "+10 auf Gesellschaftsproben bei Hof und Markt",
+     "von": 81,
+     "bis": 82
+    },
+    {
+     "name": "Schimmelstute",
+     "preis_h": 900,
+     "genus": "f",
+     "kern": "Stute",
+     "von": 83,
+     "bis": 84
+    },
+    {
+     "name": "Apfelschimmel",
+     "preis_h": 1100,
+     "genus": "m",
+     "kern": "Schimmel",
+     "von": 85,
+     "bis": 86
+    },
+    {
+     "name": "Prunkgespann",
+     "preis_h": 1400,
+     "genus": "n",
+     "kern": "Gespann",
+     "von": 87,
+     "bis": 88
+    },
+    {
+     "name": "Prunkwagen",
+     "preis_h": 1200,
+     "genus": "m",
+     "kern": "Wagen",
+     "von": 89,
+     "bis": 90
+    },
+    {
+     "name": "Totenwagen",
+     "preis_h": 720,
+     "genus": "m",
+     "kern": "Wagen",
+     "von": 91,
+     "bis": 92
+    },
+    {
+     "name": "Gondel",
+     "preis_h": 880,
+     "genus": "f",
+     "kern": "Gondel",
+     "von": 93,
+     "bis": 94
+    },
+    {
+     "name": "Staatsbarke",
+     "preis_h": 1500,
+     "genus": "f",
+     "kern": "Barke",
+     "von": 95,
+     "bis": 96
+    },
+    {
+     "name": "Zelter",
+     "preis_h": 640,
+     "genus": "m",
+     "kern": "Zelter",
+     "effekt": "+10 auf Proben, einen Tag lang im Sattel durchzuhalten",
+     "von": 97,
+     "bis": 98
+    },
+    {
+     "name": "Wolfshund",
+     "preis_h": 360,
+     "genus": "m",
+     "kern": "Hund",
+     "von": 99,
+     "bis": 100
+    }
+   ]
+  }
+ ]
+}
