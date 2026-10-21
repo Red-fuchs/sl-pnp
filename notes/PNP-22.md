@@ -14,14 +14,14 @@ API: notes/API-foundry.md. Rules: notes/RULES-schicksalsschlag.md. Foundry modul
 
 ## Start checklist (exact commands, in this order)
 1. Tailscale (only for remote players): open the Tailscale app and sign in, then `~/Projects/sl-foundry/online.sh start` (prints the player URL `https://<mac>.<tailnet>.ts.net`; first time: approve Funnel via the link it shows, run again). Check with `online.sh status`.
-2. sl for the session (own port, not 8787): `cd ~/Projects/sl-pnp && SL_IDLE=1800 ./play.sh web --port 8851 --rules schicksal --rng jitter --name pnp-2026-10-22` (take a GPU slot via the built-in lease; the model loads with the first turn, 1-2 min; after 30 min idle it unloads and reloads on the next turn). Resume after a crash: same line with `--resume pnp-2026-10-22`. In Foundry: Module Settings > SL-Bridge > *sl-URL* = `http://localhost:8851` (default is 8787).
+2. sl for the session on 8787 (the bridge default; stop any other sl on 8787 first): `cd ~/Projects/sl-pnp && SL_IDLE=1800 ./play.sh web --port 8787 --rules schicksal --rng jitter --name pnp-2026-10-22` (take a GPU slot via the built-in lease; the model loads with the first turn, 1-2 min; after 30 min idle it unloads and reloads on the next turn). Resume after a crash: same line with `--resume pnp-2026-10-22`.
 3. Foundry: start the Foundry app, launch the world (world "Schicksalsschlag", system Simple World-Building, modules SL-Bridge on). **The GM opens `http://localhost:30000`** (not the tailscale URL), otherwise the browser blocks the bridge to sl. Players use the Funnel URL or the LAN link.
 4. Passwords: Foundry admin password = Setup > Configuration > Administrator Password (set it before `online.sh start`, otherwise the setup page is open to the internet). User passwords: in the world, User Management, give every player and the Gamemaster a password; delete unused users. (Passwords are not stored in any repo; hand them out per player.)
 5. Per player: assign the figure (User Configuration > Character) after `/sl /figur Name: Geschichte` created it; the figure name must equal the sl name. Test `/sl Hallo`.
 6. GM before the first scene: lamp green, one test turn so the model is warm; print or open `~/Projects/sl-pnp/handout/Schicksalsschlag-Spieler.pdf` (players) and the full handout (GM).
 7. During play: bookings by GM only: `/kauf Name Ware Preis`, `/taler Name ±N[T|S|H]`, `/gegenstand Name +Text|-Text` (or button "Kauf"); `/szene` between scenes; "sl pausieren" if sl hangs.
-8. After the session: `~/Projects/sl-foundry/online.sh stop`; stop sl (Ctrl-C in its terminal or `pkill -f "sl web --lease --idle .* --port 8851"`).
-9. The user's old sl on 8787 (stopped for the test): `cd ~/Projects/sl-pnp && ./play.sh web --port 8787 --rules schicksal --rng jitter --name <session> --resume <session>` (or without `--resume` for a new one). Never start two models at once: one sl instance at a time on the GPU.
+8. After the session: `~/Projects/sl-foundry/online.sh stop`; stop sl (Ctrl-C in its terminal or `pkill -f "sl web --lease --idle .* --port 8787"`).
+9. Never start two models at once: one sl instance at a time on the GPU.
 
 ## Known gaps
 - Initiative, opposed rolls (use `/rollresult` / two Probe cards, GM compares), group targets; NPC LP default 6; `/rast` also heals LP (+1/+3, not in the spec).
