@@ -1,0 +1,1053 @@
+{
+ "version": 1,
+ "doc": "notes/RULES-gegenstaende.md. Einzige Quelle fuer PDF (handout/build.py), handout/items_roll.py und die spaetere Engine (/item, /haendler). Preise als ganze Heller (preis_h). 1 Taler = 2 Schilling = 4 Heller; 10 Taler = 40 Heller = 1 Budgetpunkt. Alle Bereiche [von,bis] sind inklusiv.",
+ "preis_regel": "Gewöhnliche, gut gearbeitete und Plunder-Stücke: preis_h = basis_h * mult(praegung) (Plunder 0,25; normal 1; gut 1,5), Seltenheit zählt nicht. Wendung: preis_h = basis_h * mult(seltenheit) (so angeboten). Magisch/gesegnet: preis_h = seltenheit.magie_h + basis_h; verflucht: die Hälfte davon. Ab 40 H (10 T) auf 20 H (5 T) runden ((p+10)//20*20), darunter ganze Heller, mindestens 1 H. Budgetpunkte: unter 40 H = 0 (Kleinkram, in Taler zahlen), sonst aufgerundet (preis_h / 40).",
+ "art_d20": "Kategorie: d20 gegen kategorien[].d20; Gegenstand: d10 gegen kategorien[].items (Reihenfolge = Wurf 1..10).",
+ "seltenheit": [
+  {
+   "id": "gewoehnlich",
+   "name": "gewöhnlich",
+   "d100": [
+    1,
+    60
+   ],
+   "mult": 1,
+   "wirkungswuerfel": null,
+   "wirkung_plus": null
+  },
+  {
+   "id": "ungewoehnlich",
+   "name": "ungewöhnlich",
+   "d100": [
+    61,
+    85
+   ],
+   "mult": 2,
+   "wirkungswuerfel": 6,
+   "wirkung_plus": 0,
+   "magie_h": 1000
+  },
+  {
+   "id": "selten",
+   "name": "selten",
+   "d100": [
+    86,
+    95
+   ],
+   "mult": 5,
+   "wirkungswuerfel": 6,
+   "wirkung_plus": 2,
+   "magie_h": 2000
+  },
+  {
+   "id": "sehr_selten",
+   "name": "sehr selten",
+   "d100": [
+    96,
+    99
+   ],
+   "mult": 10,
+   "wirkungswuerfel": 6,
+   "wirkung_plus": 4,
+   "magie_h": 4000
+  },
+  {
+   "id": "legendaer",
+   "name": "legendär",
+   "d100": [
+    100,
+    100
+   ],
+   "mult": 20,
+   "wirkungswuerfel": 6,
+   "wirkung_plus": 6,
+   "magie_h": 8000
+  }
+ ],
+ "praegung": [
+  {
+   "id": "plunder",
+   "name": "Plunder",
+   "mult": 0.25,
+   "text": "beschädigt oder minderwertig: Schaden/Rüstung −1 (nicht unter 0), Werkzeug und Tränke wirken halb (−10 bzw. halbe Heilung), zerbricht bei kritischem Misserfolg."
+  },
+  {
+   "id": "normal",
+   "name": "normal",
+   "mult": 1,
+   "text": "ganz gewöhnlich, nichts Besonderes."
+  },
+  {
+   "id": "gut",
+   "name": "gut gearbeitet",
+   "mult": 1.5,
+   "text": "Handwerkskunst, siehe Spalte „gut“ der Kategorie."
+  },
+  {
+   "id": "magisch",
+   "name": "magisch",
+   "mult": null,
+   "text": "trägt Magie: würfle die Wirkung (Tabelle magisch).",
+   "preis": "Stufenpreis + Basis"
+  },
+  {
+   "id": "gesegnet",
+   "name": "gesegnet",
+   "mult": null,
+   "text": "trägt einen Segen: würfle die Wirkung (Tabelle gesegnet).",
+   "preis": "Stufenpreis + Basis"
+  },
+  {
+   "id": "verflucht",
+   "name": "verflucht",
+   "mult": null,
+   "text": "magisch (Tabelle magisch, immer ein Vorteil) und verflucht (Tabelle Fluch, nur Spielleitung); der Fluch ist unsichtbar, darum nur der halbe Preis.",
+   "preis": "halber Stufenpreis + Basis"
+  },
+  {
+   "id": "wendung",
+   "name": "Wendung",
+   "mult": 1,
+   "text": "trägt ein verborgenes Geheimnis (Tabelle Wendung, nur Spielleitung); Preis wie die angebotene Seltenheit (Basis × Seltenheit)."
+  }
+ ],
+ "praegung_d20": {
+  "doc": "Je Seltenheit eine Spalte: so viele von 20 Wuerfelaugen. Lesereihenfolge der Zeilen = Reihenfolge der Bereiche.",
+  "reihenfolge": [
+   "plunder",
+   "normal",
+   "gut",
+   "magisch",
+   "gesegnet",
+   "verflucht",
+   "wendung"
+  ],
+  "anzahl": {
+   "gewoehnlich": [
+    2,
+    13,
+    4,
+    0,
+    0,
+    0,
+    1
+   ],
+   "ungewoehnlich": [
+    0,
+    9,
+    6,
+    2,
+    1,
+    1,
+    1
+   ],
+   "selten": [
+    0,
+    4,
+    3,
+    6,
+    3,
+    3,
+    1
+   ],
+   "sehr_selten": [
+    0,
+    2,
+    1,
+    5,
+    4,
+    4,
+    4
+   ],
+   "legendaer": [
+    0,
+    0,
+    0,
+    5,
+    5,
+    5,
+    5
+   ]
+  }
+ },
+ "kategorien": [
+  {
+   "id": "waffe",
+   "name": "Waffe",
+   "d20": [
+    1,
+    3
+   ],
+   "verbrauch": false,
+   "gut": "kritischer Erfolg mit ihr: +1 Schaden.",
+   "items": [
+    {
+     "name": "Schlagring / Faustriemen",
+     "schaden": 2,
+     "preis_h": 40,
+     "effekt": "versteckbar"
+    },
+    {
+     "name": "Messer / Dolch",
+     "schaden": 2,
+     "preis_h": 80
+    },
+    {
+     "name": "Knüppel / Keule",
+     "schaden": 2,
+     "preis_h": 80
+    },
+    {
+     "name": "Wurfmesser (Satz)",
+     "schaden": 2,
+     "preis_h": 80
+    },
+    {
+     "name": "Speer",
+     "schaden": 3,
+     "preis_h": 160
+    },
+    {
+     "name": "Schwert",
+     "schaden": 3,
+     "preis_h": 160
+    },
+    {
+     "name": "Axt / Streitbeil",
+     "schaden": 3,
+     "preis_h": 160
+    },
+    {
+     "name": "Bogen",
+     "schaden": 3,
+     "preis_h": 160
+    },
+    {
+     "name": "Armbrust",
+     "schaden": 3,
+     "preis_h": 160
+    },
+    {
+     "name": "Feuerwaffe (Pistole / Arkebuse)",
+     "schaden": 4,
+     "preis_h": 240
+    }
+   ]
+  },
+  {
+   "id": "ruestung",
+   "name": "Rüstung / Schild",
+   "d20": [
+    4,
+    5
+   ],
+   "verbrauch": false,
+   "gut": "sitzt perfekt: +10 auf Proben, bei denen Beweglichkeit in der Rüstung zählt (Klettern, Schleichen, Ausweichen).",
+   "items": [
+    {
+     "name": "Lederwams",
+     "ruestung": 1,
+     "preis_h": 80
+    },
+    {
+     "name": "Gepolsterter Waffenrock",
+     "ruestung": 1,
+     "preis_h": 80
+    },
+    {
+     "name": "Beschlagenes Leder",
+     "ruestung": 1,
+     "preis_h": 80
+    },
+    {
+     "name": "Kettenhemd",
+     "ruestung": 2,
+     "preis_h": 160
+    },
+    {
+     "name": "Schuppenpanzer",
+     "ruestung": 2,
+     "preis_h": 160
+    },
+    {
+     "name": "Holzschild",
+     "ruestung": 0,
+     "effekt": "+10 auf die Verteidigung (vergleichende Kampf-Probe)",
+     "preis_h": 160
+    },
+    {
+     "name": "Helm",
+     "ruestung": 0,
+     "effekt": "+1 Rüstung nur gegen Schuss und Wurf",
+     "preis_h": 40
+    },
+    {
+     "name": "Plattenpanzer",
+     "ruestung": 3,
+     "preis_h": 240
+    },
+    {
+     "name": "Plattenharnisch (Halbrüstung)",
+     "ruestung": 3,
+     "preis_h": 240
+    },
+    {
+     "name": "Brigantine (genietete Platten)",
+     "ruestung": 3,
+     "preis_h": 240
+    }
+   ]
+  },
+  {
+   "id": "werkzeug",
+   "name": "Werkzeug",
+   "d20": [
+    6,
+    8
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Proben, bei denen es hilft.",
+   "items": [
+    {
+     "name": "Seil (20 Schritt)",
+     "preis_h": 12
+    },
+    {
+     "name": "Dietriche",
+     "effekt": "+10 auf Schlösser öffnen",
+     "preis_h": 60
+    },
+    {
+     "name": "Laterne mit Öl",
+     "preis_h": 32
+    },
+    {
+     "name": "Heilerbeutel",
+     "effekt": "+10 auf Heilen (Wissen)",
+     "preis_h": 80
+    },
+    {
+     "name": "Handwerkszeug (Satz)",
+     "effekt": "+10 auf Handwerk",
+     "preis_h": 60
+    },
+    {
+     "name": "Enterhaken und Kletterhaken",
+     "effekt": "+10 auf Klettern",
+     "preis_h": 32
+    },
+    {
+     "name": "Zelt und Decken",
+     "preis_h": 80
+    },
+    {
+     "name": "Fernrohr",
+     "effekt": "+10 auf Wahrnehmung auf Distanz",
+     "preis_h": 240
+    },
+    {
+     "name": "Alchemistenset",
+     "effekt": "+10 auf Tränke und Gifte",
+     "preis_h": 160
+    },
+    {
+     "name": "Schloss mit Schlüssel",
+     "preis_h": 48
+    }
+   ]
+  },
+  {
+   "id": "trank",
+   "name": "Trank / Tinktur",
+   "d20": [
+    9,
+    12
+   ],
+   "verbrauch": true,
+   "gut": "wirkt stärker: Heilung +1 LP, Bonus +10 wird +20.",
+   "items": [
+    {
+     "name": "Kräuterumschlag",
+     "effekt": "heilt 1 LP",
+     "preis_h": 8
+    },
+    {
+     "name": "Wundsalbe",
+     "effekt": "heilt 2 LP (nur bei Rast)",
+     "preis_h": 20
+    },
+    {
+     "name": "Mutwasser",
+     "effekt": "+10 gegen Furcht und Schmerz eine Szene",
+     "preis_h": 20
+    },
+    {
+     "name": "Gegengift",
+     "effekt": "beendet eine Vergiftung",
+     "preis_h": 40
+    },
+    {
+     "name": "Klingengift",
+     "effekt": "nächster Treffer +1 Schaden und Vergiftung",
+     "preis_h": 80
+    },
+    {
+     "name": "Schlaftrunk",
+     "effekt": "tiefer Schlaf für mehrere Stunden (Wissen-Probe schwer, sonst wach)",
+     "preis_h": 80
+    },
+    {
+     "name": "Nachtsicht-Tropfen",
+     "effekt": "sieht im Dunkeln eine Szene lang",
+     "preis_h": 100
+    },
+    {
+     "name": "Stärkungstrank",
+     "effekt": "+10 auf Kampf eine Szene lang",
+     "preis_h": 120
+    },
+    {
+     "name": "Heiltrank",
+     "effekt": "heilt 4 LP sofort, auch im Kampf",
+     "preis_h": 120
+    },
+    {
+     "name": "Schicksalstropfen",
+     "effekt": "+1 SP (nicht über das Maximum)",
+     "min": "ungewoehnlich",
+     "preis_h": 160
+    }
+   ]
+  },
+  {
+   "id": "kleidung",
+   "name": "Kleidung",
+   "d20": [
+    13,
+    13
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Sozial beim ersten Auftritt vor Fremden.",
+   "items": [
+    {
+     "name": "Reisemantel",
+     "preis_h": 60
+    },
+    {
+     "name": "Pelzumhang",
+     "preis_h": 120
+    },
+    {
+     "name": "Stiefel",
+     "preis_h": 40
+    },
+    {
+     "name": "Handschuhe",
+     "preis_h": 32
+    },
+    {
+     "name": "Festgewand",
+     "preis_h": 160
+    },
+    {
+     "name": "Priesterrobe",
+     "preis_h": 100
+    },
+    {
+     "name": "Gauklertracht",
+     "preis_h": 80
+    },
+    {
+     "name": "Kapuzenumhang",
+     "preis_h": 60
+    },
+    {
+     "name": "Uniformrock (Wache, Zunft)",
+     "preis_h": 120
+    },
+    {
+     "name": "Trauerkleidung",
+     "preis_h": 60
+    }
+   ]
+  },
+  {
+   "id": "schmuck",
+   "name": "Schmuck",
+   "d20": [
+    14,
+    15
+   ],
+   "verbrauch": false,
+   "gut": "+10 auf Sozial beim ersten Auftritt vor Fremden.",
+   "items": [
+    {
+     "name": "Kupferring",
+     "preis_h": 4
+    },
+    {
+     "name": "Amulett aus Holz oder Knochen",
+     "preis_h": 6
+    },
+    {
+     "name": "Ohrring",
+     "preis_h": 20
+    },
+    {
+     "name": "Brosche",
+     "preis_h": 100
+    },
+    {
+     "name": "Armreif",
+     "preis_h": 120
+    },
+    {
+     "name": "Silberkette",
+     "preis_h": 160
+    },
+    {
+     "name": "Siegelring",
+     "preis_h": 240
+    },
+    {
+     "name": "Goldring",
+     "preis_h": 320
+    },
+    {
+     "name": "Edelsteinanhänger",
+     "preis_h": 480
+    },
+    {
+     "name": "Diadem",
+     "preis_h": 800
+    }
+   ]
+  },
+  {
+   "id": "schrift",
+   "name": "Schriftstück",
+   "d20": [
+    16,
+    16
+   ],
+   "verbrauch": false,
+   "gut": "echt und lesbar: +10 auf Wissen beim Auswerten.",
+   "items": [
+    {
+     "name": "Brief",
+     "preis_h": 2
+    },
+    {
+     "name": "Steckbrief",
+     "preis_h": 1
+    },
+    {
+     "name": "Gebetbuch",
+     "preis_h": 60
+    },
+    {
+     "name": "Landkarte",
+     "preis_h": 80
+    },
+    {
+     "name": "Rezeptbuch",
+     "preis_h": 80
+    },
+    {
+     "name": "Handelsbrief / Urkunde",
+     "preis_h": 100
+    },
+    {
+     "name": "Chronik",
+     "preis_h": 120
+    },
+    {
+     "name": "Schatzkarte",
+     "preis_h": 160
+    },
+    {
+     "name": "Schriftrolle mit Formel",
+     "preis_h": 200,
+     "effekt": "Aufhänger für die Spielleitung (Geheimnis, Hinweis), keine Zauberregel"
+    },
+    {
+     "name": "Verbotener Foliant",
+     "preis_h": 240,
+     "effekt": "Aufhänger für die Spielleitung (Geheimnis, Hinweis), keine Zauberregel"
+    }
+   ]
+  },
+  {
+   "id": "kuriosum",
+   "name": "Kuriosum",
+   "d20": [
+    17,
+    18
+   ],
+   "verbrauch": false,
+   "gut": "echtes Sammlerstück: Preis hoch, sonst nur Gesprächsstoff (+10 Sozial bei Sammlern).",
+   "items": [
+    {
+     "name": "Knochenwürfel",
+     "preis_h": 4
+    },
+    {
+     "name": "Puppe",
+     "preis_h": 4
+    },
+    {
+     "name": "Glücksbringer",
+     "preis_h": 8
+    },
+    {
+     "name": "Totenschädel",
+     "preis_h": 40
+    },
+    {
+     "name": "Spiegelscherbe",
+     "preis_h": 20
+    },
+    {
+     "name": "Ausgestopfter Rabe",
+     "preis_h": 60
+    },
+    {
+     "name": "Zahn eines Ungeheuers",
+     "preis_h": 80
+    },
+    {
+     "name": "Kristall",
+     "preis_h": 120
+    },
+    {
+     "name": "Kompass",
+     "preis_h": 140
+    },
+    {
+     "name": "Spieluhr",
+     "preis_h": 160
+    }
+   ]
+  },
+  {
+   "id": "transport",
+   "name": "Reittier / Transport",
+   "d20": [
+    19,
+    20
+   ],
+   "verbrauch": false,
+   "gut": "gesund und gut abgerichtet: +10 auf Proben mit dem Tier oder Gefährt.",
+   "items": [
+    {
+     "name": "Brieftaube",
+     "preis_h": 40
+    },
+    {
+     "name": "Jagdhund",
+     "preis_h": 120
+    },
+    {
+     "name": "Esel",
+     "preis_h": 160
+    },
+    {
+     "name": "Sattel und Zaumzeug",
+     "preis_h": 100
+    },
+    {
+     "name": "Packpony",
+     "preis_h": 200
+    },
+    {
+     "name": "Karren",
+     "preis_h": 200
+    },
+    {
+     "name": "Maultier",
+     "preis_h": 240
+    },
+    {
+     "name": "Ruderboot",
+     "preis_h": 240
+    },
+    {
+     "name": "Reitpferd",
+     "preis_h": 320
+    },
+    {
+     "name": "Streitross",
+     "preis_h": 800
+    }
+   ]
+  }
+ ],
+ "wirkung": {
+  "doc": "Wirkungswurf = W6 + wirkung_plus der Seltenheit (ungewoehnlich 1-6, selten 3-8, sehr selten 5-10, legendaer 7-12). Kampf-Ergebnisse (+1) nur fuer Waffe (Schaden) und Ruestung/Schild; sonst +20. Grenzen: Schaden 5, Ruestung 3 (darueber stattdessen +10 auf die Verteidigung). Verbrauchsgueter (Tranke): magisch/gesegnet = Wirkung doppelt (Heilung hoechstens 6 LP); verflucht = Wirkung plus Nebenwirkung aus der Fluchtabelle bis zur naechsten Nachtruhe; Wendung zaehlt als gut.",
+  "magisch": [
+   {
+    "von": 1,
+    "bis": 3,
+    "text": "+10 auf Proben, bei denen der Gegenstand hilft (Spielleitung benennt die Situation); stapelt mit „gut gearbeitet“."
+   },
+   {
+    "von": 4,
+    "bis": 4,
+    "text": "Kleiner Zauber: ein Trick pro Szene ohne Probe (leuchtet, bleibt trocken, öffnet sich nur für dich)."
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Gefahrensinn: einmal pro Sitzung verschiebst du die Orakel-Chancen eine Stufe in deinem Sinn (wie 1 SP)."
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Schutz: ein kritischer Misserfolg mit dem Gegenstand zählt nur als gewöhnlicher Misserfolg."
+   },
+   {
+    "von": 7,
+    "bis": 8,
+    "text": "Kraft: Waffe +1 Schaden, Rüstung/Schild +1 Rüstung, sonst +20 in der passenden Situation."
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Zweite Chance: einmal pro Sitzung eine Probe mit dem Gegenstand kostenlos neu würfeln."
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Heilung: einmal pro Sitzung heilt Berührung 2 LP."
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Doppelt: würfle zweimal (Wurf 11 oder 12 zählt dabei als 10)."
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Großmacht: Kraft (+1 Schaden/Rüstung oder +20) und zusätzlich +10 in der passenden Situation."
+   }
+  ],
+  "gesegnet": [
+   {
+    "von": 1,
+    "bis": 2,
+    "text": "+10 auf Proben gegen das Böse (Untote, Dämonen, Kultisten)."
+   },
+   {
+    "von": 3,
+    "bis": 4,
+    "text": "Segen: einmal pro Sitzung +1 SP für den Träger (nicht über das Maximum); Nachtruhe mit ihm gibt zudem +1 SP."
+   },
+   {
+    "von": 5,
+    "bis": 5,
+    "text": "Warnung: einmal pro Sitzung verschiebst du die Orakel-Chancen eine Stufe in deinem Sinn (wie 1 SP)."
+   },
+   {
+    "von": 6,
+    "bis": 6,
+    "text": "Heilung: einmal pro Sitzung heilt Berührung 2 LP."
+   },
+   {
+    "von": 7,
+    "bis": 8,
+    "text": "Heilige Kraft: gegen das Böse Waffe +1 Schaden, Rüstung +1 Rüstung, sonst +20."
+   },
+   {
+    "von": 9,
+    "bis": 9,
+    "text": "Bewahrung: einmal pro Sitzung sinkt der Schaden eines Treffers auf 1."
+   },
+   {
+    "von": 10,
+    "bis": 10,
+    "text": "Schicksalsband: einmal pro Sitzung eine Probe ohne SP neu würfeln."
+   },
+   {
+    "von": 11,
+    "bis": 11,
+    "text": "Gemeindesegen: einmal pro Sitzung erhalten alle Anwesenden +1 SP."
+   },
+   {
+    "von": 12,
+    "bis": 12,
+    "text": "Heilig: Segen (+1 SP einmal pro Sitzung) und Heilige Kraft, auch gegen Nicht-Böse."
+   }
+  ],
+  "fluch": {
+   "doc": "Nur fuer verflucht: Vorteil = Wurf auf Tabelle magisch, Fluch = W6 (ungewoehnlich, selten) oder W8 (sehr selten, legendaer). Jeder verfluchte Gegenstand klebt: er laesst sich nicht ablegen oder verkaufen, bis der Fluch geloest ist (Weihe, Segen, einen Handlungsstrang dazu abschliessen). Verborgen bis zur Wissen-Probe schwer oder bis er zuschlaegt.",
+   "wuerfel": {
+    "ungewoehnlich": 6,
+    "selten": 6,
+    "sehr_selten": 8,
+    "legendaer": 8
+   },
+   "tabelle": [
+    {
+     "wurf": 1,
+     "text": "Unbehagen: −10 auf Sozial bei Fremden, solange er getragen oder offen geführt wird."
+    },
+    {
+     "wurf": 2,
+     "text": "Albträume: Nachtruhe gibt 1 SP weniger."
+    },
+    {
+     "wurf": 3,
+     "text": "Hunger: kostet 1 SP je Sitzung, sonst ruht seine Wirkung."
+    },
+    {
+     "wurf": 4,
+     "text": "Flüstern: die Spielleitung darf einmal pro Sitzung −10 auf eine Probe des Trägers verhängen."
+    },
+    {
+     "wurf": 5,
+     "text": "Lockruf: Feinde und Untote spüren den Träger, für Zufallsereignisse zählt die Spannung 1 höher."
+    },
+    {
+     "wurf": 6,
+     "text": "Zehrt: maximale LP −1, solange er getragen wird."
+    },
+    {
+     "wurf": 7,
+     "text": "Verrat: einmal pro Sitzung zählt eine Probe mit ihm als kritischer Misserfolg (Spielleitung entscheidet)."
+    },
+    {
+     "wurf": 8,
+     "text": "Pakt: er gehört einem anderen Wesen, das Dienst verlangt (neuer Handlungsstrang)."
+    }
+   ]
+  },
+  "wendung": {
+   "doc": "Nur Spielleitung. W8.",
+   "tabelle": [
+    {
+     "wurf": 1,
+     "text": "Fälschung: in Wahrheit Plunder, der Preis ist Betrug."
+    },
+    {
+     "wurf": 2,
+     "text": "Gestohlen: der rechtmäßige Besitzer oder die Wache sucht ihn."
+    },
+    {
+     "wurf": 3,
+     "text": "Berühmter Vorbesitzer: Kenner erkennen ihn (+10 Sozial bei ihnen), alte Feinde auch."
+    },
+    {
+     "wurf": 4,
+     "text": "Geheimfach oder eingeritzte Botschaft: ein Hinweis auf einen Ort oder Schatz."
+    },
+    {
+     "wurf": 5,
+     "text": "Erwacht: er hat einen Willen und will etwas (Rache, Ort, Person)."
+    },
+    {
+     "wurf": 6,
+     "text": "Schnäppchen: trägt zusätzlich eine Wirkung aus Tabelle magisch (W6); der Händler weiß es nicht."
+    },
+    {
+     "wurf": 7,
+     "text": "Erbstück: eine Sippe oder ein Haus will ihn zurück."
+    },
+    {
+     "wurf": 8,
+     "text": "Beweisstück: Tatwaffe oder Beute eines ungelösten Verbrechens."
+    }
+   ]
+  }
+ },
+ "haendler": {
+  "doc": "Stufe 1..5. verfuegbar = Chance in Prozent, dass er einen bestimmten (gefragten) Gegenstand dieser Seltenheit hat (d100 <= Wert). inventar = Seltenheit je Posten, Prozent (Summe 100), 'plunder' = gewoehnlich mit Praegung Plunder. anzahl = d6 + stufe Posten. Spezialgebiet: Posten der Kategorie zaehlen mit Stufe+1; d6 1-4 eines Postens kommt aus dem Spezialgebiet, sonst Art-Wurf d20. Kontext verschiebt die Stufe aller Posten. Effektive Stufe auf 1..5 begrenzen.",
+  "anzahl": "d6 + stufe",
+  "spezial_stufe": 1,
+  "spezial_d6": [
+   1,
+   4
+  ],
+  "stufen": [
+   {
+    "stufe": 1,
+    "beispiel": "Straßenbrauer, Hausierer",
+    "verfuegbar": {
+     "gewoehnlich": 70,
+     "ungewoehnlich": 10,
+     "selten": 1,
+     "sehr_selten": 0,
+     "legendaer": 0
+    },
+    "inventar": {
+     "plunder": 25,
+     "gewoehnlich": 65,
+     "ungewoehnlich": 9,
+     "selten": 1,
+     "sehr_selten": 0,
+     "legendaer": 0
+    }
+   },
+   {
+    "stufe": 2,
+    "beispiel": "Dorfkrämer, Wanderhändler",
+    "verfuegbar": {
+     "gewoehnlich": 90,
+     "ungewoehnlich": 30,
+     "selten": 5,
+     "sehr_selten": 0,
+     "legendaer": 0
+    },
+    "inventar": {
+     "plunder": 10,
+     "gewoehnlich": 70,
+     "ungewoehnlich": 17,
+     "selten": 3,
+     "sehr_selten": 0,
+     "legendaer": 0
+    }
+   },
+   {
+    "stufe": 3,
+    "beispiel": "Stadthändler, Waffenschmied",
+    "verfuegbar": {
+     "gewoehnlich": 95,
+     "ungewoehnlich": 55,
+     "selten": 15,
+     "sehr_selten": 2,
+     "legendaer": 0
+    },
+    "inventar": {
+     "plunder": 3,
+     "gewoehnlich": 62,
+     "ungewoehnlich": 27,
+     "selten": 7,
+     "sehr_selten": 1,
+     "legendaer": 0
+    }
+   },
+   {
+    "stufe": 4,
+    "beispiel": "Meister (Alchemist, Rüstmeister), Hafenkontor",
+    "verfuegbar": {
+     "gewoehnlich": 95,
+     "ungewoehnlich": 75,
+     "selten": 35,
+     "sehr_selten": 10,
+     "legendaer": 1
+    },
+    "inventar": {
+     "plunder": 0,
+     "gewoehnlich": 45,
+     "ungewoehnlich": 33,
+     "selten": 16,
+     "sehr_selten": 5,
+     "legendaer": 1
+    }
+   },
+   {
+    "stufe": 5,
+    "beispiel": "Hofmagier, Schatzkammer, Gildenhaus",
+    "verfuegbar": {
+     "gewoehnlich": 95,
+     "ungewoehnlich": 90,
+     "selten": 60,
+     "sehr_selten": 30,
+     "legendaer": 10
+    },
+    "inventar": {
+     "plunder": 0,
+     "gewoehnlich": 25,
+     "ungewoehnlich": 35,
+     "selten": 25,
+     "sehr_selten": 12,
+     "legendaer": 3
+    }
+   }
+  ],
+  "kontext": [
+   {
+    "id": "grossstadt",
+    "name": "Großstadt, Hafen, Markttag, Messe",
+    "shift": 1
+   },
+   {
+    "id": "normal",
+    "name": "Dorf, Straße, gewöhnlicher Tag",
+    "shift": 0
+   },
+   {
+    "id": "wildnis",
+    "name": "Wildnis, Grenzland, Krieg, Belagerung, Seuche",
+    "shift": -1
+   }
+  ]
+ },
+ "muenzen": {
+  "doc": "Rechnung intern nur in Heller (ganze Zahl). Anzeige T S H: 15 H = 3 T 1 S 1 H (3¾ Taler). Nullstellen weglassen.",
+  "heller_pro_taler": 4,
+  "heller_pro_schilling": 2,
+  "heller_pro_punkt": 40
+ },
+ "alltag": [
+  {
+   "name": "Laib Brot, Krug Bier",
+   "preis_h": 1
+  },
+  {
+   "name": "Warme Mahlzeit, Bett im Schlafsaal",
+   "preis_h": 2
+  },
+  {
+   "name": "Einzelzimmer mit Frühstück",
+   "preis_h": 4
+  },
+  {
+   "name": "Wegzehrung (3 Tage)",
+   "preis_h": 6
+  },
+  {
+   "name": "Dörrfleisch, Tabak, Schnaps",
+   "preis_h": 4
+  },
+  {
+   "name": "Fackel, Kerze, Zunder",
+   "preis_h": 1
+  },
+  {
+   "name": "Tagelohn (Handlanger, Magd)",
+   "preis_h": 4
+  },
+  {
+   "name": "Tagelohn (Geselle, Söldner)",
+   "preis_h": 8
+  },
+  {
+   "name": "Überfahrt, Fährmann",
+   "preis_h": 2
+  },
+  {
+   "name": "Wirtshaus-Gelage (ganze Runde)",
+   "preis_h": 16
+  },
+  {
+   "name": "Festmahl",
+   "preis_h": 12
+  },
+  {
+   "name": "Fass Bier",
+   "preis_h": 24
+  },
+  {
+   "name": "Heilkundiger versorgt eine Verletzung (heilt 1 LP)",
+   "preis_h": 8
+  },
+  {
+   "name": "Bestechung Torwache (klein)",
+   "preis_h": 8
+  }
+ ],
+ "regeln": {
+  "vergiftet": "Vergiftet: −10 auf alle Proben und 1 LP Verlust je Szene, bis Gegengift oder Nachtruhe.",
+  "kleinkram": "Posten unter 10 T kosten 0 Budgetpunkte, werden aber in Taler bezahlt."
+ }
+}

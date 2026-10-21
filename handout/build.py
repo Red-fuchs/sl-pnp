@@ -50,7 +50,7 @@ add = P.append
 # ================= 1 QUICKSTART =================
 add(f'''<h1 class="first">Schicksalsschlag</h1>
 <div class="sub">Spieler- und Spielleiter-Handout für das Fernrollenspiel. Dunkle Fantasy, d100, ein Orakel für alles, was nicht in deiner Hand liegt. Dieses Heft ist auch der <b>Notfallplan</b>, falls der KI-Spielleiter (sl) oder die Technik ausfällt: Alle Tabellen sind mit zwei Würfeln (d100 = zwei d10) oder einem Online-Würfler spielbar.</div>
-<div class="toc"><div>1 Schnellstart</div><div>2 Figur erschaffen</div><div>3 Die Probe (d100)</div><div>4 Kampf</div><div>5 Schicksalspunkte</div><div>6 Das Orakel ohne KI</div><div>7 Einfalls-Werkzeugkasten</div><div>8 Notfall: Spielleitung von Hand</div><div>9 Charakterbogen</div><div>10 Spickzettel aller Modifikatoren</div></div>
+<div class="toc"><div>1 Schnellstart</div><div>2 Figur erschaffen</div><div>3 Die Probe (d100)</div><div>4 Kampf</div><div>5 Schicksalspunkte</div><div>6 Das Orakel ohne KI</div><div>7 Einfalls-Werkzeugkasten</div><div>8 Notfall: Spielleitung von Hand</div><div>9 Charakterbogen</div><div>10 Spickzettel aller Modifikatoren</div><div>11 Gegenstände und Händler</div></div>
 <h2>1 Schnellstart</h2>
 <p><b>Würfeln:</b> Alles läuft über einen <b>d100</b>: zwei d10 (erst Zehner, dann Einer; 0 und 0 zählt als 100). Du willst <b>niedrig</b> würfeln: Ergebnis <b>kleiner oder gleich deiner Zielzahl</b> heißt Erfolg.</p>
 <h3>So läuft ein Zug</h3>
@@ -338,8 +338,12 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 <div class="grid"><div>
 <b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). Wunden 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
 <div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2/4/6 Punkte = Gegenstand (Vorschlag, Stufen in Kap. 2) · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
-<h3>Richtwerte Preise (Vorschlag der Spielleitung, nicht Kernregel)</h3>
-{table(['Gut','Taler'],[['Mahlzeit, Bett im Schlafsaal','1–2'],['Messer, Knüppel, Seil','3–5'],['Lederwams, Bogen','15–25'],['Schwert, Axt, Kettenhemd','40–80'],['Plattenpanzer, Feuerwaffe','150–300']],'small')}</div>''')
+<h3>Preise (Vorschlag, Kap. 11)</h3>
+<p style="margin-bottom:0">1 Taler = 2 Schilling = 4 Heller. Messer, Knüppel, Lederrüstung 20 T · Schwert, Axt, Bogen, Kette, Schild 40 T · Platte, Feuerwaffe 60 T. Mahlzeit 2 H, Tagelohn 1 T. 10 Taler = 1 Budgetpunkt.</p></div>''')
+
+# ================= 11 GEGENSTAENDE =================
+from items_pages import pages as item_pages, example as item_example
+for x in item_pages(item_example()): add(x)
 
 # ================= BUILD =================
 doc = '<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Schicksalsschlag – Handout</title><link rel="stylesheet" href="style.css"></head><body>' + '\n'.join(P) + '</body></html>'
