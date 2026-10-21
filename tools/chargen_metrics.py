@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """usage: chargen_metrics.py OUT_DIR  -> prints markdown tables (per mode summary, per persona) and writes OUT_DIR/metrics.json"""
-import json, glob, os, sys, statistics as st
+import json, glob, os, sys, re, statistics as st
+MAGIC = ['zauber','magie','magisch','unsterblich','drache','legendär','göttlich','gedankenles','unverwundbar','gott ','elbisch','heilig','verflucht','fliegt','regeneration']
+GEARNOUN = ['schwert','klinge','panzer','rüstung','harnisch','arkebuse','büchse','pistole','streitross','pferd','waffe','schatz','truhe']
 out = sys.argv[1]
 WD = [("pistole",4),("gewehr",4),("arkebuse",4),("büchse",4),("schwert",3),("axt",3),("bogen",3),("armbrust",3),("säbel",3),("speer",3),("beil",3),("messer",2),("dolch",2),("knüppel",2),("keule",2),("stock",2)]
 def wdmg(items):
@@ -32,17 +34,18 @@ for mode in ["a", "b", "c", "bc"]:
                  paid=sum(1 for t in neg if not t.get("farbe")), farbe=sum(1 for t in neg if t.get("farbe")), teurer=sum(1 for t in pos if t.get("teurer")),
                  best_pillar=bp, best_single=bp + (bon[0] if bon else 0), best_all=bp + allfit, dmg=wdmg(inv), armour=arm(inv),
                  spmax=s.get("spMax"), taler=s.get("taler"), gear=inv, sec=d["total_sec"], refusals=d["budget_refusals"], steps=len(d["steps"]))
+        r['magic'] = sum(any(k in (t['text'].lower()+' ') for k in MAGIC) for t in pos); r['geartrait'] = sum(any(k in t['text'].lower() for k in GEARNOUN) for t in pos)
         rows[(mode, P["id"])] = r
 json.dump([r for r in rows.values()], open(f"{out}/metrics.json", "w"), ensure_ascii=False, indent=1)
 def grp(mode, typ): return [r for (m, _), r in rows.items() if m == mode and (typ is None or r["type"] == typ)]
-print("| mode | n | mean power | power max | mean best_single | mean best_all | unerf. mean power | breaker mean power | gap breaker-unerf. | mean sec |")
-print("|---|---|---|---|---|---|---|---|---|---|")
+print("| mode | n | magic traits | gear-as-trait | mean power | power max | mean best_single | mean best_all | unerf. mean power | breaker mean power | gap breaker-unerf. | mean sec |")
+print("|---|---|---|---|---|---|---|---|---|---|---|---|")
 for m in ["a", "b", "c", "bc"]:
     g = grp(m, None)
     if not g: continue
     mean = lambda xs: round(st.mean(xs), 1) if xs else 0
     u = grp(m, "unerfahren"); b = grp(m, "breaker")
-    print(f"| {m} | {len(g)} | {mean([r['power'] for r in g])} | {max(r['power'] for r in g)} | {mean([r['best_single'] for r in g])} | {mean([r['best_all'] for r in g])} | {mean([r['power'] for r in u])} | {mean([r['power'] for r in b])} | {round(mean([r['power'] for r in b]) - mean([r['power'] for r in u]), 1)} | {mean([r['sec'] for r in g])} |")
+    print(f"| {m} | {len(g)} | {sum(r['magic'] for r in g)} | {sum(r['geartrait'] for r in g)} | {mean([r['power'] for r in g])} | {max(r['power'] for r in g)} | {mean([r['best_single'] for r in g])} | {mean([r['best_all'] for r in g])} | {mean([r['power'] for r in u])} | {mean([r['power'] for r in b])} | {round(mean([r['power'] for r in b]) - mean([r['power'] for r in u]), 1)} | {mean([r['sec'] for r in g])} |")
 print("\n| persona | type | " + " | ".join(f"{m}: P / pos+/neg- / best_all / gear" for m in ["a","b","c","bc"]) + " |")
 print("|---|---|" + "---|" * 4)
 ids = sorted({i for (_, i) in rows})
