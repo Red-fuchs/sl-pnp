@@ -72,6 +72,7 @@ public enum Gr {
   static let quoteSent = "[ ]?„" + Cls.rep(Cls.narr, 4) + "[.!?]“"
   /// 3-5 sentences, one of the first three is a quoted line
   public static let quotePattern = "(\(quoteSent)(\(sent)){2}|(\(sent))\(quoteSent)(\(sent))|(\(sent)){2}\(quoteSent))(\(sent)){0,2}"
+  public static var shortPatternPublic: String { shortPattern }
   static let shortPattern = "(\(sent))(\(sent)){0,2}"   // 1-3 sentences (self-questions)
   static func duSlot(_ names: [String]) -> G {   // the NAME is an enum of generated candidates (the 4B model kept evading with "dein Name ist dir unbekannt")
     .seq([names.isEmpty ? G.re(#"[A-ZÄÖÜ][a-zäöüß]{2,}"#) : GenGr.en(names), .s(" ("), .re(Cls.rep(Cls.paren, 3)), .s(")")])

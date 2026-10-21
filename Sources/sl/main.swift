@@ -67,6 +67,7 @@ if leased {
   try lm!.ensureLoaded()
   err(String(format: "geladen in %.1fs", lm!.loadS))
 }
+if let ip = opt["itemtest"] { try runItemTest(lm: lm!, inPath: ip, outPath: opt["out"] ?? "itemtest-out.jsonl", temp: Float(opt["temp"] ?? "0.8") ?? 0.8); exit(0) }
 let runner = Runner(lm: lm!, session: session, rng: rng)
 
 func show(_ o: Out) {
