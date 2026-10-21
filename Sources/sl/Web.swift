@@ -162,6 +162,28 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, j["delta"] is Int || j["set"] is Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker und delta|set"]) }
       guard let res = g.partyStore.wunden(speaker: sp, delta: j["delta"] as? Int, set: j["set"] as? Int) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }
       g.announceSheet(); json("200 OK", res)
+    case ("POST", "/taler"), ("POST", "/gegenstand"), ("POST", "/kauf"):      // GM bookkeeping; every success emits `sheet`
+      guard let j = bodyJSON(), let sp = j["speaker"] as? String, let g = runner.game else { return json("400 Bad Request", ["error": "speaker fehlt"]) }
+      guard g.isSchicksal else { return json("409 Conflict", ["error": "nur unter --rules schicksal"]) }
+      guard let i = g.pcIndex(sp, create: false) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }
+      func amount(_ k: String) -> Int? { if let h = j[k + "_h"] as? Int { return h }; if let s = j[k] as? String { return Geld.parse(s) }; return (j[k] as? Int).map { $0 * 4 } }
+      let r: (ok: Bool, msg: String)
+      switch path {
+      case "/taler":
+        if let d = j["delta_h"] as? Int { r = g.applyTaler(i, delta: d) }
+        else if let s = (j["betrag"] as? String)?.trimmingCharacters(in: .whitespaces), let f = s.first, f == "+" || f == "-", let h = Geld.parse(String(s.dropFirst())) { r = g.applyTaler(i, delta: f == "-" ? -h : h) }
+        else { return json("400 Bad Request", ["error": SR.taler_usage]) }
+      case "/gegenstand":
+        let add = j["add"] as? String, rem = j["remove"] as? String
+        guard (add == nil) != (rem == nil) else { return json("400 Bad Request", ["error": SR.gegenstand_usage]) }
+        r = g.applyGegenstand(i, add: add, remove: rem)
+      default:
+        guard let ware = j["ware"] as? String, let h = amount("preis") else { return json("400 Bad Request", ["error": SR.kauf_usage]) }
+        r = g.applyKauf(i, ware: ware, preis: h)
+      }
+      runner.sink(.info(r.msg))
+      let pc = g.partyStore.all[i]
+      json(r.ok ? "200 OK" : "409 Conflict", ["ok": r.ok, "message": r.msg, "name": pc.name, "heller": pc.heller, "taler": pc.taler, "geld": pc.geld, "inventar": pc.inventar] as [String: Any])
     case ("POST", "/sp"):
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, let d = j["delta"] as? Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker, delta"]) }
       guard let res = g.applySP(speaker: sp, delta: d, target: j["target"] as? String, mode: j["mode"] as? String) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }

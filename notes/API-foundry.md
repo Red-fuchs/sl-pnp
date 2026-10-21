@@ -34,6 +34,29 @@ Busy: SSE `info` "SL denkt noch" and the text is dropped (same as today).
 ## Story items
 `GET /state` and SSE `sheet`: each party member additionally has `items: [{name, level}]` (the ★ Story-Items among `inventar`; the secret is never sent).
 
+## GM purchase commands: /taler, /gegenstand, /kauf (pnp-22b)
+sl books purchases, loot and pay; the narrator does not change the sheet by itself. These commands are **GM only**: the bridge sends them from the GM browser (slash commands `/taler ...`, `/gegenstand ...`, `/kauf ...` typed by the GM, or the GM button "Kauf"); a player's `/sl /taler ...` is refused by the bridge whitelist ("nur für die Spielleitung"). sl itself trusts its loopback API like `/sp geben`. Only under `--rules schicksal`.
+
+**Currency.** 1 Taler (T) = 2 Schilling (S) = 4 Heller (H). The purse is stored in Heller (`Pc.heller`, optional in the save: older saves without it derive it from `taler` x 4; the old `taler` field stays as the whole-Taler mirror). Display "3 T 1 S 1 H" (zero parts omitted, empty purse "0 H"). Amount syntax: `N[T|S|H]`, several parts may follow each other (`1T 1S`, `3T1S1H`); no unit = Taler. Any direct write of `taler` (`/budget`, `/merkmal`, chargen) resets the Heller part, so budget Taler stay whole Taler.
+
+| Command | Effect |
+|---|---|
+| `/taler <Name> +N[T\|S\|H]` / `-N[...]` | purse plus/minus; `/taler Mirne -40`, `/taler Mirne +1S`. Refused (nothing changes) when the purse would go below 0. |
+| `/gegenstand <Name> +Text` / `-Text` | adds / removes an inventory entry (remove: exact name first, then a part of the name; a matching Story-Item star goes with it). Max 40 entries. |
+| `/kauf <Name> <Ware> <Preis>` | pays and adds the item in one step: `/kauf Mirne Seil 1S`. The price is the trailing amount (always give the unit). Refused ("kann sich ... nicht leisten", nothing booked, nothing queued) when the purse is too small. |
+
+`<Name>` is matched against figure names / speakers, longest name first (so "Mirne Aschenbach" works). Every success emits SSE `sheet` (Foundry syncs) and an `info` line (the chat card). `/kauf` additionally queues a hard fact for the next narration of any speaker: `[Fakt] Mirne kauft Seil für 1 S und hat danach noch 1 T 1 S. Erwähne den Kauf kurz.` (narrated with the next turn, not at once).
+
+**HTTP** (JSON, header `x-sl: 1`): `POST /taler {speaker, betrag:"-40"|"+1S"|"-1T 1S"}` (or `delta_h` in Heller); `POST /gegenstand {speaker, add:"Fackel"}` or `{speaker, remove:"Fackel"}`; `POST /kauf {speaker, ware, preis:"1S"}` (or `preis_h` in Heller). Reply `200 {ok:true, message, name, heller, taler, geld, inventar}`; `409 {ok:false, message}` when refused (cannot afford, full); `400 {error: usage}`; `404` unknown speaker; `409` outside `schicksal`. The `message` is also sent as `info`.
+
+`GET /state` and SSE `sheet`: each party member additionally has `heller` (Int) and `geld` (String "3 T 1 S 1 H"); `taler` stays (whole Taler, rounded down).
+
+### Sync direction (important)
+Sheet data flows **sl -> Foundry only** for Taler and gear. Foundry writes back to sl exactly two things: SP (`POST /sp`) and LP (`POST /wunden`). Consequences:
+- A manual edit of the Taler / Geld attribute or deletion of a gear item in Foundry is **not** pushed to sl. The bridge warns the GM ("bitte /taler, /gegenstand oder /kauf benutzen") and re-syncs, so the sl value overwrites the edit within about a second (at the latest at the next 30 s poll). Gear items the GM adds by hand in Foundry (no bridge flag) stay in Foundry but sl does not know them.
+- Recommended and consistent way: the GM uses the commands (or the "Kauf" button), sl books, `sheet` follows.
+- sl never pushes a stale value: every command changes the sl state first and emits `sheet` afterwards; Foundry applies the whole party snapshot in order.
+
 ## POST /regie
 `{ "text": String }` -> `202`. Hidden GM note, injected once into the next narration (never shown to players).
 

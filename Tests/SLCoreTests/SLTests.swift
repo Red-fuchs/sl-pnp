@@ -1744,3 +1744,49 @@ final class ProbeBrokerTests: XCTestCase {
     SR.resetScene(&pcs); XCTAssertFalse(pcs[0].ergebenUsed || pcs[1].ergebenUsed)
   }
 }
+
+final class GoodsTests: XCTestCase {
+  func testGeldFormatAndParse() {
+    XCTAssertEqual(Geld.fmt(15), "3 T 1 S 1 H"); XCTAssertEqual(Geld.fmt(0), "0 H"); XCTAssertEqual(Geld.fmt(4), "1 T"); XCTAssertEqual(Geld.fmt(2), "1 S"); XCTAssertEqual(Geld.fmt(1), "1 H"); XCTAssertEqual(Geld.fmt(-3), "0 H")
+    XCTAssertEqual(Geld.parse("40"), 160); XCTAssertEqual(Geld.parse("1S"), 2); XCTAssertEqual(Geld.parse("3H"), 3); XCTAssertEqual(Geld.parse("3 T 1 S 1 H"), 15); XCTAssertEqual(Geld.parse("1t2s"), 8)
+    XCTAssertNil(Geld.parse("")); XCTAssertNil(Geld.parse("abc")); XCTAssertNil(Geld.parse("-5")); XCTAssertNil(Geld.parse("1X"))
+    let w = Geld.wareUndPreis("Eisenschwert (stumpf) 3 T 1 S"); XCTAssertEqual(w?.ware, "Eisenschwert (stumpf)"); XCTAssertEqual(Geld.parse(w?.preis ?? ""), 14)
+  }
+  func testOldSaveWithoutHellerKeepsTaler() throws {
+    let old = #"{"speaker":"A","name":"A","hintergrund":"","pillars":{"kampf":40,"sozial":40,"wissen":40},"traits":[],"sp":5,"spMax":5,"wunden":10,"wundenMax":10,"inventar":[],"taler":7,"pendingSp":0,"pendingOracle":0,"mod":0}"#
+    var pc = try JSONDecoder().decode(Pc.self, from: Data(old.utf8))
+    XCTAssertEqual(pc.heller, 28); XCTAssertEqual(pc.geld, "7 T")
+    pc.heller = 31; XCTAssertEqual(pc.taler, 7); XCTAssertEqual(pc.geld, "7 T 1 S 1 H")
+    let back = try JSONDecoder().decode(Pc.self, from: JSONEncoder().encode(pc)); XCTAssertEqual(back.heller, 31); XCTAssertEqual(back, pc)
+    pc.taler = 2; XCTAssertEqual(pc.heller, 8, "a direct Taler write (budget) resets the fine balance")
+    XCTAssertEqual(pc.json["heller"] as? Int, 8); XCTAssertEqual(pc.json["geld"] as? String, "2 T"); XCTAssertEqual(pc.json["taler"] as? Int, 2)
+  }
+  func testCommandsParse() {
+    XCTAssertEqual(Cmd.parse("/taler Mirne -40"), .taler("Mirne -40")); XCTAssertEqual(Cmd.parse("/gegenstand Mirne +Seil"), .gegenstand("Mirne +Seil")); XCTAssertEqual(Cmd.parse("/kauf Mirne Seil 1S"), .kauf("Mirne Seil 1S"))
+  }
+  func testSplitNameLongestPrefix() {
+    var a = Pc(speaker: "Mirne"), b = Pc(speaker: "Mirne Aschenbach"); a.name = "Mirne"; b.name = "Mirne Aschenbach"
+    XCTAssertEqual(SR.splitName("Mirne Aschenbach -3", [a, b])?.i, 1); XCTAssertEqual(SR.splitName("Mirne Aschenbach -3", [a, b])?.rest, "-3")
+    XCTAssertEqual(SR.splitName("mirne +1S", [a, b])?.i, 0); XCTAssertNil(SR.splitName("Mirnex -3", [a, b])); XCTAssertNil(SR.splitName("Bob -1", [a, b]))
+  }
+  func testTalerBooking() {
+    var pc = Pc(speaker: "Mirne"); pc.taler = 5
+    XCTAssertTrue(SR.taler(&pc, delta: -Geld.parse("40")!).hasPrefix("Fehler")); XCTAssertEqual(pc.heller, 20, "refused: unchanged")
+    XCTAssertTrue(SR.taler(&pc, delta: -Geld.parse("2T 1S")!).contains("Geld jetzt 2 T 1 S")); XCTAssertEqual(pc.heller, 10)
+    _ = SR.taler(&pc, delta: Geld.parse("1S")!); XCTAssertEqual(pc.geld, "3 T")
+  }
+  func testGegenstand() {
+    var pc = Pc(speaker: "Mirne"); pc.inventar = ["Seil", "Eisenschwert"]; pc.items = [StoryItem(name: "Eisenschwert", kind: "waffe")]
+    XCTAssertTrue(SR.gegenstand(&pc, add: "Fackel", remove: nil).contains("erhält")); XCTAssertEqual(pc.inventar.last, "Fackel")
+    XCTAssertTrue(SR.gegenstand(&pc, add: nil, remove: "schwert").contains("gibt ab")); XCTAssertEqual(pc.inventar, ["Seil", "Fackel"]); XCTAssertTrue(pc.items.isEmpty, "★ entry goes with the item")
+    XCTAssertTrue(SR.gegenstand(&pc, add: nil, remove: "Drache").hasPrefix("Fehler")); XCTAssertEqual(pc.inventar.count, 2)
+    XCTAssertTrue(SR.gegenstand(&pc, add: "  ", remove: nil).hasPrefix("Fehler"))
+  }
+  func testKauf() {
+    var pc = Pc(speaker: "Mirne"); pc.heller = 6     // 1 T 1 S
+    let no = SR.kauf(&pc, ware: "Laterne", preis: 8); XCTAssertFalse(no.ok); XCTAssertTrue(no.msg.contains("nicht leisten")); XCTAssertEqual(pc.heller, 6); XCTAssertTrue(pc.inventar.isEmpty, "refused: neither money nor item")
+    let ok = SR.kauf(&pc, ware: "Seil", preis: Geld.parse("1S")!); XCTAssertTrue(ok.ok); XCTAssertEqual(pc.heller, 4); XCTAssertEqual(pc.inventar, ["Seil"]); XCTAssertTrue(ok.msg.contains("zahlt 1 S")); XCTAssertTrue(ok.msg.contains("Rest 1 T"))
+    XCTAssertFalse(SR.kauf(&pc, ware: "Nix", preis: 0).ok); XCTAssertFalse(SR.kauf(&pc, ware: "", preis: 1).ok)
+    let all = SR.kauf(&pc, ware: "Dolch", preis: 4); XCTAssertTrue(all.ok); XCTAssertEqual(pc.geld, "0 H")
+  }
+}

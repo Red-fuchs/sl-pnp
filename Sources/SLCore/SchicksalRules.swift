@@ -55,7 +55,11 @@ public struct Pc: Codable, Equatable {
   public var sp = 5, spMax = 5
   public var wunden = 10, wundenMax = 10
   public var inventar: [String] = []
-  public var taler = 0
+  public var taler = 0 { didSet { _heller = nil } }   // whole Taler; any direct write resets the finer Heller balance
+  var _heller: Int?                                     // purse in Heller (optional: older saves only have `taler`)
+  /// purse in Heller (1 Taler = 2 Schilling = 4 Heller); older saves derive it from `taler`
+  public var heller: Int { get { _heller ?? taler * 4 } set { let h = max(0, newValue); taler = h / 4; _heller = h } }
+  public var geld: String { Geld.fmt(heller) }
   public var pendingSp = 0          // pre-spent: +10 each on the next check (max 3)
   public var pendingOracle = 0      // steps for the next oracle odds
   public var mod = 0                // +-10 steps put on this character by others (applies to the next check)
@@ -65,8 +69,35 @@ public struct Pc: Codable, Equatable {
   public var items: [StoryItem] { get { _items ?? [] } set { _items = newValue.isEmpty ? nil : newValue } }
   public var lastCheck: Check?
   public init(speaker: String, name: String? = nil) { self.speaker = speaker; self.name = name ?? speaker }
-  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "lp": wunden, "lpMax": wundenMax, "inventar": inventar, "taler": taler, "items": items.map(\.json)] }
+  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "lp": wunden, "lpMax": wundenMax, "inventar": inventar, "taler": taler, "heller": heller, "geld": geld, "items": items.map(\.json)] }
   public var line: String { "\(name) (Kampf \(pillars["kampf"] ?? 0) · Sozial \(pillars["sozial"] ?? 0) · Wissen \(pillars["wissen"] ?? 0); SP \(sp)/\(spMax); LP \(wunden)/\(wundenMax)\(traits.isEmpty ? "" : "; " + traits.map { ($0.pos ? "+" : "−") + $0.text }.joined(separator: ", ")))" }
+}
+
+/// Currency: 1 Taler (T) = 2 Schilling (S) = 4 Heller (H); the engine counts in Heller.
+public enum Geld {
+  public static func fmt(_ h: Int) -> String {
+    let h = max(0, h), t = h / 4, s = (h % 4) / 2, r = h % 2
+    let parts = [(t, "T"), (s, "S"), (r, "H")].filter { $0.0 > 0 }.map { "\($0.0) \($0.1)" }
+    return parts.isEmpty ? "0 H" : parts.joined(separator: " ")
+  }
+  /// "40" (Taler), "1S", "2H", "1T 1S", "3T1S1H"; no sign. nil = not an amount.
+  public static func parse(_ s: String) -> Int? {
+    let t = s.trimmingCharacters(in: .whitespaces); guard !t.isEmpty else { return nil }
+    guard t.range(of: #"^(\d+\s*[tTsShH]?\s*)+$"#, options: .regularExpression) != nil else { return nil }
+    var sum = 0
+    let re = try! NSRegularExpression(pattern: #"(\d+)\s*([tTsShH]?)"#)
+    for m in re.matches(in: t, range: NSRange(t.startIndex..., in: t)) {
+      guard let n = Int((t as NSString).substring(with: m.range(at: 1))), n < 1_000_000 else { return nil }
+      switch (t as NSString).substring(with: m.range(at: 2)).lowercased() { case "s": sum += n * 2; case "h": sum += n; default: sum += n * 4 }
+    }
+    return sum
+  }
+  /// "Seil 1S" / "Eisenschwert 3 T 1 S" -> (ware, preis text); the price is the trailing amount
+  public static func wareUndPreis(_ s: String) -> (ware: String, preis: String)? {
+    let re = try! NSRegularExpression(pattern: #"^(.+?)\s+((?:\d+\s*[tTsShH]?\s*)+)$"#)
+    guard let m = re.firstMatch(in: s, range: NSRange(s.startIndex..., in: s)) else { return nil }
+    return ((s as NSString).substring(with: m.range(at: 1)), (s as NSString).substring(with: m.range(at: 2)))
+  }
 }
 
 public enum SR {
@@ -298,5 +329,67 @@ public enum SR {
     if ["hauptmann", "söldner", "wache", "krieger", "soldat", "waffenmeister"].contains(where: r.contains) { return 2 }
     if ["jäger", "räuber", "schmuggler", "leder"].contains(where: r.contains) { return 1 }
     return 0
+  }
+}
+
+// MARK: GM purchase commands (/taler, /gegenstand, /kauf)
+public extension SR {
+  /// index of the party member named at the START of `a` (longest name first, then a space); returns the rest
+  static func splitName(_ a: String, _ party: [Pc]) -> (i: Int, rest: String)? {
+    let t = a.trimmingCharacters(in: .whitespaces)
+    var best: (Int, Int)?
+    for (i, p) in party.enumerated() { for n in [p.name, p.speaker] where !n.isEmpty {
+      let l = norm(n); let tn = norm(t)
+      if (tn == l || tn.hasPrefix(l + " ")), best == nil || l.count > best!.1 { best = (i, l.count) }
+    } }
+    guard let (i, len) = best else { return nil }
+    return (i, String(t.dropFirst(len)).trimmingCharacters(in: .whitespaces))
+  }
+  static let taler_usage = "/taler <Name> ±N[T|S|H]  (z. B. /taler Mirne -40 · /taler Mirne +1S; ohne Einheit = Taler; 1 T = 2 S = 4 H)"
+  static let gegenstand_usage = "/gegenstand <Name> +Text | -Text  (Gegenstand hinzufügen bzw. entfernen)"
+  static let kauf_usage = "/kauf <Name> <Ware> <Preis>  (z. B. /kauf Mirne Seil 1S; Preis in T, S oder H)"
+  /// /taler: nil error = ok. Returns (message, fact-less)
+  static func taler(_ pc: inout Pc, delta: Int) -> String {
+    let before = pc.heller
+    if before + delta < 0 { return "Fehler: \(pc.name) hat nur \(pc.geld) und kann \(Geld.fmt(-delta)) nicht abgeben." }
+    pc.heller = before + delta
+    return "\(pc.name): \(delta >= 0 ? "+" : "−")\(Geld.fmt(abs(delta))) · Geld jetzt \(pc.geld)"
+  }
+  /// add or remove an inventory item (remove matches the exact name first, then a part of it); the ★ entry goes with it
+  static func gegenstand(_ pc: inout Pc, add: String?, remove: String?) -> String {
+    if let a = add {
+      let t = clean(a, 60); if t.isEmpty { return "Fehler: Gegenstand fehlt. " + gegenstand_usage }
+      if pc.inventar.count >= 40 { return "Fehler: \(pc.name) trägt schon 40 Gegenstände." }
+      pc.inventar.append(t); return "\(pc.name) erhält: \(t)"
+    }
+    let r = norm(remove ?? ""); if r.isEmpty { return "Fehler: Gegenstand fehlt. " + gegenstand_usage }
+    guard let i = pc.inventar.firstIndex(where: { norm($0) == r }) ?? pc.inventar.firstIndex(where: { norm($0).contains(r) }) else { return "Fehler: \(pc.name) hat keinen Gegenstand '\(remove ?? "")'." }
+    let n = pc.inventar.remove(at: i); pc.items.removeAll { $0.name == n }
+    return "\(pc.name) gibt ab: \(n)"
+  }
+  /// /kauf: pay and take in one step; refused (nothing changes) when the purse is too small
+  static func kauf(_ pc: inout Pc, ware: String, preis: Int) -> (ok: Bool, msg: String) {
+    let w = clean(ware, 60)
+    if w.isEmpty { return (false, "Fehler: Ware fehlt. " + kauf_usage) }
+    if preis <= 0 { return (false, "Fehler: Preis muss größer als 0 sein. " + kauf_usage) }
+    if pc.heller < preis { return (false, "Fehler: \(pc.name) kann sich \(w) nicht leisten (Preis \(Geld.fmt(preis)), Geld \(pc.geld)). Nichts gebucht.") }
+    if pc.inventar.count >= 40 { return (false, "Fehler: \(pc.name) trägt schon 40 Gegenstände. Nichts gebucht.") }
+    pc.heller -= preis; pc.inventar.append(w)
+    return (true, "Kauf: \(pc.name) zahlt \(Geld.fmt(preis)) für \(w) · Rest \(pc.geld)")
+  }
+}
+
+public extension Game {
+  /// shared by the slash commands and the HTTP endpoints; emits `sheet` (and for purchases a hard fact for the next narration)
+  func applyTaler(_ i: Int, delta: Int) -> (ok: Bool, msg: String) {
+    let m = partyStore.with { SR.taler(&$0[i], delta: delta) }; announceSheet(); return (!m.hasPrefix("Fehler"), m)
+  }
+  func applyGegenstand(_ i: Int, add: String?, remove: String?) -> (ok: Bool, msg: String) {
+    let m = partyStore.with { SR.gegenstand(&$0[i], add: add, remove: remove) }; announceSheet(); return (!m.hasPrefix("Fehler"), m)
+  }
+  func applyKauf(_ i: Int, ware: String, preis: Int) -> (ok: Bool, msg: String) {
+    let r = partyStore.with { SR.kauf(&$0[i], ware: ware, preis: preis) }
+    if r.ok { let pc = partyStore.all[i]; queueFact("[Fakt] \(pc.name) kauft \(clean(ware, 60)) für \(Geld.fmt(preis)) und hat danach noch \(pc.geld). Erwähne den Kauf kurz."); announceSheet() }
+    return r
   }
 }

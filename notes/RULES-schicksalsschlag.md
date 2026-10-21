@@ -25,7 +25,7 @@ Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hun
 - Budget: 20 − 8 + 8 = **20** to spend.
 - `/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1`: plate **6** + sword **4** + shield **4** = 14, +1 max SP **3**, Taler **3** (= 30 Taler) → 14 + 3 + 3 = **20**, nothing left over.
 - Without the three flaws (budget 12) plate and sword (10) would leave 2 points: no shield, no SP.
-- Armour of the figure (leather 1, mail 2, plate 3) reduces the damage of a counterblow by its value, but never below 1 LP.
+- Armour of the figure (leather 1, mail 2, plate 3) reduces the damage of a counterblow by its value, but never below 1 LP: **a hit on a player character always costs at least 1 LP** (NPCs can shrug a hit off completely, damage 0).
 
 ### Story items ★ (Auslegung, decided 2026-10-21: „alles kostet Budget, aber Boni wenn die Geschichte stimmig ist“)
 - Every item costs its tier price. An item bought via `/budget item=…` that shares a content word with the background story or a positive trait (same matcher as for traits) becomes a **★ Story-Item**. Same prices as other items; non-story items behave as before.
@@ -33,6 +33,11 @@ Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hun
   - **levelbar:** the item grows +1 after each solved thread (`/geloest`), max +3: weapons +1 damage per level, tools +10 per level on checks that mention the item, armour counts normally. **Item caps apply** (RULES-gegenstaende.md): base weapon damage + level ≤ 5 (a sword, base 3, stops at +2; a knife, base 2, reaches +3) and base armour + level ≤ 3 (plate cannot grow). The engine clamps this in the level-up (`levelCap`).
   - **Wendung:** a hidden truth (forgery, stolen, cursed with an upside, famous previous owner) is stored in hidden.json like an NPC secret (key `★<item>`, text never contains the item name), guarded by the leak guard and revealed through the Spur/tier system. Payoff on reveal: **+1 SP**, the truth appears on the sheet.
 - Players see only „★ Story-Item“ and, once grown, the level; the secret stays internal.
+
+### Money and booking in play (2026-10-21)
+- 1 Taler = 2 Schilling = 4 Heller; sl counts the purse in Heller and shows "3 T 1 S 1 H". Starting Taler from the budget are whole Taler.
+- sl does not book purchases by itself. The GM books them (GM only): `/kauf Name Ware Preis` (pay + add item, refused if the purse is too small), `/taler Name ±N[T|S|H]`, `/gegenstand Name +Text|-Text`. A purchase is narrated as `[Fakt]` with the next turn. Players tell the GM what they buy.
+- Foundry shows Taler and gear read-only (sl -> Foundry); hand edits there are overwritten. Details: API-foundry.md.
 
 ## Skill check: d100 roll-under with degrees
 - Target number = pillar + traits + difficulty.

@@ -211,6 +211,7 @@ public final class Runner {
     case .budget(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
+    case .taler, .gegenstand, .kauf: try gmGoods(Cmd.parse(line))
     case .szene:
       if game.isSchicksal { game.newScene(); sink(.info("Neue Szene: Schicksalsergeben ist für alle Figuren wieder verfügbar.")); try session.save(game); refresh() } else { sink(.info("/szene gibt es nur unter --rules schicksal")) }
     case .rast(let a):
@@ -260,7 +261,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case szene, merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -282,6 +283,9 @@ public enum Cmd: Equatable {
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
     if t == "/szene" { return .szene }
+    if t == "/taler" || t.hasPrefix("/taler ") { return .taler(arg(6)) }
+    if t == "/gegenstand" || t.hasPrefix("/gegenstand ") { return .gegenstand(arg(11)) }
+    if t == "/kauf" || t.hasPrefix("/kauf ") { return .kauf(arg(5)) }
     if t == "/merkmal" || t.hasPrefix("/merkmal ") { return .merkmal(arg(8)) }
     if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
@@ -380,6 +384,29 @@ extension Runner {
     else { sink(.info("/sp +2 | /sp ziel <Name> -1 | /sp reroll | /sp orakel +1 | /sp survive | /sp geben <Name> +1")); return }
     _ = res
     sink(.info(game.partyStore.all.map { "\($0.name): SP \($0.sp)/\($0.spMax)\($0.pendingSp > 0 ? " (+\($0.pendingSp * 10) vorgemerkt)" : "")" }.joined(separator: " · ")))
+    try session.save(game); refresh()
+  }
+}
+
+
+extension Runner {
+  /// GM commands that book money and gear (the bridge lets only the GM send them): /taler, /gegenstand, /kauf. Everything emits `sheet`.
+  func gmGoods(_ c: Cmd) throws {
+    guard game.isSchicksal else { sink(.info("/taler, /gegenstand und /kauf gibt es nur unter --rules schicksal")); return }
+    let party = game.partyStore.all
+    switch c {
+    case .taler(let a):
+      guard let (i, rest) = SR.splitName(a, party), let f = rest.first, f == "+" || f == "-", let h = Geld.parse(String(rest.dropFirst())) else { sink(.info(SR.splitName(a, party) == nil && !a.isEmpty ? "Fehler: unbekannte Figur. " + SR.taler_usage : SR.taler_usage)); return }
+      sink(.info(game.applyTaler(i, delta: f == "-" ? -h : h).msg))
+    case .gegenstand(let a):
+      guard let (i, rest) = SR.splitName(a, party), let f = rest.first, f == "+" || f == "-", rest.count > 1 else { sink(.info(SR.splitName(a, party) == nil && !a.isEmpty ? "Fehler: unbekannte Figur. " + SR.gegenstand_usage : SR.gegenstand_usage)); return }
+      let t = String(rest.dropFirst()).trimmingCharacters(in: .whitespaces)
+      sink(.info(game.applyGegenstand(i, add: f == "+" ? t : nil, remove: f == "-" ? t : nil).msg))
+    case .kauf(let a):
+      guard let (i, rest) = SR.splitName(a, party), let m = Geld.wareUndPreis(rest), let h = Geld.parse(m.preis) else { sink(.info(SR.splitName(a, party) == nil && !a.isEmpty ? "Fehler: unbekannte Figur. " + SR.kauf_usage : SR.kauf_usage)); return }
+      sink(.info(game.applyKauf(i, ware: m.ware, preis: h).msg))
+    default: break
+    }
     try session.save(game); refresh()
   }
 }
