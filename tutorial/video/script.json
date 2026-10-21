@@ -1,0 +1,296 @@
+[
+ {
+  "id": "S01",
+  "title": "Was ist das?",
+  "lines": [
+   {
+    "cap": "Willkommen bei Schicksalsschlag.",
+    "speak": "Willkommen bei Schicksalsschlag."
+   },
+   {
+    "cap": "Euer Spielleiter ist eine KI namens sl.",
+    "speak": "Euer Spielleiter ist eine KI namens Ess Ell."
+   },
+   {
+    "cap": "Sie erzählt die Welt in Foundry, und ich moderiere sie.",
+    "speak": "Sie erzählt die Welt in Foundry, und ich moderiere sie."
+   }
+  ]
+ },
+ {
+  "id": "S02",
+  "title": "Foundry und /sl",
+  "lines": [
+   {
+    "cap": "Ihr tretet Foundry über den Einladungslink bei.",
+    "speak": "Ihr tretet Foundry über den Einladungslink bei."
+   },
+   {
+    "cap": "Alles, was eure Figur sagt oder tut, schreibt ihr mit /sl davor.",
+    "speak": "Alles, was eure Figur sagt oder tut, schreibt ihr mit Schrägstrich Ess Ell davor."
+   },
+   {
+    "cap": "Ohne /sl hört der Spielleiter nicht zu.",
+    "speak": "Ohne Schrägstrich Ess Ell hört der Spielleiter nicht zu."
+   }
+  ]
+ },
+ {
+  "id": "S03",
+  "title": "Figur: Hintergrundgeschichte",
+  "lines": [
+   {
+    "cap": "Zuerst erschafft ihr eure Figur.",
+    "speak": "Zuerst erschafft ihr eure Figur."
+   },
+   {
+    "cap": "Ihr schreibt eine Hintergrundgeschichte, drei bis acht Sätze.",
+    "speak": "Ihr schreibt eine Hintergrundgeschichte, drei bis acht Sätze."
+   },
+   {
+    "cap": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz entsteht ein Wort.",
+    "speak": "Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz entsteht ein Wort."
+   }
+  ]
+ },
+ {
+  "id": "S04",
+  "title": "Figur: Budget 20",
+  "lines": [
+   {
+    "cap": "Diese Wörter sind eure Eigenschaften, und ihr habt zwanzig Punkte Budget.",
+    "speak": "Diese Wörter sind eure Eigenschaften, und ihr habt zwanzig Punkte Budget."
+   },
+   {
+    "cap": "Ein Vorteil kostet zwei Punkte, wenn er klein ist, und vier, wenn er groß ist.",
+    "speak": "Ein Vorteil kostet zwei Punkte, wenn er klein ist, und vier, wenn er groß ist."
+   },
+   {
+    "cap": "Ein Nachteil gibt Punkte zurück: zwei oder vier.",
+    "speak": "Ein Nachteil gibt Punkte zurück: zwei oder vier."
+   },
+   {
+    "cap": "Ins Minus darf das Budget nicht rutschen.",
+    "speak": "Ins Minus darf das Budget nicht rutschen."
+   }
+  ]
+ },
+ {
+  "id": "S05",
+  "title": "Figur: Rest tauschen",
+  "lines": [
+   {
+    "cap": "Was übrig bleibt, tauscht ihr ein.",
+    "speak": "Was übrig bleibt, tauscht ihr ein."
+   },
+   {
+    "cap": "Ein Punkt sind zehn Taler Startgeld.",
+    "speak": "Ein Punkt sind zehn Taler Startgeld."
+   },
+   {
+    "cap": "Zwei Punkte sind ein Startgegenstand.",
+    "speak": "Zwei Punkte sind ein Startgegenstand."
+   },
+   {
+    "cap": "Drei Punkte sind ein zusätzlicher maximaler Schicksalspunkt.",
+    "speak": "Drei Punkte sind ein zusätzlicher maximaler Schicksalspunkt."
+   }
+  ]
+ },
+ {
+  "id": "S06",
+  "title": "Figur: Drei Säulen",
+  "lines": [
+   {
+    "cap": "Dann verteilt ihr dreißig, vierzig und fünfzig auf Kampf, Sozial und Wissen.",
+    "speak": "Dann verteilt ihr dreißig, vierzig und fünfzig auf Kampf, Sozial und Wissen."
+   },
+   {
+    "cap": "Die Reihenfolge ist frei. Das sind eure Grundwerte.",
+    "speak": "Die Reihenfolge ist frei. Das sind eure Grundwerte."
+   }
+  ]
+ },
+ {
+  "id": "S07",
+  "title": "Beispielfigur Mirne",
+  "lines": [
+   {
+    "cap": "Ein Beispiel: Mirne, Tochter eines Salzsieders.",
+    "speak": "Ein Beispiel: Mirne, Tochter eines Salzsieders."
+   },
+   {
+    "cap": "Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben.",
+    "speak": "Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben."
+   },
+   {
+    "cap": "Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig.",
+    "speak": "Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig."
+   },
+   {
+    "cap": "Drei davon werden ein sechster Schicksalspunkt, vier ein Armbrust und ein Lederwams, fünf werden fünfzig Taler.",
+    "speak": "Drei davon werden ein sechster Schicksalspunkt, vier ein Armbrust und ein Lederwams, fünf werden fünfzig Taler."
+   }
+  ]
+ },
+ {
+  "id": "S08",
+  "title": "Die Probe: Zielzahl",
+  "lines": [
+   {
+    "cap": "Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert.",
+    "speak": "Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert."
+   },
+   {
+    "cap": "Die Zielzahl ist Säule plus Eigenschaften plus Schwierigkeit.",
+    "speak": "Die Zielzahl ist Säule plus Eigenschaften plus Schwierigkeit."
+   },
+   {
+    "cap": "Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus dreißig.",
+    "speak": "Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus dreißig."
+   },
+   {
+    "cap": "Ihr wollt niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg.",
+    "speak": "Ihr wollt niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg."
+   }
+  ]
+ },
+ {
+  "id": "S09",
+  "title": "Erfolgsgrade und Pasch",
+  "lines": [
+   {
+    "cap": "Je weiter unter der Zielzahl, desto besser: Erfolgsgrade gibt es pro zehn Punkte Abstand.",
+    "speak": "Je weiter unter der Zielzahl, desto besser: Erfolgsgrade gibt es pro zehn Punkte Abstand."
+   },
+   {
+    "cap": "Mirne schießt mit Zielzahl sechzig und würfelt vierunddreißig. Das sind drei Erfolgsgrade.",
+    "speak": "Mirne schießt mit Zielzahl sechzig und würfelt vierunddreißig. Das sind drei Erfolgsgrade."
+   },
+   {
+    "cap": "Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer.",
+    "speak": "Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer."
+   },
+   {
+    "cap": "Ein Pasch wie elf oder dreiunddreißig ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.",
+    "speak": "Ein Pasch wie elf oder dreiunddreißig ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation."
+   },
+   {
+    "cap": "Gegen jemanden würfeln beide, und wer mehr Erfolgsgrade hat, gewinnt.",
+    "speak": "Gegen jemanden würfeln beide, und wer mehr Erfolgsgrade hat, gewinnt."
+   }
+  ]
+ },
+ {
+  "id": "S10",
+  "title": "Kampf und Wunden",
+  "lines": [
+   {
+    "cap": "Im Kampf ist der Angriff eine Kampfprobe.",
+    "speak": "Im Kampf ist der Angriff eine Kampfprobe."
+   },
+   {
+    "cap": "Der Schaden ist Waffe plus Erfolgsgrade minus Rüstung.",
+    "speak": "Der Schaden ist Waffe plus Erfolgsgrade minus Rüstung."
+   },
+   {
+    "cap": "Jede Figur hat zehn Wunden. Bei drei oder weniger gibt es minus zehn auf alle Proben.",
+    "speak": "Jede Figur hat zehn Wunden. Bei drei oder weniger gibt es minus zehn auf alle Proben."
+   },
+   {
+    "cap": "Bei null geht sie zu Boden, und nur ein Schicksalspunkt hält sie am Leben.",
+    "speak": "Bei null geht sie zu Boden, und nur ein Schicksalspunkt hält sie am Leben."
+   }
+  ]
+ },
+ {
+  "id": "S11",
+  "title": "Schicksalspunkte einsetzen",
+  "lines": [
+   {
+    "cap": "Ihr startet mit fünf Schicksalspunkten.",
+    "speak": "Ihr startet mit fünf Schicksalspunkten."
+   },
+   {
+    "cap": "Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe.",
+    "speak": "Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe."
+   },
+   {
+    "cap": "Ein Punkt verschiebt das Orakel um eine Stufe, zwei Punkte sind ein Neuwurf.",
+    "speak": "Ein Punkt verschiebt das Orakel um eine Stufe, zwei Punkte sind ein Neuwurf."
+   },
+   {
+    "cap": "Und ein Punkt rettet euch bei null Wunden.",
+    "speak": "Und ein Punkt rettet euch bei null Wunden."
+   }
+  ]
+ },
+ {
+  "id": "S12",
+  "title": "Schwellen und Erholung",
+  "lines": [
+   {
+    "cap": "Vorsicht: Bei einem Punkt seid ihr schicksalsmüde, minus zehn auf alles.",
+    "speak": "Vorsicht: Bei einem Punkt seid ihr schicksalsmüde, minus zehn auf alles."
+   },
+   {
+    "cap": "Bei null sind es minus zwanzig, und das Orakel wird schlechter.",
+    "speak": "Bei null sind es minus zwanzig, und das Orakel wird schlechter."
+   },
+   {
+    "cap": "Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei.",
+    "speak": "Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei."
+   }
+  ]
+ },
+ {
+  "id": "S13",
+  "title": "Orakel",
+  "lines": [
+   {
+    "cap": "Alles, was nicht von eurem Können abhängt, fragt ihr das Orakel.",
+    "speak": "Alles, was nicht von eurem Können abhängt, fragt ihr das Orakel."
+   },
+   {
+    "cap": "Eine Ja-Nein-Frage, dazu die Chancen von fast unmöglich bis fast sicher.",
+    "speak": "Eine Ja-Nein-Frage, dazu die Chancen von fast unmöglich bis fast sicher."
+   },
+   {
+    "cap": "Die Antwort lautet Ja plus, Ja, Nein oder Nein plus.",
+    "speak": "Die Antwort lautet Ja plus, Ja, Nein oder Nein plus."
+   }
+  ]
+ },
+ {
+  "id": "S14",
+  "title": "Etikette und Timing",
+  "lines": [
+   {
+    "cap": "Die KI braucht vier bis zwölf Sekunden für eine Antwort.",
+    "speak": "Die KI braucht vier bis zwölf Sekunden für eine Antwort."
+   },
+   {
+    "cap": "Schreibt nur eine Handlung pro Nachricht und wartet auf die Erzählung.",
+    "speak": "Schreibt nur eine Handlung pro Nachricht und wartet auf die Erzählung."
+   }
+  ]
+ },
+ {
+  "id": "S15",
+  "title": "Notfall und Schluss",
+  "lines": [
+   {
+    "cap": "Fällt die Technik aus, spielen wir mit dem PDF-Handout weiter.",
+    "speak": "Fällt die Technik aus, spielen wir mit dem PDF-Handout weiter."
+   },
+   {
+    "cap": "Alle Tabellen gehen mit zwei Zehnerwürfeln.",
+    "speak": "Alle Tabellen gehen mit zwei Zehnerwürfeln."
+   },
+   {
+    "cap": "Viel Spaß am Spieltisch!",
+    "speak": "Viel Spaß am Spieltisch!"
+   }
+  ]
+ }
+]

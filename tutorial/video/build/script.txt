@@ -1,0 +1,51 @@
+ERZ|0.9|Willkommen bei Schicksalsschlag.
+ERZ|0.35|Euer Spielleiter ist eine KI namens Ess Ell.
+ERZ|0.35|Sie erzählt die Welt in Foundry, und ich moderiere sie.
+ERZ|0.9|Ihr tretet Foundry über den Einladungslink bei.
+ERZ|0.35|Alles, was eure Figur sagt oder tut, schreibt ihr mit Schrägstrich Ess Ell davor.
+ERZ|0.35|Ohne Schrägstrich Ess Ell hört der Spielleiter nicht zu.
+ERZ|0.9|Zuerst erschafft ihr eure Figur.
+ERZ|0.35|Ihr schreibt eine Hintergrundgeschichte, drei bis acht Sätze.
+ERZ|0.35|Wer bist du, was kannst du, und was holt dich ein? Aus jedem Satz entsteht ein Wort.
+ERZ|0.9|Diese Wörter sind eure Eigenschaften, und ihr habt zwanzig Punkte Budget.
+ERZ|0.35|Ein Vorteil kostet zwei Punkte, wenn er klein ist, und vier, wenn er groß ist.
+ERZ|0.35|Ein Nachteil gibt Punkte zurück: zwei oder vier.
+ERZ|0.35|Ins Minus darf das Budget nicht rutschen.
+ERZ|0.9|Was übrig bleibt, tauscht ihr ein.
+ERZ|0.35|Ein Punkt sind zehn Taler Startgeld.
+ERZ|0.35|Zwei Punkte sind ein Startgegenstand.
+ERZ|0.35|Drei Punkte sind ein zusätzlicher maximaler Schicksalspunkt.
+ERZ|0.9|Dann verteilt ihr dreißig, vierzig und fünfzig auf Kampf, Sozial und Wissen.
+ERZ|0.35|Die Reihenfolge ist frei. Das sind eure Grundwerte.
+ERZ|0.9|Ein Beispiel: Mirne, Tochter eines Salzsieders.
+ERZ|0.35|Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben.
+ERZ|0.35|Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig.
+ERZ|0.35|Drei davon werden ein sechster Schicksalspunkt, vier ein Armbrust und ein Lederwams, fünf werden fünfzig Taler.
+ERZ|0.9|Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert.
+ERZ|0.35|Die Zielzahl ist Säule plus Eigenschaften plus Schwierigkeit.
+ERZ|0.35|Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus dreißig.
+ERZ|0.35|Ihr wollt niedrig würfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg.
+ERZ|0.9|Je weiter unter der Zielzahl, desto besser: Erfolgsgrade gibt es pro zehn Punkte Abstand.
+ERZ|0.35|Mirne schießt mit Zielzahl sechzig und würfelt vierunddreißig. Das sind drei Erfolgsgrade.
+ERZ|0.35|Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer.
+ERZ|0.35|Ein Pasch wie elf oder dreiunddreißig ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.
+ERZ|0.35|Gegen jemanden würfeln beide, und wer mehr Erfolgsgrade hat, gewinnt.
+ERZ|0.9|Im Kampf ist der Angriff eine Kampfprobe.
+ERZ|0.35|Der Schaden ist Waffe plus Erfolgsgrade minus Rüstung.
+ERZ|0.35|Jede Figur hat zehn Wunden. Bei drei oder weniger gibt es minus zehn auf alle Proben.
+ERZ|0.35|Bei null geht sie zu Boden, und nur ein Schicksalspunkt hält sie am Leben.
+ERZ|0.9|Ihr startet mit fünf Schicksalspunkten.
+ERZ|0.35|Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe.
+ERZ|0.35|Ein Punkt verschiebt das Orakel um eine Stufe, zwei Punkte sind ein Neuwurf.
+ERZ|0.35|Und ein Punkt rettet euch bei null Wunden.
+ERZ|0.9|Vorsicht: Bei einem Punkt seid ihr schicksalsmüde, minus zehn auf alles.
+ERZ|0.35|Bei null sind es minus zwanzig, und das Orakel wird schlechter.
+ERZ|0.35|Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei.
+ERZ|0.9|Alles, was nicht von eurem Können abhängt, fragt ihr das Orakel.
+ERZ|0.35|Eine Ja-Nein-Frage, dazu die Chancen von fast unmöglich bis fast sicher.
+ERZ|0.35|Die Antwort lautet Ja plus, Ja, Nein oder Nein plus.
+ERZ|0.9|Die KI braucht vier bis zwölf Sekunden für eine Antwort.
+ERZ|0.35|Schreibt nur eine Handlung pro Nachricht und wartet auf die Erzählung.
+ERZ|0.9|Fällt die Technik aus, spielen wir mit dem PDF-Handout weiter.
+ERZ|0.35|Alle Tabellen gehen mit zwei Zehnerwürfeln.
+ERZ|0.35|Viel Spaß am Spieltisch!

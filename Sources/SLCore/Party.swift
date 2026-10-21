@@ -134,7 +134,8 @@ public extension Game {
 
   // MARK: character creation
   /// background story -> traits (grammar enum minor/major, pos/neg) -> budget 20 -> pillars 30/40/50 -> leftover as Taler
-  func createCharacter(speaker: String?, name: String, story: String) {
+  @discardableResult
+  func createCharacter(speaker: String?, name: String, story: String) -> [Trait] {
     let i = pcIndex(speaker)!
     var traits: [Trait] = []
     let line = G.seq([.s("Merkmal: "), .re(Cls.rep(Cls.lineNoQ, 6)), .s("| "), GenGr.en(["minor", "major"]), .s(" | "), GenGr.en(["pos", "neg"])])
@@ -150,16 +151,16 @@ public extension Game {
         return Trait(text: t, major: f[1] == "major", pos: f[2] == "pos")
       }
     }
-    setTraits(i, name: name, story: story, traits: traits)
+    return setTraits(i, name: name, story: story, traits: traits)
   }
   /// pure part (testable): budget fit, pillars, Taler
-  func setTraits(_ i: Int, name: String, story: String, traits: [Trait]) {
-    let fit = SR.fit(traits)
-    partyStore.with { p in
-      p[i].name = name.isEmpty ? p[i].name : name; p[i].hintergrund = clean(story, 400)
-      p[i].traits = fit; p[i].pillars = SR.defaultPillars(story, fit)
-      let left = SR.budgetLeft(fit); p[i].taler = max(0, left) * 10
-    }
-    announceSheet()
+  @discardableResult
+  func setTraits(_ i: Int, name: String, story: String, traits: [Trait]) -> [Trait] {
+    let d = partyStore.with { p in SR.build(&p[i], name: name, story: story, traits: traits) }
+    announceSheet(); return d
+  }
+  func applyBudget(_ i: Int, args: String) -> String {
+    let m = partyStore.with { p in SR.budget(&p[i], args: args) }
+    announceSheet(); return m
   }
 }

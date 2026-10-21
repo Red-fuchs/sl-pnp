@@ -1573,6 +1573,25 @@ final class SchicksalRulesTests: XCTestCase {
   }
 }
 
+final class BudgetTests: XCTestCase {
+  func testAllocate() {
+    let r = SR.allocate(left: 14, talerPts: 4, items: ["Dolch", "Seil"], sp: 1)!
+    XCTAssertEqual(r.taler, (4 + 14 - 11) * 10); XCTAssertEqual(r.sp, 1); XCTAssertEqual(r.items.count, 2)
+    XCTAssertNil(SR.allocate(left: 5, talerPts: 0, items: ["a", "b", "c"], sp: 0)); XCTAssertNil(SR.allocate(left: 2, talerPts: 0, items: [], sp: 1)); XCTAssertEqual(Cmd.parse("/budget sp=1"), .budget("sp=1"))
+  }
+  func testDroppedAndBudgetCmd() {
+    var pc = Pc(speaker: "T")
+    let t = (0..<8).map { Trait(text: "gut\($0)", major: true, pos: true) }
+    let dropped = SR.build(&pc, name: "Torvin", story: "x", traits: t)
+    XCTAssertEqual(pc.traits.count, 5); XCTAssertEqual(dropped.count, 3); XCTAssertEqual(pc.taler, 0)
+    XCTAssertTrue(SR.budget(&pc, args: "sp=1").contains("nur 0"))
+    _ = SR.build(&pc, name: "Ilse", story: "x", traits: [Trait(text: "arm", major: true, pos: false)])
+    XCTAssertEqual(pc.taler, 240)
+    _ = SR.budget(&pc, args: "taler=4 item=Dolch,Seil sp=2")
+    XCTAssertEqual(pc.taler, (4 + 24 - 14) * 10); XCTAssertEqual(pc.inventar, ["Dolch", "Seil"]); XCTAssertEqual(pc.spMax, 7)
+  }
+}
+
 final class WundenApiTests: XCTestCase {
   func testWunden() {
     let st = PartyStore(); st.with { $0 = [Pc(speaker: "Anna", name: "Kara")] }

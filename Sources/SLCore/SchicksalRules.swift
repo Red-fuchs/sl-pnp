@@ -85,6 +85,40 @@ public enum SR {
     while budgetLeft(t) < 0, let i = t.lastIndex(where: \.pos) { t.remove(at: i) }
     return t
   }
+  /// leftover budget -> Taler (1 pt = 10), items (2 pts each), +1 max SP (3 pts each); unspent points become Taler. nil = overdrawn.
+  public static func allocate(left: Int, talerPts: Int, items: [String], sp: Int) -> (taler: Int, items: [String], sp: Int)? {
+    guard left >= 0, talerPts >= 0, sp >= 0 else { return nil }
+    let used = talerPts + 2 * items.count + 3 * sp
+    if used > left { return nil }
+    return ((talerPts + left - used) * 10, items, sp)
+  }
+  /// traits fitted to the budget, pillars, leftover as Taler; returns the dropped traits
+  public static func build(_ pc: inout Pc, name: String, story: String, traits: [Trait]) -> [Trait] {
+    let fit = SR.fit(traits)
+    if !name.isEmpty { pc.name = name }
+    pc.hintergrund = clean(story, 400); pc.traits = fit; pc.pillars = defaultPillars(story, fit)
+    pc.taler = max(0, budgetLeft(fit)) * 10
+    return traits.filter { !fit.contains($0) }
+  }
+  /// /budget taler=N item=A,B sp=N (only before the first check)
+  public static func budget(_ pc: inout Pc, args: String) -> String {
+    var tal = 0, items: [String] = [], sp = 0
+    for kv in args.split(separator: " ") {
+      let x = kv.split(separator: "=", maxSplits: 1).map(String.init)
+      guard x.count == 2 else { return "/budget taler=N item=Name,Name sp=N  (Taler: 1 Punkt = 10, Gegenstand 2, +1 SP-Max 3)" }
+      switch x[0].lowercased() {
+      case "taler": tal = Int(x[1]) ?? -1
+      case "item", "gegenstand": items += x[1].split(separator: ",").map { clean(String($0), 30) }.filter { !$0.isEmpty }
+      case "sp": sp = Int(x[1]) ?? -1
+      default: return "/budget: unbekannt '\(x[0])'"
+      }
+    }
+    if pc.lastCheck != nil { return "/budget geht nur vor der ersten Probe." }
+    let left = budgetLeft(pc.traits)
+    guard let r = allocate(left: left, talerPts: tal, items: items, sp: sp) else { return "/budget: nur \(left) Punkte übrig (Taler 1, Gegenstand 2, +1 SP-Max 3)" }
+    pc.taler = r.taler; pc.inventar = r.items; pc.spMax = 5 + r.sp; pc.sp = pc.spMax
+    return "Budget: \(r.taler) Taler · \(r.items.isEmpty ? "keine Gegenstände" : r.items.joined(separator: ", ")) · SP-Max \(pc.spMax) (übrige Punkte als Taler)"
+  }
   static let kw: [String: [String]] = [
     "kampf": ["kämpf", "krieg", "soldat", "söldner", "schwert", "bogen", "schütze", "jäger", "stark", "dolch", "wache", "ringer", "narbe", "gewalt", "schläger", "messer", "axt"],
     "sozial": ["charme", "händler", "redner", "überred", "lügner", "freund", "diplomat", "adel", "schauspiel", "trinkfest", "spielmann", "verführ", "bettler", "wirt", "kontakt", "zunge"],

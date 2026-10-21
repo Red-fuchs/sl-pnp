@@ -181,11 +181,12 @@ public final class Runner {
       if game.isSchicksal, !f.isEmpty {       // per speaker: background story -> traits -> budget -> pillars
         let (nm, story) = World.parseFigur(f)
         sink(.info("Hintergrund wird ausgewertet …"))
-        game.createCharacter(speaker: speaker, name: nm ?? speaker ?? "Spieler", story: story.isEmpty ? f : story)
+        let dropped = game.createCharacter(speaker: speaker, name: nm ?? speaker ?? "Spieler", story: story.isEmpty ? f : story)
         if let i = game.pcIndex(speaker, create: false) {
           let pc = game.partyStore.all[i]
           if game.figur == nil { game.figur = f; game.world.setFigur(f); game.world.syncLists(game.eng); try game.syncCache() }
-          sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.budgetLeft(pc.traits))"))
+          sink(.info("Figur \(pc.name): \(pc.line) · Taler \(pc.taler) · Budget übrig \(SR.budgetLeft(pc.traits)) (verteilen mit /budget taler=N item=Name sp=N)"))
+          if !dropped.isEmpty { sink(.info("Über dem Budget, gestrichen: " + dropped.map(\.text).joined(separator: ", "))) }
         }
         try session.save(game); refresh(); return true
       }
@@ -205,6 +206,8 @@ public final class Runner {
       else if ["frei", "saeulen", "schicksal"].contains(a) { game.world.regeln = a; try session.save(game); refresh(); sink(.info("Regeln: \(regelwerk(a).titel)")) } else { sink(.info("/regeln frei | saeulen | schicksal")) }
     case .regie(let a):      // hidden GM note for the next narration: never logged, never shown in the story
       if a.isEmpty { sink(.info("/regie <Text>  (versteckte Spielleiter-Notiz für die nächste Erzählung)")) } else { game.pendingRegie.append(clean(a, 300)); sink(.info("Regie-Notiz vorgemerkt (nur für die nächste Erzählung).")) }
+    case .budget(let a):
+      if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
     case .rast(let a):
       if a == "kurz" { game.partyGain(sp: 1); sink(.info("Kurze Rast: +1 SP, +1 Wunde")) } else if a == "lang" { game.partyGain(sp: 3, wunden: 3); sink(.info("Lange Rast: +3 SP, +3 Wunden")) } else if a == "fest" { game.partyGain(sp: 2); sink(.info("Fest: +2 SP")) } else { sink(.info("/rast kurz | lang | fest")) }
@@ -253,7 +256,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case budget(String), regie(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -274,6 +277,7 @@ public enum Cmd: Equatable {
     if t == "/regeln" || t.hasPrefix("/regeln ") { return .regeln(arg(7)) }
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
+    if t == "/budget" || t.hasPrefix("/budget ") { return .budget(arg(7)) }
     if t == "/regie" || t.hasPrefix("/regie ") { return .regie(arg(6)) }
     if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
     if t == "/rast" || t.hasPrefix("/rast ") { return .rast(arg(5)) }
