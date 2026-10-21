@@ -11,71 +11,73 @@
       "preview": "Zielwert: 90 (Kräuterkundige +20, Schwierigkeit +20)"
      },
      "before": {
+      "pillars": {
+       "kampf": 40,
+       "sozial": 30,
+       "wissen": 50
+      },
       "traits": [
        {
         "pos": true,
-        "kind": "major",
-        "text": "Kräuterkundige"
-       },
-       {
-        "pos": true,
-        "text": "Sümpfe Grauwald",
-        "kind": "minor"
+        "text": "Kräuterkundige",
+        "kind": "major"
        },
        {
         "pos": true,
         "text": "Fährtenlesen gelernt",
         "kind": "major"
+       },
+       {
+        "text": "Angst vor offenem Wasser",
+        "kind": "minor",
+        "pos": false
        }
       ],
-      "name": "Mara",
       "spMax": 6,
       "speaker": "Anna",
       "inventar": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ],
-      "wunden": 10,
-      "pillars": {
-       "wissen": 50,
-       "kampf": 40,
-       "sozial": 30
-      },
-      "sp": 6,
-      "taler": 50
-     },
-     "card": "Mara · Wissen 34gegen90 Erfolg (6 Erfolgsgrade) RechnungWissen50Kräuterkundige+20Schwierigkeit+20 SP +10 SP −10",
-     "after": {
       "name": "Mara",
       "wunden": 10,
-      "sp": 6,
+      "taler": 70,
+      "sp": 6
+     },
+     "card": "Mara · Wissen 93gegen90 Misserfolg (1 Misserfolgsgrad) RechnungWissen50Kräuterkundige+20Schwierigkeit+20 SP +10 SP −10",
+     "after": {
       "pillars": {
-       "wissen": 50,
        "kampf": 40,
-       "sozial": 30
+       "sozial": 30,
+       "wissen": 50
       },
-      "inventar": [
-       "Seil"
-      ],
-      "speaker": "Anna",
       "traits": [
        {
+        "text": "Kräuterkundige",
         "pos": true,
-        "kind": "major",
-        "text": "Kräuterkundige"
-       },
-       {
-        "pos": true,
-        "text": "Sümpfe Grauwald",
-        "kind": "minor"
+        "kind": "major"
        },
        {
         "kind": "major",
-        "pos": true,
-        "text": "Fährtenlesen gelernt"
+        "text": "Fährtenlesen gelernt",
+        "pos": true
+       },
+       {
+        "kind": "minor",
+        "text": "Angst vor offenem Wasser",
+        "pos": false
        }
       ],
-      "taler": 50,
-      "spMax": 6
+      "spMax": 6,
+      "speaker": "Anna",
+      "inventar": [
+       "Seil",
+       "Laterne"
+      ],
+      "name": "Mara",
+      "wunden": 10,
+      "taler": 70,
+      "sp": 6
      },
      "actorAfter": {
       "sp": 6,
@@ -84,23 +86,24 @@
       "kampf": 40,
       "sozial": 30,
       "wissen": 50,
-      "taler": 50,
+      "taler": 70,
       "traits": [
        [
         "Kräuterkundige",
         20
        ],
        [
-        "Sümpfe Grauwald",
-        10
-       ],
-       [
         "Fährtenlesen gelernt",
         20
+       ],
+       [
+        "Angst vor offenem Wasser",
+        -10
        ]
       ],
       "inv": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ]
      }
     },
@@ -111,77 +114,79 @@
       "preview": "Zielwert: 30 (keine Modifikatoren)"
      },
      "before": {
-      "spMax": 6,
-      "speaker": "Anna",
+      "pillars": {
+       "kampf": 40,
+       "sozial": 30,
+       "wissen": 50
+      },
       "traits": [
        {
+        "text": "Kräuterkundige",
         "kind": "major",
-        "pos": true,
-        "text": "Kräuterkundige"
+        "pos": true
        },
        {
-        "pos": true,
-        "kind": "minor",
-        "text": "Sümpfe Grauwald"
-       },
-       {
-        "pos": true,
+        "kind": "major",
         "text": "Fährtenlesen gelernt",
-        "kind": "major"
+        "pos": true
+       },
+       {
+        "kind": "minor",
+        "text": "Angst vor offenem Wasser",
+        "pos": false
        }
       ],
-      "wunden": 10,
-      "name": "Mara",
-      "pillars": {
-       "wissen": 50,
-       "kampf": 40,
-       "sozial": 30
-      },
-      "sp": 6,
+      "spMax": 6,
+      "speaker": "Anna",
       "inventar": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ],
-      "taler": 50
+      "name": "Mara",
+      "wunden": 10,
+      "taler": 70,
+      "sp": 6
      },
      "slroll": {
-      "roll": -1,
-      "s": 5,
+      "p": -1,
       "answer": "erwartet",
       "rng": "jitter",
-      "p": -1
+      "roll": -1,
+      "s": 5
      },
      "after": {
-      "spMax": 6,
-      "speaker": "Anna",
+      "inventar": [
+       "Seil",
+       "Laterne"
+      ],
       "traits": [
        {
         "kind": "major",
-        "pos": true,
-        "text": "Kräuterkundige"
+        "text": "Kräuterkundige",
+        "pos": true
        },
        {
-        "pos": true,
-        "kind": "minor",
-        "text": "Sümpfe Grauwald"
-       },
-       {
-        "pos": true,
+        "kind": "major",
         "text": "Fährtenlesen gelernt",
-        "kind": "major"
+        "pos": true
+       },
+       {
+        "kind": "minor",
+        "text": "Angst vor offenem Wasser",
+        "pos": false
        }
       ],
-      "wunden": 10,
-      "name": "Mara",
       "pillars": {
-       "wissen": 50,
        "kampf": 40,
-       "sozial": 30
+       "sozial": 30,
+       "wissen": 50
       },
       "sp": 6,
-      "inventar": [
-       "Seil"
-      ],
-      "taler": 50
+      "speaker": "Anna",
+      "taler": 70,
+      "spMax": 6,
+      "name": "Mara",
+      "wunden": 10
      },
      "actorAfter": {
       "sp": 6,
@@ -190,23 +195,24 @@
       "kampf": 40,
       "sozial": 30,
       "wissen": 50,
-      "taler": 50,
+      "taler": 70,
       "traits": [
        [
         "Kräuterkundige",
         20
        ],
        [
-        "Sümpfe Grauwald",
-        10
-       ],
-       [
         "Fährtenlesen gelernt",
         20
+       ],
+       [
+        "Angst vor offenem Wasser",
+        -10
        ]
       ],
       "inv": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ]
      }
     },
@@ -217,72 +223,74 @@
       "preview": "Zielwert: 30 (Schwierigkeit −20, Schicksalspunkte (+1) +10)"
      },
      "before": {
-      "name": "Mara",
-      "wunden": 10,
-      "sp": 6,
-      "pillars": {
-       "wissen": 50,
-       "kampf": 40,
-       "sozial": 30
-      },
       "inventar": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ],
-      "speaker": "Anna",
       "traits": [
        {
-        "pos": true,
+        "text": "Kräuterkundige",
         "kind": "major",
-        "text": "Kräuterkundige"
-       },
-       {
-        "pos": true,
-        "text": "Sümpfe Grauwald",
-        "kind": "minor"
+        "pos": true
        },
        {
         "text": "Fährtenlesen gelernt",
         "kind": "major",
         "pos": true
-       }
-      ],
-      "taler": 50,
-      "spMax": 6
-     },
-     "card": "Mara · Kampf 84gegen30 Misserfolg (6 Misserfolgsgrade) RechnungKampf40Schwierigkeit−20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SP SP +10 SP −10",
-     "cardAfterSp": "Mara · Kampf 84gegen40 Misserfolg (5 Misserfolgsgrade) RechnungKampf40Schwierigkeit−20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SPMara: 1 SP +10 je SP SP +10 SP −10",
-     "after": {
-      "spMax": 6,
-      "speaker": "Anna",
-      "traits": [
-       {
-        "kind": "major",
-        "pos": true,
-        "text": "Kräuterkundige"
        },
        {
-        "pos": true,
+        "text": "Angst vor offenem Wasser",
         "kind": "minor",
-        "text": "Sümpfe Grauwald"
-       },
-       {
-        "text": "Fährtenlesen gelernt",
-        "kind": "major",
-        "pos": true
+        "pos": false
        }
       ],
-      "wunden": 10,
-      "name": "Mara",
       "pillars": {
-       "wissen": 50,
        "kampf": 40,
-       "sozial": 30
+       "sozial": 30,
+       "wissen": 50
+      },
+      "sp": 6,
+      "speaker": "Anna",
+      "taler": 70,
+      "spMax": 6,
+      "name": "Mara",
+      "wunden": 10
+     },
+     "card": "Mara · Kampf 62gegen30 Misserfolg (4 Misserfolgsgrade) RechnungKampf40Schwierigkeit−20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SP SP +10 SP −10",
+     "cardAfterSp": "Mara · Kampf 62gegen40 Misserfolg (3 Misserfolgsgrade) RechnungKampf40Schwierigkeit−20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SPMara: 1 SP +10 je SP SP +10 SP −10",
+     "after": {
+      "inventar": [
+       "Seil",
+       "Laterne"
+      ],
+      "traits": [
+       {
+        "pos": true,
+        "text": "Kräuterkundige",
+        "kind": "major"
+       },
+       {
+        "pos": true,
+        "text": "Fährtenlesen gelernt",
+        "kind": "major"
+       },
+       {
+        "kind": "minor",
+        "text": "Angst vor offenem Wasser",
+        "pos": false
+       }
+      ],
+      "pillars": {
+       "kampf": 40,
+       "sozial": 30,
+       "wissen": 50
       },
       "sp": 4,
-      "inventar": [
-       "Seil"
-      ],
-      "taler": 50
+      "speaker": "Anna",
+      "taler": 70,
+      "spMax": 6,
+      "name": "Mara",
+      "wunden": 10
      },
      "actorAfter": {
       "sp": 4,
@@ -291,23 +299,24 @@
       "kampf": 40,
       "sozial": 30,
       "wissen": 50,
-      "taler": 50,
+      "taler": 70,
       "traits": [
        [
         "Kräuterkundige",
         20
        ],
        [
-        "Sümpfe Grauwald",
-        10
-       ],
-       [
         "Fährtenlesen gelernt",
         20
+       ],
+       [
+        "Angst vor offenem Wasser",
+        -10
        ]
       ],
       "inv": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ]
      }
     },
@@ -320,71 +329,73 @@
       "preview": "Zielwert: 80 (Fährtenlesen gelernt +20, Schicksalspunkte (+1) +10)"
      },
      "before": {
-      "spMax": 6,
-      "speaker": "Anna",
+      "inventar": [
+       "Seil",
+       "Laterne"
+      ],
       "traits": [
        {
-        "pos": true,
         "kind": "major",
-        "text": "Kräuterkundige"
-       },
-       {
-        "text": "Sümpfe Grauwald",
-        "kind": "minor",
-        "pos": true
-       },
-       {
-        "text": "Fährtenlesen gelernt",
-        "kind": "major",
-        "pos": true
-       }
-      ],
-      "wunden": 10,
-      "name": "Mara",
-      "pillars": {
-       "wissen": 50,
-       "kampf": 40,
-       "sozial": 30
-      },
-      "sp": 4,
-      "inventar": [
-       "Seil"
-      ],
-      "taler": 50
-     },
-     "card": "Mara · Wissen 12gegen80 Erfolg (7 Erfolgsgrade) RechnungWissen50Fährtenlesen gelernt+20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SP SP +10 SP −10",
-     "after": {
-      "name": "Mara",
-      "wunden": 10,
-      "sp": 3,
-      "pillars": {
-       "wissen": 50,
-       "kampf": 40,
-       "sozial": 30
-      },
-      "inventar": [
-       "Seil"
-      ],
-      "speaker": "Anna",
-      "traits": [
-       {
-        "pos": true,
         "text": "Kräuterkundige",
+        "pos": true
+       },
+       {
+        "pos": true,
+        "text": "Fährtenlesen gelernt",
         "kind": "major"
        },
        {
-        "text": "Sümpfe Grauwald",
         "kind": "minor",
+        "text": "Angst vor offenem Wasser",
+        "pos": false
+       }
+      ],
+      "pillars": {
+       "kampf": 40,
+       "sozial": 30,
+       "wissen": 50
+      },
+      "sp": 4,
+      "speaker": "Anna",
+      "taler": 70,
+      "spMax": 6,
+      "name": "Mara",
+      "wunden": 10
+     },
+     "card": "Mara · Wissen 65gegen80 Erfolg (2 Erfolgsgrade) RechnungWissen50Fährtenlesen gelernt+20Schicksalspunkte (+1)+10Mara: 1 SP +10 je SP SP +10 SP −10",
+     "after": {
+      "inventar": [
+       "Seil",
+       "Laterne"
+      ],
+      "traits": [
+       {
+        "kind": "major",
+        "text": "Kräuterkundige",
         "pos": true
        },
        {
+        "pos": true,
         "text": "Fährtenlesen gelernt",
-        "kind": "major",
-        "pos": true
+        "kind": "major"
+       },
+       {
+        "pos": false,
+        "text": "Angst vor offenem Wasser",
+        "kind": "minor"
        }
       ],
-      "taler": 50,
-      "spMax": 6
+      "pillars": {
+       "kampf": 40,
+       "sozial": 30,
+       "wissen": 50
+      },
+      "sp": 3,
+      "speaker": "Anna",
+      "taler": 70,
+      "spMax": 6,
+      "name": "Mara",
+      "wunden": 10
      },
      "actorAfter": {
       "sp": 3,
@@ -393,71 +404,39 @@
       "kampf": 40,
       "sozial": 30,
       "wissen": 50,
-      "taler": 50,
+      "taler": 70,
       "traits": [
        [
         "Kräuterkundige",
         20
        ],
        [
-        "Sümpfe Grauwald",
-        10
-       ],
-       [
         "Fährtenlesen gelernt",
         20
+       ],
+       [
+        "Angst vor offenem Wasser",
+        -10
        ]
       ],
       "inv": [
-       "Seil"
+       "Seil",
+       "Laterne"
       ]
      }
     }
    ],
    "afterFigur": {
-    "speaker": "Anna",
-    "name": "Mara",
     "sp": 5,
+    "taler": 140,
     "spMax": 5,
-    "inventar": [],
-    "taler": 100,
-    "traits": [
-     {
-      "kind": "major",
-      "pos": true,
-      "text": "Kräuterkundige"
-     },
-     {
-      "text": "Sümpfe Grauwald",
-      "kind": "minor",
-      "pos": true
-     },
-     {
-      "kind": "major",
-      "pos": true,
-      "text": "Fährtenlesen gelernt"
-     }
-    ],
-    "wunden": 10,
     "pillars": {
-     "wissen": 50,
      "kampf": 40,
-     "sozial": 30
-    }
-   },
-   "chatInfo": [
-    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Sümpfe Grauwald, +Fährtenlesen gelernt) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)"
-   ],
-   "left": 10,
-   "afterBudget": {
-    "speaker": "Anna",
+     "sozial": 30,
+     "wissen": 50
+    },
     "name": "Mara",
-    "sp": 6,
-    "spMax": 6,
-    "inventar": [
-     "Seil"
-    ],
-    "taler": 50,
+    "speaker": "Anna",
     "traits": [
      {
       "text": "Kräuterkundige",
@@ -465,22 +444,91 @@
       "pos": true
      },
      {
-      "text": "Sümpfe Grauwald",
+      "kind": "major",
       "pos": true,
-      "kind": "minor"
+      "text": "Fährtenlesen gelernt"
      },
      {
-      "pos": true,
-      "text": "Fährtenlesen gelernt",
-      "kind": "major"
+      "text": "Angst vor offenem Wasser",
+      "kind": "minor",
+      "pos": false
      }
     ],
-    "wunden": 10,
-    "pillars": {
-     "wissen": 50,
-     "kampf": 40,
-     "sozial": 30
+    "inventar": [],
+    "wunden": 10
+   },
+   "chatInfo": [
+    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Fährtenlesen gelernt) · Taler 120 · Budget übrig 12 (verteilen mit /budget taler=N item=Name sp=N)"
+   ],
+   "merkmal": {
+    "cmd": "/sl /merkmal -Angst vor offenem Wasser",
+    "answer": "sl Merkmale: +Kräuterkundige (major), +Fährtenlesen gelernt (major), −Angst vor offenem Wasser · Budget übrig 14 · Taler 140",
+    "after": {
+     "sp": 5,
+     "taler": 140,
+     "spMax": 5,
+     "pillars": {
+      "kampf": 40,
+      "sozial": 30,
+      "wissen": 50
+     },
+     "name": "Mara",
+     "speaker": "Anna",
+     "traits": [
+      {
+       "text": "Kräuterkundige",
+       "kind": "major",
+       "pos": true
+      },
+      {
+       "kind": "major",
+       "pos": true,
+       "text": "Fährtenlesen gelernt"
+      },
+      {
+       "text": "Angst vor offenem Wasser",
+       "kind": "minor",
+       "pos": false
+      }
+     ],
+     "inventar": [],
+     "wunden": 10
     }
+   },
+   "left": 14,
+   "afterBudget": {
+    "sp": 6,
+    "taler": 70,
+    "spMax": 6,
+    "pillars": {
+     "kampf": 40,
+     "sozial": 30,
+     "wissen": 50
+    },
+    "name": "Mara",
+    "speaker": "Anna",
+    "traits": [
+     {
+      "kind": "major",
+      "text": "Kräuterkundige",
+      "pos": true
+     },
+     {
+      "text": "Fährtenlesen gelernt",
+      "kind": "major",
+      "pos": true
+     },
+     {
+      "text": "Angst vor offenem Wasser",
+      "pos": false,
+      "kind": "minor"
+     }
+    ],
+    "inventar": [
+     "Seil",
+     "Laterne"
+    ],
+    "wunden": 10
    },
    "actor": {
     "sp": 6,
@@ -489,23 +537,24 @@
     "kampf": 40,
     "sozial": 30,
     "wissen": 50,
-    "taler": 50,
+    "taler": 70,
     "traits": [
      [
       "Kräuterkundige",
       20
      ],
      [
-      "Sümpfe Grauwald",
-      10
-     ],
-     [
       "Fährtenlesen gelernt",
       20
+     ],
+     [
+      "Angst vor offenem Wasser",
+      -10
      ]
     ],
     "inv": [
-     "Seil"
+     "Seil",
+     "Laterne"
     ]
    }
   },
@@ -518,71 +567,81 @@
       "preview": "Zielwert: 60 (Schwierigkeit +20)"
      },
      "before": {
-      "spMax": 6,
-      "speaker": "Bert",
-      "traits": [
-       {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "text": "Meister Alchemist",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "text": "Königsgarde Mitglied",
-        "kind": "minor",
-        "pos": true
-       }
-      ],
-      "wunden": 10,
-      "name": "Torvin",
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "sp": 6,
       "inventar": [
        "Seil"
       ],
-      "taler": 50
+      "spMax": 6,
+      "taler": 10,
+      "speaker": "Bert",
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "wunden": 10,
+      "name": "Torvin",
+      "traits": [
+       {
+        "pos": true,
+        "text": "unbesungener Meisterschwertkämpfer",
+        "kind": "major"
+       },
+       {
+        "kind": "major",
+        "text": "Königsgarde Mitglied",
+        "pos": true
+       },
+       {
+        "kind": "major",
+        "text": "gefeierter Alchemist",
+        "pos": true
+       },
+       {
+        "pos": true,
+        "text": "Akademie von Velm",
+        "kind": "minor"
+       }
+      ],
+      "sp": 6
      },
-     "card": "Torvin · Sozial 84gegen60 Misserfolg (3 Misserfolgsgrade) RechnungSozial40Schwierigkeit+20 SP +10 SP −10",
+     "card": "Torvin · Sozial 88gegen60 Kritischer Misserfolg (3 Misserfolgsgrade) RechnungSozial40Schwierigkeit+20 SP +10 SP −10",
      "after": {
-      "spMax": 6,
-      "speaker": "Bert",
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
       "traits": [
        {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "text": "Meister Alchemist",
+        "text": "unbesungener Meisterschwertkämpfer",
         "kind": "major",
         "pos": true
        },
        {
         "text": "Königsgarde Mitglied",
+        "kind": "major",
+        "pos": true
+       },
+       {
+        "text": "gefeierter Alchemist",
+        "pos": true,
+        "kind": "major"
+       },
+       {
+        "text": "Akademie von Velm",
         "kind": "minor",
         "pos": true
        }
       ],
-      "wunden": 10,
-      "name": "Torvin",
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "sp": 6,
+      "spMax": 6,
+      "speaker": "Bert",
       "inventar": [
        "Seil"
       ],
-      "taler": 50
+      "name": "Torvin",
+      "wunden": 10,
+      "taler": 10,
+      "sp": 6
      },
      "actorAfter": {
       "sp": 6,
@@ -591,18 +650,22 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 50,
+      "taler": 10,
       "traits": [
        [
-        "unbesungener Kämpfer",
-        20
-       ],
-       [
-        "Meister Alchemist",
+        "unbesungener Meisterschwertkämpfer",
         20
        ],
        [
         "Königsgarde Mitglied",
+        20
+       ],
+       [
+        "gefeierter Alchemist",
+        20
+       ],
+       [
+        "Akademie von Velm",
         10
        ]
       ],
@@ -618,77 +681,87 @@
       "preview": "Zielwert: 50 (Schicksalspunkte (+1) +10)"
      },
      "before": {
-      "name": "Torvin",
-      "wunden": 10,
-      "sp": 6,
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
       "inventar": [
        "Seil"
       ],
-      "speaker": "Bert",
       "traits": [
        {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
+        "pos": true,
+        "text": "unbesungener Meisterschwertkämpfer",
+        "kind": "major"
        },
        {
-        "text": "Meister Alchemist",
         "kind": "major",
-        "pos": true
-       },
-       {
         "text": "Königsgarde Mitglied",
+        "pos": true
+       },
+       {
+        "pos": true,
+        "text": "gefeierter Alchemist",
+        "kind": "major"
+       },
+       {
         "kind": "minor",
+        "text": "Akademie von Velm",
         "pos": true
        }
       ],
-      "taler": 50,
-      "spMax": 6
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "sp": 6,
+      "speaker": "Bert",
+      "taler": 10,
+      "spMax": 6,
+      "name": "Torvin",
+      "wunden": 10
      },
      "slroll": {
-      "s": 5,
-      "roll": 69,
+      "p": 14,
       "answer": "NEIN",
       "rng": "jitter",
-      "p": 14
+      "roll": 28,
+      "s": 5
      },
      "after": {
-      "name": "Torvin",
-      "wunden": 10,
-      "sp": 5,
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
       "inventar": [
        "Seil"
       ],
+      "spMax": 6,
+      "taler": 10,
       "speaker": "Bert",
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "wunden": 10,
+      "name": "Torvin",
       "traits": [
        {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
+        "pos": true,
+        "text": "unbesungener Meisterschwertkämpfer",
+        "kind": "major"
        },
        {
-        "text": "Meister Alchemist",
-        "kind": "major",
-        "pos": true
-       },
-       {
+        "pos": true,
         "text": "Königsgarde Mitglied",
-        "kind": "minor",
-        "pos": true
+        "kind": "major"
+       },
+       {
+        "pos": true,
+        "kind": "major",
+        "text": "gefeierter Alchemist"
+       },
+       {
+        "pos": true,
+        "text": "Akademie von Velm",
+        "kind": "minor"
        }
       ],
-      "taler": 50,
-      "spMax": 6
+      "sp": 5
      },
      "actorAfter": {
       "sp": 5,
@@ -697,18 +770,22 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 50,
+      "taler": 10,
       "traits": [
        [
-        "unbesungener Kämpfer",
-        20
-       ],
-       [
-        "Meister Alchemist",
+        "unbesungener Meisterschwertkämpfer",
         20
        ],
        [
         "Königsgarde Mitglied",
+        20
+       ],
+       [
+        "gefeierter Alchemist",
+        20
+       ],
+       [
+        "Akademie von Velm",
         10
        ]
       ],
@@ -724,72 +801,82 @@
       "preview": "Zielwert: 50 (Schwierigkeit −20, Schicksalspunkte (+2) +20)"
      },
      "before": {
-      "spMax": 6,
-      "speaker": "Bert",
-      "traits": [
-       {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "text": "Meister Alchemist",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "text": "Königsgarde Mitglied",
-        "kind": "minor",
-        "pos": true
-       }
-      ],
-      "wunden": 10,
-      "name": "Torvin",
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "sp": 5,
       "inventar": [
        "Seil"
       ],
-      "taler": 50
-     },
-     "card": "Torvin · Kampf 66gegen50 Kritischer Misserfolg (2 Misserfolgsgrade) RechnungKampf50Schwierigkeit−20Schicksalspunkte (+2)+20Torvin: 2 SP +10 je SP SP +10 SP −10",
-     "cardAfterSp": "Torvin · Kampf 66gegen60 Kritischer Misserfolg (1 Misserfolgsgrad) RechnungKampf50Schwierigkeit−20Schicksalspunkte (+2)+20Torvin: 2 SP +10 je SPTorvin: 1 SP +10 je SP SP +10 SP −10",
-     "after": {
-      "name": "Torvin",
-      "wunden": 10,
-      "sp": 2,
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "inventar": [
-       "Seil"
-      ],
-      "speaker": "Bert",
       "traits": [
        {
         "pos": true,
-        "kind": "major",
-        "text": "unbesungener Kämpfer"
+        "text": "unbesungener Meisterschwertkämpfer",
+        "kind": "major"
        },
        {
-        "text": "Meister Alchemist",
+        "text": "Königsgarde Mitglied",
+        "kind": "major",
+        "pos": true
+       },
+       {
+        "kind": "major",
+        "text": "gefeierter Alchemist",
+        "pos": true
+       },
+       {
+        "kind": "minor",
+        "text": "Akademie von Velm",
+        "pos": true
+       }
+      ],
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "sp": 5,
+      "speaker": "Bert",
+      "taler": 10,
+      "spMax": 6,
+      "name": "Torvin",
+      "wunden": 10
+     },
+     "card": "Torvin · Kampf 27gegen50 Erfolg (3 Erfolgsgrade) RechnungKampf50Schwierigkeit−20Schicksalspunkte (+2)+20Torvin: 2 SP +10 je SP SP +10 SP −10",
+     "cardAfterSp": "Torvin · Kampf 27gegen60 Erfolg (4 Erfolgsgrade) RechnungKampf50Schwierigkeit−20Schicksalspunkte (+2)+20Torvin: 2 SP +10 je SPTorvin: 1 SP +10 je SP SP +10 SP −10",
+     "after": {
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "traits": [
+       {
+        "kind": "major",
+        "pos": true,
+        "text": "unbesungener Meisterschwertkämpfer"
+       },
+       {
+        "pos": true,
+        "kind": "major",
+        "text": "Königsgarde Mitglied"
+       },
+       {
+        "text": "gefeierter Alchemist",
         "pos": true,
         "kind": "major"
        },
        {
         "kind": "minor",
         "pos": true,
-        "text": "Königsgarde Mitglied"
+        "text": "Akademie von Velm"
        }
       ],
-      "taler": 50,
-      "spMax": 6
+      "spMax": 6,
+      "speaker": "Bert",
+      "inventar": [
+       "Seil"
+      ],
+      "name": "Torvin",
+      "wunden": 10,
+      "taler": 10,
+      "sp": 2
      },
      "actorAfter": {
       "sp": 2,
@@ -798,18 +885,22 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 50,
+      "taler": 10,
       "traits": [
        [
-        "unbesungener Kämpfer",
-        20
-       ],
-       [
-        "Meister Alchemist",
+        "unbesungener Meisterschwertkämpfer",
         20
        ],
        [
         "Königsgarde Mitglied",
+        20
+       ],
+       [
+        "gefeierter Alchemist",
+        20
+       ],
+       [
+        "Akademie von Velm",
         10
        ]
       ],
@@ -825,71 +916,81 @@
       "preview": "Zielwert: 30 (keine Modifikatoren)"
      },
      "before": {
-      "name": "Torvin",
-      "wunden": 10,
-      "sp": 2,
       "pillars": {
-       "sozial": 40,
        "wissen": 30,
-       "kampf": 50
+       "kampf": 50,
+       "sozial": 40
       },
-      "inventar": [
-       "Seil"
-      ],
-      "speaker": "Bert",
       "traits": [
        {
-        "text": "unbesungener Kämpfer",
         "kind": "major",
+        "text": "unbesungener Meisterschwertkämpfer",
         "pos": true
-       },
-       {
-        "text": "Meister Alchemist",
-        "pos": true,
-        "kind": "major"
-       },
-       {
-        "pos": true,
-        "kind": "minor",
-        "text": "Königsgarde Mitglied"
-       }
-      ],
-      "taler": 50,
-      "spMax": 6
-     },
-     "card": "Torvin · Wissen 59gegen30 Misserfolg (3 Misserfolgsgrade) RechnungWissen30 SP +10 SP −10",
-     "after": {
-      "spMax": 6,
-      "speaker": "Bert",
-      "traits": [
-       {
-        "text": "unbesungener Kämpfer",
-        "kind": "major",
-        "pos": true
-       },
-       {
-        "kind": "major",
-        "pos": true,
-        "text": "Meister Alchemist"
        },
        {
         "text": "Königsgarde Mitglied",
+        "kind": "major",
+        "pos": true
+       },
+       {
+        "pos": true,
+        "text": "gefeierter Alchemist",
+        "kind": "major"
+       },
+       {
+        "kind": "minor",
+        "text": "Akademie von Velm",
+        "pos": true
+       }
+      ],
+      "spMax": 6,
+      "speaker": "Bert",
+      "inventar": [
+       "Seil"
+      ],
+      "name": "Torvin",
+      "wunden": 10,
+      "taler": 10,
+      "sp": 2
+     },
+     "card": "Torvin · Wissen 80gegen30 Misserfolg (6 Misserfolgsgrade) RechnungWissen30 SP +10 SP −10",
+     "after": {
+      "pillars": {
+       "wissen": 30,
+       "kampf": 50,
+       "sozial": 40
+      },
+      "traits": [
+       {
+        "kind": "major",
+        "text": "unbesungener Meisterschwertkämpfer",
+        "pos": true
+       },
+       {
+        "pos": true,
+        "text": "Königsgarde Mitglied",
+        "kind": "major"
+       },
+       {
+        "kind": "major",
+        "text": "gefeierter Alchemist",
+        "pos": true
+       },
+       {
+        "text": "Akademie von Velm",
         "kind": "minor",
         "pos": true
        }
       ],
-      "wunden": 10,
-      "name": "Torvin",
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "sp": 2,
+      "spMax": 6,
+      "speaker": "Bert",
       "inventar": [
        "Seil"
       ],
-      "taler": 50
+      "name": "Torvin",
+      "wunden": 10,
+      "taler": 10,
+      "sp": 2
      },
      "actorAfter": {
       "sp": 2,
@@ -898,18 +999,22 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 50,
+      "taler": 10,
       "traits": [
        [
-        "unbesungener Kämpfer",
-        20
-       ],
-       [
-        "Meister Alchemist",
+        "unbesungener Meisterschwertkämpfer",
         20
        ],
        [
         "Königsgarde Mitglied",
+        20
+       ],
+       [
+        "gefeierter Alchemist",
+        20
+       ],
+       [
+        "Akademie von Velm",
         10
        ]
       ],
@@ -920,76 +1025,127 @@
     }
    ],
    "afterFigur": {
-    "name": "Torvin",
-    "wunden": 10,
-    "sp": 5,
-    "pillars": {
-     "sozial": 40,
-     "wissen": 30,
-     "kampf": 50
-    },
     "inventar": [],
+    "spMax": 5,
+    "taler": 60,
     "speaker": "Bert",
+    "pillars": {
+     "wissen": 30,
+     "kampf": 50,
+     "sozial": 40
+    },
+    "wunden": 10,
+    "name": "Torvin",
     "traits": [
      {
-      "text": "unbesungener Kämpfer",
+      "text": "unbesungener Meisterschwertkämpfer",
       "kind": "major",
       "pos": true
      },
      {
-      "text": "Meister Alchemist",
+      "kind": "major",
+      "pos": true,
+      "text": "Königsgarde Mitglied"
+     },
+     {
+      "text": "gefeierter Alchemist",
       "kind": "major",
       "pos": true
      },
      {
-      "text": "Königsgarde Mitglied",
+      "text": "Akademie von Velm",
       "kind": "minor",
       "pos": true
      }
     ],
-    "taler": 100,
-    "spMax": 5
+    "sp": 5
    },
    "chatInfo": [
-    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Sümpfe Grauwald, +Fährtenlesen gelernt) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)",
-    "sl Budget: 50 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
-    "Mara · Sozial (von sl gewürfelt) 80 gegen 30 Misserfolg (6 Misserfolgsgrade)",
-    "Orakel Habe ich Armbrust dabei? NEIN+ sehr unwahrscheinlich · 14 % · Wurf 98",
-    "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Kämpfer, +Meister Alchemist, +Königsgarde Mitglied) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)"
+    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Fährtenlesen gelernt) · Taler 120 · Budget übrig 12 (verteilen mit /budget taler=N item=Name sp=N)",
+    "sl Merkmale: +Kräuterkundige (major), +Fährtenlesen gelernt (major), −Angst vor offenem Wasser · Budget übrig 14 · Taler 140",
+    "sl Budget: 70 Taler · Seil, Laterne · SP-Max 6 (übrige Punkte als Taler)",
+    "Mara · Sozial (von sl gewürfelt) 79 gegen 30 Misserfolg (5 Misserfolgsgrade)",
+    "Orakel Habe ich Armbrust dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 51",
+    "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Meisterschwertkämpfer, +Königsgarde Mitglied, +gefeierter Alchemist, +Akademie von Velm) · Taler 60 · Budget übrig 6 (verteilen mit /budget taler=N item=Name sp=N)"
    ],
-   "left": 10,
+   "left": 6,
+   "overspend": {
+    "cmd": "/sl /budget taler=5 item=Drachenschwert,Plattenrüstung,Ross sp=2",
+    "answer": "sl /budget: nur 6 Punkte übrig (Taler 1, Gegenstand 2, +1 SP-Max 3)",
+    "after": {
+     "inventar": [],
+     "traits": [
+      {
+       "kind": "major",
+       "text": "unbesungener Meisterschwertkämpfer",
+       "pos": true
+      },
+      {
+       "pos": true,
+       "text": "Königsgarde Mitglied",
+       "kind": "major"
+      },
+      {
+       "text": "gefeierter Alchemist",
+       "pos": true,
+       "kind": "major"
+      },
+      {
+       "pos": true,
+       "kind": "minor",
+       "text": "Akademie von Velm"
+      }
+     ],
+     "pillars": {
+      "wissen": 30,
+      "kampf": 50,
+      "sozial": 40
+     },
+     "sp": 5,
+     "speaker": "Bert",
+     "taler": 60,
+     "spMax": 5,
+     "name": "Torvin",
+     "wunden": 10
+    }
+   },
    "afterBudget": {
-    "name": "Torvin",
-    "wunden": 10,
-    "sp": 6,
-    "pillars": {
-     "sozial": 40,
-     "wissen": 30,
-     "kampf": 50
-    },
     "inventar": [
      "Seil"
     ],
-    "speaker": "Bert",
     "traits": [
      {
-      "text": "unbesungener Kämpfer",
+      "text": "unbesungener Meisterschwertkämpfer",
       "kind": "major",
       "pos": true
      },
      {
-      "text": "Meister Alchemist",
       "kind": "major",
+      "pos": true,
+      "text": "Königsgarde Mitglied"
+     },
+     {
+      "kind": "major",
+      "text": "gefeierter Alchemist",
       "pos": true
      },
      {
-      "text": "Königsgarde Mitglied",
-      "kind": "minor",
-      "pos": true
+      "pos": true,
+      "text": "Akademie von Velm",
+      "kind": "minor"
      }
     ],
-    "taler": 50,
-    "spMax": 6
+    "pillars": {
+     "wissen": 30,
+     "kampf": 50,
+     "sozial": 40
+    },
+    "sp": 6,
+    "speaker": "Bert",
+    "taler": 10,
+    "spMax": 6,
+    "name": "Torvin",
+    "wunden": 10
    },
    "actor": {
     "sp": 6,
@@ -998,18 +1154,22 @@
     "kampf": 50,
     "sozial": 40,
     "wissen": 30,
-    "taler": 50,
+    "taler": 10,
     "traits": [
      [
-      "unbesungener Kämpfer",
-      20
-     ],
-     [
-      "Meister Alchemist",
+      "unbesungener Meisterschwertkämpfer",
       20
      ],
      [
       "Königsgarde Mitglied",
+      20
+     ],
+     [
+      "gefeierter Alchemist",
+      20
+     ],
+     [
+      "Akademie von Velm",
       10
      ]
     ],
@@ -1027,75 +1187,75 @@
       "preview": "Zielwert: 60 (Schwierigkeit +20)"
      },
      "before": {
-      "wunden": 10,
-      "taler": 100,
-      "name": "Ilse",
       "inventar": [
        "Heiltrank",
        "Seil",
        "Laterne"
       ],
-      "traits": [
-       {
-        "kind": "major",
-        "text": "Botin",
-        "pos": true
-       },
-       {
-        "text": "Behinderte Hand",
-        "kind": "major",
-        "pos": false
-       },
-       {
-        "kind": "minor",
-        "pos": false,
-        "text": "Schulden bei Wucherern"
-       }
-      ],
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
+      "spMax": 7,
+      "taler": 120,
       "speaker": "Clara",
-      "sp": 7,
-      "spMax": 7
-     },
-     "card": "Ilse · Sozial 13gegen60 Erfolg (5 Erfolgsgrade) RechnungSozial40Schwierigkeit+20 SP +10 SP −10",
-     "after": {
       "pillars": {
-       "sozial": 40,
+       "kampf": 50,
        "wissen": 30,
-       "kampf": 50
+       "sozial": 40
       },
-      "sp": 7,
+      "wunden": 10,
       "name": "Ilse",
-      "inventar": [
-       "Heiltrank",
-       "Seil",
-       "Laterne"
-      ],
-      "taler": 100,
       "traits": [
        {
-        "text": "Botin",
         "kind": "major",
-        "pos": true
+        "pos": true,
+        "text": "Botin"
        },
        {
+        "text": "Taube, krumme rechte Hand",
         "kind": "major",
-        "text": "Behinderte Hand",
         "pos": false
        },
        {
         "text": "Schulden bei Wucherern",
-        "kind": "minor",
+        "kind": "major",
         "pos": false
        }
       ],
-      "speaker": "Clara",
+      "sp": 7
+     },
+     "card": "Ilse · Sozial 54gegen60 Erfolg (1 Erfolgsgrad) RechnungSozial40Schwierigkeit+20 SP +10 SP −10",
+     "after": {
+      "pillars": {
+       "kampf": 50,
+       "wissen": 30,
+       "sozial": 40
+      },
+      "traits": [
+       {
+        "text": "Botin",
+        "pos": true,
+        "kind": "major"
+       },
+       {
+        "pos": false,
+        "text": "Taube, krumme rechte Hand",
+        "kind": "major"
+       },
+       {
+        "pos": false,
+        "text": "Schulden bei Wucherern",
+        "kind": "major"
+       }
+      ],
       "spMax": 7,
-      "wunden": 10
+      "speaker": "Clara",
+      "inventar": [
+       "Heiltrank",
+       "Seil",
+       "Laterne"
+      ],
+      "name": "Ilse",
+      "wunden": 10,
+      "taler": 120,
+      "sp": 7
      },
      "actorAfter": {
       "sp": 7,
@@ -1104,19 +1264,19 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 100,
+      "taler": 120,
       "traits": [
        [
         "Botin",
         20
        ],
        [
-        "Behinderte Hand",
+        "Taube, krumme rechte Hand",
         -20
        ],
        [
         "Schulden bei Wucherern",
-        -10
+        -20
        ]
       ],
       "inv": [
@@ -1134,80 +1294,80 @@
      },
      "before": {
       "pillars": {
-       "sozial": 40,
+       "kampf": 50,
        "wissen": 30,
-       "kampf": 50
+       "sozial": 40
       },
-      "sp": 7,
-      "name": "Ilse",
-      "inventar": [
-       "Heiltrank",
-       "Seil",
-       "Laterne"
-      ],
-      "taler": 100,
       "traits": [
        {
-        "pos": true,
-        "kind": "major",
-        "text": "Botin"
-       },
-       {
-        "kind": "major",
-        "text": "Behinderte Hand",
-        "pos": false
-       },
-       {
-        "text": "Schulden bei Wucherern",
-        "kind": "minor",
-        "pos": false
-       }
-      ],
-      "speaker": "Clara",
-      "spMax": 7,
-      "wunden": 10
-     },
-     "slroll": {
-      "answer": "erwartet",
-      "roll": 96,
-      "p": -1,
-      "s": 5,
-      "rng": "jitter"
-     },
-     "after": {
-      "wunden": 10,
-      "taler": 100,
-      "name": "Ilse",
-      "inventar": [
-       "Heiltrank",
-       "Seil",
-       "Laterne"
-      ],
-      "traits": [
-       {
-        "kind": "major",
         "text": "Botin",
+        "kind": "major",
         "pos": true
        },
        {
-        "kind": "major",
         "pos": false,
-        "text": "Behinderte Hand"
+        "text": "Taube, krumme rechte Hand",
+        "kind": "major"
        },
        {
         "text": "Schulden bei Wucherern",
-        "kind": "minor",
+        "pos": false,
+        "kind": "major"
+       }
+      ],
+      "spMax": 7,
+      "speaker": "Clara",
+      "inventar": [
+       "Heiltrank",
+       "Seil",
+       "Laterne"
+      ],
+      "name": "Ilse",
+      "wunden": 10,
+      "taler": 120,
+      "sp": 7
+     },
+     "slroll": {
+      "answer": "NEIN",
+      "s": 5,
+      "roll": 54,
+      "p": 50,
+      "rng": "jitter"
+     },
+     "after": {
+      "pillars": {
+       "kampf": 50,
+       "wissen": 30,
+       "sozial": 40
+      },
+      "name": "Ilse",
+      "traits": [
+       {
+        "text": "Botin",
+        "pos": true,
+        "kind": "major"
+       },
+       {
+        "pos": false,
+        "kind": "major",
+        "text": "Taube, krumme rechte Hand"
+       },
+       {
+        "kind": "major",
+        "text": "Schulden bei Wucherern",
         "pos": false
        }
       ],
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
+      "inventar": [
+       "Heiltrank",
+       "Seil",
+       "Laterne"
+      ],
+      "taler": 120,
+      "spMax": 7,
       "speaker": "Clara",
       "sp": 6,
-      "spMax": 7
+      "wunden": 10
      },
      "actorAfter": {
       "sp": 6,
@@ -1216,19 +1376,19 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 100,
+      "taler": 120,
       "traits": [
        [
         "Botin",
         20
        ],
        [
-        "Behinderte Hand",
+        "Taube, krumme rechte Hand",
         -20
        ],
        [
         "Schulden bei Wucherern",
-        -10
+        -20
        ]
       ],
       "inv": [
@@ -1246,18 +1406,56 @@
      },
      "before": {
       "pillars": {
-       "sozial": 40,
+       "kampf": 50,
        "wissen": 30,
-       "kampf": 50
+       "sozial": 40
       },
-      "sp": 6,
-      "name": "Ilse",
+      "traits": [
+       {
+        "pos": true,
+        "text": "Botin",
+        "kind": "major"
+       },
+       {
+        "text": "Taube, krumme rechte Hand",
+        "kind": "major",
+        "pos": false
+       },
+       {
+        "kind": "major",
+        "pos": false,
+        "text": "Schulden bei Wucherern"
+       }
+      ],
+      "spMax": 7,
+      "speaker": "Clara",
       "inventar": [
        "Heiltrank",
        "Seil",
        "Laterne"
       ],
-      "taler": 100,
+      "name": "Ilse",
+      "wunden": 10,
+      "taler": 120,
+      "sp": 6
+     },
+     "card": "Ilse · Kampf 2gegen30 Erfolg (3 Erfolgsgrade) RechnungKampf50Schwierigkeit−20 SP +10 SP −10",
+     "cardAfterSp": "Ilse · Kampf 2gegen40 Erfolg (4 Erfolgsgrade) RechnungKampf50Schwierigkeit−20Ilse: 1 SP +10 je SP SP +10 SP −10",
+     "after": {
+      "inventar": [
+       "Heiltrank",
+       "Seil",
+       "Laterne"
+      ],
+      "wunden": 10,
+      "pillars": {
+       "kampf": 50,
+       "wissen": 30,
+       "sozial": 40
+      },
+      "taler": 120,
+      "speaker": "Clara",
+      "name": "Ilse",
       "traits": [
        {
         "kind": "major",
@@ -1265,56 +1463,18 @@
         "pos": true
        },
        {
-        "text": "Behinderte Hand",
-        "kind": "major",
-        "pos": false
-       },
-       {
-        "text": "Schulden bei Wucherern",
-        "kind": "minor",
-        "pos": false
-       }
-      ],
-      "speaker": "Clara",
-      "spMax": 7,
-      "wunden": 10
-     },
-     "card": "Ilse · Kampf 91gegen30 Misserfolg (7 Misserfolgsgrade) RechnungKampf50Schwierigkeit−20 SP +10 SP −10",
-     "cardAfterSp": "Ilse · Kampf 91gegen40 Misserfolg (6 Misserfolgsgrade) RechnungKampf50Schwierigkeit−20Ilse: 1 SP +10 je SP SP +10 SP −10",
-     "after": {
-      "spMax": 7,
-      "inventar": [
-       "Heiltrank",
-       "Seil",
-       "Laterne"
-      ],
-      "wunden": 10,
-      "sp": 5,
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
-      "speaker": "Clara",
-      "traits": [
-       {
-        "text": "Botin",
-        "pos": true,
-        "kind": "major"
-       },
-       {
-        "kind": "major",
-        "text": "Behinderte Hand",
-        "pos": false
-       },
-       {
-        "kind": "minor",
         "pos": false,
-        "text": "Schulden bei Wucherern"
+        "kind": "major",
+        "text": "Taube, krumme rechte Hand"
+       },
+       {
+        "kind": "major",
+        "text": "Schulden bei Wucherern",
+        "pos": false
        }
       ],
-      "taler": 100,
-      "name": "Ilse"
+      "spMax": 7,
+      "sp": 5
      },
      "actorAfter": {
       "sp": 5,
@@ -1323,19 +1483,19 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 100,
+      "taler": 120,
       "traits": [
        [
         "Botin",
         20
        ],
        [
-        "Behinderte Hand",
+        "Taube, krumme rechte Hand",
         -20
        ],
        [
         "Schulden bei Wucherern",
-        -10
+        -20
        ]
       ],
       "inv": [
@@ -1352,11 +1512,11 @@
       "preview": "Zielwert: 40 (Schicksalspunkte (+1) +10)"
      },
      "before": {
-      "name": "Ilse",
-      "spMax": 7,
-      "taler": 100,
-      "speaker": "Clara",
-      "wunden": 10,
+      "pillars": {
+       "kampf": 50,
+       "wissen": 30,
+       "sozial": 40
+      },
       "traits": [
        {
         "text": "Botin",
@@ -1364,38 +1524,45 @@
         "kind": "major"
        },
        {
-        "kind": "major",
+        "text": "Taube, krumme rechte Hand",
         "pos": false,
-        "text": "Behinderte Hand"
+        "kind": "major"
        },
        {
         "text": "Schulden bei Wucherern",
-        "pos": false,
-        "kind": "minor"
+        "kind": "major",
+        "pos": false
        }
       ],
-      "pillars": {
-       "sozial": 40,
-       "wissen": 30,
-       "kampf": 50
-      },
+      "spMax": 7,
+      "speaker": "Clara",
       "inventar": [
        "Heiltrank",
        "Seil",
        "Laterne"
       ],
+      "name": "Ilse",
+      "wunden": 10,
+      "taler": 120,
       "sp": 5
      },
-     "card": "Ilse · Wissen 60gegen40 Misserfolg (3 Misserfolgsgrade) RechnungWissen30Schicksalspunkte (+1)+10Ilse: 1 SP +10 je SP SP +10 SP −10",
+     "card": "Ilse · Wissen 17gegen40 Erfolg (3 Erfolgsgrade) RechnungWissen30Schicksalspunkte (+1)+10Ilse: 1 SP +10 je SP SP +10 SP −10",
      "after": {
-      "wunden": 10,
+      "inventar": [
+       "Heiltrank",
+       "Seil",
+       "Laterne"
+      ],
+      "spMax": 7,
+      "taler": 120,
       "speaker": "Clara",
       "pillars": {
-       "sozial": 40,
+       "kampf": 50,
        "wissen": 30,
-       "kampf": 50
+       "sozial": 40
       },
-      "taler": 100,
+      "wunden": 10,
+      "name": "Ilse",
       "traits": [
        {
         "text": "Botin",
@@ -1404,23 +1571,16 @@
        },
        {
         "kind": "major",
-        "pos": false,
-        "text": "Behinderte Hand"
+        "text": "Taube, krumme rechte Hand",
+        "pos": false
        },
        {
         "text": "Schulden bei Wucherern",
-        "pos": false,
-        "kind": "minor"
+        "kind": "major",
+        "pos": false
        }
       ],
-      "name": "Ilse",
-      "sp": 4,
-      "spMax": 7,
-      "inventar": [
-       "Heiltrank",
-       "Seil",
-       "Laterne"
-      ]
+      "sp": 4
      },
      "actorAfter": {
       "sp": 4,
@@ -1429,19 +1589,19 @@
       "kampf": 50,
       "sozial": 40,
       "wissen": 30,
-      "taler": 100,
+      "taler": 120,
       "traits": [
        [
         "Botin",
         20
        ],
        [
-        "Behinderte Hand",
+        "Taube, krumme rechte Hand",
         -20
        ],
        [
         "Schulden bei Wucherern",
-        -10
+        -20
        ]
       ],
       "inv": [
@@ -1453,85 +1613,88 @@
     }
    ],
    "afterFigur": {
-    "taler": 220,
+    "pillars": {
+     "kampf": 50,
+     "wissen": 30,
+     "sozial": 40
+    },
     "traits": [
      {
-      "kind": "major",
       "text": "Botin",
+      "kind": "major",
       "pos": true
      },
      {
-      "kind": "major",
-      "text": "Behinderte Hand",
-      "pos": false
+      "text": "Taube, krumme rechte Hand",
+      "pos": false,
+      "kind": "major"
      },
      {
-      "kind": "minor",
+      "kind": "major",
       "text": "Schulden bei Wucherern",
       "pos": false
      }
     ],
-    "sp": 5,
+    "spMax": 5,
     "speaker": "Clara",
     "inventar": [],
     "name": "Ilse",
-    "spMax": 5,
     "wunden": 10,
-    "pillars": {
-     "sozial": 40,
-     "wissen": 30,
-     "kampf": 50
-    }
+    "taler": 240,
+    "sp": 5
    },
    "chatInfo": [
-    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Sümpfe Grauwald, +Fährtenlesen gelernt) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)",
-    "sl Budget: 50 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
-    "Mara · Sozial (von sl gewürfelt) 80 gegen 30 Misserfolg (6 Misserfolgsgrade)",
-    "Orakel Habe ich Armbrust dabei? NEIN+ sehr unwahrscheinlich · 14 % · Wurf 98",
-    "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Kämpfer, +Meister Alchemist, +Königsgarde Mitglied) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)",
-    "sl Budget: 50 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
-    "Orakel Habe ich Siegel dabei? JA sehr unwahrscheinlich · 14 % · Wurf 14",
-    "Orakel Akzeptiert der Wirt Torvins Rang und Wunsch? NEIN unwahrscheinlich · 29 % · Wurf 75",
-    "Orakel Habe ich Amulett dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 69",
-    "Torvin · Sozial (von sl gewürfelt) 44 gegen 50 Kritischer Erfolg (1 Erfolgsgrad)",
-    "Orakel Habe ich Schwert dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 66",
-    "sl Figur Ilse: Ilse (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +Botin, −Behinderte Hand, −Schulden bei Wucherern) · Taler 220 · Budget übrig 22 (verteilen mit /budget taler=N item=Name sp=N)"
+    "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Fährtenlesen gelernt) · Taler 120 · Budget übrig 12 (verteilen mit /budget taler=N item=Name sp=N)",
+    "sl Merkmale: +Kräuterkundige (major), +Fährtenlesen gelernt (major), −Angst vor offenem Wasser · Budget übrig 14 · Taler 140",
+    "sl Budget: 70 Taler · Seil, Laterne · SP-Max 6 (übrige Punkte als Taler)",
+    "Mara · Sozial (von sl gewürfelt) 79 gegen 30 Misserfolg (5 Misserfolgsgrade)",
+    "Orakel Habe ich Armbrust dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 51",
+    "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Meisterschwertkämpfer, +Königsgarde Mitglied, +gefeierter Alchemist, +Akademie von Velm) · Taler 60 · Budget übrig 6 (verteilen mit /budget taler=N item=Name sp=N)",
+    "sl /budget: nur 6 Punkte übrig (Taler 1, Gegenstand 2, +1 SP-Max 3)",
+    "sl Budget: 10 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
+    "Orakel Habe ich Siegel dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 32",
+    "Orakel Habe ich Amulett dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 28",
+    "Torvin · Sozial (von sl gewürfelt) 48 gegen 50 Erfolg (1 Erfolgsgrad)",
+    "Orakel Habe ich Schwert dabei? JA+ sehr unwahrscheinlich · 14 % · Wurf 1",
+    "Torvin · Kampf · Als der Dieb durch den Hof flieht, springe ich vom Balkon … (von sl gewürfelt) 62 gegen 50 Misserfolg (2 Misserfolgsgrade)",
+    "Orakel Ist der Fremde noch in Reichweite? NEIN offen · 50 % · Wurf 54",
+    "sl Figur Ilse: Ilse (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +Botin, −Taube, krumme rechte Hand, −Schulden bei Wucherern) · Taler 240 · Budget übrig 24 (verteilen mit /budget taler=N item=Name sp=N)"
    ],
-   "left": 22,
+   "left": 24,
    "afterBudget": {
+    "spMax": 7,
+    "traits": [
+     {
+      "pos": true,
+      "text": "Botin",
+      "kind": "major"
+     },
+     {
+      "kind": "major",
+      "text": "Taube, krumme rechte Hand",
+      "pos": false
+     },
+     {
+      "kind": "major",
+      "text": "Schulden bei Wucherern",
+      "pos": false
+     }
+    ],
+    "taler": 120,
     "wunden": 10,
-    "taler": 100,
     "name": "Ilse",
     "inventar": [
      "Heiltrank",
      "Seil",
      "Laterne"
     ],
-    "traits": [
-     {
-      "kind": "major",
-      "pos": true,
-      "text": "Botin"
-     },
-     {
-      "text": "Behinderte Hand",
-      "kind": "major",
-      "pos": false
-     },
-     {
-      "kind": "minor",
-      "text": "Schulden bei Wucherern",
-      "pos": false
-     }
-    ],
     "pillars": {
-     "sozial": 40,
+     "kampf": 50,
      "wissen": 30,
-     "kampf": 50
+     "sozial": 40
     },
-    "speaker": "Clara",
     "sp": 7,
-    "spMax": 7
+    "speaker": "Clara"
    },
    "actor": {
     "sp": 7,
@@ -1540,19 +1703,19 @@
     "kampf": 50,
     "sozial": 40,
     "wissen": 30,
-    "taler": 100,
+    "taler": 120,
     "traits": [
      [
       "Botin",
       20
      ],
      [
-      "Behinderte Hand",
+      "Taube, krumme rechte Hand",
       -20
      ],
      [
       "Schulden bei Wucherern",
-      -10
+      -20
      ]
     ],
     "inv": [
@@ -1564,6 +1727,114 @@
   }
  },
  "leaks": [],
+ "rolls": [
+  {
+   "N": "Mara",
+   "pillar": "wissen",
+   "tw": [
+    "Kräuterkundige"
+   ],
+   "dif": -20,
+   "fit": [
+    "Kräuterkundige"
+   ],
+   "expected": 50,
+   "got": 50,
+   "ok": true,
+   "degOk": true,
+   "r": {
+    "target": 50,
+    "sp_left": 3,
+    "roll": 78,
+    "success": false,
+    "crit": null,
+    "speaker": "Mara",
+    "dof": 3,
+    "source": "sl",
+    "reason": "Testprobe",
+    "dos": 0,
+    "pillar": "wissen"
+   }
+  },
+  {
+   "N": "Mara",
+   "pillar": "kampf",
+   "tw": [],
+   "dif": 0,
+   "fit": [],
+   "expected": 40,
+   "got": 40,
+   "ok": true,
+   "degOk": true,
+   "r": {
+    "target": 40,
+    "sp_left": 3,
+    "roll": 20,
+    "success": true,
+    "crit": null,
+    "speaker": "Mara",
+    "dof": 0,
+    "source": "sl",
+    "reason": "Testprobe",
+    "dos": 3,
+    "pillar": "kampf"
+   }
+  },
+  {
+   "N": "Ilse",
+   "pillar": "kampf",
+   "tw": [
+    "Behinderte Hand"
+   ],
+   "dif": 0,
+   "fit": [],
+   "expected": 50,
+   "got": 30,
+   "ok": false,
+   "degOk": true,
+   "r": {
+    "reason": "Testprobe",
+    "pillar": "kampf",
+    "dos": 0,
+    "sp_left": 4,
+    "speaker": "Ilse",
+    "source": "sl",
+    "roll": 98,
+    "dof": 7,
+    "crit": null,
+    "target": 30,
+    "success": false
+   }
+  },
+  {
+   "N": "Torvin",
+   "pillar": "kampf",
+   "tw": [
+    "Meisterschwertkämpfer"
+   ],
+   "dif": -30,
+   "fit": [
+    "unbesungener Meisterschwertkämpfer"
+   ],
+   "expected": 40,
+   "got": 40,
+   "ok": true,
+   "degOk": true,
+   "r": {
+    "reason": "Testprobe",
+    "pillar": "kampf",
+    "dos": 1,
+    "sp_left": 2,
+    "speaker": "Torvin",
+    "source": "sl",
+    "roll": 35,
+    "dof": 0,
+    "crit": null,
+    "target": 40,
+    "success": true
+   }
+  }
+ ],
  "chat": [
   {
    "a": "Anna",
@@ -1575,14 +1846,14 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Sümpfe Grauwald, +Fährtenlesen gelernt) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)",
+   "t": "sl Figur Mara: Mara (Kampf 40 · Sozial 30 · Wissen 50; SP 5/5; Wunden 10/10; +Kräuterkundige, +Fährtenlesen gelernt) · Taler 120 · Budget übrig 12 (verteilen mit /budget taler=N item=Name sp=N)",
    "f": [
     "card"
    ]
   },
   {
    "a": "Mara",
-   "t": "/budget taler=1 item=Seil sp=1",
+   "t": "/merkmal -Angst vor offenem Wasser",
    "f": [
     "say",
     "text"
@@ -1590,7 +1861,22 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Budget: 50 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
+   "t": "sl Merkmale: +Kräuterkundige (major), +Fährtenlesen gelernt (major), −Angst vor offenem Wasser · Budget übrig 14 · Taler 140",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Mara",
+   "t": "/budget taler=3 item=Seil,Laterne sp=1",
+   "f": [
+    "say",
+    "text"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "sl Budget: 70 Taler · Seil, Laterne · SP-Max 6 (übrige Punkte als Taler)",
    "f": [
     "card"
    ]
@@ -1605,21 +1891,21 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Die Schenke ist erfüllt vom dumpfen Lärm der Seeleute und dem Duft von billigem Schilcher. Du sitzt in einer dunklen Nische, dein Kräutertee dampft kaum merklich auf. Ein Fremder, dessen Mantel durch die Kerzenschein gelblich wirkt, lehnt am Kamin und beobachtet das donnernde Meer. Seine Augen sind tief und scheinen die Hitze des Kamins nicht zu suchen.",
+   "t": "Die Luft in der Schenke ist dick von abgestandenem Bier und dem Geruch von Kohle. Der Fremde am Kamin ist kaum mehr als eine schattige Masse, seine Bewegungen sind langsam und bedächtig. Du spürst die Kälte des Steins durch die dünne Sohle deiner Stiefel. Dein Kräutertee dampft, ein kleiner, fast unmerkbarer Rauchschwaden steigt auf.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Mara",
-   "t": "Mara · Wissen 34 gegen 90 Erfolg (6 Erfolgsgrade) Rechnung Wissen 50 Kräuterkundige +20 Schwierigkeit +20 an sl gesendet",
+   "t": "Mara · Wissen 93 gegen 90 Misserfolg (1 Misserfolgsgrad) Rechnung Wissen 50 Kräuterkundige +20 Schwierigkeit +20 an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Einige Stunden ziehen vorbei, gemessen am Vorbeigehen der Barkeeper und dem abnehmenden Lärm der Hafenstadt. Der Fremde hebt langsam die Augen und fixiert deinen Blick, als würde er die Tiefe deiner Ruhe messen. Du spürst, wie die Hitze des Kamins durch dein Gesicht zieht und die kleinen Narben unter deinem Kiefer prickeln.",
+   "t": "Der Fremde bewegt langsam den Kopf und seine Augen, die im Schein des Feuers glühen, fixieren dich. Er hebt eine behandschuhte Hand und spielt mit einem verkohlten Stück Holz. Die Stille zieht sich aus, wird jedoch noch schwerer, als du es vielleicht erwartet hast.",
    "f": [
     "narr"
    ]
@@ -1634,14 +1920,14 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Der Fremde zuckt kaum merklich zusammen, als dein Mund die Handelsstraße erwähnt. Er löst seinen Blick vom Feuer und sieht dich an, die anfängliche Gelassenheit weicht einer eisigen Wachsamkeit. „Die Wege sind viele, und die meisten enden genau dort, wo sie beginnen“, erwidert er leise, und die Kerzenflamme scheint ihm plötzlich fremd.“",
+   "t": "Der Fremde hebt den Blick vom Feuer, und die Glut scheint in seinen dunklen Augen nachzuhalten. Er nickt langsam, als würdest du ihm etwas sehr Vertrautes erzählen. „Die Straße führt durch Schatten, die alles verschlingen, was sie berührt“, murmelt er, und seine Stimme klingt wie Schleifen von Stein auf Stein.“",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Mara · Sozial (von sl gewürfelt) 80 gegen 30 Misserfolg (6 Misserfolgsgrade)",
+   "t": "Mara · Sozial (von sl gewürfelt) 79 gegen 30 Misserfolg (5 Misserfolgsgrade)",
    "f": [
     "card"
    ]
@@ -1656,28 +1942,28 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Orakel Habe ich Armbrust dabei? NEIN+ sehr unwahrscheinlich · 14 % · Wurf 98",
+   "t": "Orakel Habe ich Armbrust dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 51",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Figurenneuer Ort/Aktion folgt. Fremder ist nun im Hof. Du bist an der Tür.",
+   "t": "Figurenherkunft (implizit, da du ihn verfolgst, aber noch kein direkter Konflikt stattfindet, daher nur die vorausgegangenen Figuren relevantes für die Szenebeschreibung sind) Fremder (am Kamin) – er ist nun auf dem Weg. Wenn er rennt, ist er geräumt. Ich nehme an, er ist jetzt draußen oder auf dem Weg. Ich halte ihn als \"im Hof\" an.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Mara",
-   "t": "Mara · Kampf 84 gegen 40 Misserfolg (5 Misserfolgsgrade) Rechnung Kampf 40 Schwierigkeit −20 Schicksalspunkte (+1) +10 Mara: 1 SP +10 je SP Mara: 1 SP +10 je SP an sl gesendet",
+   "t": "Mara · Kampf 62 gegen 40 Misserfolg (3 Misserfolgsgrade) Rechnung Kampf 40 Schwierigkeit −20 Schicksalspunkte (+1) +10 Mara: 1 SP +10 je SP Mara: 1 SP +10 je SP an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Der Fremde erstarrt inne, als er deinen entschlossenen Blick im schmalen Hof einfängt. Er dreht sich langsam um, sein Gesicht ist eine Maske aus Schatten und geheimer Anspannung. Die Nachtluft ist kalt und riecht nach nassem Schiefer. Er hebt die Hand, als wollte er etwas abwehren, aber es kommt kein Laut.",
+   "t": "Der Fremde hält inne, die Silhouette gegen den grauen Himmel. Er scheint keine Eile mehr zu haben. Die Luft zwischen euch beiden ist nun erfüllt von ungeklärter Absicht. Er dreht sich langsam um, und sein Gesicht wird durch die Anspannung gezeichnet.",
    "f": [
     "narr"
    ]
@@ -1692,21 +1978,21 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Du gehst durch die schlammigen, engen Gassen, die vom Hafen herabführen. Der Reisende geht voraus, seinen Mantel zieht er hoch, sodass nur noch seine schweren Stiefel und die schnelle Bewegung seiner Schritte hörbar sind. Die Spur, die er in den matschigen Boden zieht, ist klar und unerwartet präzise, ein ungewöhnliches Muster für einen einfachen Reisenden.",
+   "t": "Du gehst durch den feuchten Schlamm des Hofes, deine Augen wandern über die Erde. Die Zeichen seiner schweren Stiefel sind klar und doch subtil – ein Muster, das nur jemand, der das Land kennt, entschlüsseln kann. Er geht weiter, doch du hältst seinen Pfad im Kopf fest.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Mara",
-   "t": "Mara · Wissen 12 gegen 80 Erfolg (7 Erfolgsgrade) Rechnung Wissen 50 Fährtenlesen gelernt +20 Schicksalspunkte (+1) +10 Mara: 1 SP +10 je SP an sl gesendet",
+   "t": "Mara · Wissen 65 gegen 80 Erfolg (2 Erfolgsgrade) Rechnung Wissen 50 Fährtenlesen gelernt +20 Schicksalspunkte (+1) +10 Mara: 1 SP +10 je SP an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Die Spur ist nicht nur die eines Reisenden, sondern die eines Mannes, der entspannt auf die nächsten Ereignisse wartet. Die Stiefel sind nicht nur vom Schlamm beschlagen, sondern auch von einem feinen, trockenen Staub, der aus einer bestimmten Art von Pflanze stammt – eine, die höchstwahrscheinlich aus den südlichen Tiefen der Handelsstraße kommt. Er ist kein einfacher Durchreisender.",
+   "t": "Du findest ein kleines Detail im Schlamm, das nicht zufällig ist. Neben den gemischten Tropfen des Hofes deutet ein kleiner, verborgener Hinweis auf die Richtung seiner nächsten Reise – ein kleiner Dornenpfad, der durch die Stille geht. Er ist auf dem Weg, aber noch nicht im Begriff, alles hinter sich zu lassen.",
    "f": [
     "narr"
    ]
@@ -1721,7 +2007,22 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Kämpfer, +Meister Alchemist, +Königsgarde Mitglied) · Taler 100 · Budget übrig 10 (verteilen mit /budget taler=N item=Name sp=N)",
+   "t": "sl Figur Torvin: Torvin (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +unbesungener Meisterschwertkämpfer, +Königsgarde Mitglied, +gefeierter Alchemist, +Akademie von Velm) · Taler 60 · Budget übrig 6 (verteilen mit /budget taler=N item=Name sp=N)",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Torvin",
+   "t": "/budget taler=5 item=Drachenschwert,Plattenrüstung,Ross sp=2",
+   "f": [
+    "say",
+    "text"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "sl /budget: nur 6 Punkte übrig (Taler 1, Gegenstand 2, +1 SP-Max 3)",
    "f": [
     "card"
    ]
@@ -1736,7 +2037,7 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Budget: 50 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
+   "t": "sl Budget: 10 Taler · Seil · SP-Max 6 (übrige Punkte als Taler)",
    "f": [
     "card"
    ]
@@ -1751,35 +2052,28 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Orakel Habe ich Siegel dabei? JA sehr unwahrscheinlich · 14 % · Wurf 14",
+   "t": "Orakel Habe ich Siegel dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 32",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Orakel Akzeptiert der Wirt Torvins Rang und Wunsch? NEIN unwahrscheinlich · 29 % · Wurf 75",
-   "f": [
-    "card"
-   ]
-  },
-  {
-   "a": "Spielleiter",
-   "t": "Der Wirt, ein gedrungener Mann mit durchtränkten Augen, sieht den Ring auf dem Tisch, seine Mimik bleibt jedoch streng und unbewegt. Er hebt nur eine Hand, als hätte er die Bitte abgewiesen, und murmelte leise, dass die besten Zimmer schon belegt seien. Die Luft in der Schenke scheint schlagartig dünner.",
+   "t": "Figurenherkunft (implizit, da er nun erscheint und spricht, während du beobachtest) Wirt (bärtiger Mann) – er ist präsent. Torvin (du) bist nun im Raum. Ich gehe davon aus, dass der Wirt der direkte Gesprächspartner ist.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Torvin",
-   "t": "Torvin · Sozial 84 gegen 60 Misserfolg (3 Misserfolgsgrade) Rechnung Sozial 40 Schwierigkeit +20 an sl gesendet",
+   "t": "Torvin · Sozial 88 gegen 60 Kritischer Misserfolg (3 Misserfolgsgrade) Rechnung Sozial 40 Schwierigkeit +20 an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Torvin lässt seinen Blick von der Tür abwenden und konzentriert sich auf die Rauchentwicklung im Kaminsumpf. Er verkrampft die Kiefermuskulatur, die Bewegung ist minimal, aber die Anspannung ist greifbar. Die Stille, die er nun wahrt, ist nicht die Ruhe, sondern das Abwarten einer Entscheidung, die ihn vielleicht enttäuschen wird.",
+   "t": "Der Wirt, der eigentlich die Ankunft registrieren sollte, wirkt plötzlich angespannt. Er wirft einen kurzen Blick auf dich, dann auf Torvin, und seine Augen weiten sich leicht. Er schnaubt kurz hervor, als hätte er etwas Unglückliches in der Luft gerochen. Die leichte Fassade des geschäftigen Wirts bröckelt unter der Spannung.",
    "f": [
     "narr"
    ]
@@ -1794,21 +2088,21 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Orakel Habe ich Amulett dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 69",
+   "t": "Orakel Habe ich Amulett dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 28",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Figurenneuer Ort/Aktion folgt. Fremder ist nun präsent. Fremdeindruck bleibt bestehen.",
+   "t": "Figurenherkunft (implizit, da er angesprochen wird) Fremder (im Hof) – er ist nun in Sichtweite. Ich halte ihn für \"im Hof\" und nun interessiert. Die gesamte Szene findet noch im Hof statt.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Torvin · Sozial (von sl gewürfelt) 44 gegen 50 Kritischer Erfolg (1 Erfolgsgrad)",
+   "t": "Torvin · Sozial (von sl gewürfelt) 48 gegen 50 Erfolg (1 Erfolgsgrad)",
    "f": [
     "card"
    ]
@@ -1823,28 +2117,35 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Orakel Habe ich Schwert dabei? NEIN sehr unwahrscheinlich · 14 % · Wurf 66",
+   "t": "Orakel Habe ich Schwert dabei? JA+ sehr unwahrscheinlich · 14 % · Wurf 1",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Figurenneuer Ort/Aktion folgt. Fremder ist nun präsent. Du bist nun physisch ihm entgegengetreten.",
+   "t": "Torvin · Kampf · Als der Dieb durch den Hof flieht, springe ich vom Balkon … (von sl gewürfelt) 62 gegen 50 Misserfolg (2 Misserfolgsgrade)",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Antwortpaarung (JA+/Misserfolg/knapp gescheitert) kombiniert mit der Erzählung. Dein Sprung vom Balkon ist gewagt, doch die Bewegung ist ungeschickt. Du ziehst den Drachenstahl, der klingelt, als du die Landung versuchst. Die Landung ist nicht die elegante Parade, die du dir erhofft hast; du landest ungeordnet auf dem feuchten Steinboden, dein Schwert bleibt gehoben, doch es ist keine tödliche, sondern eine haltende Geste.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Torvin",
-   "t": "Torvin · Kampf 66 gegen 60 Kritischer Misserfolg (1 Misserfolgsgrad) Rechnung Kampf 50 Schwierigkeit −20 Schicksalspunkte (+2) +20 Torvin: 2 SP +10 je SP Torvin: 1 SP +10 je SP an sl gesendet",
+   "t": "Torvin · Kampf 27 gegen 60 Erfolg (4 Erfolgsgrade) Rechnung Kampf 50 Schwierigkeit −20 Schicksalspunkte (+2) +20 Torvin: 2 SP +10 je SP Torvin: 1 SP +10 je SP an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Die Luft zwischen euch beiden ist dick wie der Nebel, derselbe, der dich einst auf dem Segler umhüllt hatte. Du atmest tief durch, die Muskeln in deinem Nacken verspannt sich unter der Spannung. Du hältst deine gesamte Konzentration auf diesen einen Punkt gerichtet, bis die kleinste Bewegung des Fremden die nächste Aktion auslöst.",
+   "t": "Während du dich im Staub deiner Landung neu sortierst und das Schwert hältst, trittst du voraus. Dein Gewicht auf die Füße verteilt, die Landung ist nun nicht mehr die des Sturzes, sondern eine feste Verankerung. Dein Ruf, wenn auch ungezügelt, durchbricht die angespannt stille Luft.",
    "f": [
     "narr"
    ]
@@ -1859,21 +2160,28 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Die Luft ist klar, aber die Gerüche des Hafens weichen dem erdigen Duft von feuchtem Gras und nassem Laub. Du läufst nun auf einem Pfad, dessen Oberfläche von den Schritten der vielen Reisenden durchzogen ist. Die Spur ist noch immer unter deinen Füßen, doch die Geräusche des Ortes verändern sich – die laute Betriebsamkeit des Hafens weicht dem gedämpften Summen der Vororte.",
+   "t": "Du wirfst deinen Blick auf den Fremden, und die Spuren, die du gelesen hast, sind nun dein Kompass. Du richtest deine Worte an die Stadtwache, die Geräusche ihrer Ankunft gedämpft durch die Gassen dringt. Die Jagd ist offiziell eröffnet, und der Nebel des Hofes scheint sich zu lichten, aufgelöst durch die kommenden Schritte.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Torvin",
-   "t": "Torvin · Wissen 59 gegen 30 Misserfolg (3 Misserfolgsgrade) Rechnung Wissen 30 an sl gesendet",
+   "t": "Torvin · Wissen 80 gegen 30 Misserfolg (6 Misserfolgsgrade) Rechnung Wissen 30 an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Du bleibst hinter dem Fremdenherrenherum, die Bewegung ist dafür bedingt, dass du die Spur nicht verlieren möchtest. Die Anspannung, die dein Ruf und Torvins Anwesenheit mit sich bringt, ist fast greifbar, wie ein schlechtes Omen. Du siehst die leichte Abweichung in seinem Gang, ein Zeichen von Müdigkeit, das aber noch kein deutliches Signal für Endlichkeit ist.",
+   "t": "Orakel Ist der Fremde noch in Reichweite? NEIN offen · 50 % · Wurf 54",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Die ersten Schritte der Stadtwachen sind hörbar, aber sie bleiben noch am äußeren Rand des Hofes. Dein Wissen ist nun gefragt, wie du die Situation kontrollierst, bevor sie eskaliert. Die Jagd ist begonnen, doch das Ziel ist noch entwischt.",
    "f": [
     "narr"
    ]
@@ -1888,7 +2196,7 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Figur Ilse: Ilse (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +Botin, −Behinderte Hand, −Schulden bei Wucherern) · Taler 220 · Budget übrig 22 (verteilen mit /budget taler=N item=Name sp=N)",
+   "t": "sl Figur Ilse: Ilse (Kampf 50 · Sozial 40 · Wissen 30; SP 5/5; Wunden 10/10; +Botin, −Taube, krumme rechte Hand, −Schulden bei Wucherern) · Taler 240 · Budget übrig 24 (verteilen mit /budget taler=N item=Name sp=N)",
    "f": [
     "card"
    ]
@@ -1903,7 +2211,7 @@
   },
   {
    "a": "Spielleiter",
-   "t": "sl Budget: 100 Taler · Heiltrank, Seil, Laterne · SP-Max 7 (übrige Punkte als Taler)",
+   "t": "sl Budget: 120 Taler · Heiltrank, Seil, Laterne · SP-Max 7 (übrige Punkte als Taler)",
    "f": [
     "card"
    ]
@@ -1918,28 +2226,28 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Ilse · Kampf · Ich schleiche mit zitternder Hand an den Tresen und bettle d (von sl gewürfelt) 66 gegen 30 Kritischer Misserfolg (4 Misserfolgsgrade)",
+   "t": "Ilse · Kampf · Ich schleiche mit zitternder Hand an den Tresen und bettle … (von sl gewürfelt) 20 gegen 30 Erfolg (2 Erfolgsgrade)",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Die Geräusche der Schenke sind gedämpft, fast durch eine dicke, feuchte Wand gefiltert. Du befindest dich in einem kleinen Nebenraum, der noch immer den Geruch von altem Holz, Rauch und abgestandenem Bier trägt. Der Wirt, dessen Gesichtszüge von der Arbeit gezeichnet sind, wischt hinterherige Flüssigkeiten vom Boden, seine Bewegungen sind langsam und routiniert.",
+   "t": "Die neue Besucherin, Ilse, bewegt sich durch den schmutzigen Hof, ihr Anliegen ist dringlich. Sie erreicht den Tresen, und die Begegnung mit dem Wirt ist plötzlich nah und intensiv. Er zuckt zusammen, als sie ihn berührt, seine Miene verkrampft sich vor Überraschung und kurzzeitigem Schmerz, aber er hält stand.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Ilse",
-   "t": "Ilse · Sozial 13 gegen 60 Erfolg (5 Erfolgsgrade) Rechnung Sozial 40 Schwierigkeit +20 an sl gesendet",
+   "t": "Ilse · Sozial 54 gegen 60 Erfolg (1 Erfolgsgrad) Rechnung Sozial 40 Schwierigkeit +20 an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Du trittst neben den Wirt, und die Stille des Nebenraumes scheint die Geräusche der Hauptschenke zu absorbieren. Die Müdigkeit liegt schwer in deinen Knochen, doch die Konzentration ist noch schärfer als je zuvor. Du beobachtest die leichte Spannung in der Schulter des Wirts, die minimale Unruhe, die er trotz seiner Fassade verrät.",
+   "t": "Die Schreie der Stadtwache gedämpfen sich draußen. Der Wirt, dessen Miene noch immer die Dornen der unerwarteten Nähe trägt, nickt kurz und reicht dir einen Krug. Der Mohnsaft ist dick und geruchsintensiv, ein kleiner Frieden in diesem Sturm aus fremden Hoffnungen und Gefahr.",
    "f": [
     "narr"
    ]
@@ -1954,14 +2262,14 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Der Fremde hebt den Blick vom Boden, seine Augen sind durch die Müdigkeit leicht gerötet, doch die Wachsamkeit ist noch da. Er antwortet auf die Frage nach dem Gerber, doch es ist nicht viel von seinem Mund, was die Sache angeht. „Brann ist ein Mann, der Dinge bindet, die losgelassen sind“, murmelt er, und die Worte sind wie Schiefer, kühl und schwer.“",
+   "t": "Du trittst neben den Fremden, der noch in der Ferne von den neuen Ereignissen betroffen ist. Dein Blick folgt seinem Profil, und die Frage nach Brann, dem Gerber, geht wie ein leichter Rauch durch die kühle Luft des Hofes. „Brann…“, wiederholt der Fremde leise, ohne wirklich zu hören, als ob er die Wörter nur an die Stille richtet.“",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Ilse · Sozial (von sl gewürfelt) 10 gegen 50 Erfolg (5 Erfolgsgrade)",
+   "t": "Ilse · Sozial (von sl gewürfelt) 68 gegen 50 Misserfolg (2 Misserfolgsgrade)",
    "f": [
     "card"
    ]
@@ -1976,28 +2284,35 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Ilse · Kampf · Als Hunde durch die Gasse bellen, renne ich los, obwohl mein (von sl gewürfelt) 11 gegen 50 Kritischer Erfolg (4 Erfolgsgrade)",
+   "t": "Ilse · Kampf · Als Hunde durch die Gasse bellen, renne ich los, obwohl … (von sl gewürfelt) 78 gegen 50 Misserfolg (3 Misserfolgsgrade)",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Der Geruch des Feldes mischt sich mit dem scharfen Geruch des nächtlichen Schlamms. Die Sonne ist hinter den Horizont gezogen und lässt die Welt in ein tiefes, gesättigtes Indigo tauchen. Die Stille dieses Ortes ist erdrückend, nur unterbrochen vom entfernten Heulen eines Wolfs. Du läufst auf den Pfad, der vom Fremden beschrieben wurde, und die Spur ist hier durch den Tau noch deutlich sichtbar, ein dunkler, erdiger Streifen gegen die trockene Erde.",
+   "t": "Orakel Ist der Fremde noch präsent? NEIN offen · 50 % · Wurf 70",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Die Rufe der Hunde sind laut und ungezügelt, sie durchpflügen die Gassen. Du spürst die Flucht nach der akustischen Bedrohung und ziehst dich zurück, während die Stadtwachen ihre Patrouille beginnen. Die Spannung zieht sich in die dunklen Ecken des Hofes zurück.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Ilse",
-   "t": "Ilse · Kampf 91 gegen 40 Misserfolg (6 Misserfolgsgrade) Rechnung Kampf 50 Schwierigkeit −20 Ilse: 1 SP +10 je SP an sl gesendet",
+   "t": "Ilse · Kampf 2 gegen 40 Erfolg (4 Erfolgsgrade) Rechnung Kampf 50 Schwierigkeit −20 Ilse: 1 SP +10 je SP an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Du spürst die Anspannung in deinen Muskeln, die leichte Erschöpfung des Sturms. Die Jagd ist nun ein einsames, fast meditatives Ritual, bei dem die nächste Bewegung jedes deiner Körperteile zählt. Der Fremde ist nur noch ein dunkler Fleck auf dem Kreis des Mondes, doch seine Spur ist dennoch präsent.",
+   "t": "Du bewegst dich entschlossen, dein ganzer Körper ist angespannt, als du die nächste Bewegung einleitest. Die Ankunft der Stadtwache ist noch hörbar, aber deine Präsenz wirkt wie ein Anker, der die chaotische Energie des Hofes kurz vor einer neuen Eskalation hält. Du hältst inne, die Spannung bleibt, aber sie ist kontrolliert.",
    "f": [
     "narr"
    ]
@@ -2012,189 +2327,124 @@
   },
   {
    "a": "Spielleiter",
-   "t": "Ilse · Kampf · Ich verstecke mich in einem Hauseingang und lausche den Schr (von sl gewürfelt) 17 gegen 50 Erfolg (4 Erfolgsgrade)",
+   "t": "Ilse · Kampf · Ich verstecke mich in einem Hauseingang und lausche den … (von sl gewürfelt) 97 gegen 50 Misserfolg (5 Misserfolgsgrade)",
    "f": [
     "card"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Die Siedlung ist ein Labyrinth aus dunklen Holzhäusern, deren Dächer eng aneinanderliegen und die wenigen Sonnenstrahlen, die durch die Pflichter bleiben, nur in Staubpartikeln tanzen lassen. Die Luft ist schwer von Rauch, Tierkot und dem schwachen Geruch von Einmachern. Die Spur ist hier nun nicht mehr nur ein Zeichen, sondern ein Echo, das in den Pflastern der Gasse nachhallt. Du gehst leise, deine Sinne eingeschränkt durch die beengte Enge, doch die Spur des Fremden ist hier am deutlichsten.",
+   "t": "Du gehst in die dunkle Enge des Hauseingangs, die Schritte der Stadtwachen und die entfernten Geräusche des Fremden versuchen, sich in deinem Gedächtnis neu anzuordnen. Doch die akustischen Eindrücke sind zu viele, zu schnell aufeinanderfolgend. Die gedankliche Landkarte seines Weges bleibt unvollständig, ein Schattenriss ohne klare Konturen.",
    "f": [
     "narr"
    ]
   },
   {
    "a": "Ilse",
-   "t": "Ilse · Wissen 60 gegen 40 Misserfolg (3 Misserfolgsgrade) Rechnung Wissen 30 Schicksalspunkte (+1) +10 Ilse: 1 SP +10 je SP an sl gesendet",
+   "t": "Ilse · Wissen 17 gegen 40 Erfolg (3 Erfolgsgrade) Rechnung Wissen 30 Schicksalspunkte (+1) +10 Ilse: 1 SP +10 je SP an sl gesendet",
    "f": [
     "check"
    ]
   },
   {
    "a": "Spielleiter",
-   "t": "Die Gassen sind erfüllt von den Geräuschen des geschäftigen, aber melancholischen Lebens in dieser kleinen Siedlung. Dein Gehör ist nun dein wichtigstes Werkzeug, um die minimale Veränderung in der Körperhaltung des Fremden zu erfassen, die er vor sich trägt. Die Anspannung ist durch die Nähe fast körperlich spürbar, die stille Vorahnung der bevorstehenden Entscheidung.",
+   "t": "Die Ruhe, die du nun in der Dunkelheit findest, ist die Ruhe eines guten Fährtenlesers. Du ordnest die Geräusche, die Bewegungsmuster und die nun entfernten Spuren neu. Die wichtigsten Informationen aus diesem chaotischen Hofleben sind nun in deinem Kopf angeordnet – die nächste Richtung ist klar.",
    "f": [
     "narr"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Mara · Wissen · Testprobe (von sl gewürfelt) 78 gegen 50 Misserfolg (3 Misserfolgsgrade)",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Mara · Kampf · Testprobe (von sl gewürfelt) 20 gegen 40 Erfolg (3 Erfolgsgrade)",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Ilse · Kampf · Testprobe (von sl gewürfelt) 98 gegen 30 Misserfolg (7 Misserfolgsgrade)",
+   "f": [
+    "card"
+   ]
+  },
+  {
+   "a": "Spielleiter",
+   "t": "Torvin · Kampf · Testprobe (von sl gewürfelt) 35 gegen 40 Erfolg (1 Erfolgsgrad)",
+   "f": [
+    "card"
    ]
   }
  ],
  "state": {
-  "welt": "Du = Mara\nIch bin Mara, eine Kräuterkundige aus den Sümpfen von Grauwald. Mein Vater lehrte mich das Fährtenlesen, bevor die Seuche unser Dorf holte.. Ort: Siedlungsgassen. Inventar: Siegel.\nFiguren: Fremder (Ein Reisender · hier) | Wirt (Schenkenbesitzer · Wirtshaus-Nebenraum)\nStränge: ? Der Reisende (3 Hinweise) | ? Brann (1 Hinweis)\nOrte: Außerhalb des Hafens | Feldrand | Hafenschenke | Siedlungsgassen | Wirtshaus-Nebenraum\nBeziehungen: Fremder↔du 0",
-  "scene": 5,
-  "q": 0,
-  "rng": "jitter",
-  "open": true,
-  "akteure": 2,
+  "q": 6,
+  "scene": 1,
+  "journal": [],
   "t": "state",
-  "straenge": 2,
+  "name": "chartest-p",
   "figur": "Mara: Ich bin Mara, eine Kräuterkundige aus den Sümpfen von Grauwald. Mein Vater lehrte mich das Fährtenlesen, bevor die Seuche unser Dorf holte. Seitdem ziehe ich als Heilerin über die Handelsstraße und kenne die Schenken dort gut. Eine alte Armbrust trage ich immer bei mir, auch wenn ich nur selten schießen muss. Ein Händler schuldet mir noch einige Silberlinge, doch er hat sich seit Monaten nicht mehr blicken lassen. Ich fürchte das offene Wasser seit einem Schiffbruch in meiner Kindheit.",
-  "journal": [
-   "Die Spielfigur verlässt den Hof und beginnt die Verfolgung des Fremden.",
-   "Ilse versuchte, im Wirtshaus einen Krug Mohnsaft zu bekommen, aber sie wurde nicht erfolgreich.",
-   "Ilse nutzt die Ablenkung der Hunde, um der Jagd nach dem Fremden nachzugehen.",
-   "Die Jagd zieht sich vom Feld in die Siedlung, wo der Fremde seinen Aufenthalt fortsetzt."
-  ],
-  "party": [
-   {
-    "wunden": 10,
-    "speaker": "Anna",
-    "pillars": {
-     "wissen": 50,
-     "kampf": 40,
-     "sozial": 30
-    },
-    "taler": 50,
-    "traits": [
-     {
-      "text": "Kräuterkundige",
-      "pos": true,
-      "kind": "major"
-     },
-     {
-      "kind": "minor",
-      "pos": true,
-      "text": "Sümpfe Grauwald"
-     },
-     {
-      "text": "Fährtenlesen gelernt",
-      "pos": true,
-      "kind": "major"
-     }
-    ],
-    "name": "Mara",
-    "sp": 3,
-    "spMax": 6,
-    "inventar": [
-     "Seil"
-    ]
-   },
-   {
-    "traits": [
-     {
-      "text": "unbesungener Kämpfer",
-      "kind": "major",
-      "pos": true
-     },
-     {
-      "pos": true,
-      "kind": "major",
-      "text": "Meister Alchemist"
-     },
-     {
-      "kind": "minor",
-      "text": "Königsgarde Mitglied",
-      "pos": true
-     }
-    ],
-    "spMax": 6,
-    "sp": 2,
-    "speaker": "Bert",
-    "pillars": {
-     "sozial": 40,
-     "wissen": 30,
-     "kampf": 50
-    },
-    "taler": 50,
-    "name": "Torvin",
-    "inventar": [
-     "Seil"
-    ],
-    "wunden": 10
-   },
-   {
-    "pillars": {
-     "sozial": 40,
-     "wissen": 30,
-     "kampf": 50
-    },
-    "sp": 4,
-    "name": "Ilse",
-    "inventar": [
-     "Heiltrank",
-     "Seil",
-     "Laterne"
-    ],
-    "taler": 100,
-    "traits": [
-     {
-      "text": "Botin",
-      "kind": "major",
-      "pos": true
-     },
-     {
-      "kind": "major",
-      "text": "Behinderte Hand",
-      "pos": false
-     },
-     {
-      "text": "Schulden bei Wucherern",
-      "kind": "minor",
-      "pos": false
-     }
-    ],
-    "speaker": "Clara",
-    "spMax": 7,
-    "wunden": 10
-   }
-  ],
-  "hier": [
-   "Fremder"
-  ],
   "busy": false,
-  "s": 4,
-  "name": "chartest-d",
+  "welt": "Du = Mara\nIch bin Mara, eine Kräuterkundige aus den Sümpfen von Grauwald. Mein Vater lehrte mich das Fährtenlesen, bevor die Seuche unser Dorf holte.. Ort: Hof. Inventar: Schwert, Krug mit Mohnsaft.\nFiguren: Fremder (weg, weiter entfernt, im Hof, am Kamin · hier · freundlich) | Wirt (bärtiger Mann · hier · misstrauisch · verletzt) | Stadtwache (am Hof, ankommend · hier) | Ilse (im Hof, neue Besucherin · hier)\nStränge: ? Seine nächste Reise (3 Hinweise)\nOrte: Hafenschenke\nBeziehungen: Fremder↔du 1, Wirt↔du -1",
+  "hier": [
+   "Fremder",
+   "Wirt",
+   "Stadtwache",
+   "Ilse"
+  ],
+  "straenge": 1,
   "story": [
    {
     "who": "me",
     "text": "Ich setze mich unauffällig in die Ecke der Schenke und beobachte den Fremden am Kamin, während ich an meinem Kräutertee nippe."
    },
    {
+    "text": "Die Luft in der Schenke ist dick von abgestandenem Bier und dem Geruch von Kohle. Der Fremde am Kamin ist kaum mehr als eine schattige Masse, seine Bewegungen sind langsam und bedächtig. Du spürst die Kälte des Steins durch die dünne Sohle deiner Stiefel. Dein Kräutertee dampft, ein kleiner, fast unmerkbarer Rauchschwaden steigt auf.",
+    "who": "sl"
+   },
+   {
+    "text": "Ich warte ab, was geschieht.",
+    "who": "me"
+   },
+   {
+    "text": "Der Fremde bewegt langsam den Kopf und seine Augen, die im Schein des Feuers glühen, fixieren dich. Er hebt eine behandschuhte Hand und spielt mit einem verkohlten Stück Holz. Die Stille zieht sich aus, wird jedoch noch schwerer, als du es vielleicht erwartet hast.",
+    "who": "sl"
+   },
+   {
+    "text": "Ich spreche den Fremden freundlich an und erwähne beiläufig die Handelsstraße, die er morgen nehmen will.",
+    "who": "me"
+   },
+   {
     "who": "sl",
-    "text": "Die Schenke ist erfüllt vom dumpfen Lärm der Seeleute und dem Duft von billigem Schilcher. Du sitzt in einer dunklen Nische, dein Kräutertee dampft kaum merklich auf. Ein Fremder, dessen Mantel durch die Kerzenschein gelblich wirkt, lehnt am Kamin und beobachtet das donnernde Meer. Seine Augen sind tief und scheinen die Hitze des Kamins nicht zu suchen."
-   },
-   {
-    "who": "me",
-    "text": "Ich warte ab, was geschieht."
-   },
-   {
-    "text": "Einige Stunden ziehen vorbei, gemessen am Vorbeigehen der Barkeeper und dem abnehmenden Lärm der Hafenstadt. Der Fremde hebt langsam die Augen und fixiert deinen Blick, als würde er die Tiefe deiner Ruhe messen. Du spürst, wie die Hitze des Kamins durch dein Gesicht zieht und die kleinen Narben unter deinem Kiefer prickeln.",
-    "who": "sl"
-   },
-   {
-    "who": "me",
-    "text": "Ich spreche den Fremden freundlich an und erwähne beiläufig die Handelsstraße, die er morgen nehmen will."
-   },
-   {
-    "text": "Der Fremde zuckt kaum merklich zusammen, als dein Mund die Handelsstraße erwähnt. Er löst seinen Blick vom Feuer und sieht dich an, die anfängliche Gelassenheit weicht einer eisigen Wachsamkeit. „Die Wege sind viele, und die meisten enden genau dort, wo sie beginnen“, erwidert er leise, und die Kerzenflamme scheint ihm plötzlich fremd.“",
-    "who": "sl"
+    "text": "Der Fremde hebt den Blick vom Feuer, und die Glut scheint in seinen dunklen Augen nachzuhalten. Er nickt langsam, als würdest du ihm etwas sehr Vertrautes erzählen. „Die Straße führt durch Schatten, die alles verschlingen, was sie berührt“, murmelt er, und seine Stimme klingt wie Schleifen von Stein auf Stein.“"
    },
    {
     "text": "Als er zur Hintertür rennt, folge ich ihm in den Hof und lege meine Armbrust auf sein Bein an.",
     "who": "me"
    },
    {
-    "text": "Figurenneuer Ort/Aktion folgt. Fremder ist nun im Hof. Du bist an der Tür.",
+    "who": "sl",
+    "text": "Figurenherkunft (implizit, da du ihn verfolgst, aber noch kein direkter Konflikt stattfindet, daher nur die vorausgegangenen Figuren relevantes für die Szenebeschreibung sind) Fremder (am Kamin) – er ist nun auf dem Weg. Wenn er rennt, ist er geräumt. Ich nehme an, er ist jetzt draußen oder auf dem Weg. Ich halte ihn als \"im Hof\" an."
+   },
+   {
+    "who": "me",
+    "text": "Ich warte ab, was geschieht."
+   },
+   {
+    "who": "sl",
+    "text": "Der Fremde hält inne, die Silhouette gegen den grauen Himmel. Er scheint keine Eile mehr zu haben. Die Luft zwischen euch beiden ist nun erfüllt von ungeklärter Absicht. Er dreht sich langsam um, und sein Gesicht wird durch die Anspannung gezeichnet."
+   },
+   {
+    "text": "Ich verfolge ihn durch die Gassen und lese seine Spuren im Schlamm, ohne dass er merkt, dass ich ihm folge.",
+    "who": "me"
+   },
+   {
+    "text": "Du gehst durch den feuchten Schlamm des Hofes, deine Augen wandern über die Erde. Die Zeichen seiner schweren Stiefel sind klar und doch subtil – ein Muster, das nur jemand, der das Land kennt, entschlüsseln kann. Er geht weiter, doch du hältst seinen Pfad im Kopf fest.",
     "who": "sl"
    },
    {
@@ -2202,63 +2452,47 @@
     "text": "Ich warte ab, was geschieht."
    },
    {
-    "text": "Der Fremde erstarrt inne, als er deinen entschlossenen Blick im schmalen Hof einfängt. Er dreht sich langsam um, sein Gesicht ist eine Maske aus Schatten und geheimer Anspannung. Die Nachtluft ist kalt und riecht nach nassem Schiefer. Er hebt die Hand, als wollte er etwas abwehren, aber es kommt kein Laut.",
+    "text": "Du findest ein kleines Detail im Schlamm, das nicht zufällig ist. Neben den gemischten Tropfen des Hofes deutet ein kleiner, verborgener Hinweis auf die Richtung seiner nächsten Reise – ein kleiner Dornenpfad, der durch die Stille geht. Er ist auf dem Weg, aber noch nicht im Begriff, alles hinter sich zu lassen.",
     "who": "sl"
-   },
-   {
-    "who": "me",
-    "text": "Ich verfolge ihn durch die Gassen und lese seine Spuren im Schlamm, ohne dass er merkt, dass ich ihm folge."
-   },
-   {
-    "text": "Du gehst durch die schlammigen, engen Gassen, die vom Hafen herabführen. Der Reisende geht voraus, seinen Mantel zieht er hoch, sodass nur noch seine schweren Stiefel und die schnelle Bewegung seiner Schritte hörbar sind. Die Spur, die er in den matschigen Boden zieht, ist klar und unerwartet präzise, ein ungewöhnliches Muster für einen einfachen Reisenden.",
-    "who": "sl"
-   },
-   {
-    "text": "Ich warte ab, was geschieht.",
-    "who": "me"
-   },
-   {
-    "who": "sl",
-    "text": "Die Spur ist nicht nur die eines Reisenden, sondern die eines Mannes, der entspannt auf die nächsten Ereignisse wartet. Die Stiefel sind nicht nur vom Schlamm beschlagen, sondern auch von einem feinen, trockenen Staub, der aus einer bestimmten Art von Pflanze stammt – eine, die höchstwahrscheinlich aus den südlichen Tiefen der Handelsstraße kommt. Er ist kein einfacher Durchreisender."
    },
    {
     "who": "me",
     "text": "Ich lasse meinen Siegelring auf den Tisch fallen, damit der Wirt sofort meinen Rang erkennt, und fordere das beste Zimmer."
    },
    {
-    "text": "Der Wirt, ein gedrungener Mann mit durchtränkten Augen, sieht den Ring auf dem Tisch, seine Mimik bleibt jedoch streng und unbewegt. Er hebt nur eine Hand, als hätte er die Bitte abgewiesen, und murmelte leise, dass die besten Zimmer schon belegt seien. Die Luft in der Schenke scheint schlagartig dünner.",
-    "who": "sl"
-   },
-   {
-    "text": "Ich warte ab, was geschieht.",
-    "who": "me"
-   },
-   {
     "who": "sl",
-    "text": "Torvin lässt seinen Blick von der Tür abwenden und konzentriert sich auf die Rauchentwicklung im Kaminsumpf. Er verkrampft die Kiefermuskulatur, die Bewegung ist minimal, aber die Anspannung ist greifbar. Die Stille, die er nun wahrt, ist nicht die Ruhe, sondern das Abwarten einer Entscheidung, die ihn vielleicht enttäuschen wird."
+    "text": "Figurenherkunft (implizit, da er nun erscheint und spricht, während du beobachtest) Wirt (bärtiger Mann) – er ist präsent. Torvin (du) bist nun im Raum. Ich gehe davon aus, dass der Wirt der direkte Gesprächspartner ist."
    },
    {
     "who": "me",
-    "text": "Ich trete an den Fremden heran, zeige mein Amulett aus Drachenschuppen und biete ihm an, mich seiner Gilde vorzustellen."
+    "text": "Ich warte ab, was geschieht."
    },
    {
-    "text": "Figurenneuer Ort/Aktion folgt. Fremder ist nun präsent. Fremdeindruck bleibt bestehen.",
+    "who": "sl",
+    "text": "Der Wirt, der eigentlich die Ankunft registrieren sollte, wirkt plötzlich angespannt. Er wirft einen kurzen Blick auf dich, dann auf Torvin, und seine Augen weiten sich leicht. Er schnaubt kurz hervor, als hätte er etwas Unglückliches in der Luft gerochen. Die leichte Fassade des geschäftigen Wirts bröckelt unter der Spannung."
+   },
+   {
+    "text": "Ich trete an den Fremden heran, zeige mein Amulett aus Drachenschuppen und biete ihm an, mich seiner Gilde vorzustellen.",
+    "who": "me"
+   },
+   {
+    "text": "Figurenherkunft (implizit, da er angesprochen wird) Fremder (im Hof) – er ist nun in Sichtweite. Ich halte ihn für \"im Hof\" und nun interessiert. Die gesamte Szene findet noch im Hof statt.",
+    "who": "sl"
+   },
+   {
+    "text": "Als der Dieb durch den Hof flieht, springe ich vom Balkon, ziehe mein Schwert aus Drachenstahl und stelle mich ihm in den Weg.",
+    "who": "me"
+   },
+   {
+    "text": "Antwortpaarung (JA+/Misserfolg/knapp gescheitert) kombiniert mit der Erzählung. Dein Sprung vom Balkon ist gewagt, doch die Bewegung ist ungeschickt. Du ziehst den Drachenstahl, der klingelt, als du die Landung versuchst. Die Landung ist nicht die elegante Parade, die du dir erhofft hast; du landest ungeordnet auf dem feuchten Steinboden, dein Schwert bleibt gehoben, doch es ist keine tödliche, sondern eine haltende Geste.",
     "who": "sl"
    },
    {
     "who": "me",
-    "text": "Als der Dieb durch den Hof flieht, springe ich vom Balkon, ziehe mein Schwert aus Drachenstahl und stelle mich ihm in den Weg."
+    "text": "Ich warte ab, was geschieht."
    },
    {
-    "who": "sl",
-    "text": "Figurenneuer Ort/Aktion folgt. Fremder ist nun präsent. Du bist nun physisch ihm entgegengetreten."
-   },
-   {
-    "text": "Ich warte ab, was geschieht.",
-    "who": "me"
-   },
-   {
-    "text": "Die Luft zwischen euch beiden ist dick wie der Nebel, derselbe, der dich einst auf dem Segler umhüllt hatte. Du atmest tief durch, die Muskeln in deinem Nacken verspannt sich unter der Spannung. Du hältst deine gesamte Konzentration auf diesen einen Punkt gerichtet, bis die kleinste Bewegung des Fremden die nächste Aktion auslöst.",
+    "text": "Während du dich im Staub deiner Landung neu sortierst und das Schwert hältst, trittst du voraus. Dein Gewicht auf die Füße verteilt, die Landung ist nun nicht mehr die des Sturzes, sondern eine feste Verankerung. Dein Ruf, wenn auch ungezügelt, durchbricht die angespannt stille Luft.",
     "who": "sl"
    },
    {
@@ -2266,32 +2500,32 @@
     "who": "me"
    },
    {
-    "text": "Die Luft ist klar, aber die Gerüche des Hafens weichen dem erdigen Duft von feuchtem Gras und nassem Laub. Du läufst nun auf einem Pfad, dessen Oberfläche von den Schritten der vielen Reisenden durchzogen ist. Die Spur ist noch immer unter deinen Füßen, doch die Geräusche des Ortes verändern sich – die laute Betriebsamkeit des Hafens weicht dem gedämpften Summen der Vororte.",
-    "who": "sl"
+    "who": "sl",
+    "text": "Du wirfst deinen Blick auf den Fremden, und die Spuren, die du gelesen hast, sind nun dein Kompass. Du richtest deine Worte an die Stadtwache, die Geräusche ihrer Ankunft gedämpft durch die Gassen dringt. Die Jagd ist offiziell eröffnet, und der Nebel des Hofes scheint sich zu lichten, aufgelöst durch die kommenden Schritte."
    },
    {
     "text": "Ich warte ab, was geschieht.",
     "who": "me"
    },
    {
-    "text": "Du bleibst hinter dem Fremdenherrenherum, die Bewegung ist dafür bedingt, dass du die Spur nicht verlieren möchtest. Die Anspannung, die dein Ruf und Torvins Anwesenheit mit sich bringt, ist fast greifbar, wie ein schlechtes Omen. Du siehst die leichte Abweichung in seinem Gang, ein Zeichen von Müdigkeit, das aber noch kein deutliches Signal für Endlichkeit ist.",
+    "text": "Die ersten Schritte der Stadtwachen sind hörbar, aber sie bleiben noch am äußeren Rand des Hofes. Dein Wissen ist nun gefragt, wie du die Situation kontrollierst, bevor sie eskaliert. Die Jagd ist begonnen, doch das Ziel ist noch entwischt.",
     "who": "sl"
    },
    {
-    "who": "me",
-    "text": "Ich schleiche mit zitternder Hand an den Tresen und bettle den Wirt um einen Krug Mohnsaft an."
+    "text": "Ich schleiche mit zitternder Hand an den Tresen und bettle den Wirt um einen Krug Mohnsaft an.",
+    "who": "me"
    },
    {
-    "text": "Die Geräusche der Schenke sind gedämpft, fast durch eine dicke, feuchte Wand gefiltert. Du befindest dich in einem kleinen Nebenraum, der noch immer den Geruch von altem Holz, Rauch und abgestandenem Bier trägt. Der Wirt, dessen Gesichtszüge von der Arbeit gezeichnet sind, wischt hinterherige Flüssigkeiten vom Boden, seine Bewegungen sind langsam und routiniert.",
-    "who": "sl"
+    "who": "sl",
+    "text": "Die neue Besucherin, Ilse, bewegt sich durch den schmutzigen Hof, ihr Anliegen ist dringlich. Sie erreicht den Tresen, und die Begegnung mit dem Wirt ist plötzlich nah und intensiv. Er zuckt zusammen, als sie ihn berührt, seine Miene verkrampft sich vor Überraschung und kurzzeitigem Schmerz, aber er hält stand."
    },
    {
     "who": "me",
     "text": "Ich warte ab, was geschieht."
    },
    {
-    "who": "sl",
-    "text": "Du trittst neben den Wirt, und die Stille des Nebenraumes scheint die Geräusche der Hauptschenke zu absorbieren. Die Müdigkeit liegt schwer in deinen Knochen, doch die Konzentration ist noch schärfer als je zuvor. Du beobachtest die leichte Spannung in der Schulter des Wirts, die minimale Unruhe, die er trotz seiner Fassade verrät."
+    "text": "Die Schreie der Stadtwache gedämpfen sich draußen. Der Wirt, dessen Miene noch immer die Dornen der unerwarteten Nähe trägt, nickt kurz und reicht dir einen Krug. Der Mohnsaft ist dick und geruchsintensiv, ein kleiner Frieden in diesem Sturm aus fremden Hoffnungen und Gefahr.",
+    "who": "sl"
    },
    {
     "who": "me",
@@ -2299,97 +2533,203 @@
    },
    {
     "who": "sl",
-    "text": "Der Fremde hebt den Blick vom Boden, seine Augen sind durch die Müdigkeit leicht gerötet, doch die Wachsamkeit ist noch da. Er antwortet auf die Frage nach dem Gerber, doch es ist nicht viel von seinem Mund, was die Sache angeht. „Brann ist ein Mann, der Dinge bindet, die losgelassen sind“, murmelt er, und die Worte sind wie Schiefer, kühl und schwer.“"
+    "text": "Du trittst neben den Fremden, der noch in der Ferne von den neuen Ereignissen betroffen ist. Dein Blick folgt seinem Profil, und die Frage nach Brann, dem Gerber, geht wie ein leichter Rauch durch die kühle Luft des Hofes. „Brann…“, wiederholt der Fremde leise, ohne wirklich zu hören, als ob er die Wörter nur an die Stille richtet.“"
    },
    {
-    "text": "Als Hunde durch die Gasse bellen, renne ich los, obwohl meine linke Seite nachgibt, und suche Deckung im Dunkel.",
+    "who": "me",
+    "text": "Als Hunde durch die Gasse bellen, renne ich los, obwohl meine linke Seite nachgibt, und suche Deckung im Dunkel."
+   },
+   {
+    "text": "Die Rufe der Hunde sind laut und ungezügelt, sie durchpflügen die Gassen. Du spürst die Flucht nach der akustischen Bedrohung und ziehst dich zurück, während die Stadtwachen ihre Patrouille beginnen. Die Spannung zieht sich in die dunklen Ecken des Hofes zurück.",
+    "who": "sl"
+   },
+   {
+    "text": "Ich warte ab, was geschieht.",
     "who": "me"
    },
    {
-    "text": "Der Geruch des Feldes mischt sich mit dem scharfen Geruch des nächtlichen Schlamms. Die Sonne ist hinter den Horizont gezogen und lässt die Welt in ein tiefes, gesättigtes Indigo tauchen. Die Stille dieses Ortes ist erdrückend, nur unterbrochen vom entfernten Heulen eines Wolfs. Du läufst auf den Pfad, der vom Fremden beschrieben wurde, und die Spur ist hier durch den Tau noch deutlich sichtbar, ein dunkler, erdiger Streifen gegen die trockene Erde.",
-    "who": "sl"
+    "who": "sl",
+    "text": "Du bewegst dich entschlossen, dein ganzer Körper ist angespannt, als du die nächste Bewegung einleitest. Die Ankunft der Stadtwache ist noch hörbar, aber deine Präsenz wirkt wie ein Anker, der die chaotische Energie des Hofes kurz vor einer neuen Eskalation hält. Du hältst inne, die Spannung bleibt, aber sie ist kontrolliert."
    },
    {
-    "who": "me",
-    "text": "Ich warte ab, was geschieht."
-   },
-   {
-    "text": "Du spürst die Anspannung in deinen Muskeln, die leichte Erschöpfung des Sturms. Die Jagd ist nun ein einsames, fast meditatives Ritual, bei dem die nächste Bewegung jedes deiner Körperteile zählt. Der Fremde ist nur noch ein dunkler Fleck auf dem Kreis des Mondes, doch seine Spur ist dennoch präsent.",
-    "who": "sl"
-   },
-   {
-    "who": "me",
-    "text": "Ich verstecke mich in einem Hauseingang und lausche den Schritten des Gerbers, um seine Route im Kopf zu behalten."
+    "text": "Ich verstecke mich in einem Hauseingang und lausche den Schritten des Gerbers, um seine Route im Kopf zu behalten.",
+    "who": "me"
    },
    {
     "who": "sl",
-    "text": "Die Siedlung ist ein Labyrinth aus dunklen Holzhäusern, deren Dächer eng aneinanderliegen und die wenigen Sonnenstrahlen, die durch die Pflichter bleiben, nur in Staubpartikeln tanzen lassen. Die Luft ist schwer von Rauch, Tierkot und dem schwachen Geruch von Einmachern. Die Spur ist hier nun nicht mehr nur ein Zeichen, sondern ein Echo, das in den Pflastern der Gasse nachhallt. Du gehst leise, deine Sinne eingeschränkt durch die beengte Enge, doch die Spur des Fremden ist hier am deutlichsten."
+    "text": "Du gehst in die dunkle Enge des Hauseingangs, die Schritte der Stadtwachen und die entfernten Geräusche des Fremden versuchen, sich in deinem Gedächtnis neu anzuordnen. Doch die akustischen Eindrücke sind zu viele, zu schnell aufeinanderfolgend. Die gedankliche Landkarte seines Weges bleibt unvollständig, ein Schattenriss ohne klare Konturen."
    },
    {
-    "who": "me",
-    "text": "Ich warte ab, was geschieht."
+    "text": "Ich warte ab, was geschieht.",
+    "who": "me"
    },
    {
-    "text": "Die Gassen sind erfüllt von den Geräuschen des geschäftigen, aber melancholischen Lebens in dieser kleinen Siedlung. Dein Gehör ist nun dein wichtigstes Werkzeug, um die minimale Veränderung in der Körperhaltung des Fremden zu erfassen, die er vor sich trägt. Die Anspannung ist durch die Nähe fast körperlich spürbar, die stille Vorahnung der bevorstehenden Entscheidung.",
-    "who": "sl"
+    "who": "sl",
+    "text": "Die Ruhe, die du nun in der Dunkelheit findest, ist die Ruhe eines guten Fährtenlesers. Du ordnest die Geräusche, die Bewegungsmuster und die nun entfernten Spuren neu. Die wichtigsten Informationen aus diesem chaotischen Hofleben sind nun in deinem Kopf angeordnet – die nächste Richtung ist klar."
    }
   ],
+  "party": [
+   {
+    "pillars": {
+     "kampf": 40,
+     "sozial": 30,
+     "wissen": 50
+    },
+    "name": "Mara",
+    "traits": [
+     {
+      "pos": true,
+      "text": "Kräuterkundige",
+      "kind": "major"
+     },
+     {
+      "kind": "major",
+      "text": "Fährtenlesen gelernt",
+      "pos": true
+     },
+     {
+      "kind": "minor",
+      "text": "Angst vor offenem Wasser",
+      "pos": false
+     }
+    ],
+    "inventar": [
+     "Seil",
+     "Laterne"
+    ],
+    "taler": 70,
+    "spMax": 6,
+    "speaker": "Anna",
+    "sp": 3,
+    "wunden": 10
+   },
+   {
+    "spMax": 6,
+    "traits": [
+     {
+      "text": "unbesungener Meisterschwertkämpfer",
+      "kind": "major",
+      "pos": true
+     },
+     {
+      "pos": true,
+      "text": "Königsgarde Mitglied",
+      "kind": "major"
+     },
+     {
+      "kind": "major",
+      "text": "gefeierter Alchemist",
+      "pos": true
+     },
+     {
+      "text": "Akademie von Velm",
+      "pos": true,
+      "kind": "minor"
+     }
+    ],
+    "taler": 10,
+    "wunden": 10,
+    "name": "Torvin",
+    "inventar": [
+     "Seil"
+    ],
+    "pillars": {
+     "wissen": 30,
+     "kampf": 50,
+     "sozial": 40
+    },
+    "sp": 2,
+    "speaker": "Bert"
+   },
+   {
+    "inventar": [
+     "Heiltrank",
+     "Seil",
+     "Laterne"
+    ],
+    "traits": [
+     {
+      "text": "Botin",
+      "pos": true,
+      "kind": "major"
+     },
+     {
+      "kind": "major",
+      "text": "Taube, krumme rechte Hand",
+      "pos": false
+     },
+     {
+      "text": "Schulden bei Wucherern",
+      "kind": "major",
+      "pos": false
+     }
+    ],
+    "pillars": {
+     "kampf": 50,
+     "wissen": 30,
+     "sozial": 40
+    },
+    "sp": 4,
+    "speaker": "Clara",
+    "taler": 120,
+    "spMax": 7,
+    "name": "Ilse",
+    "wunden": 10
+   }
+  ],
+  "s": 5,
+  "open": true,
+  "rng": "jitter",
+  "akteure": 4,
   "rolls": [
    {
+    "roll": -1,
+    "s": 5,
+    "rng": "jitter",
+    "p": -1,
+    "answer": "erwartet"
+   },
+   {
+    "rng": "jitter",
     "p": 14,
-    "answer": "JA",
-    "s": 5,
-    "roll": 14,
-    "rng": "jitter"
-   },
-   {
     "answer": "NEIN",
-    "p": 29,
-    "rng": "jitter",
-    "s": 5,
-    "roll": 75
+    "roll": 51,
+    "s": 5
    },
    {
-    "roll": 69,
-    "rng": "jitter",
-    "s": 5,
+    "roll": 32,
     "answer": "NEIN",
-    "p": 14
-   },
-   {
-    "s": 5,
-    "roll": 66,
-    "answer": "NEIN",
-    "rng": "jitter",
-    "p": 14
-   },
-   {
-    "rng": "jitter",
-    "answer": "erwartet",
-    "p": -1,
-    "s": 6,
-    "roll": 60
-   },
-   {
-    "answer": "erwartet",
-    "rng": "jitter",
-    "roll": 96,
-    "s": 5,
-    "p": -1
-   },
-   {
-    "roll": 29,
-    "p": -1,
-    "answer": "erwartet",
+    "p": 14,
     "s": 5,
     "rng": "jitter"
    },
    {
-    "answer": "erwartet",
-    "roll": 38,
-    "s": 4,
+    "roll": 28,
+    "answer": "NEIN",
+    "p": 14,
+    "s": 5,
+    "rng": "jitter"
+   },
+   {
+    "answer": "JA+",
+    "roll": 1,
+    "p": 14,
+    "s": 5,
+    "rng": "jitter"
+   },
+   {
+    "answer": "NEIN",
+    "s": 5,
+    "roll": 54,
+    "p": 50,
+    "rng": "jitter"
+   },
+   {
+    "s": 5,
     "rng": "jitter",
-    "p": -1
+    "answer": "NEIN",
+    "roll": 70,
+    "p": 50
    }
   ]
  }
