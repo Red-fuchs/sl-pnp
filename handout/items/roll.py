@@ -94,6 +94,8 @@ def roll_item(r, sel=None, kat=None, pr=None, name=False):
     mn = it.get('min')
     if mn and SID.index(sel) < SID.index(mn): sel = mn
     pr = pr or roll_praegung(sel, r)
+    if 'heilung_lp' in it:  # Heiltrank: Heilung (und Preis) folgen der Seltenheit; 4 LP nur ab sehr selten
+        lp = it['heilung_lp'][SID.index(sel)]; it['effekt'] = f'heilt {lp} LP sofort, auch im Kampf'; it['preis_h'] = it['preis_h'] * lp // 2
     if k['verbrauch'] and pr == 'wendung': pr = 'gut'
     out = {'kat': kat, 'name': it['name'], 'seltenheit': sel, 'praegung': pr, 'basis_h': it['preis_h'],
            'schaden': it.get('schaden'), 'ruestung': it.get('ruestung'), 'effekt': it.get('effekt'), 'gm': [], 'merkmale': [], 'kp': 0}

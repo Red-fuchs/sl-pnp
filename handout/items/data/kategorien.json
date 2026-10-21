@@ -1491,9 +1491,16 @@
      "preis_h": 120,
      "genus": "m",
      "kern": "Trank",
-     "effekt": "heilt 4 LP sofort, auch im Kampf",
+     "effekt": "heilt sofort, auch im Kampf: 1 LP (gewöhnlich), 2 (ungewöhnlich), 3 (selten), 4 (sehr selten, legendär); Preis × LP/2",
      "von": 25,
-     "bis": 27
+     "bis": 27,
+     "heilung_lp": [
+      1,
+      2,
+      3,
+      4,
+      4
+     ]
     },
     {
      "name": "Schicksalstropfen",

@@ -92,7 +92,7 @@ def pages():
 <div class="grid"><div style="width:36%"><h3>Art (d20)</h3>{arts}</div><div style="width:40%"><h3>Seltenheit (d100)</h3>{selt}<p class="note">Fenster: Welcher Teil der Wirkungstabellen gilt (Seite Magie). Normale Ausrüstung bleibt auf den Tarifen 20 T (2 P) · 40 T (4 P) · 60 T (6 P).</p></div>
 <div><h3>Wirkung begrenzt</h3><p class="note">Je seltener, desto weiter hinten in der d100-Tabelle: Seltenheit schiebt ein Fenster. Grenzen: Schaden 5, Rüstung 3 (auch mit Magie); +1 Schaden/Rüstung nur bei Waffe und Rüstung.</p></div></div>
 <h3>Prägung (d20, Spalte = Seltenheit)</h3>{pr}
-<div style="column-count:2;column-gap:5mm;font-size:8pt;line-height:1.2">{"".join(f'<p style="margin-bottom:.6mm"><b>{e(p["name"])}:</b> {e(p["text"])}</p>' for p in D["praegung"] if p["id"] not in ("normal",))}<p style="margin-bottom:.6mm"><b>Tränke:</b> magisch/gesegnet = Wirkung doppelt (Heilung höchstens 6 LP); verflucht = Nebenwirkung bis zur Nachtruhe. <b>Vergiftet:</b> −10 auf alles, 1 LP Verlust je Szene bis Gegengift oder Nachtruhe.</p></div>'''
+<div style="column-count:2;column-gap:5mm;font-size:8pt;line-height:1.2">{"".join(f'<p style="margin-bottom:.6mm"><b>{e(p["name"])}:</b> {e(p["text"])}</p>' for p in D["praegung"] if p["id"] not in ("normal",))}<p style="margin-bottom:.6mm"><b>Tränke:</b> magisch/gesegnet = Wirkung doppelt (Heilung durch Tränke wird nie verdoppelt; der Heiltrank heilt nach Seltenheit 1/2/3/4 LP, vier nur ab sehr selten); verflucht = Nebenwirkung bis zur Nachtruhe. <b>Vergiftet:</b> −10 auf alles, 1 LP Verlust je Szene bis Gegengift oder Nachtruhe.</p></div>'''
     p2 = f'''<h1 class="pb">11 Händler: Orakel statt Matrix</h1>
 <p><b>Hat der Händler genau das?</b> ist eine <b>Orakelfrage</b> auf der Fate-Chart (Kap. 6), keine eigene Regel. Start-Chancen nach Seltenheit, dann Schritte auf der Chancenleiter, Spannung wie in der Szene (Standard 5).</p>
 <div class="grid"><div style="width:44%"><h3>Start-Chancen</h3>{table(['Seltenheit', 'Chancen', 'JA / JA+'], [[f'<b>{e(s["name"])}</b>', e(ODDS[s["orakel"] + 3]), f'{pc(s["orakel"])} %'] for s in SEL], 'small nw')}
@@ -115,7 +115,7 @@ def pages():
 <li><b>Pro Probe</b> zählen alle Gegenstände zusammen höchstens <b>+20</b> (mit 3 SP bis +50). Schaden insgesamt 5, Rüstung 3; Überschuss wird <b>ein</b> +10 auf die Verteidigung.</li>
 <li><b>Aktive Fähigkeiten</b> (Neuwurf, Orakel verschieben, Schutz, Trick) zählen wie SP: bei einer Probe mit <b>Schicksalsergeben</b> gelten nur passive Boni. Einmal pro Szene oder Sitzung gilt je Gegenstand.</li>
 <li><b>SP:</b> höchstens ein Segen mit „+1 SP“ je Figur, einmal pro Sitzung, nie über das Maximum. Kein Gegenstand erhöht das SP-Maximum.</li>
-<li><b>Heilung durch Gegenstände:</b> höchstens 2 LP je Anwendung, einmal pro Sitzung und Ziel, zusammen höchstens 6 LP je Sitzung und Figur (Tränke ausgenommen).</li></ul></div>
+<li><b>Heilung durch Gegenstände:</b> höchstens 2 LP je Anwendung, einmal pro Sitzung und Ziel, zusammen höchstens 6 LP je Sitzung und Figur (Tränke ausgenommen). Ausnahme <b>Heiltrank</b>: 1 LP gewöhnlich, 2 ungewöhnlich, 3 selten, 4 nur ab sehr selten.</li></ul></div>
 {example_magie()}
 <h3>Alltag (feste Preise)</h3>{table(['Ware', 'Preis'], [[e(a['name']), fmt(a['preis_h'])] for a in D['alltag']], 'small nw')}'''
     wk = D['wirkungen']['tabelle']; sg = D['segen']['tabelle']
