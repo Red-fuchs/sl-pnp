@@ -136,8 +136,8 @@
     "speak": "Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig."
    },
    {
-    "cap": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler.",
-    "speak": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler."
+    "cap": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust, zwei ein Lederwams, und drei ergeben dreißig Taler.",
+    "speak": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust, zwei ein Lederwams, und drei ergeben dreißig Taler."
    }
   ]
  },
@@ -191,7 +191,7 @@
  },
  {
   "id": "S10",
-  "title": "Kampf und Wunden",
+  "title": "Kampf und Lebenspunkte",
   "lines": [
    {
     "cap": "Im Kampf ist der Angriff eine Kampfprobe.",
@@ -202,12 +202,12 @@
     "speak": "Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null."
    },
    {
-    "cap": "Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben.",
-    "speak": "Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben."
+    "cap": "Jede Figur hat zehn Lebenspunkte (LP). Bei drei oder weniger LP gibt es minus zehn auf alle Proben.",
+    "speak": "Jede Figur hat zehn Lebenspunkte. Bei drei oder weniger Lebenspunkten gibt es minus zehn auf alle Proben."
    },
    {
-    "cap": "Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.",
-    "speak": "Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod."
+    "cap": "Bei null LP geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.",
+    "speak": "Bei null Lebenspunkten geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod."
    }
   ]
  },
@@ -228,8 +228,8 @@
     "speak": "Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf."
    },
    {
-    "cap": "Und ein Punkt rettet euch bei null Wunden.",
-    "speak": "Und ein Punkt rettet euch bei null Wunden."
+    "cap": "Und ein Punkt rettet euch bei null LP.",
+    "speak": "Und ein Punkt rettet euch bei null Lebenspunkten."
    }
   ]
  },

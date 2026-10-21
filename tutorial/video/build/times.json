@@ -91,7 +91,7 @@
  },
  "S07": {
   "t0": 87.864,
-  "t1": 109.342,
+  "t1": 109.62,
   "l": [
    88.664,
    91.89,
@@ -102,127 +102,127 @@
    90.99,
    96.533,
    100.733,
-   107.842
+   108.12
   ]
  },
  "S08": {
-  "t0": 109.342,
-  "t1": 129.293,
+  "t0": 109.62,
+  "t1": 129.571,
   "l": [
-   110.142,
-   114.7,
-   118.819,
-   123.53
+   110.42,
+   114.978,
+   119.097,
+   123.808
   ],
   "e": [
-   113.8,
-   117.819,
-   122.53,
-   127.793
+   114.078,
+   118.097,
+   122.808,
+   128.071
   ]
  },
  "S09": {
-  "t0": 129.293,
-  "t1": 164.774,
+  "t0": 129.571,
+  "t1": 165.052,
   "l": [
-   130.093,
-   135.17,
-   141.21,
-   146.272,
-   157.046
+   130.371,
+   135.448,
+   141.488,
+   146.55,
+   157.324
   ],
   "e": [
-   134.57,
-   139.81,
-   144.872,
-   154.246,
-   163.274
+   134.848,
+   140.088,
+   145.15,
+   154.524,
+   163.552
   ]
  },
  "S10": {
-  "t0": 164.774,
-  "t1": 185.662,
+  "t0": 165.052,
+  "t1": 186.877,
   "l": [
-   165.574,
-   168.395,
-   173.849,
-   179.484
+   165.852,
+   168.673,
+   174.127,
+   180.544
   ],
   "e": [
-   167.595,
-   172.849,
-   178.484,
-   184.162
+   167.873,
+   173.127,
+   179.544,
+   185.377
   ]
  },
  "S11": {
-  "t0": 185.662,
-  "t1": 205.496,
+  "t0": 186.877,
+  "t1": 207.004,
   "l": [
-   186.462,
-   189.238,
-   195.771,
-   201.955
+   187.677,
+   190.453,
+   196.986,
+   203.17
   ],
   "e": [
-   188.338,
-   194.571,
-   200.555,
-   203.996
+   189.553,
+   195.786,
+   201.77,
+   205.504
   ]
  },
  "S12": {
-  "t0": 205.496,
-  "t1": 225.43,
+  "t0": 207.004,
+  "t1": 226.938,
   "l": [
-   206.296,
-   211.7,
-   217.731
+   207.804,
+   213.208,
+   219.239
   ],
   "e": [
-   210.5,
-   216.531,
-   223.93
+   212.008,
+   218.039,
+   225.438
   ]
  },
  "S13": {
-  "t0": 225.43,
-  "t1": 241.42,
+  "t0": 226.938,
+  "t1": 242.928,
   "l": [
-   226.23,
-   229.973,
-   234.778
+   227.738,
+   231.481,
+   236.286
   ],
   "e": [
-   229.173,
-   233.578,
-   239.92
+   230.681,
+   235.086,
+   241.428
   ]
  },
  "S14": {
-  "t0": 241.42,
-  "t1": 250.778,
+  "t0": 242.928,
+  "t1": 252.286,
   "l": [
-   242.22,
-   245.896
+   243.728,
+   247.404
   ],
   "e": [
-   244.896,
-   249.278
+   246.404,
+   250.786
   ]
  },
  "S15": {
-  "t0": 250.778,
-  "t1": 263.239,
+  "t0": 252.286,
+  "t1": 264.747,
   "l": [
-   251.578,
-   255.429,
-   260.328
+   253.086,
+   256.937,
+   261.836
   ],
   "e": [
-   254.679,
-   259.578,
-   261.739
+   256.187,
+   261.086,
+   263.247
   ]
  },
  "caps": [
@@ -348,147 +348,147 @@
   },
   {
    "s": 101.633,
-   "e": 108.442,
-   "text": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, f\u00fcnf ergeben f\u00fcnfzig Taler."
+   "e": 108.72,
+   "text": "Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust, zwei ein Lederwams, und drei ergeben drei\u00dfig Taler."
   },
   {
-   "s": 110.142,
-   "e": 114.3,
+   "s": 110.42,
+   "e": 114.578,
    "text": "H\u00e4ngt der Ausgang von eurem K\u00f6nnen ab, gibt es eine Probe mit dem W hundert."
   },
   {
-   "s": 114.7,
-   "e": 118.319,
+   "s": 114.978,
+   "e": 118.597,
    "text": "Die Zielzahl ist S\u00e4ule plus Eigenschaften plus Schwierigkeit."
   },
   {
-   "s": 118.819,
-   "e": 123.03,
+   "s": 119.097,
+   "e": 123.308,
    "text": "Leicht gibt plus zwanzig, schwer minus zwanzig, sehr schwer minus drei\u00dfig."
   },
   {
-   "s": 123.53,
-   "e": 128.393,
+   "s": 123.808,
+   "e": 128.671,
    "text": "Ihr wollt m\u00f6glichst niedrig w\u00fcrfeln: Wurf kleiner oder gleich Zielzahl ist ein Erfolg."
   },
   {
-   "s": 130.093,
-   "e": 135.07,
+   "s": 130.371,
+   "e": 135.348,
    "text": "Je weiter unter der Zielzahl, desto besser: Erfolgsgrade gibt es pro zehn Punkte Abstand."
   },
   {
-   "s": 135.17,
-   "e": 140.31,
+   "s": 135.448,
+   "e": 140.588,
    "text": "Mirne schie\u00dft mit Zielzahl sechzig und w\u00fcrfelt vierunddrei\u00dfig. Das sind drei Erfolgsgrade."
   },
   {
-   "s": 141.21,
-   "e": 145.372,
+   "s": 141.488,
+   "e": 145.65,
    "text": "Eins bis f\u00fcnf gelingt immer, sechsundneunzig bis hundert misslingt immer."
   },
   {
-   "s": 146.272,
-   "e": 154.746,
+   "s": 146.55,
+   "e": 155.024,
    "text": "Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddrei\u00dfig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation."
   },
   {
-   "s": 157.046,
-   "e": 163.874,
+   "s": 157.324,
+   "e": 164.152,
    "text": "Gegen jemanden w\u00fcrfeln beide. Ein Erfolg schl\u00e4gt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat."
   },
   {
-   "s": 165.574,
-   "e": 168.095,
+   "s": 165.852,
+   "e": 168.373,
    "text": "Im Kampf ist der Angriff eine Kampfprobe."
   },
   {
-   "s": 168.395,
-   "e": 173.349,
+   "s": 168.673,
+   "e": 173.627,
    "text": "Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus R\u00fcstung, mindestens null."
   },
   {
-   "s": 173.849,
-   "e": 178.984,
-   "text": "Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben."
+   "s": 174.127,
+   "e": 180.044,
+   "text": "Jede Figur hat zehn Lebenspunkte (LP). Bei drei oder weniger LP gibt es minus zehn auf alle Proben."
   },
   {
-   "s": 179.484,
-   "e": 184.762,
-   "text": "Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt h\u00e4lt sie am Leben, sonst droht der Tod."
+   "s": 180.544,
+   "e": 185.977,
+   "text": "Bei null LP geht sie zu Boden. Ein Schicksalspunkt h\u00e4lt sie am Leben, sonst droht der Tod."
   },
   {
-   "s": 186.462,
-   "e": 188.838,
+   "s": 187.677,
+   "e": 190.053,
    "text": "Ihr startet mit f\u00fcnf Schicksalspunkten."
   },
   {
-   "s": 189.238,
-   "e": 195.071,
+   "s": 190.453,
+   "e": 196.286,
    "text": "Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. H\u00f6chstens drei pro Probe."
   },
   {
-   "s": 195.771,
-   "e": 201.055,
+   "s": 196.986,
+   "e": 202.27,
    "text": "Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf."
   },
   {
-   "s": 201.955,
-   "e": 204.596,
-   "text": "Und ein Punkt rettet euch bei null Wunden."
+   "s": 203.17,
+   "e": 206.104,
+   "text": "Und ein Punkt rettet euch bei null LP."
   },
   {
-   "s": 206.296,
-   "e": 211.0,
+   "s": 207.804,
+   "e": 212.508,
    "text": "Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsm\u00fcde, minus zehn auf alles."
   },
   {
-   "s": 211.7,
-   "e": 217.031,
+   "s": 213.208,
+   "e": 218.539,
    "text": "Bei null sind es minus zwanzig, und Orakelfragen zu euren Gunsten gehen eine Stufe schlechter aus."
   },
   {
-   "s": 217.731,
-   "e": 224.53,
+   "s": 219.239,
+   "e": 226.038,
    "text": "Eine Stunde Rast bringt einen Punkt, eine Nacht drei, ein Fest zwei, ein abgeschlossener Handlungsstrang ebenfalls zwei."
   },
   {
-   "s": 226.23,
-   "e": 229.673,
+   "s": 227.738,
+   "e": 231.181,
    "text": "Alles, was nicht von eurem K\u00f6nnen abh\u00e4ngt, fragt ihr das Orakel."
   },
   {
-   "s": 229.973,
-   "e": 234.078,
+   "s": 231.481,
+   "e": 235.586,
    "text": "Eine Ja-Nein-Frage, dazu die Chancen von fast unm\u00f6glich bis fast sicher."
   },
   {
-   "s": 234.778,
-   "e": 240.52,
+   "s": 236.286,
+   "e": 242.028,
    "text": "Die Antwort lautet Ja plus, also Ja und sogar mehr, Ja, Nein, oder Nein plus: Nein, und es kommt schlimmer."
   },
   {
-   "s": 242.22,
-   "e": 245.396,
+   "s": 243.728,
+   "e": 246.904,
    "text": "Die KI braucht vier bis zw\u00f6lf Sekunden f\u00fcr eine Antwort."
   },
   {
-   "s": 245.896,
-   "e": 249.878,
+   "s": 247.404,
+   "e": 251.386,
    "text": "Schreibt nur eine Handlung pro Nachricht und wartet auf die Erz\u00e4hlung."
   },
   {
-   "s": 251.578,
-   "e": 255.179,
+   "s": 253.086,
+   "e": 256.687,
    "text": "F\u00e4llt die Technik aus, spielen wir mit dem PDF-Handout weiter."
   },
   {
-   "s": 255.429,
-   "e": 260.078,
+   "s": 256.937,
+   "e": 261.586,
    "text": "Alle Tabellen gehen mit zwei zehnseitigen W\u00fcrfeln: erst der Zehner, dann der Einer."
   },
   {
-   "s": 260.328,
-   "e": 262.339,
+   "s": 261.836,
+   "e": 263.847,
    "text": "Viel Spa\u00df am Spieltisch!"
   }
  ]

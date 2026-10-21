@@ -86,7 +86,7 @@ tl.fromTo('#s05-cmd',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L('S05',4)+.2)
  FI('#s07-card',L(s,0)+.2);
  FI('#s07-A',L(s,1)+.2);
  FO('#s07-A',L(s,2)-.1);tl.fromTo('#s07-B',{opacity:0,scale:.9},{opacity:1,scale:1,duration:.7,ease:'back.out(1.6)'},L(s,2)+.3);
- const P=$('#s07-split');const segs=[[3,'+1 SP','#6aa8d8'],[2,'Armbrust','#6fc08a'],[2,'Leder-wams','#6fc08a'],[5,'50 Taler','#e3b858']];let x=880;
+ const P=$('#s07-split');const segs=[[3,'+1 SP','#6aa8d8'],[4,'Armbrust','#6fc08a'],[2,'Leder-wams','#6fc08a'],[3,'30 Taler','#e3b858']];let x=880;
  segs.forEach((g,i)=>{const w=g[0]*66;mk(`<div id="s07-g${i}" class="bar" style="left:${x}px;top:610px;width:${w-6}px;height:120px;background:${g[2]};opacity:0;text-align:center;color:#101010;font:700 26px/1.2 'Lora';padding-top:18px">${g[1]}<div style="font-size:24px;font-weight:600;margin-top:6px">${g[0]} Pkt</div></div>`,P);x+=w});
  tl.fromTo('#s07-g0,#s07-g1,#s07-g2,#s07-g3',{opacity:0,y:-60},{opacity:1,y:0,duration:.5,stagger:.35,ease:'back.out(1.8)'},L(s,3)+.2);
  tl.to('#s07-sp',{opacity:1,duration:.4},L(s,3)+.6);tl.to('#s07-it',{opacity:1,duration:.4},L(s,3)+1.6);tl.to('#s07-ta',{opacity:1,duration:.4},L(s,3)+2.6);
@@ -140,7 +140,7 @@ tl.fromTo('#s05-cmd',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L('S05',4)+.2)
  tl.fromTo('#s10-e0,#s10-e1,#s10-e2,#s10-e3,#s10-e4,#s10-e5,#s10-e6',{opacity:0,y:30},{opacity:1,y:0,duration:.45,stagger:.5,ease:'power3.out'},L(s,1)+.2);
  const wl=$('#s10-wl');
  for(let i=1;i<=10;i++)mk(`<div id="s10-w${i}" class="sq" style="left:${(i-1)*154}px;top:20px;width:136px;height:90px;border-color:${i<=3?'#f08a3c':'#6fc08a'};background:${i<=3?'#4a2a14':'#1f3a29'};color:#f1e7d6;line-height:82px">${i}</div>`,wl);
- mk(`<div class="abs mute" style="left:0;top:130px;font-size:30px">Wunden</div>`,wl);
+ mk(`<div class="abs mute" style="left:0;top:130px;font-size:30px">LP</div>`,wl);
  mk(`<div class="abs b" id="s10-th" style="left:0;top:170px;width:700px;font-size:32px;color:#f08a3c;opacity:0">1–3: −10 auf alle Proben</div>`,wl);
  tl.fromTo('#s10-wl',{opacity:0,y:30},{opacity:1,y:0,duration:.5},L(s,2)+.1);
  const D=(sel,t)=>tl.to(sel,{backgroundColor:'#201210',borderColor:'#3a2f27',color:'#5a4a3c',duration:.35,stagger:.2},t);
@@ -148,7 +148,7 @@ tl.fromTo('#s05-cmd',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L('S05',4)+.2)
  tl.to('#s10-th',{opacity:1,duration:.4},L(s,2)+2.6);
  D('#s10-w5,#s10-w4',L(s,3)-.4);
  D('#s10-w3,#s10-w2,#s10-w1',L(s,3)+.3);
- $('#s10-t1').innerHTML='<span class="bad">0 Wunden: zu Boden</span> · <span class="gold">1 SP: du lebst</span>';
+ $('#s10-t1').innerHTML='<span class="bad">0 LP: zu Boden</span> · <span class="gold">1 SP: du lebst</span>';
  tl.fromTo('#s10-t1',{opacity:0,y:20},{opacity:1,y:0,duration:.5},L(s,3)+1.4);
 }
 function pips(P,id,x0,y,n){for(let i=0;i<n;i++)mk(`<div id="${id}${i+1}" class="pip" style="left:${x0+i*124}px;top:${y}px;border-color:#e3b858;background:#e3b858;color:#2a1c05;opacity:0">${i+1}</div>`,P)}
@@ -158,7 +158,7 @@ const lit=(sel,t,d=.35,c='#e3b858')=>tl.to(sel,{backgroundColor:c,borderColor:c,
 {const s='S11';const P=$('#s11-pips');pips(P,'s11-p',192,190,5);
  tl.fromTo('#s11-pips .pip',{opacity:0,scale:.3},{opacity:1,scale:1,duration:.4,stagger:.15,ease:'back.out(2)'},L(s,0)+.2);FI('#s11-n',L(s,0)+.6);
  const C=$('#s11-cards');
- const cards=[['1 SP','±10 auf eine Probe','auch auf die eines Gegners · höchstens 3 SP je Probe','#6fc08a'],['1 SP','Orakel-Chancen','um eine Stufe verschieben','#6aa8d8'],['2 SP','Neuwurf','das zweite Ergebnis zählt','#f08a3c'],['1 SP','Überleben bei 0 Wunden','du bleibst am Boden, aber du lebst','#e5675a']];
+ const cards=[['1 SP','±10 auf eine Probe','auch auf die eines Gegners · höchstens 3 SP je Probe','#6fc08a'],['1 SP','Orakel-Chancen','um eine Stufe verschieben','#6aa8d8'],['2 SP','Neuwurf','das zweite Ergebnis zählt','#f08a3c'],['1 SP','Überleben bei 0 LP','du bleibst am Boden, aber du lebst','#e5675a']];
  cards.forEach((c,i)=>mk(`<div id="s11-c${i}" class="card abs" style="left:${192+(i%2)*780}px;top:${400+Math.floor(i/2)*200}px;width:756px;height:176px;border-color:${c[3]};opacity:0"><div class="b" style="font-size:44px;color:${c[3]}">${c[0]} · ${c[1]}</div><div class="t mute" style="font-size:28px;margin-top:6px">${c[2]}</div></div>`,C));
  const tt=[L(s,1)+.3,L(s,2)+.2,L(s,2)+2.2,L(s,3)+.2];
  tt.forEach((t,i)=>FI('#s11-c'+i,t));

@@ -42,7 +42,7 @@ Die Reihenfolge ist frei. Das sind eure Grundwerte. || Die Reihenfolge ist frei.
 Ein Beispiel: Mirne, Tochter eines Salzsieders. || Ein Beispiel: Mirne, Tochter eines Salzsieders.
 Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben. || Sie hat sechs Vorteile für vierzehn Punkte und zwei Nachteile, die sechs Punkte zurückgeben.
 Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig. || Zwanzig plus sechs minus vierzehn: zwölf Punkte bleiben übrig.
-Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler. || Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust und ein Lederwams, fünf ergeben fünfzig Taler.
+Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust, zwei ein Lederwams, und drei ergeben dreißig Taler. || Drei ergeben einen sechsten Schicksalspunkt, vier ergeben eine Armbrust, zwei ein Lederwams, und drei ergeben dreißig Taler.
 
 ## S08 | Die Probe: Zielzahl | ca. 0:35
 Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert. || Hängt der Ausgang von eurem Können ab, gibt es eine Probe mit dem W hundert.
@@ -57,17 +57,17 @@ Eins bis fünf gelingt immer, sechsundneunzig bis hundert misslingt immer. || Ei
 Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddreißig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation. || Ein Pasch, also zwei gleiche Ziffern wie elf oder dreiunddreißig, ist kritisch: als Erfolg eine Wendung zu euren Gunsten, als Misserfolg eine Komplikation.
 Gegen jemanden würfeln beide. Ein Erfolg schlägt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat. || Gegen jemanden würfeln beide. Ein Erfolg schlägt einen Misserfolg, bei zwei Erfolgen gewinnt, wer mehr Erfolgsgrade hat.
 
-## S10 | Kampf und Wunden | ca. 0:30
+## S10 | Kampf und Lebenspunkte | ca. 0:30
 Im Kampf ist der Angriff eine Kampfprobe. || Im Kampf ist der Angriff eine Kampfprobe.
 Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null. || Der Schaden ist Waffe plus Erfolgsgrade des Angreifers minus Rüstung, mindestens null.
-Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben. || Jede Figur hat zehn Wunden. Bei drei oder weniger Wunden gibt es minus zehn auf alle Proben.
-Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod. || Bei null Wunden geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.
+Jede Figur hat zehn Lebenspunkte (LP). Bei drei oder weniger LP gibt es minus zehn auf alle Proben. || Jede Figur hat zehn Lebenspunkte. Bei drei oder weniger Lebenspunkten gibt es minus zehn auf alle Proben.
+Bei null LP geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod. || Bei null Lebenspunkten geht sie zu Boden. Ein Schicksalspunkt hält sie am Leben, sonst droht der Tod.
 
 ## S11 | Schicksalspunkte einsetzen | ca. 0:35
 Ihr startet mit fünf Schicksalspunkten. || Ihr startet mit fünf Schicksalspunkten.
 Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe. || Ein Punkt gibt plus oder minus zehn auf eine Probe, auch auf die eines Gegners. Höchstens drei pro Probe.
 Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf. || Ein Punkt verschiebt die Chancen des Orakels um eine Stufe, zwei Punkte kosten einen Neuwurf.
-Und ein Punkt rettet euch bei null Wunden. || Und ein Punkt rettet euch bei null Wunden.
+Und ein Punkt rettet euch bei null LP. || Und ein Punkt rettet euch bei null Lebenspunkten.
 
 ## S12 | Schwellen und Erholung | ca. 0:30
 Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsmüde, minus zehn auf alles. || Vorsicht: Bei einem Schicksalspunkt seid ihr schicksalsmüde, minus zehn auf alles.
