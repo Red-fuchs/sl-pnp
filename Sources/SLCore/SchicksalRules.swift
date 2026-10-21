@@ -1,6 +1,6 @@
 import Foundation
 
-/// Schicksalsschlag rules v0.1 (notes/RULES-schicksalsschlag.md): d100 roll-under with degrees, word-budget characters, Schicksalspunkte, Wunden.
+/// Schicksalsschlag rules v0.1 (notes/RULES-schicksalsschlag.md): d100 roll-under with degrees, word-budget characters, Schicksalspunkte, LP (Lebenspunkte; code name wunden).
 public struct Trait: Codable, Equatable {
   public var text: String, major: Bool, pos: Bool
   public init(text: String, major: Bool, pos: Bool) { self.text = text; self.major = major; self.pos = pos }
@@ -65,8 +65,8 @@ public struct Pc: Codable, Equatable {
   public var items: [StoryItem] { get { _items ?? [] } set { _items = newValue.isEmpty ? nil : newValue } }
   public var lastCheck: Check?
   public init(speaker: String, name: String? = nil) { self.speaker = speaker; self.name = name ?? speaker }
-  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "inventar": inventar, "taler": taler, "items": items.map(\.json)] }
-  public var line: String { "\(name) (Kampf \(pillars["kampf"] ?? 0) · Sozial \(pillars["sozial"] ?? 0) · Wissen \(pillars["wissen"] ?? 0); SP \(sp)/\(spMax); Wunden \(wunden)/\(wundenMax)\(traits.isEmpty ? "" : "; " + traits.map { ($0.pos ? "+" : "−") + $0.text }.joined(separator: ", ")))" }
+  public var json: [String: Any] { ["name": name, "speaker": speaker, "pillars": pillars, "traits": traits.map(\.json), "sp": sp, "spMax": spMax, "wunden": wunden, "lp": wunden, "lpMax": wundenMax, "inventar": inventar, "taler": taler, "items": items.map(\.json)] }
+  public var line: String { "\(name) (Kampf \(pillars["kampf"] ?? 0) · Sozial \(pillars["sozial"] ?? 0) · Wissen \(pillars["wissen"] ?? 0); SP \(sp)/\(spMax); LP \(wunden)/\(wundenMax)\(traits.isEmpty ? "" : "; " + traits.map { ($0.pos ? "+" : "−") + $0.text }.joined(separator: ", ")))" }
 }
 
 public enum SR {
@@ -78,7 +78,7 @@ public enum SR {
     let double = roll == 100 || (roll >= 11 && roll <= 99 && roll % 11 == 0)
     return (success, dos, dof, double ? (success ? "success" : "failure") : nil)
   }
-  /// SP <= 1: -10, SP 0: -20; Wunden <= 3: -10
+  /// SP <= 1: -10, SP 0: -20; LP <= 3: -10
   public static func penalty(_ pc: Pc) -> Int { (pc.sp == 0 ? -20 : (pc.sp <= 1 ? -10 : 0)) + (pc.wunden <= 3 ? -10 : 0) }
   public static func fitting(_ text: String, _ traits: [Trait]) -> [Trait] {
     let w = Set(contentWords(text).map(lemma))
@@ -166,14 +166,18 @@ public enum SR {
   public static func itemBonus(_ pc: Pc, text: String) -> (dmg: Int, check: Int) {
     let w = Set(contentWords(text).map(lemma)); var d = 0, c = 0
     for it in pc.items where it.level > 0 && !Set(contentWords(it.name).map(lemma)).isDisjoint(with: w) {
-      if it.kind == "waffe" { d += it.level } else if it.kind == "werkzeug" { c += 10 * it.level }
+      if it.kind == "waffe" { d += min(it.level, levelCap(it)) } else if it.kind == "werkzeug" { c += 10 * it.level }
     }
     return (d, c)
   }
-  /// a thread was solved: every levelbar story item grows +1 (max 3). Returns the names that grew.
+  /// max level of a story item: +3, and base + level stays within the item caps (weapon damage 5, armour 3; RULES-gegenstaende.md)
+  public static func levelCap(_ it: StoryItem) -> Int {
+    switch it.kind { case "waffe": return max(0, min(3, 5 - weaponDamage(it.name))); case "ruestung": return max(0, min(3, 3 - gearArmour(it.name))); default: return 3 }
+  }
+  /// a thread was solved: every levelbar story item grows +1 (max 3, capped by levelCap). Returns the names that grew.
   public static func levelUp(_ pcs: inout [Pc]) -> [String] {
     var g: [String] = []
-    for i in pcs.indices { var its = pcs[i].items; for k in its.indices where its[k].levelbar && its[k].level < 3 { its[k].level += 1; g.append("\(its[k].name) +\(its[k].level)") }; pcs[i].items = its }
+    for i in pcs.indices { var its = pcs[i].items; for k in its.indices where its[k].levelbar && its[k].level < levelCap(its[k]) { its[k].level += 1; g.append("\(its[k].name) +\(its[k].level)") }; pcs[i].items = its }
     return g
   }
   /// Gegenstandsgeheimnis from a d6: 1-2 nothing, 3-4 levelbar, 5 Wendung, 6 both. Returns the Wendung text (item name never inside: the leak guard must not ban the visible name).

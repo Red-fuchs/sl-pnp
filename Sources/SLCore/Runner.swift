@@ -214,7 +214,7 @@ public final class Runner {
     case .szene:
       if game.isSchicksal { game.newScene(); sink(.info("Neue Szene: Schicksalsergeben ist für alle Figuren wieder verfügbar.")); try session.save(game); refresh() } else { sink(.info("/szene gibt es nur unter --rules schicksal")) }
     case .rast(let a):
-      if a == "kurz" { game.partyGain(sp: 1); sink(.info("Kurze Rast: +1 SP, +1 Wunde")) } else if a == "lang" { game.partyGain(sp: 3, wunden: 3); sink(.info("Lange Rast: +3 SP, +3 Wunden")) } else if a == "fest" { game.partyGain(sp: 2); sink(.info("Fest: +2 SP")) } else { sink(.info("/rast kurz | lang | fest")) }
+      if a == "kurz" { game.partyGain(sp: 1); sink(.info("Kurze Rast: +1 SP, +1 LP")) } else if a == "lang" { game.partyGain(sp: 3, wunden: 3); sink(.info("Lange Rast: +3 SP, +3 LP")) } else if a == "fest" { game.partyGain(sp: 2); sink(.info("Fest: +2 SP")) } else { sink(.info("/rast kurz | lang | fest")) }
       game.partyStore.with { p in for i in p.indices where a == "kurz" { p[i].wunden = min(p[i].wundenMax, p[i].wunden) } }; try session.save(game); refresh()
     case .wunden(let a):
       let parts = a.split(separator: " ").map(String.init)
@@ -222,7 +222,7 @@ public final class Runner {
         let who = parts.count >= 2 ? parts.dropLast().joined(separator: " ") : (speaker ?? "")
         game.partyStore.with { p in if let i = p.firstIndex(where: { norm($0.name) == norm(who) || norm($0.speaker) == norm(who) }) { p[i].wunden = max(-5, min(p[i].wundenMax, p[i].wunden + d)) } }; game.announceSheet()
       }
-      sink(.info(game.partyStore.all.map { "\($0.name): Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ").isEmpty ? "Keine Gruppe." : game.partyStore.all.map { "\($0.name): Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ")))
+      sink(.info(game.partyStore.all.map { "\($0.name): LP \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ").isEmpty ? "Keine Gruppe." : game.partyStore.all.map { "\($0.name): LP \($0.wunden)/\($0.wundenMax)\($0.wunden <= 0 ? " (am Boden)" : ($0.wunden <= 3 ? " (-10)" : ""))" }.joined(separator: " · ")))
     case .saeulen(let a) where game.isSchicksal:
       var p: [String: Int] = [:]
       for kv in a.split(separator: " ") { let x = kv.split(separator: "="); if x.count == 2, let v = Int(x[1]), ["kampf", "sozial", "wissen"].contains(x[0].lowercased()) { p[x[0].lowercased()] = v } }
@@ -288,6 +288,7 @@ public enum Cmd: Equatable {
     if t == "/sp" || t.hasPrefix("/sp ") { return .sp(arg(3)) }
     if t == "/rast" || t.hasPrefix("/rast ") { return .rast(arg(5)) }
     if t == "/wunden" || t.hasPrefix("/wunden ") { return .wunden(arg(7)) }
+    if t == "/lp" || t.hasPrefix("/lp ") { return .wunden(arg(3)) }
     if t == "/figur" || t.hasPrefix("/figur ") { return .figur(arg(6)) }
     if t == "/neu" || t.hasPrefix("/neu ") { return .neu(arg(4)) }
     return t.hasPrefix("/") ? .unknown(t) : .say(t)

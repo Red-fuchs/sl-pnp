@@ -8,12 +8,12 @@ public final class PartyStore: @unchecked Sendable {
   public init() {}
   public func with<T>(_ f: (inout [Pc]) -> T) -> T { lock.lock(); defer { lock.unlock() }; return f(&pcs) }
   public var all: [Pc] { with { $0 } }
-  /// Wunden edited from outside (Foundry): `set` wins over `delta`; clamped to -5...wundenMax. nil = unknown speaker.
+  /// LP (Lebenspunkte, JSON key stays "wunden") edited from outside (Foundry): `set` wins over `delta`; clamped to -5...wundenMax. nil = unknown speaker.
   public func wunden(speaker: String, delta: Int?, set: Int?) -> [String: Any]? {
     with { p in
       guard let i = p.firstIndex(where: { norm($0.speaker) == norm(speaker) || norm($0.name) == norm(speaker) }) else { return nil }
       let v = set ?? (p[i].wunden + (delta ?? 0)); p[i].wunden = max(-5, min(p[i].wundenMax, v))
-      return ["name": p[i].name, "wunden": p[i].wunden, "wundenMax": p[i].wundenMax]
+      return ["name": p[i].name, "wunden": p[i].wunden, "wundenMax": p[i].wundenMax, "lp": p[i].wunden, "lpMax": p[i].wundenMax]
     }
   }
 }
@@ -86,7 +86,7 @@ public extension Game {
       case "orakel":
         let n = max(0, min(delta, pc.sp)); pc.sp -= n; pc.pendingOracle += n
       case "survive":
-        if pc.sp >= 1 && pc.wunden <= 0 { pc.sp -= 1; pc.wunden = 0 } else { err = "überleben braucht 1 SP und 0 Wunden" }
+        if pc.sp >= 1 && pc.wunden <= 0 { pc.sp -= 1; pc.wunden = 0 } else { err = "überleben braucht 1 SP und 0 LP" }
       case "reroll":
         if pc.sp >= 2, var last = pc.lastCheck { pc.sp -= 2; let r = d100(); last.roll = r; (last.success, last.dos, last.dof, last.crit) = SR.degrees(target: last.target, roll: r); SR.settleErgeben(&pc, &last); last.spLeft = pc.sp; last.reason += " (Neuwurf)"; pc.lastCheck = last; pendingFacts.append(last.fact); self.out(.roll(last)) } else { err = "Neuwurf braucht 2 SP und eine vorherige Probe" }
       default:
@@ -114,7 +114,7 @@ public extension Game {
   func partyGain(sp: Int, wunden: Int = 0) { partyStore.with { p in for i in p.indices { p[i].sp = min(p[i].spMax, p[i].sp + sp); p[i].wunden = min(p[i].wundenMax, p[i].wunden + wunden) } }; announceSheet() }
   var partyBlock: String {
     let p = partyStore.all; guard isSchicksal, !p.isEmpty else { return "" }
-    return "Gruppe: " + p.map { "\($0.name) (SP \($0.sp)/\($0.spMax), Wunden \($0.wunden)/\($0.wundenMax)\($0.wunden <= 3 ? ", schwer verletzt" : ""))" }.joined(separator: " | ")
+    return "Gruppe: " + p.map { "\($0.name) (SP \($0.sp)/\($0.spMax), LP \($0.wunden)/\($0.wundenMax)\($0.wunden <= 3 ? ", schwer verletzt" : ""))" }.joined(separator: " | ")
   }
 
   func queueFact(_ f: String) { pendingFacts.append(f) }
@@ -163,7 +163,7 @@ public extension Game {
         if let i = pcIndex(speaker, create: false) {
           dmg = armourReduce(dmg, i)
           let now: Int = partyStore.with { p in p[i].wunden -= dmg; return p[i].wunden }
-          facts.append("[Fakt] Gegenschlag von \(name): \(partyStore.all[i].name) verliert \(dmg) Wunden (jetzt \(max(0, now)))." + (now <= 0 ? " Die Figur geht zu Boden; nur ein Schicksalspunkt hält sie am Leben." : ""))
+          facts.append("[Fakt] Gegenschlag von \(name): \(partyStore.all[i].name) verliert \(dmg) LP (jetzt \(max(0, now)))." + (now <= 0 ? " Die Figur geht zu Boden; nur ein Schicksalspunkt hält sie am Leben." : ""))
           announceSheet()
         }
       } else { facts.append("[Fakt] Der Angriff auf \(name) geht fehl, \(name) bleibt unverletzt.") }
@@ -234,6 +234,6 @@ public extension Game {
     if !lines.isEmpty { announceSheet() }
     return lines
   }
-  /// the speaker's armour reduces a counterblow (at least 1 Wunde is always lost)
+  /// the speaker's armour reduces a counterblow (at least 1 LP is always lost)
   func armourReduce(_ dmg: Int, _ i: Int) -> Int { max(1, dmg - SR.armour(of: partyStore.all[i])) }
 }

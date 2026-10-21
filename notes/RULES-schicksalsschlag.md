@@ -14,6 +14,7 @@ The user's design. sl Regelwerk id: `schicksal`. These are the source of truth f
     - **4** points (40 Taler): sword, axe or bow (also spear, crossbow), chain mail (armour 2), shield;
     - **6** points (60 Taler): plate armour (armour 3) or a firearm.
     - sl classifies by keyword; unknown items count as normal (2). `/budget` shows the tier per item.
+    - **Price source:** `handout/data/items.json` (see RULES-gegenstaende.md) is the price source for gear (budget points = price ÷ 10 Taler, rounded up). The 2/4/6 tiers (20/40/60 Taler) stay as the starting-gear values; the engine keeps the keyword tiers until after the session.
   - or 3 points = +1 max Schicksalspunkt.
 - Three pillars **Kampf / Sozial / Wissen**: distribute 30 / 40 / 50 in any order. These are the base values for d100.
 
@@ -24,12 +25,12 @@ Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hun
 - Budget: 20 − 8 + 8 = **20** to spend.
 - `/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1`: plate **6** + sword **4** + shield **4** = 14, +1 max SP **3**, Taler **3** (= 30 Taler) → 14 + 3 + 3 = **20**, nothing left over.
 - Without the three flaws (budget 12) plate and sword (10) would leave 2 points: no shield, no SP.
-- Armour of the figure (leather 1, mail 2, plate 3) reduces the damage of a counterblow by its value, but never below 1 Wunde.
+- Armour of the figure (leather 1, mail 2, plate 3) reduces the damage of a counterblow by its value, but never below 1 LP.
 
 ### Story items ★ (Auslegung, decided 2026-10-21: „alles kostet Budget, aber Boni wenn die Geschichte stimmig ist“)
 - Every item costs its tier price. An item bought via `/budget item=…` that shares a content word with the background story or a positive trait (same matcher as for traits) becomes a **★ Story-Item**. Same prices as other items; non-story items behave as before.
 - On purchase sl secretly rolls a hidden **Gegenstandsgeheimnis** (d6): 1–2 nothing, 3–4 **levelbar**, 5 **Wendung**, 6 both.
-  - **levelbar:** the item grows +1 after each solved thread (`/geloest`), max +3: weapons +1 damage per level, tools +10 per level on checks that mention the item, armour counts normally.
+  - **levelbar:** the item grows +1 after each solved thread (`/geloest`), max +3: weapons +1 damage per level, tools +10 per level on checks that mention the item, armour counts normally. **Item caps apply** (RULES-gegenstaende.md): base weapon damage + level ≤ 5 (a sword, base 3, stops at +2; a knife, base 2, reaches +3) and base armour + level ≤ 3 (plate cannot grow). The engine clamps this in the level-up (`levelCap`).
   - **Wendung:** a hidden truth (forgery, stolen, cursed with an upside, famous previous owner) is stored in hidden.json like an NPC secret (key `★<item>`, text never contains the item name), guarded by the leak guard and revealed through the Spur/tier system. Payoff on reveal: **+1 SP**, the truth appears on the sheet.
 - Players see only „★ Story-Item“ and, once grown, the level; the secret stays internal.
 
@@ -49,9 +50,9 @@ Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hun
 - Attack = Kampf check.
   - Defence: the defender rolls Kampf as an opposed check (parry/dodge), or the attacker simply needs ≥1 DoS against a passive defender.
 - Damage = weapon (fist 1, knife/club 2, sword/axe 3, bow 3, firearm 4) + DoS − armour (cloth 0, leather 1, mail 2, plate 3).
-- **Wunden:** 10 per PC.
+- **LP (Lebenspunkte, formerly "Wunden"; the count of remaining health, not of injuries):** 10 per PC.
   - 0 or less: down, and a Schicksalspunkt is needed to stay alive.
-  - At ≤3 Wunden: −10 on everything.
+  - At ≤3 LP: −10 on everything.
 - Initiative: everyone rolls d100 ≤ Kampf, and more DoS acts first. Simpler: players first, then opponents.
 
 ## Schicksalspunkte (SP), the "Fatedash"
@@ -60,7 +61,7 @@ Strong kit has to be funded by flaws. Story: sworn knight of a temple order, hun
   - 1 SP = **±10** on a check, your own or **someone else's** (also an opponent's or an NPC's, to manipulate fate). At most 3 SP per check.
   - 1 SP = shift the **oracle odds** one step (e.g. offen → wahrscheinlich, or for an opponent worse).
   - 2 SP = **reroll** (the second roll stands).
-  - 1 SP = survive at 0 Wunden (stays down, but alive).
+  - 1 SP = survive at 0 LP (stays down, but alive).
 - **Threshold:**
   - At **SP ≤ 1**: "schicksalsmüde", **−10** on all checks.
   - At **SP 0**: **−20**, and oracle questions in your favour go one step worse.
@@ -82,7 +83,7 @@ Math and decisions:
 - With T' = T − 10 the check is rolled against T'. The SP gain needs DoS ≥ 2, i.e. roll ≤ T' − 10 = **T − 20**.
 - 01–05 always succeed with DoS = 1 + max(0, T' − roll) / 10, so there is no special case (T' = 40, roll 3 → DoS 4, gain).
 - A failure gets **DoF + 1**, on every failure: also 96–100 and critical failures (no extra rule). Example T50: roll 45 vs T' 40 → DoF 2; roll 44 (double) → critical failure, DoF 2.
-- The −10 is its own modifier "Schicksalsergeben −10" in the calculation, not part of the difficulty. It stacks with traits, difficulty and the SP/Wunden thresholds (computed on the SP before the gain).
+- The −10 is its own modifier "Schicksalsergeben −10" in the calculation, not part of the difficulty. It stacks with traits, difficulty and the SP/LP thresholds (computed on the SP before the gain).
 - Gain is capped at the SP maximum; at max the roll still counts as used.
 - **Once per scene and figure:** a flag on the sheet, reset on `start_scene` / `end_scene`. A second use is refused ("in dieser Szene schon verbraucht").
 - **Not on leicht checks** (refused by sl). "Real stakes", initiative and pure practice stay the GM's call.

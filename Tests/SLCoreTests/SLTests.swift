@@ -1654,7 +1654,7 @@ final class WundenApiTests: XCTestCase {
   func testWunden() {
     let st = PartyStore(); st.with { $0 = [Pc(speaker: "Anna", name: "Kara")] }
     XCTAssertEqual(st.wunden(speaker: "Anna", delta: -3, set: nil)?["wunden"] as? Int, 7)
-    XCTAssertEqual(st.wunden(speaker: "kara", delta: nil, set: 2)?["wunden"] as? Int, 2)
+    XCTAssertEqual(st.wunden(speaker: "kara", delta: nil, set: 2)?["wunden"] as? Int, 2); XCTAssertEqual(st.wunden(speaker: "kara", delta: nil, set: 2)?["lp"] as? Int, 2)
     XCTAssertEqual(st.wunden(speaker: "Anna", delta: 99, set: nil)?["wunden"] as? Int, 10, "clamped to max")
     XCTAssertEqual(st.wunden(speaker: "Anna", delta: -99, set: nil)?["wunden"] as? Int, -5)
     XCTAssertNil(st.wunden(speaker: "Nobody", delta: 1, set: nil)); XCTAssertEqual(st.all[0].wunden, -5)
@@ -1699,9 +1699,12 @@ final class GearAndStoryItemTests: XCTestCase {
     pc.items = [it]
     var pcs = [pc]
     for _ in 0..<5 { _ = SR.levelUp(&pcs) }
-    XCTAssertEqual(pcs[0].items[0].level, 3)
-    XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit dem Drachenstahl-Schwert zu").dmg, 3); XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit der Faust").dmg, 0)
+    XCTAssertEqual(pcs[0].items[0].level, 2, "Schwert 3 + level capped at damage 5")
+    XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit dem Drachenstahl-Schwert zu").dmg, 2); XCTAssertEqual(SR.itemBonus(pcs[0], text: "Ich schlage mit der Faust").dmg, 0)
     let d = try! JSONDecoder().decode(Pc.self, from: JSONEncoder().encode(pcs[0])); XCTAssertEqual(d, pcs[0])
+    var kn = StoryItem(name: "Messer", kind: "waffe"); kn.levelbar = true; var pk = Pc(speaker: "K"); pk.items = [kn]; var pks = [pk]
+    for _ in 0..<5 { _ = SR.levelUp(&pks) }
+    XCTAssertEqual(pks[0].items[0].level, 3, "Messer 2 + 3 = 5"); XCTAssertEqual(SR.levelCap(StoryItem(name: "Plattenpanzer", kind: "ruestung")), 0); XCTAssertEqual(SR.levelCap(StoryItem(name: "Lederwams", kind: "ruestung")), 2)
     var plain = Pc(speaker: "N"); plain.hintergrund = "Ich bin Bauer."; _ = SR.budget(&plain, args: "item=Plattenpanzer"); XCTAssertTrue(plain.items.isEmpty)
   }
 }

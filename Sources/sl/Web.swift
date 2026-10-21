@@ -158,7 +158,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       guard let j = bodyJSON(), let t = j["text"] as? String, !t.isEmpty, let g = runner.game else { return json("400 Bad Request", ["error": "text fehlt"]) }
       g.partyStore.lock.lock(); g.pendingRegie.append(clean(t, 300)); g.partyStore.lock.unlock()
       json("202 Accepted", ["ok": true])
-    case ("POST", "/wunden"):
+    case ("POST", "/wunden"), ("POST", "/lp"):
       guard let j = bodyJSON(), let sp = j["speaker"] as? String, j["delta"] is Int || j["set"] is Int, let g = runner.game else { return json("400 Bad Request", ["error": "speaker und delta|set"]) }
       guard let res = g.partyStore.wunden(speaker: sp, delta: j["delta"] as? Int, set: j["set"] as? Int) else { return json("404 Not Found", ["error": "unbekannter speaker"]) }
       g.announceSheet(); json("200 OK", res)
