@@ -237,7 +237,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <p>Wer bist du? Woher kommst du? Was kannst du? Was holt dich ein? Gute Geschichten nennen <b>Können</b> (Vorteile) und <b>Last</b> (Nachteile). Jeder Satz kann ein Wort liefern. Bei sl zieht die KI die Wörter für dich heraus, am Tisch macht das die Spielleitung oder du selbst.</p>
       <p><b>In Foundry:</b> <code>/sl /figur Mirne: Ich wuchs als Tochter eines Salzsieders im Moor auf &hellip;</code> (erst <code>/sl</code>, dann der Befehl <code>/figur</code>, dann der Name, ein Doppelpunkt und die Geschichte). Auch alle anderen sl-Befehle (<code>/merkmal</code>, <code>/budget</code>) schreibst du mit <code>/sl</code> davor; ein nacktes <code>/figur</code> kennt Foundry nicht.</p>
       {{FIG:chargen}}
-      <p><b>Merkmal vergessen oder falsch?</b> Mit <code>/sl /merkmal</code> korrigierst du die Liste: <code>/sl /merkmal +Stärke</code>, <code>/sl /merkmal -Schwäche</code> oder <code>/sl /merkmal x Text</code> (streichen). Mit dem Zusatz <code>major</code> ist es ein prägendes (großes) Merkmal. Das geht nur <b>vor der ersten Probe</b>. Danach das <code>/budget</code> neu setzen.</p>
+      <p><b>Merkmal vergessen oder falsch?</b> Mit <code>/sl /merkmal</code> korrigierst du die Liste: <code>/sl /merkmal +Stärke</code>, <code>/sl /merkmal -Schwäche</code> oder <code>/sl /merkmal x Text</code> (streichen). Mit dem Zusatz <code>major</code> ist es ein prägendes (großes) Merkmal. Das geht nur <b>vor der ersten Probe</b>. Danach das <code>/sl /budget</code> neu setzen.</p>
       {{FIG:merkmal}}</li>
     <li data-r><h3>Wörter als Eigenschaften, Budget 20</h3>
       <div class="tw"><table>
@@ -283,7 +283,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       </table></div>
       <p>sl ordnet nach Stichwort ein; Unbekanntes zählt als normal (2 Punkte). <code>/sl /budget</code> zeigt die Stufe je Gegenstand. 1 Punkt = 10 Taler.</p>
       <h4 style="margin:14px 0 4px">Story-Items <span class="chip">&#9733;</span></h4>
-      <p>Jeder Gegenstand kostet seinen Preis. Passt ein über <code>/sl /budget</code> gekaufter Gegenstand zu deiner Hintergrundgeschichte, wird er als <b>&#9733; Story-Item</b> markiert (gleicher Preis). Manche wachsen mit gelösten Handlungssträngen (höchstens +3), manche verbergen eine Wendung, die sich erst im Spiel zeigt. Du siehst nur den Stern, der Rest bleibt Überraschung. Gegenstände ohne Stern ändern sich nicht.</p>
+      <p>Jeder Gegenstand kostet seinen Preis. Passt ein über <code>/sl /budget</code> gewählter Gegenstand zu deiner Hintergrundgeschichte, wird er als <b>&#9733; Story-Item</b> markiert (gleicher Preis). Manche wachsen mit gelösten Handlungssträngen (höchstens +3), manche verbergen eine Wendung, die sich erst im Spiel zeigt. Du siehst nur den Stern, der Rest bleibt Überraschung. Gegenstände ohne Stern ändern sich nicht.</p>
       {{FIG:sheet}}
       <h4 style="margin:14px 0 4px">Geld und Einkäufe im Spiel</h4>
       <p>Münzen: <b>1 Taler (T) = 2 Schilling (S) = 4 Heller (H)</b>. sl zählt in Heller und zeigt dein Geld als &bdquo;3 T 1 S 1 H&ldquo;. Wenn du beim Händler etwas kaufst, erzählt sl das nicht von allein ins Inventar: <span class="chip">nur Moderator</span> bucht es mit <code>/kauf Mirne Seil 1S</code> (Preis ab, Ware ins Inventar; reicht das Geld nicht, passiert nichts), Beute und Lohn mit <code>/taler Mirne +1S</code> oder <code>/taler Mirne -40</code>, Fundstücke mit <code>/gegenstand Mirne +Fackel</code> (oder <code>-Fackel</code>). Spieler können das nicht selbst. Bei einem Kauf erzählt sl ihn in der nächsten Szene kurz mit.</p>
@@ -339,7 +339,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     </table></div>
     <p><b>Budget:</b> Vorteile 4 + 4 = 8, Nachteile 4 + 2 + 2 = 8, also 20 &minus; 8 + 8 = <b>20</b>.</p>
     <p><code>/sl /budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer <b>6</b> + Schwert <b>4</b> + Schild <b>4</b> = 14 Punkte (140 Taler Gegenwert), +1 max. SP = <b>3</b>, Taler <b>3</b> (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig.</p>
-    <p style="margin:0">Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 LP.</p>
+    <p style="margin:0">Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Treffers um ihren Wert, aber nie unter 1 LP.</p>
   </div>
   </div>
 </div></section>
@@ -581,7 +581,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <p class="out" id="o-out" aria-live="polite"></p>
     <p style="font-size:.88rem;color:var(--mute);margin:6px 0 0">Beispiel aus dem Handout: offen, Spannung 5 &rarr; 8 / 50 / 92: Wurf 1 bis 8 JA+, 9 bis 50 JA, 51 bis 92 NEIN, 93 bis 100 NEIN+.</p>
   </div>
-  <p data-r>In Foundry fragst du das Orakel einfach als Frage an sl. Die Antwort kommt als grüne <b>Orakel-Karte</b> mit Frage, Antwort, Chancen, Prozentwert und Wurf:</p>
+  <p data-r>In Foundry fragst du das Orakel mit einer Frage an sl, zum Beispiel <code>/sl Ist die Tür verschlossen?</code>. Die Antwort kommt als grüne <b>Orakel-Karte</b> mit Frage, Antwort, Chancen, Prozentwert und Wurf:</p>
   {{FIG:oracle}}
   <div class="note" data-r>Die vollständige Schicksalstabelle (alle 7 &times; 9 Zellen) steht im Handout-PDF (Abschnitt „Das Orakel ohne KI“).</div>
 </div></section>
