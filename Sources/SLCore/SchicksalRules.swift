@@ -3,13 +3,27 @@ import Foundation
 /// Schicksalsschlag rules v0.1 (notes/RULES-schicksalsschlag.md): d100 roll-under with degrees, word-budget characters, Schicksalspunkte, LP (Lebenspunkte; code name wunden).
 public struct Trait: Codable, Equatable {
   public var text: String, major: Bool, pos: Bool
-  public init(text: String, major: Bool, pos: Bool) { self.text = text; self.major = major; self.pos = pos }
+  /// kampf|sozial|wissen; nil = fits every pillar. Optional so older saves still decode.
+  public var pillar: String?
+  public init(text: String, major: Bool, pos: Bool, pillar: String? = nil) { self.text = text; self.major = major; self.pos = pos; self.pillar = pillar }
+  public static let pillarWords: [(String, [String])] = [
+    ("kampf", ["armbrust", "bogen", "schwert", "klinge", "dolch", "messer", "axt", "speer", "lanze", "schleuder", "schütz", "kämpf", "krieg", "söldner", "soldat", "ritter", "faust", "fäuste", "ringen", "ringer", "zäh", "wache", "wächter", "waffe", "schild", "rüstung", "athlet", "jäger", "jagd", "streiter", "gewalt", "verwundet"]),
+    ("sozial", ["überred", "lüg", "lügen", "handel", "händler", "feilsch", "charme", "charism", "gefallen", "kontakt", "freund", "redegewandt", "diplomat", "verführ", "schmeich", "einschücht", "tratsch", "ansehen", "gastfreund", "schüchtern", "misstrau", "schulden", "schuld bei"]),
+    ("wissen", ["lesen", "schreib", "kräuter", "heilk", "heiler", "heilung", "heilen", "pfad", "spur", "fährte", "gelehrt", "karte", " wissen", "gebildet", "bibliothek", "alchem", "magie", "arzt", "medizin", "sprache", "navigat", "orient", "schrift", "forsch", "studier", "sternen", "geschichte", "aberglaub"]),
+  ]
+  /// deterministic keyword classifier: most keyword hits win, a tie or no hit = nil
+  public static func classify(_ text: String) -> String? {
+    let t = " " + text.lowercased() + " "
+    let sc = pillarWords.map { ($0.0, $0.1.filter { t.contains($0) }.count) }
+    guard let top = sc.map(\.1).max(), top > 0, sc.filter({ $0.1 == top }).count == 1 else { return nil }
+    return sc.first { $0.1 == top }?.0
+  }
   public var cost: Int { major ? 4 : 2 }
   /// check modifier when it fits the action
   public var bonus: Int { (major ? 20 : 10) * (pos ? 1 : -1) }
   /// Fremdkraft (setting "Die Weberin"): one supernatural home-world ability, written as "Fremdkraft: Feuerhand". Always a positive major trait; every check that uses it raises the tension by 1.
   public var fremd: Bool { pos && text.lowercased().hasPrefix("fremdkraft") }
-  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos, "fremd": fremd] }
+  public var json: [String: Any] { ["text": text, "kind": major ? "major" : "minor", "pos": pos, "fremd": fremd, "pillar": pillar as Any? ?? NSNull()] }
 }
 
 public struct Check: Codable, Equatable {
@@ -250,7 +264,7 @@ public enum SR {
       let f = l[l.index(after: c)...].split(separator: "|").map { $0.trimmingCharacters(in: .whitespaces) }
       guard f.count == 2, !f[0].isEmpty, f[0] != "-" else { return nil }
       let t = clean(f[0], 40); if minorHarm(t) { return nil }
-      return Trait(text: t, major: f[1] == "major" || (pos && t.lowercased().hasPrefix("fremdkraft")), pos: pos)
+      return Trait(text: t, major: f[1] == "major" || (pos && t.lowercased().hasPrefix("fremdkraft")), pos: pos, pillar: Trait.classify(t))
     }
   }
   /// the extraction sometimes lists a flaw as a skill or twice ("Schulden bei X" / "Schuld bei X"): a trait that shares a content word with an earlier one or with any flaw is dropped (flaws win)
@@ -266,7 +280,7 @@ public enum SR {
   /// /merkmal +Text [major] | /merkmal -Text [major] (flaw) | /merkmal x Text (remove): fix the extraction by hand, before the first check.
   /// Re-fits the budget and resets the leftover to Taler (a /budget has to be repeated).
   public static func editTrait(_ pc: inout Pc, args: String) -> String {
-    let usage = "/merkmal +Stärke [major] | /merkmal -Schwäche [major] | /merkmal x Text (streichen)"
+    let usage = "/merkmal +Stärke [major] [kampf|sozial|wissen] | /merkmal -Schwäche [major] | /merkmal x Text (streichen)"
     if pc.lastCheck != nil { return "/merkmal geht nur vor der ersten Probe." }
     var a = args.trimmingCharacters(in: .whitespaces); guard let f = a.first else { return usage }
     if f == "x" || f == "X" {
@@ -276,8 +290,11 @@ public enum SR {
     } else if f == "+" || f == "-" {
       a = String(a.dropFirst()).trimmingCharacters(in: .whitespaces)
       var major = false; if a.hasSuffix(" major") { major = true; a = String(a.dropLast(6)) }
+      var pil: String?
+      if let r = a.range(of: #"\s*\[(kampf|sozial|wissen)\]\s*$"#, options: [.regularExpression, .caseInsensitive]) { pil = a[r].trimmingCharacters(in: CharacterSet(charactersIn: " []")).lowercased(); a = String(a[..<r.lowerBound]) }
+      if a.hasSuffix(" major") { major = true; a = String(a.dropLast(6)) }
       let txt = clean(a, 40); if txt.isEmpty || minorHarm(txt) { return usage }
-      var t = Trait(text: txt, major: major, pos: f == "+")
+      var t = Trait(text: txt, major: major, pos: f == "+", pillar: pil ?? Trait.classify(txt))
       if t.fremd { if pc.traits.contains(where: \.fremd) { return "/merkmal: nur eine Fremdkraft pro Figur (erst /merkmal x Fremdkraft)." }; t.major = true }
       pc.traits = dedupe(pc.traits + [t]); if !pc.traits.contains(t) { return "/merkmal: '\(txt)' gibt es schon (ähnliches Merkmal)." }
     } else { return usage }

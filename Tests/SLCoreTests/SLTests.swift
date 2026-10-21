@@ -1688,7 +1688,7 @@ final class BudgetTests: XCTestCase {
   }
   func testParseTraits() {
     let p = SR.parseTraits("Merkmal: geübter Bogenschütze | major\nMerkmal: trinkfest | minor\nMerkmal: kaputt", pos: true)
-    XCTAssertEqual(p, [Trait(text: "geübter Bogenschütze", major: true, pos: true), Trait(text: "trinkfest", major: false, pos: true)])
+    XCTAssertEqual(p, [Trait(text: "geübter Bogenschütze", major: true, pos: true, pillar: "kampf"), Trait(text: "trinkfest", major: false, pos: true)])
     XCTAssertEqual(SR.parseTraits("Schwäche: Spielsucht | major\nSchwäche: Schulden | minor", pos: false).map(\.pos), [false, false])
     XCTAssertTrue(SR.parseTraits("Schwäche: -", pos: false).isEmpty)
   }
@@ -1943,5 +1943,22 @@ final class VorlageTests: XCTestCase {   // pnp-22d: prepared world "Die Weberin
     let old = #"{"npcs":[{"id":"n1","name":"A","kurz":"x"}],"regeln":"frei"}"#
     let w = try JSONDecoder().decode(World.self, from: Data(old.utf8))
     XCTAssertNil(w.vorlage); XCTAssertEqual(w.eingriffe, 0); XCTAssertFalse(w.npcs[0].gmFigur)
+  }
+
+  func testTraitPillar() throws {
+    XCTAssertEqual(Trait.classify("Geübte Armbrustschützin"), "kampf")
+    XCTAssertEqual(Trait.classify("Pfadfinderin im Moor"), "wissen")
+    XCTAssertEqual(Trait.classify("Kräuterkundig"), "wissen")
+    XCTAssertEqual(Trait.classify("Lesen und Schreiben"), "wissen")
+    XCTAssertEqual(Trait.classify("Überredungskunst"), "sozial")
+    XCTAssertNil(Trait.classify("Angst vor Feuer")); XCTAssertNil(Trait.classify("Todfeind")); XCTAssertNil(Trait.classify("Fremdkraft: Hexenblick"))
+    let ts = SR.parseTraits("Merkmal: Zäher Wächter | minor\nMerkmal: Todfeind | minor", pos: true)
+    XCTAssertEqual(ts.map(\.pillar), ["kampf", nil]); XCTAssertEqual(ts[0].json["pillar"] as? String, "kampf"); XCTAssertTrue(ts[1].json["pillar"] is NSNull)
+    var pc = Pc(speaker: "M")
+    _ = SR.editTrait(&pc, args: "+Geübte Armbrustschützin"); XCTAssertEqual(pc.traits.last?.pillar, "kampf")
+    _ = SR.editTrait(&pc, args: "+Hofkenntnis [sozial] major"); XCTAssertEqual(pc.traits.last?.pillar, "sozial"); XCTAssertTrue(pc.traits.last!.major); XCTAssertEqual(pc.traits.last?.text, "Hofkenntnis")
+    _ = SR.editTrait(&pc, args: "+Zeugs major [Wissen]"); XCTAssertEqual(pc.traits.last?.pillar, "wissen"); XCTAssertTrue(pc.traits.last!.major)
+    let old = try JSONDecoder().decode(Trait.self, from: Data(#"{"text":"x","major":true,"pos":true}"#.utf8)); XCTAssertNil(old.pillar)
+    let rt = try JSONDecoder().decode(Trait.self, from: JSONEncoder().encode(Trait(text: "y", major: false, pos: true, pillar: "kampf"))); XCTAssertEqual(rt.pillar, "kampf")
   }
 }
