@@ -96,8 +96,12 @@ add(f'''<h1>2 Figur erschaffen</h1>
 
 add(f'''<h3>Schritt 3: Was übrig bleibt</h3>
 <p>Budget = 20 + Rückgaben der Nachteile − Kosten der Vorteile. Den Rest tauschst du:</p>
-{table(['Rest','Tausch'],[['<b>1 Punkt</b>','10 Taler Startgeld'],['<b>2 Punkte</b>','1 Startgegenstand (normale Ausrüstung, keine Magie)'],['<b>3 Punkte</b>','+1 maximaler Schicksalspunkt (Start 5, Maximum 5, mit diesem Tausch 6 usw.)']],'small')}
+{table(['Rest','Tausch'],[['<b>1 Punkt</b>','10 Taler Startgeld'],['<b>2, 4 oder 6 Punkte</b>','Startgegenstand nach Preisstufe (Vorschlag, siehe Tabelle)'],['<b>3 Punkte</b>','+1 maximaler Schicksalspunkt (Start 5, Maximum 5, mit diesem Tausch 6 usw.)']],'small')}
 <p>Mischen ist erlaubt. Die Spielleitung entscheidet, ob ein Wort klein oder groß ist, und sieht sich vor Spielbeginn die Liste an. Alltagskleidung, Beutel und Proviant hat jede Figur gratis; Waffen und Rüstung kosten Punkte oder Taler. Der Rest darf 0 sein, das Budget aber nicht ins Minus gehen. Preise für Gegenstände: siehe Spickzettel (Richtwerte).</p>
+{table(['Preisstufe (Vorschlag)','Gegenstände','Taler-Gegenwert'],[['<b>2 Punkte</b>','normale Ausrüstung, Messer/Dolch oder Knüppel, Lederrüstung (Rüstung 1)','20 Taler'],['<b>4 Punkte</b>','Schwert, Axt oder Bogen (auch Speer, Armbrust), Kettenhemd (Rüstung 2), Schild','40 Taler'],['<b>6 Punkte</b>','Plattenpanzer (Rüstung 3) oder Feuerwaffe','60 Taler']],'small')}
+<p class="note">Unbekannte Gegenstände zählen als normal (2 Punkte). 1 Punkt = 10 Taler. Magie gibt es nicht als Startgegenstand.</p>
+<h3>Story-Items ★</h3>
+<p>Jeder Gegenstand kostet seine Preisstufe. Kauft deine Figur über <code>/budget</code> einen Gegenstand, der zu ihrer Hintergrundgeschichte passt, wird er als <b>★ Story-Item</b> markiert (gleicher Preis). Manche Story-Items wachsen mit gelösten Handlungssträngen (höchstens +3), manche verbergen eine Wendung, die sich erst im Spiel offenbart. Du siehst nur den Stern; alles andere bleibt Überraschung. Gegenstände ohne Stern ändern sich nicht.</p>
 <h3>Schritt 4: Drei Säulen verteilen</h3>
 <p>Verteile die Werte <b>30, 40 und 50</b> beliebig auf <b>Kampf</b>, <b>Sozial</b> und <b>Wissen</b>. Sie sind deine Grundzielzahlen für den d100.</p>
 {table(['Säule','Umfasst'],[['<b>Kampf</b>','Nahkampf, Fernkampf, Ausweichen, Schleichen und Klettern, alles Körperliche und Handfeste, Initiative'],['<b>Sozial</b>','Überreden, Einschüchtern, Handeln, Lügen, Gespür für Menschen, Auftreten'],['<b>Wissen</b>','Heilen, Lesen, Handwerk, Magie- und Religionskunde, Spuren deuten, Wahrnehmung']],'')}
@@ -114,7 +118,11 @@ add(f'''<h3>Schritt 3: Was übrig bleibt</h3>
 ['zäh wie Moorholz','Vorteil klein','−2','Kampf (+10, Ausdauer, Gift, Kälte)'],
 ['Todfeind: Schmugglerbande','Nachteil groß','+4','Sozial (−20 bei Gesindel am Hafen)'],
 ['Angst vor Feuer','Nachteil klein','+2','alle (−10 in der Nähe von Feuer)']],'')}
-<p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = 14; <b>Rest 12</b>: 3 Punkte → +1 max. SP (also 6), 2 Punkte → Armbrust, 2 Punkte → Lederwams, 5 Punkte → 50 Taler (3 + 2 + 2 + 5 = 12). <b>Säulen:</b> Kampf 40, Sozial 30, Wissen 50. <b>Wunden</b> 10, <b>SP</b> 6 von 6.</p></div>''')
+<p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = 14; <b>Rest 12</b>: 3 Punkte → +1 max. SP (also 6), 4 Punkte → Armbrust, 2 Punkte → Lederwams, 3 Punkte → 30 Taler (3 + 4 + 2 + 3 = 12). <b>Säulen:</b> Kampf 40, Sozial 30, Wissen 50. <b>Wunden</b> 10, <b>SP</b> 6 von 6.</p></div>
+<div class="box ex"><b class="t">Beispiel Paladin (Vorschlag): starke Ausrüstung muss durch Nachteile bezahlt werden.</b>
+<p><i>Geschichte:</i> geschworener Ritter eines Tempelordens, vom Kult gejagt, mittellos.</p>
+{table(['Wort','Art','Punkte'],[['Geweihter Streiter','Vorteil groß','−4'],['Handauflegen','Vorteil groß','−4'],['Heiliger Schwur (darf nicht lügen/fliehen)','Nachteil groß','+4'],['Fanatischer Feind: Kult X','Nachteil klein','+2'],['Arm wie eine Kirchenmaus','Nachteil klein','+2']],'small')}
+<p><b>Rechnung:</b> Vorteile 4 + 4 = 8; Nachteile 4 + 2 + 2 = 8; Budget 20 − 8 + 8 = <b>20</b>. Verteilt mit <code>/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer 6 + Schwert 4 + Schild 4 = 14 Punkte (140 Taler Gegenwert), +1 max. SP = 3 Punkte, Taler 3 Punkte (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig. Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung der Figur (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 Wunde.</p></div>''')
 
 # ================= 3 PROBE =================
 add(f'''<h1>3 Die Probe (d100)</h1>
@@ -142,7 +150,9 @@ add(f'''<h1>3 Die Probe (d100)</h1>
 <h3>Kritisch: Pasch</h3>
 <p>Ein Wurf, bei dem beide Ziffern gleich sind (<b>11, 22, 33, 44, 55, 66, 77, 88, 99, 100</b>), ist <b>kritisch</b>. Als Erfolg: <b>kritischer Erfolg</b>, die Spielleitung fügt eine Wendung zu deinen Gunsten hinzu. Als Misserfolg: <b>kritischer Misserfolg</b>, eine Komplikation tritt ein (Tabelle Kap. 7). Die DoS/DoF zählen trotzdem. Würfe unter 11 sind nie kritisch. Die 100 ist immer ein kritischer Misserfolg.</p>
 <h3>Vergleichende Probe (Gegen jemanden)</h3>
-<p>Beide würfeln gegen ihre eigene Zielzahl. Ein Erfolg schlägt einen Misserfolg. Haben beide Erfolg, gewinnt, wer <b>mehr DoS</b> hat; bei Gleichstand die <b>höhere Zielzahl</b>. Scheitern beide, ist es ein Patt (Auslegung): Nichts Entscheidendes geschieht, kritische Misserfolge gelten trotzdem.</p>''')
+<p>Beide würfeln gegen ihre eigene Zielzahl. Ein Erfolg schlägt einen Misserfolg. Haben beide Erfolg, gewinnt, wer <b>mehr DoS</b> hat; bei Gleichstand die <b>höhere Zielzahl</b>. Scheitern beide, ist es ein Patt (Auslegung): Nichts Entscheidendes geschieht, kritische Misserfolge gelten trotzdem.</p>
+<h3>Proben in Foundry</h3>
+<p>Ist eine Aktion riskant, zeigt sl die Karte <b>„Probe gefordert“</b>. <b>Du</b> würfelst selbst (Knopf <b>Probe würfeln</b>, vorbelegter Dialog); sl erzählt danach das Ergebnis. Würfle nicht zusätzlich von Hand. Würfelt niemand binnen etwa 90 Sekunden oder drückt die Spielleitung „sl würfeln lassen“, würfelt sl selbst. Ein Schicksalsergeben-Bonus (+1 SP) oder Schicksalsschlag zählt erst, wenn sl den Wurf bestätigt hat. Der Spielleiter-Befehl <code>/szene</code> setzt „einmal pro Szene“ für alle Figuren zurück.</p>''')
 
 add(f'''<h3>Drei Beispiele (Mirne)</h3>
 <div class="box ex"><b class="t">Beispiel 1: Armbrustschuss.</b> Mirne schießt auf eine Brieftaube. Kampf 40 + geübte Armbrustschützin 20 = <b>60</b>, normal. Wurf <b>34</b>: Erfolg, DoS = 1 + abgerundet((60 − 34) ÷ 10) = 1 + 2 = <b>3</b>. Die Taube fällt, der Brief ist unversehrt (ein Bonus von DoS 3).</div>
@@ -327,7 +337,7 @@ add(f'''<div class="sheet"><h1>10 Spickzettel: alle Modifikatoren</h1>
 {table(['SP-Erholung','+'],[['Rast 1 h','1'],['Nacht / sicher','3'],['Nachteil ausgespielt','1'],['Fest / Tempel','2'],['Strang abgeschlossen','2']],'')}</div></div>
 <div class="grid"><div>
 <b>Schaden</b> = Waffe + DoS − Rüstung (min. 0). Wunden 10.<br><b>Vergleichende Probe:</b> Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt.<br><b>Initiative:</b> d100 ≤ Kampf, mehr DoS zuerst (oder Spieler zuerst).<br><b>Kritisch:</b> Pasch bei Erfolg = Wendung für dich, bei Misserfolg = Komplikation.<br><b>Schicksalsergeben:</b> vor dem Wurf −10; ≥ 2 DoS = +1 SP; Misserfolg = +1 DoF (Schicksalsschlag). Nie leicht, nicht mit SP, 1× je Szene und Figur.</div>
-<div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2 Punkte = 1 Gegenstand · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
+<div><b>Startbudget</b> 20 Punkte. Vorteil −2 / −4, Nachteil +2 / +4. Rest: 1 Punkt = 10 Taler · 2/4/6 Punkte = Gegenstand (Vorschlag, Stufen in Kap. 2) · 3 Punkte = +1 SP-Max.<br><b>Orakel:</b> Chancen × Spannung → a/b/c; d100 ≤ a JA+ · ≤ b JA · ≤ c NEIN · darüber NEIN+. Pasch mit Ziffer ≤ Spannung = Ereignis.<br><b>Szenentest:</b> d100 ≤ 5 × Spannung → Szene verändert.</div></div>
 <h3>Richtwerte Preise (Vorschlag der Spielleitung, nicht Kernregel)</h3>
 {table(['Gut','Taler'],[['Mahlzeit, Bett im Schlafsaal','1–2'],['Messer, Knüppel, Seil','3–5'],['Lederwams, Bogen','15–25'],['Schwert, Axt, Kettenhemd','40–80'],['Plattenpanzer, Feuerwaffe','150–300']],'small')}</div>''')
 

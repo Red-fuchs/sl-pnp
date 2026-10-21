@@ -36,227 +36,250 @@
   ]
  },
  "chat": {
-  "img": "e1-typing-player",
+  "img": "07-spielzug-erzaehlung",
   "view": [
    1000,
-   395,
-   400,
-   505
+   565,
+   600,
+   440
   ],
-  "cap": "Der Foundry-Chat eines Spielers. Rechts unten schreibst du, mittendrin erzählt der Spielleiter.",
+  "cap": "Der Foundry-Chat eines Spielers: unten schreibst du, mittendrin erzählt der Spielleiter.",
   "marks": [
    {
     "n": 1,
-    "cx": 1048,
-    "cy": 845,
-    "tx": 1103,
-    "ty": 845,
-    "t": "Eingabefeld: hier schreibst du <code>/sl Ich öffne die Tür.</code>"
+    "t": "Eingabefeld: hier schreibst du <code>/sl Ich öffne die Tür.</code>",
+    "box": [
+     1045,
+     897,
+     550,
+     98
+    ],
+    "cx": 1033,
+    "cy": 887
    },
    {
     "n": 2,
-    "cx": 1048,
-    "cy": 712,
-    "tx": 1160,
-    "ty": 708,
-    "t": "Grüne Lampe = sl ist verbunden. Daneben der Knopf <b>Probe</b>."
+    "t": "Grüne Lampe = sl ist verbunden. Daneben der Knopf <b>Probe</b>.",
+    "box": [
+     1508,
+     810,
+     92,
+     36
+    ],
+    "cx": 1500,
+    "cy": 800
    },
    {
     "n": 3,
-    "cx": 1348,
-    "cy": 772,
-    "tx": 1294,
-    "ty": 740,
-    "t": "&bdquo;Spielleiter schreibt &hellip;&ldquo;: sl denkt gerade. Abwarten."
+    "t": "Deine Nachricht (hier ohne das Präfix <code>/sl</code>, wie Foundry sie anzeigt).",
+    "box": [
+     1045,
+     586,
+     550,
+     52
+    ],
+    "cx": 1033,
+    "cy": 592
    },
    {
     "n": 4,
-    "cx": 1048,
-    "cy": 630,
-    "tx": 1103,
-    "ty": 630,
-    "t": "Die Erzählung von sl erscheint als Chat-Karte &bdquo;Spielleiter&ldquo;."
+    "t": "Die Erzählung von sl erscheint als Chat-Karte &bdquo;Spielleiter&ldquo;.",
+    "box": [
+     1045,
+     664,
+     550,
+     132
+    ],
+    "cx": 1033,
+    "cy": 670
    }
   ]
  },
  "chargen": {
-  "img": "n04-budget",
+  "img": "02-sl-antwort-figur",
   "view": [
-   1000,
+   980,
    0,
-   600,
-   470
+   620,
+   300
   ],
-  "cap": "Im Foundry-Chat: Anna schreibt <code>/figur</code> mit ihrer Geschichte, sl antwortet mit der fertigen Figur. Danach verteilt sie den Rest mit <code>/budget</code>.",
-  "wide": false,
+  "cap": "Im Foundry-Chat: Anna schreibt <code>/figur</code> mit ihrer Geschichte, sl antwortet mit der fertigen Figur.",
   "marks": [
    {
     "n": 1,
+    "t": "<code>/figur Name: Geschichte</code>: deine Hintergrundgeschichte, 3 bis 8 Sätze.",
     "box": [
-     1046,
+     1045,
      10,
-     548,
+     550,
      142
     ],
-    "cx": 1022,
-    "cy": 80,
-    "tx": 1043,
-    "ty": 80,
-    "t": "<code>/figur Name: Geschichte</code>: deine Hintergrundgeschichte, 3 bis 8 Sätze."
+    "cx": 1033,
+    "cy": 22
    },
    {
     "n": 2,
+    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, Wunden 10/10, die Wörter, Taler 120 und <b>Budget übrig 12</b>.",
     "box": [
-     1054,
-     217,
-     520,
-     52
+     1056,
+     216,
+     536,
+     56
     ],
-    "cx": 1022,
-    "cy": 243,
-    "tx": 1051,
-    "ty": 243,
-    "t": "sl zieht die Wörter heraus und zeigt die Figur: Säulen (Kampf 40, Sozial 30, Wissen 50), SP 5/5, Wunden 10/10, die Wörter, Taler 100 und <b>Budget übrig 10</b>."
-   },
-   {
-    "n": 3,
-    "box": [
-     1054,
-     326,
-     190,
-     17
-    ],
-    "cx": 1022,
-    "cy": 335,
-    "tx": 1051,
-    "ty": 335,
-    "t": "<code>/budget taler=1 item=Seil sp=1</code>: den Rest verteilen."
-   },
-   {
-    "n": 4,
-    "box": [
-     1066,
-     418,
-     350,
-     17
-    ],
-    "cx": 1022,
-    "cy": 427,
-    "tx": 1051,
-    "ty": 427,
-    "t": "sl bestätigt: 50 Taler, 1 Seil, SP-Max 6. Nicht verteilte Punkte werden zu Taler."
+    "cx": 1033,
+    "cy": 212
    }
   ]
  },
  "dialog": {
-  "img": "e2-dialog",
+  "img": "08-probe-dialog",
   "view": [
-   470,
-   240,
-   500,
-   440
+   575,
+   275,
+   520,
+   445
   ],
-  "cap": "Der Proben-Dialog in Foundry.",
+  "cap": "Der Proben-Dialog in Foundry (hier mit den Eigenschaften von Mara).",
   "marks": [
    {
     "n": 1,
-    "cx": 945,
-    "cy": 315,
-    "tx": 905,
-    "ty": 315,
-    "t": "<b>Säule</b>: Kampf, Sozial oder Wissen (hier Wissen 50)."
+    "t": "<b>Säule</b>: Kampf, Sozial oder Wissen (hier Wissen 50).",
+    "cx": 1050,
+    "cy": 348,
+    "tx": 1004,
+    "ty": 348
    },
    {
     "n": 2,
-    "cx": 945,
-    "cy": 386,
-    "tx": 700,
-    "ty": 386,
-    "t": "<b>Eigenschaften</b>: Haken setzen bei allem, was zur Probe passt (+20, &minus;10 …)."
+    "t": "<b>Eigenschaften</b>: Haken setzen bei allem, was zur Probe passt (+20, &minus;10 &hellip;).",
+    "box": [
+     596,
+     407,
+     330,
+     82
+    ],
+    "cx": 1050,
+    "cy": 449,
+    "tx": 930,
+    "ty": 449
    },
    {
     "n": 3,
-    "cx": 945,
-    "cy": 444,
-    "tx": 905,
-    "ty": 444,
-    "t": "<b>Schwierigkeit</b>: leicht +20 bis sehr schwer &minus;30."
+    "t": "<b>Schwierigkeit</b>: leicht +20 bis sehr schwer &minus;30.",
+    "cx": 1050,
+    "cy": 507,
+    "tx": 1004,
+    "ty": 507
    },
    {
     "n": 4,
-    "cx": 945,
-    "cy": 492,
-    "tx": 905,
-    "ty": 492,
-    "t": "<b>SP einsetzen</b>: 0 bis 3 Schicksalspunkte, je +10."
+    "t": "<b>SP einsetzen</b>: 0 bis 3 Schicksalspunkte, je +10.",
+    "cx": 1050,
+    "cy": 538,
+    "tx": 1004,
+    "ty": 538
    },
    {
     "n": 5,
-    "cx": 945,
-    "cy": 575,
-    "tx": 900,
-    "ty": 575,
-    "t": "<b>Zielwert</b>: Der Dialog rechnet alles zusammen und zeigt die Rechnung."
+    "t": "<b>Schicksalsergeben</b> (&minus;10, bei mindestens 2 Erfolgsgraden +1 SP). Schließt SP aus.",
+    "box": [
+     597,
+     561,
+     308,
+     24
+    ],
+    "cx": 1050,
+    "cy": 573,
+    "tx": 908,
+    "ty": 573
    },
    {
     "n": 6,
-    "cx": 945,
-    "cy": 634,
-    "tx": 906,
-    "ty": 634,
-    "t": "<b>Würfeln</b> (Foundry) oder <b>sl würfeln lassen</b> (Zufall von sl)."
+    "t": "<b>Zielwert</b>: Der Dialog rechnet alles zusammen und zeigt die Rechnung.",
+    "box": [
+     597,
+     630,
+     278,
+     20
+    ],
+    "cx": 1050,
+    "cy": 640,
+    "tx": 880,
+    "ty": 640
+   },
+   {
+    "n": 7,
+    "t": "<b>Würfeln</b> (du würfelst in Foundry), <b>sl würfeln lassen</b> (Zufall von sl) oder <b>Abbrechen</b>.",
+    "box": [
+     597,
+     664,
+     406,
+     40
+    ],
+    "cx": 1050,
+    "cy": 684,
+    "tx": 1006,
+    "ty": 684
    }
   ]
  },
  "card": {
-  "img": "e3-card-gm",
+  "img": "09-probe-karte-gradzahl",
   "view": [
    1000,
-   520,
-   400,
-   190
+   570,
+   600,
+   230
   ],
-  "cap": "Die Ergebniskarte im Chat (Beispiel: ein kritischer Patzer).",
+  "cap": "Die Ergebniskarte im Chat (Beispiel: Wissen 50 + Kräuterkundige +20 + leicht +20 = 90, Wurf 93).",
   "marks": [
    {
     "n": 1,
-    "cx": 1058,
-    "cy": 598,
-    "tx": 1105,
-    "ty": 598,
-    "t": "<b>Wurf gegen Zielzahl</b>: hier 100 gegen 30."
+    "t": "<b>Wurf gegen Zielzahl</b>: 93 gegen 90.",
+    "box": [
+     1064,
+     630,
+     100,
+     30
+    ],
+    "cx": 1033,
+    "cy": 645
    },
    {
     "n": 2,
-    "cx": 1058,
-    "cy": 623,
-    "tx": 1105,
-    "ty": 621,
-    "t": "Das Ergebnis: <b>Kritischer Misserfolg</b> (Pasch, 8 Misserfolgsgrade)."
+    "t": "Das Ergebnis: <b>Misserfolg</b> mit 1 Misserfolgsgrad.",
+    "box": [
+     1064,
+     657,
+     175,
+     18
+    ],
+    "cx": 1033,
+    "cy": 670
    },
    {
     "n": 3,
-    "cx": 1058,
-    "cy": 646,
-    "tx": 1105,
-    "ty": 640,
-    "t": "<b>Rechnung</b> aufklappen: wie die Zielzahl entstanden ist."
+    "t": "<b>Rechnung</b> aufklappen: wie die Zielzahl entstanden ist.",
+    "box": [
+     1064,
+     675,
+     520,
+     72
+    ],
+    "cx": 1033,
+    "cy": 705
    },
    {
     "n": 4,
-    "cx": 1058,
-    "cy": 684,
-    "tx": 1118,
-    "ty": 667,
-    "t": "<b>SP +10 / SP &minus;10</b>: Schicksalspunkte einsetzen, bevor erzählt wird."
-   },
-   {
-    "n": 5,
-    "cx": 1348,
-    "cy": 700,
-    "tx": 1300,
-    "ty": 682,
-    "t": "<b>an sl senden</b>: Ergebnis geht an die KI, die es erzählt."
+    "t": "<b>SP +10 / SP &minus;10</b>: Schicksalspunkte einsetzen, bevor erzählt wird.",
+    "box": [
+     1064,
+     750,
+     118,
+     32
+    ],
+    "cx": 1033,
+    "cy": 766
    }
   ]
  },
@@ -368,39 +391,255 @@
    }
   ]
  },
- "rechnung": {
-  "img": "n08-karte",
+ "merkmal": {
+  "img": "03-merkmal-korrektur",
   "view": [
-   1000,
+   980,
+   295,
    620,
-   600,
    190
   ],
-  "cap": "Eine Proben-Karte mit aufgeklappter Rechnung (Beispiel: Wissen 50 + Kräuterkundige +20 + Schwierigkeit +20 = 90).",
+  "cap": "Ein Merkmal nachtragen: <code>/merkmal -Angst vor offenem Wasser</code> fügt einen Nachteil hinzu, den sl übersehen hat.",
   "marks": [
    {
     "n": 1,
-    "cx": 1022,
-    "cy": 697,
-    "tx": 1062,
-    "ty": 697,
-    "t": "<b>Wurf gegen Zielzahl</b>: 34 gegen 90."
+    "t": "<code>/merkmal -Angst vor offenem Wasser</code>: <b>+</b> Stärke, <b>&minus;</b> Schwäche.",
+    "box": [
+     1045,
+     303,
+     550,
+     50
+    ],
+    "cx": 1033,
+    "cy": 315
    },
    {
     "n": 2,
-    "cx": 1022,
-    "cy": 720,
-    "tx": 1062,
-    "ty": 720,
-    "t": "Erfolg mit <b>6 Erfolgsgraden</b>: 1 + abgerundet((90 &minus; 34) &divide; 10)."
+    "t": "sl nennt die Merkmale neu. Der Nachteil bringt Punkte zurück: <b>Budget übrig 14</b> (vorher 12), Taler 140.",
+    "box": [
+     1056,
+     416,
+     536,
+     38
+    ],
+    "cx": 1033,
+    "cy": 422
+   }
+  ]
+ },
+ "budget": {
+  "img": "05-sl-antwort-budget",
+  "view": [
+   980,
+   480,
+   620,
+   170
+  ],
+  "cap": "Den Rest verteilen: <code>/budget</code> und die Antwort von sl.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "<code>/budget taler=3 item=Seil,Laterne sp=1</code>: Punkte für Taler, Gegenstände und SP-Max.",
+    "box": [
+     1045,
+     488,
+     550,
+     46
+    ],
+    "cx": 1033,
+    "cy": 496
+   },
+   {
+    "n": 2,
+    "t": "sl bestätigt: 70 Taler, Seil und Laterne, SP-Max 6. Nicht verteilte Punkte werden zu Taler.",
+    "box": [
+     1056,
+     600,
+     536,
+     20
+    ],
+    "cx": 1033,
+    "cy": 597
+   }
+  ]
+ },
+ "sheet": {
+  "img": "06-figurenbogen",
+  "view": [
+   20,
+   75,
+   630,
+   615
+  ],
+  "cap": "Der Charakterbogen in Foundry (Reiter Description): hier steht alles, was sl über deine Figur weiß.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "<b>Wunden</b> (links, aktuell/Maximum): hier 10 von 10.",
+    "box": [
+     168,
+     184,
+     214,
+     32
+    ],
+    "cx": 162,
+    "cy": 178
+   },
+   {
+    "n": 2,
+    "t": "<b>SP</b>: hier 6 von 6, nach dem <code>/budget</code> mit <code>sp=1</code>.",
+    "box": [
+     408,
+     184,
+     214,
+     32
+    ],
+    "cx": 402,
+    "cy": 178
    },
    {
     "n": 3,
-    "cx": 1022,
-    "cy": 774,
-    "tx": 1062,
-    "ty": 774,
-    "t": "Die <b>Rechnung</b>: Säule, passende Eigenschaft, Schwierigkeit."
+    "t": "Säulen, Wunden und Taler.",
+    "box": [
+     44,
+     320,
+     300,
+     46
+    ],
+    "cx": 38,
+    "cy": 316
+   },
+   {
+    "n": 4,
+    "t": "Deine Eigenschaften mit Wert (+ oder &minus;).",
+    "box": [
+     60,
+     406,
+     200,
+     52
+    ],
+    "cx": 54,
+    "cy": 402
+   },
+   {
+    "n": 5,
+    "t": "Die Ausrüstung aus dem <code>/budget</code>.",
+    "box": [
+     60,
+     510,
+     100,
+     36
+    ],
+    "cx": 54,
+    "cy": 506
+   }
+  ]
+ },
+ "sp": {
+  "img": "11-sp-einsatz-karte",
+  "view": [
+   1000,
+   545,
+   600,
+   255
+  ],
+  "cap": "SP auf einer Karte eingesetzt: Die Rechnung zeigt jeden Einsatz.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "Wurf 62 gegen Zielzahl 40: Misserfolg mit 3 Misserfolgsgraden.",
+    "box": [
+     1064,
+     595,
+     190,
+     50
+    ],
+    "cx": 1033,
+    "cy": 610
+   },
+   {
+    "n": 2,
+    "t": "Die <b>Rechnung</b> führt die Schicksalspunkte als eigene Zeile.",
+    "box": [
+     1064,
+     692,
+     520,
+     18
+    ],
+    "cx": 1033,
+    "cy": 700
+   },
+   {
+    "n": 3,
+    "t": "Das Protokoll: wer wie viele SP eingesetzt hat.",
+    "box": [
+     1064,
+     711,
+     200,
+     34
+    ],
+    "cx": 1033,
+    "cy": 728
+   },
+   {
+    "n": 4,
+    "t": "Mit <b>SP +10 / SP &minus;10</b> setzt du weitere Punkte ein.",
+    "box": [
+     1064,
+     749,
+     118,
+     34
+    ],
+    "cx": 1033,
+    "cy": 766
+   }
+  ]
+ },
+ "slcard": {
+  "img": "10-probe-karte-sl",
+  "view": [
+   1000,
+   690,
+   600,
+   115
+  ],
+  "cap": "Eine Karte, die sl selbst gewürfelt hat.",
+  "marks": [
+   {
+    "n": 1,
+    "t": "&bdquo;<b>von sl gewürfelt</b>&ldquo;: Niemand hat gewürfelt, also hat sl es getan.",
+    "box": [
+     1064,
+     716,
+     200,
+     20
+    ],
+    "cx": 1033,
+    "cy": 726
+   },
+   {
+    "n": 2,
+    "t": "Wurf 79 gegen Zielzahl 30.",
+    "box": [
+     1064,
+     739,
+     110,
+     30
+    ],
+    "cx": 1033,
+    "cy": 752
+   },
+   {
+    "n": 3,
+    "t": "Misserfolg mit 5 Misserfolgsgraden.",
+    "box": [
+     1064,
+     765,
+     180,
+     18
+    ],
+    "cx": 1033,
+    "cy": 780
    }
   ]
  }

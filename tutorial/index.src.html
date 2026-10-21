@@ -234,7 +234,9 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <li data-r><h3>Schreibe die Hintergrundgeschichte (3 bis 8 Sätze)</h3>
       <p>Wer bist du? Woher kommst du? Was kannst du? Was holt dich ein? Gute Geschichten nennen <b>Können</b> (Vorteile) und <b>Last</b> (Nachteile). Jeder Satz kann ein Wort liefern. Bei sl zieht die KI die Wörter für dich heraus, am Tisch macht das die Spielleitung oder du selbst.</p>
       <p><b>In Foundry:</b> <code>/figur Mara: Ich bin Mara, eine Kräuterkundige aus den Sümpfen &hellip;</code> (erst der Name, dann ein Doppelpunkt, dann die Geschichte).</p>
-      {{FIG:chargen}}</li>
+      {{FIG:chargen}}
+      <p><b>Merkmal vergessen oder falsch?</b> Mit <code>/merkmal</code> korrigierst du die Liste: <code>/merkmal +Stärke</code>, <code>/merkmal -Schwäche</code> oder <code>/merkmal x Text</code> (streichen). Mit dem Zusatz <code>major</code> ist es ein prägendes (großes) Merkmal. Das geht nur <b>vor der ersten Probe</b>. Danach das <code>/budget</code> neu setzen.</p>
+      {{FIG:merkmal}}</li>
     <li data-r><h3>Wörter als Eigenschaften, Budget 20</h3>
       <div class="tw"><table>
         <tr><th>Art</th><th>Klein (minor)</th><th>Groß (major)</th><th>Wirkung bei passender Probe</th></tr>
@@ -264,11 +266,23 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <div class="tw"><table>
         <tr><th>Rest</th><th>Tausch</th></tr>
         <tr><td>1 Punkt</td><td><b>10 Taler</b> Startgeld</td></tr>
-        <tr><td>2 Punkte</td><td><b>1 Startgegenstand</b> (normale Ausrüstung, keine Magie)</td></tr>
+        <tr><td>2, 4 oder 6 Punkte</td><td><b>1 Startgegenstand</b> nach Preisstufe (Tabelle weiter unten, keine Magie)</td></tr>
         <tr><td>3 Punkte</td><td><b>+1 maximaler Schicksalspunkt</b> (Start 5, mit diesem Tausch 6 usw.)</td></tr>
       </table></div>
       <p><b>In Foundry:</b> <code>/budget taler=1 item=Seil sp=1</code> (Punkte für Taler, Gegenstände, zusätzliche SP-Max; mehrere Gegenstände mit Komma: <code>item=Armbrust,Lederwams</code>). Was du nicht verteilst, wird zu Taler. Der Befehl geht nur <b>vor deiner ersten Probe</b>.</p>
-      <p>Mischen ist erlaubt. Alltagskleidung, Beutel und Proviant hat jede Figur gratis; Waffen und Rüstung kosten Punkte oder Taler.</p></li>
+      <p>Mischen ist erlaubt. Alltagskleidung, Beutel und Proviant hat jede Figur gratis; Waffen und Rüstung kosten Punkte oder Taler.</p>
+      {{FIG:budget}}
+      <h4 style="margin:14px 0 4px">Preisstufen für Gegenstände <span class="tag emp">Vorschlag</span></h4>
+      <div class="tw"><table>
+        <tr><th>Stufe</th><th>Gegenstände</th><th>Taler-Gegenwert</th></tr>
+        <tr><td><b>2 Punkte</b></td><td>normale Ausrüstung, Messer/Dolch oder Knüppel, Lederrüstung (Rüstung 1)</td><td>20 Taler</td></tr>
+        <tr><td><b>4 Punkte</b></td><td>Schwert, Axt oder Bogen (auch Speer, Armbrust), Kettenhemd (Rüstung 2), Schild</td><td>40 Taler</td></tr>
+        <tr><td><b>6 Punkte</b></td><td>Plattenpanzer (Rüstung 3) oder Feuerwaffe</td><td>60 Taler</td></tr>
+      </table></div>
+      <p>sl ordnet nach Stichwort ein; Unbekanntes zählt als normal (2 Punkte). <code>/budget</code> zeigt die Stufe je Gegenstand. 1 Punkt = 10 Taler.</p>
+      <h4 style="margin:14px 0 4px">Story-Items <span class="chip">&#9733;</span></h4>
+      <p>Jeder Gegenstand kostet seinen Preis. Passt ein über <code>/budget</code> gekaufter Gegenstand zu deiner Hintergrundgeschichte, wird er als <b>&#9733; Story-Item</b> markiert (gleicher Preis). Manche wachsen mit gelösten Handlungssträngen (höchstens +3), manche verbergen eine Wendung, die sich erst im Spiel zeigt. Du siehst nur den Stern, der Rest bleibt Überraschung. Gegenstände ohne Stern ändern sich nicht.</p>
+      {{FIG:sheet}}</li>
     <li data-r><h3>Verteile die drei Säulen</h3>
       <p>Verteile die Werte <b>30, 40 und 50</b> beliebig auf <b>Kampf</b>, <b>Sozial</b> und <b>Wissen</b>. Das sind deine Grundzielzahlen für den W100.</p>
       <div class="grid3">
@@ -298,12 +312,28 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     </table></div>
     <div class="diag" style="box-shadow:none;margin:10px 0 0" id="mirnediag">
       <h4>Mirnes Budget: 26 Punkte, davon 14 für Vorteile, 12 übrig</h4>
-      <div class="sc"><svg class="minw" viewBox="0 0 800 210" role="img" aria-label="Budgetbalken: 20 Startbudget plus 6 aus Nachteilen ergibt 26; 14 Punkte gehen an Vorteile, 12 Rest werden getauscht in 3 für einen SP, 2 für die Armbrust, 2 für ein Lederwams, 5 für 50 Taler.">
+      <div class="sc"><svg class="minw" viewBox="0 0 800 210" role="img" aria-label="Budgetbalken: 20 Startbudget plus 6 aus Nachteilen ergibt 26; 14 Punkte gehen an Vorteile, 12 Rest werden getauscht in 3 für einen SP, 4 für die Armbrust, 2 für ein Lederwams, 3 für 30 Taler.">
         <g id="mseg"></g>
       </svg></div>
     </div>
-    <p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = <b>14</b>; Rest <b>12</b>: 3 Punkte &rarr; +1 max. SP (also 6), 2 Punkte &rarr; Armbrust, 2 Punkte &rarr; Lederwams, 5 Punkte &rarr; 50 Taler (3 + 2 + 2 + 5 = 12).</p>
+    <p><b>Rechnung:</b> 20 + 4 + 2 = <b>26</b>; Vorteile 4 + 2 + 2 + 2 + 2 + 2 = <b>14</b>; Rest <b>12</b>: 3 Punkte &rarr; +1 max. SP (also 6), 4 Punkte &rarr; Armbrust, 2 Punkte &rarr; Lederwams, 3 Punkte &rarr; 30 Taler (3 + 4 + 2 + 3 = 12).</p>
     <p><b>Säulen:</b> Kampf <b>40</b>, Sozial <b>30</b>, Wissen <b>50</b>. <b>Wunden 10</b>, <b>SP 6 von 6</b>.</p>
+  </div>
+
+  <h3 data-r>Beispiel Paladin: starke Ausrüstung braucht Nachteile <span class="tag emp">Vorschlag</span></h3>
+  <div class="card" data-r>
+    <p><i>Geschichte: geschworener Ritter eines Tempelordens, vom Kult gejagt, mittellos.</i></p>
+    <div class="tw"><table>
+      <tr><th>Wort</th><th>Art</th><th>Punkte</th></tr>
+      <tr><td>Geweihter Streiter</td><td>Vorteil groß</td><td>&minus;4</td></tr>
+      <tr><td>Handauflegen</td><td>Vorteil groß</td><td>&minus;4</td></tr>
+      <tr><td>Heiliger Schwur (darf nicht lügen/fliehen)</td><td>Nachteil groß</td><td>+4</td></tr>
+      <tr><td>Fanatischer Feind: Kult X</td><td>Nachteil klein</td><td>+2</td></tr>
+      <tr><td>Arm wie eine Kirchenmaus</td><td>Nachteil klein</td><td>+2</td></tr>
+    </table></div>
+    <p><b>Budget:</b> Vorteile 4 + 4 = 8, Nachteile 4 + 2 + 2 = 8, also 20 &minus; 8 + 8 = <b>20</b>.</p>
+    <p><code>/budget taler=3 item=Plattenpanzer,Schwert,Schild sp=1</code>: Plattenpanzer <b>6</b> + Schwert <b>4</b> + Schild <b>4</b> = 14 Punkte (140 Taler Gegenwert), +1 max. SP = <b>3</b>, Taler <b>3</b> (= 30 Taler). 14 + 3 + 3 = <b>20</b>, nichts bleibt übrig.</p>
+    <p style="margin:0">Ohne die drei Nachteile (Budget 12) blieben nach Plattenpanzer und Schwert (10) nur 2 Punkte: kein Schild, kein SP. Die Rüstung (Leder 1, Kette 2, Platte 3) senkt den Schaden eines Gegenschlags um ihren Wert, aber nie unter 1 Wunde.</p>
   </div>
   </div>
 </div></section>
@@ -396,12 +426,17 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <p style="margin:0"><b>4. Kritisch.</b> Wie Beispiel 1, Wurf <b>33</b>: Pasch und &le; 60, also kritischer Erfolg mit DoS 3. Die Spielleitung fügt eine Wendung hinzu (zum Beispiel hängt am Bein der Taube ein zweites Papier).</p>
   </div>
 
-  <h3 data-r>So sieht eine Probe in Foundry aus</h3>
-  <p data-r>Du klickst auf <b>Probe</b>, wählst Säule, passende Eigenschaften, Schwierigkeit und wie viele SP du vorab einsetzt. Der Dialog rechnet die Zielzahl und zeigt die Rechnung.</p>
-  {{FIG:dialog}}
-  <p data-r>Dann kommt das Ergebnis als Karte in den Chat. Die Karte bleibt kurz offen (Standard: 8 Sekunden), damit ihr noch Schicksalspunkte einsetzen könnt, bevor das Ergebnis an sl geht und erzählt wird.</p>
-  {{FIG:card}}
-  {{FIG:rechnung}}
+  <h3 data-r>So läuft eine Probe in Foundry</h3>
+  <ol class="steps">
+    <li data-r><h3>sl fordert die Probe</h3><p>Ist deine Aktion riskant, erscheint im Chat die Karte <b>&bdquo;Probe gefordert: Name &ndash; Säule, Schwierigkeit &ndash; Grund&ldquo;</b> mit dem Knopf <b>Probe würfeln</b>. sl würfelt in dem Fall <b>nicht</b> selbst.</p></li>
+    <li data-r><h3>Du würfelst</h3><p>Der Knopf öffnet den Proben-Dialog, schon vorbelegt. Du prüfst Eigenschaften, SP und Schicksalsergeben und klickst <b>Würfeln</b>. Den Dialog gibt es auch über den Knopf <b>Probe</b> im Chat.</p>
+      {{FIG:dialog}}</li>
+    <li data-r><h3>sl erzählt das Ergebnis</h3><p>Dein Wurf kommt als Karte in den Chat. Die Karte bleibt kurz offen (Standard: 8 Sekunden), damit ihr noch Schicksalspunkte einsetzen könnt, bevor das Ergebnis an sl geht und erzählt wird.</p>
+      {{FIG:card}}
+      {{FIG:sp}}</li>
+    <li data-r><h3>Würfelt niemand, würfelt sl</h3><p>Würfelt binnen etwa 90 Sekunden niemand oder drückt der Moderator <b>sl würfeln lassen</b>, würfelt sl selbst. Die Karte trägt dann den Hinweis &bdquo;von sl gewürfelt&ldquo;. <b>Würfle nicht zweimal</b>: ein zusätzlicher Handwurf zählt nicht.</p>
+      {{FIG:slcard}}</li>
+  </ol>
 </div></section>
 
 <!-- 5 -->
@@ -504,7 +539,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     <p><b>Schicksalsergeben.</b> Vor dem Wurf, bei einer Probe mit echtem Einsatz (die Spielleitung entscheidet; nie bei leichten Proben, Initiative oder reinen Übungen), kannst du dich dem Schicksal ergeben: <b>&minus;10</b> auf die Probe. Gelingt sie trotzdem mit mindestens <b>2 Erfolgsgraden</b>, erhältst du <b>1 SP</b> zurück (nicht über dein Maximum). Scheitert sie, ist es ein <b>Schicksalsschlag</b>: der Misserfolg zählt <b>einen Fehlergrad mehr</b> und wird härter erzählt.</p>
     <p style="margin:0"><b>Einmal pro Szene und Figur.</b> Nicht kombinierbar mit Schicksalspunkten auf derselben Probe, weder eigenen noch fremden. Ein Neuwurf (2 SP) bleibt erlaubt, das zweite Ergebnis zählt. <span class="tag">Auslegung</span> Die Zielzahl wird T &minus; 10, die SP-Belohnung gibt es bei Wurf &le; T &minus; 20. Wurf 01 bis 05 gelingt immer (Grade nach der Formel, kein Sonderfall). Jeder Misserfolg bekommt +1 DoF, auch 96 bis 100 und kritische.</p>
   </div>
-  <p data-r><b>In Foundry:</b> Haken <b>Schicksalsergeben</b> im Proben-Dialog. Er schließt das SP-Feld aus (und umgekehrt) und ist bei leichten Proben gesperrt. Auf der Karte gibt es dann keine SP-Knöpfe; den SP-Gewinn trägt der Spielleiter <b>sl</b> ein. Probier es im Rechner oben aus (Feld &bdquo;Schicksalsergeben&ldquo;).</p>
+  <p data-r><b>In Foundry:</b> Haken <b>Schicksalsergeben</b> im Proben-Dialog. Er schließt das SP-Feld aus (und umgekehrt) und ist bei leichten Proben gesperrt. Auf der Karte gibt es dann keine SP-Knöpfe; den SP-Gewinn trägt der Spielleiter <b>sl</b> ein. Das &bdquo;+1 SP (Schicksalsergeben)&ldquo; oder der &bdquo;Schicksalsschlag&ldquo; steht erst auf der Karte, nachdem sl den Wurf <b>bestätigt</b> hat. Lehnt sl ab (in dieser Szene schon benutzt, leichte Probe, SP kombiniert), steht der Grund auf der Karte und es gibt keinen Gewinn. Der Moderator setzt &bdquo;einmal pro Szene&ldquo; mit dem Knopf <b>Neue Szene</b> oder <code>/szene</code> für alle Figuren zurück. Probier es im Rechner oben aus (Feld &bdquo;Schicksalsergeben&ldquo;).</p>
 
   <h3 data-r>Vier Beispiele</h3>
   <div class="card" data-r>
@@ -564,6 +599,9 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
   </div>
   <ul data-r>
     <li>Wird gerade erzählt (&bdquo;SL denkt noch&ldquo;), hält die Bridge weitere Nachrichten zurück und schickt sie gesammelt nach.</li>
+    <li><b>Probe gefordert:</b> Klickt <b>du</b> auf der Karte <b>Probe würfeln</b> und würfelst im Dialog. Würfle nicht zusätzlich von Hand, sonst zählt der zweite Wurf nicht (sl meldet &bdquo;schon gewürfelt&ldquo;). Wartet jemand auf eine Probe, gehen weitere <code>/sl</code>-Nachrichten danach raus.</li>
+    <li>Schicksalsergeben: Das &bdquo;+1 SP&ldquo; oder der &bdquo;Schicksalsschlag&ldquo; steht erst auf der Karte, wenn sl bestätigt hat. Lehnt sl ab, steht dort der Grund.</li>
+    <li><span class="chip">nur Moderator</span> <b>Neue Szene</b> (Knopf oder <code>/szene</code>) macht Schicksalsergeben für alle wieder frei; <b>sl würfeln lassen</b> übernimmt eine offene Probe.</li>
     <li>Proben: Setzt SP <b>vor</b> dem Wurf oder in der kurzen Nachfrist nach der Karte ein, nicht erst, wenn die Erzählung schon läuft.</li>
     <li>Gespräch unter Menschen (Absprachen, Fragen an den Moderator) ohne <code>/sl</code> schreiben.</li>
     <li>Unwohl? Sag &bdquo;Pause&ldquo;. Das gilt immer.</li>
@@ -599,7 +637,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
       <tr><td>leicht / normal</td><td>+20 / ±0</td></tr><tr><td>schwer / sehr schwer</td><td>&minus;20 / &minus;30</td></tr>
       <tr><td>Wunden &le; 3</td><td>&minus;10</td></tr><tr><td>SP = 1</td><td>&minus;10</td></tr><tr><td>SP = 0</td><td>&minus;20 (nicht addiert)</td></tr>
       <tr><td>1 SP ausgegeben (max. 3 je Probe)</td><td>±10 je SP, auch bei anderen</td></tr><tr><td>Schicksalsergeben (1× je Szene)</td><td>&minus;10, ohne SP</td></tr></table></div>
-    <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2 Punkte = 1 Gegenstand &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. Wunden 10, SP 5.</p></div>
+    <div class="card" data-r><h4>Figur</h4><p style="margin:0"><b>Startbudget 20.</b> Vorteil &minus;2 / &minus;4, Nachteil +2 / +4.<br>Rest: 1 Punkt = 10 Taler &middot; 2/4/6 Punkte = Gegenstand (Vorschlag) &middot; 3 Punkte = +1 SP-Max.<br>Säulen: 30 / 40 / 50 frei auf Kampf, Sozial, Wissen. Wunden 10, SP 5.</p></div>
     <div class="card" data-r><h4>Kampf</h4><p><b>Schaden = Waffe + DoS &minus; Rüstung</b> (min. 0).</p><table>
       <tr><td>Faust 1 &middot; Messer, Knüppel 2</td><td>Stoff 0 &middot; Leder 1</td></tr><tr><td>Schwert, Axt, Bogen, Armbrust 3 &middot; Feuerwaffe 4</td><td>Kette 2 &middot; Platte 3</td></tr></table>
       <p style="margin:6px 0 0">Vergleichende Probe: Erfolg schlägt Misserfolg; sonst mehr DoS, Gleichstand: höhere Zielzahl; beide scheitern: Patt. Initiative: d100 &le; Kampf, mehr DoS zuerst (oder Spieler zuerst).</p>
@@ -653,7 +691,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     el('line',{x1:20+total*u-3,x2:20+total*u-3,y1:24,y2:72,stroke:'var(--ink)','stroke-width':2,'stroke-dasharray':'4 3'},g);
     var o=$('#bout');
     if(rest<0)o.innerHTML='<b class="bad">Budget im Minus ('+rest+'). Streiche einen Vorteil oder nimm einen Nachteil.</b>';
-    else o.innerHTML='Rest: <b class="ok">'+rest+'</b> Punkte. Zum Beispiel '+rest+' &times; 1 = <b>'+(rest*10)+' Taler</b>, oder '+Math.floor(rest/2)+' Gegenstand/-stände'+(rest%2?' + 1 Punkt übrig':'')+', oder +'+Math.floor(rest/3)+' max. SP'+(rest%3?' (Rest '+rest%3+')':'')+'.';
+    else o.innerHTML='Rest: <b class="ok">'+rest+'</b> Punkte. Zum Beispiel '+rest+' &times; 1 = <b>'+(rest*10)+' Taler</b>, oder '+Math.floor(rest/2)+' normale(n) Gegenstand/-stände (2 Punkte je, Waffen und Rüstung 4 bis 6)'+', oder +'+Math.floor(rest/3)+' max. SP'+(rest%3?' (Rest '+rest%3+')':'')+'.';
     ['a','b','c','d'].forEach(function(k){$('#v'+k).textContent=B[k]});
   }
   $$('#budget .stepper button').forEach(function(b){b.addEventListener('click',function(){var k=b.dataset.k;B[k]=Math.max(0,Math.min(12,B[k]+ +b.dataset.d));drawBudget()})});
@@ -668,7 +706,7 @@ footer{padding:40px 0 80px;color:var(--mute);font-size:.9rem}
     var x=x0;
     segs.forEach(function(s,i){var w=s[0]*u;var r=el('rect',{x:x,y:34,width:w-3,height:40,rx:6,fill:s[2],class:'mr'},g);el('text',{x:x+w/2-1.5,y:54,'text-anchor':'middle','dominant-baseline':'central','font-size':13,fill:'#1a0f06'},g,'−'+s[0]);x+=w});
     el('text',{x:x0,y:92,'font-size':13,class:'m'},g,'14 für sechs Vorteile');
-    var rs=[[3,'+1 SP','var(--info)'],[2,'Armbrust','var(--ok)'],[2,'Lederwams','var(--ok)'],[5,'50 Taler','var(--gold)']];
+    var rs=[[3,'+1 SP','var(--info)'],[4,'Armbrust','var(--ok)'],[2,'Lederwams','var(--ok)'],[3,'30 Taler','var(--gold)']];
     el('text',{x:x0,y:126,'font-size':14,class:'m'},g,'12 Rest werden getauscht:');
     var xx=x0;
     rs.forEach(function(s){var w=s[0]*u;el('rect',{x:xx,y:136,width:w-3,height:40,rx:6,fill:s[2],class:'mr2'},g);el('text',{x:xx+w/2-1.5,y:150,'text-anchor':'middle','dominant-baseline':'central','font-size':11,fill:'#0d0d0d'},g,s[1]);el('text',{x:xx+w/2-1.5,y:166,'text-anchor':'middle','dominant-baseline':'central','font-size':12,fill:'#0d0d0d'},g,s[0]+' Pkt');xx+=w});
