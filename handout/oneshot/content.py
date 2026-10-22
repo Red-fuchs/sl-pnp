@@ -2,14 +2,14 @@
 """Single source for the one-shot "Fadenleihe" (Die Weberin): world seed (worlds/weberin/), GM PDF, Foundry journals."""
 
 TITLE = "Fadenleihe"
-SETTING = ("Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Kloster der Spinnerinnen auf dem Hügel über Grams am Moor spinnen blinde Nonnen jedem Bewohner den Faden auf einem riesigen Webstuhl, und der Spindelmeister setzt ihn mit der Nadel. "
+SETTING = ("Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Kloster der Spinner auf dem Hügel über Grams am Moor spinnen blinde Mönche jedem Bewohner den Faden auf einem riesigen Webstuhl, und der Spindelmeister setzt ihn mit der Nadel. "
            "Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.")
 
 ORTE = {
   "Aschekreis": ("Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden. Hier erwachen die Gerufenen.", "die Weberin"),
   "Krähenfurt": ("Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen.", "Vogtin Agnet Rauhsohl"),
   "Grams am Moor": ("Moordorf zwischen Krähenfurt und Kloster: Taverne, Kapelle (Treppe in die Krypta), Laden, Schmiede, Zollhaus am Moordamm.", "Brand Quast (Händler), Zoll am Moordamm"),
-  "Kloster der Spinnerinnen": ("Kloster auf dem Hügel: blinde Nonnen spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf.", "Äbtissin Odilie Wendt"),
+  "Kloster der Spinner": ("Kloster auf dem Hügel: blinde Mönche spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf.", "Abt Odilo Wendt"),
   "Fadenbruch": ("Schlucht, in der das Gewirk als Nebel sichtbar hängt. Eine Webstelle.", "niemand, der Kettler geht hier um"),
 }
 
@@ -18,12 +18,12 @@ NPCS = [
   ("n1", "Die Weberin", "Auftraggeberin, gesichtslose Frau aus Garn", "Aschekreis", 1, 12, True, False),
   ("n2", "Der Kater", "sprechender Kater, Begleiter", "Aschekreis", 2, 4, True, True),
   ("n3", "Der Kettler", "Schicksalsbote, Mann mit Nähnadeln statt Fingern", "Fadenbruch", -2, 14, False, False),
-  ("n4", "Ambros Fehling", "Spindelmeister, Laienbruder und Klostervogt am Webstuhl, müde und pedantisch", "Kloster der Spinnerinnen", -1, 6, False, False),
+  ("n4", "Ambros Fehling", "Spindelmeister, Laienbruder und Klostervogt am Webstuhl, müde und pedantisch", "Kloster der Spinner", -1, 6, False, False),
   ("n5", "Agnet Rauhsohl", "Vogtin von Krähenfurt, kühl und geschäftstüchtig", "Krähenfurt", 0, 6, False, False),
   ("n6", "Wenke Sparr", "Garnhändlerin, einst Dienerin der Weberin", "Krähenfurt", 2, 6, False, False),
   ("n7", "Jorrit Keil", "Schmuggler auf den Moorwegen", "Krähenfurt", -1, 6, False, False),
   ("n8", "Brand Quast", "Gemischtwarenhändler in Grams, geschäftig und neugierig", "Grams am Moor", 0, 6, False, False),
-  ("n9", "Äbtissin Odilie Wendt", "Äbtissin der blinden Spinnerinnen, sanft und unbeugsam", "Kloster der Spinnerinnen", -1, 8, False, False),
+  ("n9", "Abt Odilo Wendt", "Abt der blinden Spinner, sanft und unbeugsam", "Kloster der Spinner", -1, 8, False, False),
 ]
 
 # name -> (geheimnis, ziel, gruppe, typ, ref)   (geheimnis text <= ~100 chars, no minors)
@@ -35,13 +35,13 @@ HIDDEN = {
   "Agnet Rauhsohl": ("Sie hat frühere Gerufene an Fehling verkauft; ihre Fäden hängen am Webstuhl.", "Macht behalten, Fremde als Hebel nutzen", "Vogtei", "npc_befragt", "Ambros Fehling"),
   "Wenke Sparr": ("Sie weiß, dass die Weberin sich als Herrin über alle Fäden wieder einweben will.", "die Weberin aufhalten, ohne selbst zu sterben", "Weberin", "npc_befragt", "Wenke Sparr"),
   "Jorrit Keil": ("Er kennt den Weg durch die Krypta ins Kloster und sah dort die Gruft früherer Gerufener.", "Taler verdienen, dem Höchstbietenden folgen", "Schmuggler", "zeit", "14"),
-  "Brand Quast": ("Er meldet jeden Neuankömmling der Äbtissin Odilie und verkauft Knochengarn unterm Ladentisch.", "Profit machen, seinen Laden behalten", "Kloster", "ort_betreten", "Grams am Moor"),
-  "Äbtissin Odilie Wendt": ("Sie steht im Bund mit dem Kettler und reicht ihm jeden fremden Faden, den sie findet.", "den Webstuhl bewahren, Fremde ausliefern", "Schicksal", "gegenstand", "Fadenbuch"),
+  "Brand Quast": ("Er meldet jeden Neuankömmling dem Abt Odilo und verkauft Knochengarn unterm Ladentisch.", "Profit machen, seinen Laden behalten", "Kloster", "ort_betreten", "Grams am Moor"),
+  "Abt Odilo Wendt": ("Er steht im Bund mit dem Kettler und reicht ihm jeden fremden Faden, den er findet.", "den Webstuhl bewahren, Fremde ausliefern", "Schicksal", "gegenstand", "Fadenbuch"),
 }
 
 STRAENGE = [
   ("Was ist die Nadel wirklich", [
-     ("Das Fadenbuch im Skriptorium nennt die Nadel: Knochen, nicht Eisen", "Kloster der Spinnerinnen"),
+     ("Das Fadenbuch im Skriptorium nennt die Nadel: Knochen, nicht Eisen", "Kloster der Spinner"),
      ("Die Weberin brach sie sich selbst aus dem Leib", "Wenke Sparr"),
      ("Im Nebel reißt sich eine Frau einen Knochen aus der Hand", "Fadenbruch")]),
   ("Warum braucht die Weberin Fremde", [
@@ -49,17 +49,17 @@ STRAENGE = [
      ("In der Gruft liegen Tote in fremder Kleidung, ihre Fäden abgeschnitten", "Jorrit Keil"),
      ("Die Asche im Kreis besteht aus Garn früherer Gerufener", "Aschekreis")]),
   ("Wem gehört Krähenfurt wirklich", [
-     ("Fehlings Aufträge tragen das Siegel der Vogtin", "Kloster der Spinnerinnen"),
+     ("Fehlings Aufträge tragen das Siegel der Vogtin", "Kloster der Spinner"),
      ("Auf dem Markt widerspricht niemand der Vogtin, seit Jahren nicht", "Krähenfurt"),
      ("Fehling näht, was Rauhsohl bestellt", "Jorrit Keil")]),
 ]
 
 START_SZENE = ("Du erwachst im Aschekreis am Moorsaum, kalte Asche unter den Fingern, ein feines Garn um das Handgelenk, und in der Hand hältst du noch, was du im Augenblick des Zugriffs gehalten hast. "
-               "Neben dir kommen andere zu sich, Fremde wie du, und am Rand des Kreises sitzt ein Kater mit einem Faden um den Hals und wartet.")
+               "Neben dir kommen andere zu sich, Fremde wie du, und am Rand des Kreises sitzt ein Kater mit einem roten Faden um den Hals und wartet.")
 PC_ZIEL = "Überlebe die Nacht und finde den Weg zurück nach Hause."
 MOTIVE = ["loses Garn in der Luft", "Asche, die nicht kalt wird", "Hunde, die Fremde anheulen"]
 
-PROMPT = """Setting: die Gramsmark, dunkles Grenzland, in dem Schicksal ein Handwerk ist. Die Spieler sind Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen. Sie haben keinen eigenen Faden im Gewirk und dürfen das Schicksal nicht auf sich aufmerksam machen. Es gibt keine Starttaverne: die Szene beginnt im Aschekreis, die Figuren treffen sich dort. Die Weberin gibt den Auftrag: Holt die Nadel aus dem Reliquienschrein des Klosters der Spinnerinnen über Grams am Moor und bringt sie in den Aschekreis, bevor der Mond hinter den Klosterberg sinkt; danach löse ich die Leihe. Sie verschweigt, was die Nadel für sie bedeutet.
+PROMPT = """Setting: die Gramsmark, dunkles Grenzland, in dem Schicksal ein Handwerk ist. Die Spieler sind Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen. Sie haben keinen eigenen Faden im Gewirk und dürfen das Schicksal nicht auf sich aufmerksam machen. Es gibt keine Starttaverne: die Szene beginnt im Aschekreis, die Figuren treffen sich dort. Die Weberin gibt den Auftrag: Holt die Nadel aus dem Reliquienschrein des Klosters der Spinner über Grams am Moor und bringt sie in den Aschekreis, bevor der Mond hinter den Klosterberg sinkt; danach löse ich die Leihe. Sie verschweigt, was die Nadel für sie bedeutet.
 Die Spannung heißt hier "Blick des Schicksals". Stufen: 1-3 unbemerkt; 4-6 Fäden zittern (Zufälle, Blicke, kleine Unstimmigkeiten); 7-8 Schicksalsboten suchen (Genähte fragen nach Fremden, NPCs werden misstrauischer); 9 Eingriff (ein Regie-Hinweis sagt dann, was geschieht). Nenne den Wert nie, zeige nur Zeichen.
 Fremdkraft: jede Figur hat höchstens eine übernatürliche Fähigkeit aus ihrer Heimatwelt (Merkmal "Fremdkraft: ..."). Sie wirkt, ist aber nie automatisch, nie dauerhaft und nie ein Sofort-Sieg. Jeder Einsatz zieht den Blick des Schicksals an; erzähle dann, dass die Fäden zittern. Technik aus der Heimatwelt funktioniert seltsam und nie unsichtbar.
 Der Kater ist der Begleiter der Gruppe und wird von der Spielleitung gespielt: erfinde nie seine Worte, Taten oder Wahrnehmungen. Er nimmt nur wahr, was die Figuren wahrnehmen, und bemerkt nie verborgene Dinge von sich aus. NPCs reagieren auf ihn nur, wenn er laut gesprochen oder gehandelt hat.

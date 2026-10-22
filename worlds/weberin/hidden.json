@@ -1,7 +1,7 @@
 {
   "clues": [
     {
-      "at": "Kloster der Spinnerinnen",
+      "at": "Kloster der Spinner",
       "found": false,
       "text": "Das Fadenbuch im Skriptorium nennt die Nadel: Knochen, nicht Eisen",
       "thread": "Was ist die Nadel wirklich"
@@ -37,7 +37,7 @@
       "thread": "Warum braucht die Weberin Fremde"
     },
     {
-      "at": "Kloster der Spinnerinnen",
+      "at": "Kloster der Spinner",
       "found": false,
       "text": "Fehlings Aufträge tragen das Siegel der Vogtin",
       "thread": "Wem gehört Krähenfurt wirklich"
@@ -56,6 +56,13 @@
     }
   ],
   "npcs": {
+    "Abt Odilo Wendt": {
+      "geheimnis": "Er steht im Bund mit dem Kettler und reicht ihm jeden fremden Faden, den er findet.",
+      "gruppe": "Schicksal",
+      "ref": "Fadenbuch",
+      "typ": "gegenstand",
+      "ziel": "den Webstuhl bewahren, Fremde ausliefern"
+    },
     "Agnet Rauhsohl": {
       "geheimnis": "Sie hat frühere Gerufene an Fehling verkauft; ihre Fäden hängen am Webstuhl.",
       "gruppe": "Vogtei",
@@ -71,7 +78,7 @@
       "ziel": "die Nadel schützen, seine Ruhe haben"
     },
     "Brand Quast": {
-      "geheimnis": "Er meldet jeden Neuankömmling der Äbtissin Odilie und verkauft Knochengarn unterm Ladentisch.",
+      "geheimnis": "Er meldet jeden Neuankömmling dem Abt Odilo und verkauft Knochengarn unterm Ladentisch.",
       "gruppe": "Kloster",
       "ref": "Grams am Moor",
       "typ": "ort_betreten",
@@ -111,13 +118,6 @@
       "ref": "Wenke Sparr",
       "typ": "npc_befragt",
       "ziel": "die Weberin aufhalten, ohne selbst zu sterben"
-    },
-    "Äbtissin Odilie Wendt": {
-      "geheimnis": "Sie steht im Bund mit dem Kettler und reicht ihm jeden fremden Faden, den sie findet.",
-      "gruppe": "Schicksal",
-      "ref": "Fadenbuch",
-      "typ": "gegenstand",
-      "ziel": "den Webstuhl bewahren, Fremde ausliefern"
     }
   },
   "pcGeheim": "Die Weberin hat über die Leihe nie ganz die Wahrheit gesagt.",

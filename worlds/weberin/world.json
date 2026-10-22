@@ -18,11 +18,11 @@
       "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden. Hier erwachen die Gerufenen. · herrscht: die Weberin",
       "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt. Eine Webstelle. · herrscht: niemand, der Kettler geht hier um",
       "Grams am Moor": "Moordorf zwischen Krähenfurt und Kloster: Taverne, Kapelle (Treppe in die Krypta), Laden, Schmiede, Zollhaus am Moordamm. · herrscht: Brand Quast (Händler), Zoll am Moordamm",
-      "Kloster der Spinnerinnen": "Kloster auf dem Hügel: blinde Nonnen spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf. · herrscht: Äbtissin Odilie Wendt",
+      "Kloster der Spinner": "Kloster auf dem Hügel: blinde Mönche spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf. · herrscht: Abt Odilo Wendt",
       "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen. · herrscht: Vogtin Agnet Rauhsohl"
     },
     "pcZiel": "Überlebe die Nacht und finde den Weg zurück nach Hause.",
-    "praemisse": "Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Kloster der Spinnerinnen auf dem Hügel über Grams am Moor spinnen blinde Nonnen jedem Bewohner den Faden auf einem riesigen Webstuhl, und der Spindelmeister setzt ihn mit der Nadel. Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.",
+    "praemisse": "Die Gramsmark, dunkles Moor-Grenzland, in dem Schicksal ein Handwerk ist: im Kloster der Spinner auf dem Hügel über Grams am Moor spinnen blinde Mönche jedem Bewohner den Faden auf einem riesigen Webstuhl, und der Spindelmeister setzt ihn mit der Nadel. Fremde aus anderen Welten, von der Weberin für einen Mondlauf an Leihfäden gezogen, sollen die Nadel holen und dürfen das Schicksal nicht auf sich aufmerksam machen.",
     "ready": true,
     "secs": {},
     "slots": {
@@ -35,7 +35,7 @@
       "ton": "düster"
     },
     "start": "Aschekreis",
-    "szene": "Du erwachst im Aschekreis am Moorsaum, kalte Asche unter den Fingern, ein feines Garn um das Handgelenk, und in der Hand hältst du noch, was du im Augenblick des Zugriffs gehalten hast. Neben dir kommen andere zu sich, Fremde wie du, und am Rand des Kreises sitzt ein Kater mit einem Faden um den Hals und wartet.",
+    "szene": "Du erwachst im Aschekreis am Moorsaum, kalte Asche unter den Fingern, ein feines Garn um das Handgelenk, und in der Hand hältst du noch, was du im Augenblick des Zugriffs gehalten hast. Neben dir kommen andere zu sich, Fremde wie du, und am Rand des Kreises sitzt ein Kater mit einem roten Faden um den Hals und wartet.",
     "used": [
       "die weberin",
       "der kater",
@@ -45,7 +45,7 @@
       "wenke sparr",
       "jorrit keil",
       "brand quast",
-      "äbtissin odilie wendt"
+      "abt odilo wendt"
     ],
     "wuerze": []
   },
@@ -109,7 +109,7 @@
       "inventar": [],
       "kurz": "Spindelmeister, Laienbruder und Klostervogt am Webstuhl, müde und pedantisch",
       "name": "Ambros Fehling",
-      "ort": "Kloster der Spinnerinnen",
+      "ort": "Kloster der Spinner",
       "wunden": 6,
       "zustand": []
     },
@@ -182,9 +182,9 @@
       "haltung": -1,
       "id": "n9",
       "inventar": [],
-      "kurz": "Äbtissin der blinden Spinnerinnen, sanft und unbeugsam",
-      "name": "Äbtissin Odilie Wendt",
-      "ort": "Kloster der Spinnerinnen",
+      "kurz": "Abt der blinden Spinner, sanft und unbeugsam",
+      "name": "Abt Odilo Wendt",
+      "ort": "Kloster der Spinner",
       "wunden": 8,
       "zustand": []
     }
@@ -194,7 +194,7 @@
     "Aschekreis": "Verfallene Walkmühle am Moorsaum, ein Kreis aus Asche und alten Fäden",
     "Fadenbruch": "Schlucht, in der das Gewirk als Nebel sichtbar hängt",
     "Grams am Moor": "Moordorf zwischen Krähenfurt und Kloster: Taverne, Kapelle (Treppe in die Krypta), Laden, Schmiede, Zollhaus am Moordamm",
-    "Kloster der Spinnerinnen": "Kloster auf dem Hügel: blinde Nonnen spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf",
+    "Kloster der Spinner": "Kloster auf dem Hügel: blinde Mönche spinnen am Riesenwebstuhl, im Skriptorium das Fadenbuch, im Reliquienschrein die Nadel; ein Tunnel aus der Krypta steigt hinauf",
     "Krähenfurt": "Einzige Stadt der Mark: Flussmarkt, Fachwerk, Tore, die nachts schließen"
   },
   "regeln": "schicksal",
