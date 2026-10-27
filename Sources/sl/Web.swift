@@ -212,7 +212,7 @@ func runWeb(runner: Runner, resuming: Bool, opt: [String: String]) async throws 
       rep("202 Accepted", "text/plain", Data("ok".utf8))
       runner.game?.probeWait = (sayJ?["probe_timeout"] as? NSNumber)?.doubleValue      // bridge setting; absent = sl flag
       if !text.trimmingCharacters(in: .whitespaces).isEmpty {
-        if !text.hasPrefix("/regie"), !text.hasPrefix("/spannung") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
+        if !text.hasPrefix("/regie"), !text.hasPrefix("/spannung"), !text.hasPrefix("/item") { hub.send(["t": "user", "text": text, "speaker": spk ?? ""]) }     // GM notes are never echoed
         if Cmd.parse(text) == .quit { hub.send(["t": "info", "text": "/quit beendet nur die CLI – den Web-Server beendest du im Terminal (Ctrl-C)."]) }   // never kill the server over HTTP
         else { job { try runner.handle(text, speaker: spk) } }
       }

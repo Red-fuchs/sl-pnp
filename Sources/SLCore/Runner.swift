@@ -231,6 +231,10 @@ public final class Runner {
     case .budget(let a):
       if let i = game.pcIndex(speaker, create: false) { sink(.info(game.applyBudget(i, args: a))); try session.save(game); refresh() } else { sink(.info("/budget: erst /figur Name: Geschichte")) }
     case .sp(let a): try spCommand(a, speaker: speaker)
+    case .item(let a):      // GM table roll (Gegenstandsgenerator); "SL:" parts are GM-only, the web bridge does not echo the command
+      guard var g = ItemGen.load() else { sink(.info("/item: Tabellen fehlen (handout/items/data, SL_ITEMS)")); break }
+      g.pair = { [game] in game.eng.call("meaning", ["a": "tun", "b": "thema"])["pairs"].arr?.first?.arr?.compactMap(\.str) ?? [] }
+      sink(.info(g.command(a, spannung: game.eng.st.s)))
     case .taler, .gegenstand, .kauf: try gmGoods(Cmd.parse(line))
     case .szene:
       if game.isSchicksal { game.newScene(); sink(.info("Neue Szene: Schicksalsergeben ist für alle Figuren wieder verfügbar.")); try session.save(game); refresh() } else { sink(.info("/szene gibt es nur unter --rules schicksal")) }
@@ -281,7 +285,7 @@ public func isWQuestion(_ q: String) -> Bool {
 }
 
 public enum Cmd: Equatable {
-  case szene, taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), spannung(String), vertrauter(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
+  case szene, item(String), taler(String), gegenstand(String), kauf(String), merkmal(String), budget(String), regie(String), spannung(String), vertrauter(String), sp(String), rast(String), wunden(String), lebt(String), regeln(String), saeulen(String), talent(String), weltgen(String), gespraech(String), geloest(String), empty, quit, ende, status, welt, frage(String, Int), figur(String), neu(String), unknown(String), say(String)
   public static func parse(_ line: String) -> Cmd {
     let t = line.trimmingCharacters(in: .whitespacesAndNewlines)
     func arg(_ n: Int) -> String { String(t.dropFirst(n)).trimmingCharacters(in: .whitespaces) }
@@ -303,6 +307,7 @@ public enum Cmd: Equatable {
     if t == "/saeulen" || t.hasPrefix("/saeulen ") { return .saeulen(arg(8)) }
     if t == "/talent" || t.hasPrefix("/talent ") { return .talent(arg(7)) }
     if t == "/szene" { return .szene }
+    if t == "/item" || t.hasPrefix("/item ") { return .item(arg(5)) }
     if t == "/taler" || t.hasPrefix("/taler ") { return .taler(arg(6)) }
     if t == "/gegenstand" || t.hasPrefix("/gegenstand ") { return .gegenstand(arg(11)) }
     if t == "/kauf" || t.hasPrefix("/kauf ") { return .kauf(arg(5)) }
