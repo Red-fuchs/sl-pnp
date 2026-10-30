@@ -83,6 +83,7 @@ public final class LM {
     Task { do { res = .success(try await LLMModelFactory.shared.load(from: d, using: TokLoader())) } catch { res = .failure(error) }; sem.signal() }   // text-only factory: no vision/audio tower
     sem.wait()
     do { ctx = try res.get() } catch { onRelease?(); throw error }
+    if let t = slDtype() { castParameters(ctx.model, to: t) }
     loadS = Date().timeIntervalSince(t)
     notify(String(format: "Modell geladen (%.1f s)", loadS))
   }
